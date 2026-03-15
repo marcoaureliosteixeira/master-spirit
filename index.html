@@ -66,6 +66,73 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .msg{margin-top:.8rem;font-style:italic;font-size:.82rem;text-align:center;min-height:1.2rem}
 .msg.error{color:rgba(232,122,122,.85)}
 .msg.success{color:rgba(140,210,140,.85)}
+
+/* ── MOBILE RESPONSIVE ── */
+@media (max-width: 768px) {
+  html,body{overflow:auto}
+  .page{
+    grid-template-columns:1fr;
+    grid-template-rows:auto 1fr;
+    height:auto;
+    min-height:100vh;
+  }
+  .brand{
+    border-right:none;
+    border-bottom:1px solid var(--border);
+    padding:2rem 1.5rem 1.5rem;
+    flex-direction:row;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:1rem;
+  }
+  .logo-img{
+    width:90px;
+    height:90px;
+    margin-bottom:0;
+    flex-shrink:0;
+  }
+  .brand-welcome{display:none}
+  .brand-name{
+    font-size:1.6rem;
+    text-align:left;
+  }
+  .brand-tagline{
+    font-size:.8rem;
+    text-align:left;
+    margin-top:.3rem;
+  }
+  .brand > div:not(.free-badge){
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+  }
+  .free-badge{
+    width:100%;
+    max-width:100%;
+    padding:.7rem 1rem;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    text-align:left;
+    margin-top:0;
+  }
+  .free-badge-title{margin-bottom:0;white-space:nowrap}
+  .chat-dots{margin-bottom:0;flex-shrink:0}
+  .free-badge-sub{font-size:.75rem;line-height:1.4}
+  .auth{
+    padding:1.8rem 1.2rem 2.5rem;
+    min-height:auto;
+  }
+  .row-2{grid-template-columns:1fr 1fr;gap:8px}
+}
+
+@media (max-width: 400px) {
+  .logo-img{width:70px;height:70px}
+  .brand-name{font-size:1.3rem}
+  .free-badge{flex-direction:column;text-align:center}
+  .free-badge-title{margin-bottom:.3rem}
+  .row-2{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
