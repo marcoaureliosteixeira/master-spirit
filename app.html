@@ -1039,20 +1039,34 @@ async function validateRoom(){
   const name=document.getElementById('new-room-input').value.trim();
   const status=document.getElementById('room-status');
   if(!name){status.textContent='⚠ Digite o nome da obra';status.style.color='rgba(232,122,122,.8)';return;}
-  status.textContent='✦ Verificando...';status.style.color='rgba(201,168,76,.6)';
+  status.textContent='✦ Verificando...';status.style.color='rgba(226,195,102,.6)';
   try{
     const r=await fetch(API_URL,{method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({model:MODEL,max_tokens:500,
-        system:'Você é um validador de obras espirituais com amplo conhecimento de literatura espírita, religiosa e filosófica. Seja GENEROSO na validação: se a obra parece real e tem qualquer relação com espiritualidade, espiritismo, religião, filosofia, autoconhecimento ou crescimento da alma, aprove. Inclua obras psicografadas, mediunicas, espiritismo kardecista, Chico Xavier, Divaldo Franco, Yvonne Pereira, etc. Responda APENAS em JSON válido, sem markdown.',
-        messages:[{role:'user',content:`Verifique se esta obra existe (pode ser livro, texto ou obra literária de qualquer época). Se existir, verifique se tem relação com espiritualidade, religião, filosofia espiritual, espiritismo, mediunidade ou crescimento da alma.\n\nObra: "${name}"\n\nResponda APENAS com este JSON:\n{"existe":true,"valida":true,"titulo":"título oficial completo","autor":"autor principal","icon":"emoji representativo","desc":"descrição em 1 frase","tags":["tag1","tag2","tag3"]}\n\nSe não existir: {"existe":false,"valida":false,"titulo":"","autor":"","icon":"","desc":"","tags":[],"motivo":"razão"}\nSe existir mas não for espiritual: {"existe":true,"valida":false,"titulo":"título","autor":"autor","icon":"","desc":"","tags":[],"motivo":"razão"}`}]
+        system:`Você é um especialista em literatura espírita e espiritualidade. Sua função é validar se uma obra existe e se é espiritual.
+
+REGRAS:
+1. Seja GENEROSO — na dúvida, APROVE.
+2. Considere válidas: obras espíritas, psicografadas, mediúnicas, religiosas, filosóficas, de autoconhecimento, crescimento da alma.
+3. Autores conhecidos incluem (mas não se limitam a): Allan Kardec, Chico Xavier, Divaldo Franco, Yvonne do Amaral Pereira, Léon Denis, Gabriel Delanne, Hernani Guimarães Andrade, Bezerra de Menezes, Emmanuel, André Luiz, Joanna de Ângelis, entre muitos outros.
+4. Responda SOMENTE com JSON válido. Sem markdown, sem texto extra, sem \`\`\`.`,
+        messages:[{role:'user',content:`A obra "${name}" existe? É relacionada a espiritualidade/espiritismo/religião/filosofia?\n\nResponda APENAS com JSON:\n{"existe":true,"valida":true,"titulo":"título oficial","autor":"autor","icon":"emoji","desc":"descrição curta","tags":["tag1","tag2","tag3"]}`}]
       })
     });
+    if(!r.ok){
+      const err=await r.json().catch(()=>({}));
+      console.error('API error:',r.status,err);
+      status.textContent='⚠ Erro na API ('+r.status+'). Tente novamente.';status.style.color='rgba(232,122,122,.8)';return;
+    }
     const d=await r.json();
-    const txt=d.content?.find(b=>b.type==='text')?.text||'{}';
-    const res=JSON.parse(txt.replace(/```json|```/g,'').trim());
-    if(!res.existe){status.textContent='⚠ Obra não encontrada. Verifique o nome.';status.style.color='rgba(232,122,122,.8)';return;}
-    if(!res.valida){status.textContent='✦ Fora do escopo espiritual do MASTER SPIRIT. '+res.motivo;status.style.color='rgba(232,122,122,.8)';return;}
+    const txt=d.content?.find(b=>b.type==='text')?.text;
+    if(!txt){console.error('Resposta inesperada:',d);status.textContent='⚠ Resposta inesperada da API. Tente novamente.';status.style.color='rgba(232,122,122,.8)';return;}
+    const clean=txt.replace(/```json|```/g,'').trim();
+    let res;
+    try{res=JSON.parse(clean);}catch(pe){console.error('JSON inválido:',clean);status.textContent='⚠ Erro ao processar resposta. Tente novamente.';status.style.color='rgba(232,122,122,.8)';return;}
+    if(res.existe===false){status.textContent='⚠ Obra não encontrada. Verifique o nome.';status.style.color='rgba(232,122,122,.8)';return;}
+    if(res.valida===false){status.textContent='✦ Fora do escopo espiritual. '+(res.motivo||'');status.style.color='rgba(232,122,122,.8)';return;}
     const newRoom={id:'c'+Date.now(),icon:res.icon||'📗',title:res.titulo||name,author:res.autor||'',color:'#C9A84C',desc:res.desc||'',tags:res.tags||[],synopsis:''};
     rooms.push(newRoom);saveCustomRooms();
     closeModal('newroom');
@@ -1060,7 +1074,7 @@ async function validateRoom(){
     status.textContent='';
     render();
     setTimeout(()=>openRoom(newRoom.id),100);
-  }catch(e){status.textContent='⚠ Erro. Tente novamente.';status.style.color='rgba(232,122,122,.8)';}
+  }catch(e){console.error('validateRoom error:',e);status.textContent='⚠ Erro de conexão. Tente novamente.';status.style.color='rgba(232,122,122,.8)';}
 }
 </script>
 
