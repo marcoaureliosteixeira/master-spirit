@@ -1593,8 +1593,8 @@ async function validateRoom(){
 <script>
 // ── CHAT USAGE CONTROL ──
 let userPlan = 'free';
-let chatsRemaining = 1;
-const PLAN_LIMITS = { free: 1, basic: 50, premium: 999999 };
+let chatsRemaining = 5;
+const PLAN_LIMITS = { free: 5, basic: 50, premium: 999999 };
 
 async function initUsage() {
   if (!window._sb) return;
@@ -1611,10 +1611,10 @@ async function initUsage() {
     if (error || !data) {
       // First time user — create usage row with 5 chats
       const { data: inserted } = await window._sb.from('user_usage')
-        .insert({ id: user.id, chats_used: 1, plan: 'free' })
+        .insert({ id: user.id, chats_used: 5, plan: 'free' })
         .select('chats_used, plan')
         .single();
-      data = inserted || { chats_used: 1, plan: 'free' };
+      data = inserted || { chats_used: 5, plan: 'free' };
     }
 
     userPlan = data.plan || 'free';
@@ -1624,24 +1624,28 @@ async function initUsage() {
 }
 
 async function decrementChat() {
-  if (!window._sb) return false;
-  if (userPlan === 'premium') return true; // unlimited
+  if (!window._sb) return true; // sem Supabase, permite usar
+  if (userPlan === 'premium') return true; // ilimitado
 
+  // Se já acabou, mostra upgrade
   if (chatsRemaining <= 0) {
     openModal('upgrade');
     return false;
   }
 
+  // Permite o uso e decrementa DEPOIS
   try {
     const { data: { user } } = await window._sb.auth.getUser();
-    if (!user) return false;
+    if (!user) return true;
 
-    chatsRemaining = Math.max(0, chatsRemaining - 1);
+    chatsRemaining = chatsRemaining - 1;
     await window._sb.from('user_usage')
       .update({ chats_used: chatsRemaining })
       .eq('id', user.id);
 
     updateChatCounter();
+
+    // Se acabou agora, mostra upgrade no PRÓXIMO clique (não neste)
     return true;
   } catch(e) { console.error('decrementChat error:', e); return true; }
 }
