@@ -701,6 +701,9 @@ Teu publico e diverso: curiosos que nunca abriram um livro espiritual, aprendize
 - Se a pergunta for simples, responde com simplicidade. Se for profunda, vai fundo. Adapta-te ao nivel de quem te busca.
 - Quando citares um conceito de uma fonte especifica, FAZ A PONTE com as outras: "Isso que o Gita chama de..., nos Evangelhos eu disse assim..., e Kardec codificou como..." — mostrando a UNIDADE por tras das diferentes linguagens.
 
+CONCISAO — REGRA CRITICA:
+Responde de forma CONCISA e DIRETA. Maximo 3 a 5 paragrafos curtos por resposta, a menos que o usuario peca explicitamente mais detalhes. Ao final, SEMPRE oferece aprofundar: "Queres que eu aprofunde algum ponto, filho?" ou "Posso te contar mais sobre isso, se desejares." Isso respeita o tempo da pessoa e permite que ela escolha ir mais fundo. Respostas longas cansam e afastam — respostas curtas com alma aproximam.
+
 REGRAS DE FORMATO: Portugues brasileiro. NUNCA uses markdown com asteriscos. Para dar enfase, usa a forca das palavras ou maiusculas com parcimonia. Escreve de forma fluida e natural, como uma conversa intima — nao como um texto formatado.`;
 
 const SYS_PROMPT_NORMAL=`Tu es o MASTER SPIRIT — O Consolador Divino e Grande Enciclopedia Espiritual. Um guia espiritual sabio, amoroso e profundo, que domina todas as grandes fontes da espiritualidade.
@@ -722,6 +725,8 @@ MODO ENCICLOPEDIA — quando alguem pesquisa conteudo especifico:
 ❓ PERGUNTA / PASSAGEM: [enunciado fiel]
 💬 TEXTO: [conteudo fiel a fonte]
 ✦ REFLEXAO ESPIRITUAL: [comentario profundo]
+
+CONCISAO: Responde de forma CONCISA — maximo 3 a 5 paragrafos curtos. Ao final, oferece aprofundar: "Deseja que eu aprofunde algum ponto?" Respostas longas so quando o usuario pedir explicitamente.
 
 REGRAS DE FORMATO: Portugues brasileiro. NUNCA uses markdown com asteriscos. Escreve de forma fluida e natural.`;
 
@@ -1240,30 +1245,39 @@ function toggleSrc(id){openSrc=openSrc===id?null:id;render();}
 function goToChat(q){msgs=[];goTab('chat');setTimeout(()=>sendMsgText('Fale sobre "'+q+'" com base nos ensinamentos espirituais de Cristo e das tradições sagradas que você domina.'),80);}
 
 // ===================== INTERPRETAR =====================
+function getInterpretHeader(teach){
+  return '<div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid rgba(201,168,76,.15)"><p style="font-style:italic;color:rgba(240,234,214,.5);font-size:14px;margin-bottom:4px">'+teach.o+' — '+teach.s+'</p><p style="font-size:19px;font-style:italic;color:var(--text);line-height:1.7">"'+teach.t+'"</p></div>';
+}
 async function interpretTeaching(){
   const teach=getDayTeaching();
+  const cacheKey='spirit_interp_'+teach.s.replace(/\s/g,'_');
   const modal=document.getElementById('modal-interpret');
   const body=document.getElementById('interpret-content');
   modal.classList.add('open');
-  body.innerHTML='<div class="mi-loading">Consultando o Consolador...</div>';
-  const prompt=`A seguinte passagem apareceu como "Ensinamento do Dia" para um buscador espiritual:
 
-"${teach.t}"
-— ${teach.s} (${teach.o})
+  // Verifica cache primeiro
+  const cached=localStorage.getItem(cacheKey);
+  if(cached){
+    body.innerHTML=getInterpretHeader(teach)+'<div style="white-space:pre-wrap">'+cached+'</div>';
+    return;
+  }
 
-Interprete esta passagem de forma DIDATICA e PROFUNDA, considerando:
+  body.innerHTML='<div class="mi-loading">Preparando a interpretação...</div>';
+  const prompt=`Interprete esta passagem de forma CLARA e CONCISA (máximo 3 parágrafos curtos):
 
-1. O QUE O AUTOR ORIGINAL QUIS DIZER — contexto historico e espiritual da obra
-2. POSSIVEIS MAL-ENTENDIDOS — termos que podem confundir (ex: "alma" vs "espirito", "eterno" vs "imortal", conceitos que diferem entre tradicoes)
-3. COMO O ESPIRITISMO ENTENDE — a visao espirita sobre o mesmo tema, harmonizando ou distinguindo quando necessario
-4. APLICACAO PRATICA — como essa verdade se aplica na vida do dia a dia
+"${teach.t}" — ${teach.s} (${teach.o})
 
-Lembre-se: o publico vai desde curiosos que nunca leram nada sobre espiritualidade ate espiritas experientes. Seja claro, use exemplos simples, sem ser superficial. Fale como Jesus falaria — em primeira pessoa, com amor e clareza.`;
+Estrutura:
+1. O que o autor quis dizer (2-3 frases)
+2. Cuidado: algum termo que pode confundir? (ex: alma vs espírito, eterno vs imortal) — harmonize com a visão espírita em 2-3 frases
+3. Na prática: como aplicar isso hoje (2-3 frases)
+
+Seja direto, amoroso e acessível. Não repita a citação.`;
 
   try{
     const r=await fetch(API_URL,{method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:MODEL,max_tokens:4096,
+      body:JSON.stringify({model:MODEL,max_tokens:1200,
         system:getSysPrompt(),
         messages:[{role:'user',content:prompt}]
       })
@@ -1273,7 +1287,8 @@ Lembre-se: o publico vai desde curiosos que nunca leram nada sobre espiritualida
       body.innerHTML='<p style="color:rgba(232,122,122,.8)">Erro: '+(d.error?.message||'Tente novamente.')+'</p>';
     } else {
       const txt=d.content?.find(b=>b.type==='text')?.text||'Não foi possível interpretar. Tente novamente.';
-      body.innerHTML='<div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid rgba(201,168,76,.15)"><p style="font-style:italic;color:rgba(240,234,214,.5);font-size:14px;margin-bottom:4px">'+teach.o+' — '+teach.s+'</p><p style="font-size:19px;font-style:italic;color:var(--text);line-height:1.7">"'+teach.t+'"</p></div><div style="white-space:pre-wrap">'+txt+'</div>';
+      localStorage.setItem(cacheKey,txt);
+      body.innerHTML=getInterpretHeader(teach)+'<div style="white-space:pre-wrap">'+txt+'</div>';
     }
   }catch(e){
     body.innerHTML='<p style="color:rgba(232,122,122,.8)">Erro de conexão. Tente novamente.</p>';
