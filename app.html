@@ -195,8 +195,8 @@ body.ff-sys{--font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
 .preset-btn:hover{background:rgba(201,168,76,.1);border-color:rgba(201,168,76,.35);color:rgba(240,234,214,.8)}
 .preset-btn.active{background:rgba(201,168,76,.2);border-color:rgba(201,168,76,.5);color:var(--gold)}
 /* FOOTER */
-#footer{text-align:center;padding:6px 10px 8px;background:rgba(6,10,22,.95);border-top:1px solid rgba(201,168,76,.08);display:flex;align-items:center;justify-content:center;gap:7px;flex-shrink:0}
-#footer img{width:18px;height:18px;border-radius:50%;opacity:.6}
+#footer{text-align:center;padding:10px 10px 14px;background:rgba(6,10,22,.95);border-top:1px solid rgba(201,168,76,.08);display:flex;align-items:center;justify-content:center;gap:9px;flex-shrink:0}
+#footer img{height:28px;opacity:.55}
 #footer span{font-family:'Cinzel',serif;font-size:8.5px;letter-spacing:1.8px;color:rgba(226,195,102,.35)}
 </style>
 </head>
@@ -271,7 +271,7 @@ body.ff-sys{--font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
     <button class="nav-btn" onclick="doLogout()" style="color:rgba(232,122,122,.7)"><span class="ico">⟶</span><span class="lbl">Sair</span></button>
   </div>
   <div id="footer">
-    <img id="footer-logo" src="" alt="MS">
+    <img id="footer-logo" src="" alt="Spyrit Systems">
     <span>powered by MASTER SPIRIT · <span id="app-version"></span></span>
   </div>
 </div><!-- end app -->
@@ -559,7 +559,7 @@ document.head.appendChild(styleEl);
 window.addEventListener('load',()=>{
   // Logo
   document.getElementById('logo').src=LOGO_SRC;
-  document.getElementById('footer-logo').src=LOGO_SRC;
+  document.getElementById('footer-logo').src='logo-spyrit-systems-transparent.png';
   document.getElementById('app-version').textContent='v'+APP_VERSION;
   initSplashLogo();
   // Stars
