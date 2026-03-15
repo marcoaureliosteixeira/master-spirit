@@ -331,6 +331,18 @@ body.ff-sys{--font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
       <p style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:#C9A84C;text-transform:uppercase;margin-bottom:14px">7. Consentimento e Aceitação dos Termos</p>
       <p>Ao prosseguir, você declara que leu, compreendeu e concorda com este Disclaimer e com os demais Termos de Uso e Política de Privacidade do MASTER SPIRIT, reconhecendo a natureza do conteúdo gerado por inteligência artificial. Você aceita utilizar o aplicativo com discernimento, responsabilidade pessoal e respeito às diferentes crenças, entendendo que o uso do serviço está condicionado à aceitação integral destes termos.</p>
 
+      <!-- Stamp de assinatura (visível apenas após aceite) -->
+      <div id="disclaimer-stamp" style="display:none;margin-top:20px;padding:16px;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.25);border-radius:10px">
+        <p style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:2px;color:#C9A84C;text-transform:uppercase;margin-bottom:10px;text-align:center">Registro de Aceite</p>
+        <div style="font-size:12px;color:rgba(240,234,214,.7);line-height:1.8">
+          <p><span style="color:rgba(240,234,214,.4)">Usuário:</span> <span id="stamp-user" style="color:#C9A84C"></span></p>
+          <p><span style="color:rgba(240,234,214,.4)">E-mail:</span> <span id="stamp-email" style="color:rgba(240,234,214,.8)"></span></p>
+          <p><span style="color:rgba(240,234,214,.4)">Data/Hora:</span> <span id="stamp-date" style="color:rgba(240,234,214,.8)"></span></p>
+          <p><span style="color:rgba(240,234,214,.4)">Versão do Termo:</span> <span style="color:rgba(240,234,214,.8)">1.0</span></p>
+          <p><span style="color:rgba(240,234,214,.4)">IP registrado:</span> <span style="color:rgba(240,234,214,.5);font-style:italic">em servidor</span></p>
+        </div>
+      </div>
+
     </div>
     <div style="text-align:center;margin-top:22px">
       <button id="disclaimer-btn" disabled onclick="acceptDisclaimer()" style="padding:14px 40px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);border-radius:12px;color:rgba(201,168,76,.4);font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:not-allowed;transition:all .3s">Role até o final para continuar</button>
@@ -1325,24 +1337,59 @@ function checkDisclaimerScroll(){
   }
 }
 async function acceptDisclaimer(){
-  localStorage.setItem('spirit_disclaimer','accepted');
-  // Log no banco de dados (Supabase)
+  var now=new Date().toISOString();
+  var email='';
+  var userName='';
+  var uid='';
+  // Pegar dados do usuário
   try{
     if(window._sb){
       var session=await window._sb.auth.getSession();
-      var uid=session?.data?.session?.user?.id;
-      if(uid){
-        await window._sb.from('disclaimer_log').insert({user_id:uid,accepted_at:new Date().toISOString(),version:'1.0'});
-      }
+      var user=session?.data?.session?.user;
+      uid=user?.id||'';
+      email=user?.email||'';
+      userName=user?.user_metadata?.full_name||user?.user_metadata?.name||email.split('@')[0]||'';
+    }
+  }catch(e){}
+  // Salvar no localStorage
+  var stampData={accepted_at:now,email:email,name:userName,version:'1.0'};
+  localStorage.setItem('spirit_disclaimer','accepted');
+  localStorage.setItem('spirit_disclaimer_stamp',JSON.stringify(stampData));
+  // Log no banco de dados (Supabase)
+  try{
+    if(window._sb&&uid){
+      await window._sb.from('disclaimer_log').insert({user_id:uid,accepted_at:now,version:'1.0'});
     }
   }catch(e){console.warn('Disclaimer log error:',e);}
+  // Enviar email com o termo assinado
+  try{
+    if(email){
+      fetch('/api/send-disclaimer-email',{method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({email:email,name:userName,accepted_at:now,version:'1.0'})
+      }).catch(function(){});
+    }
+  }catch(e){}
   document.getElementById('disclaimer-overlay').style.display='none';
 }
 function viewDisclaimer(){
   closeModal('cfg');
   var overlay=document.getElementById('disclaimer-overlay');
   var btn=document.getElementById('disclaimer-btn');
+  var stamp=document.getElementById('disclaimer-stamp');
   overlay.style.display='block';
+  // Carregar dados do stamp
+  var stampData=null;
+  try{stampData=JSON.parse(localStorage.getItem('spirit_disclaimer_stamp'));}catch(e){}
+  if(stampData){
+    stamp.style.display='block';
+    document.getElementById('stamp-user').textContent=stampData.name||'—';
+    document.getElementById('stamp-email').textContent=stampData.email||'—';
+    var dt=new Date(stampData.accepted_at);
+    document.getElementById('stamp-date').textContent=dt.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  } else {
+    stamp.style.display='none';
+  }
   btn.disabled=false;
   btn.style.background='rgba(201,168,76,.18)';
   btn.style.borderColor='rgba(201,168,76,.6)';
