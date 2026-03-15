@@ -113,6 +113,10 @@ body.ff-sys{--font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
 #send-btn{width:44px;height:44px;border-radius:50%;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.35);cursor:pointer;font-size:19px;color:var(--gold);flex-shrink:0;transition:all .2s;display:flex;align-items:center;justify-content:center}
 #send-btn:disabled{opacity:.3;cursor:not-allowed}
 #send-btn:not(:disabled):hover{background:rgba(201,168,76,.28)}
+#mic-btn{width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.2);cursor:pointer;font-size:18px;flex-shrink:0;color:rgba(201,168,76,.6);display:flex;align-items:center;justify-content:center;transition:all .2s}
+#mic-btn:hover{background:rgba(201,168,76,.12)}
+#mic-btn.recording{background:rgba(220,60,60,.2);border-color:rgba(220,60,60,.6);color:#e85050;animation:mic-pulse 1s ease-in-out infinite}
+@keyframes mic-pulse{0%,100%{box-shadow:0 0 0 0 rgba(220,60,60,.3)}50%{box-shadow:0 0 0 8px rgba(220,60,60,0)}}
 /* CHIPS */
 .chip-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
 .chip{background:rgba(255,255,255,.07);border:1px solid rgba(201,168,76,.28);border-radius:13px;padding:12px 14px;font-size:var(--fs);font-style:italic;color:rgba(240,234,214,.72);cursor:pointer;transition:all .2s;font-family:var(--font);text-align:left;line-height:1.5;width:100%}
@@ -292,6 +296,7 @@ body.ff-sys{--font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
   <div id="attach-preview"><span id="attach-name" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span><button onclick="clearAttach()" style="background:none;border:none;cursor:pointer;color:rgba(240,234,214,.4);font-size:16px">✕</button></div>
   <div class="input-row">
     <button id="file-btn" onclick="document.getElementById('file-input').click()">📎</button>
+    <button id="mic-btn" onclick="toggleVoiceInput()" title="Falar por voz">🎙</button>
     <textarea id="msginput" rows="1" placeholder="Fala comigo, filho..." oninput="onInput(this)" onkeydown="onKey(event)"></textarea>
     <button id="send-btn" disabled onclick="sendMsg()">↑</button>
   </div>
@@ -390,6 +395,14 @@ body.ff-sys{--font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
       <button class="preset-btn" data-ff="ff-pal" onclick="setFf(this)" style="font-family:Palatino,serif">Palatino</button>
       <button class="preset-btn" data-ff="ff-sys" onclick="setFf(this)" style="font-family:-apple-system,sans-serif">Sistema</button>
     </div>
+    <p class="sec-label">Voz do Consolador (ElevenLabs)</p>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">
+      <input id="cfg-eleven-key" type="password" class="input-field" placeholder="API Key do ElevenLabs (opcional)" style="font-size:12px;padding:8px 12px;font-family:-apple-system,sans-serif;font-style:normal">
+      <input id="cfg-eleven-voice" type="text" class="input-field" placeholder="Voice ID (ex: pNInz6obpgDQGcFmaJgB)" style="font-size:12px;padding:8px 12px;font-family:-apple-system,sans-serif;font-style:normal">
+      <button onclick="saveElevenConfig()" style="padding:8px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:8px;color:#C9A84C;font-family:'Cinzel',serif;font-size:9px;letter-spacing:1px;cursor:pointer;text-transform:uppercase">Salvar Configuração de Voz</button>
+      <p style="font-size:10px;color:rgba(240,234,214,.25);font-style:italic;line-height:1.5">Sem ElevenLabs, a voz padrão do navegador será usada. Crie sua conta em elevenlabs.io para uma voz personalizada.</p>
+    </div>
+
     <div style="display:flex;gap:10px">
       <button class="btn-ghost" onclick="closeModal('cfg')">FECHAR</button>
     </div>
@@ -802,6 +815,8 @@ window.addEventListener('load',()=>{
   document.querySelectorAll('[data-ff]').forEach(b=>b.classList.toggle('active',b.dataset.ff===savedFf));
   // Load chat mode
   initChatMode();
+  // Load voice config
+  loadElevenConfig();
   // Pré-gerar interpretação do dia em background
   preloadInterpretation();
   // Load rooms
@@ -909,10 +924,11 @@ function buildMsgHtml(m,i,copyFn){
   const isU=m.role==='user';
   const display=m._display||m.content;
   const copy=!isU?`<button class="copy-btn" data-i="${i}" data-fn="${copyFn}" onclick="doCopy(this.dataset.fn,this.dataset.i)">⎘ copiar</button>`:'';
+  const listen=!isU?`<button class="copy-btn" data-i="${i}" data-fn="${copyFn}" onclick="listenMsg(this.dataset.fn,this.dataset.i)">🔊 ouvir</button>`:'';
   return `<div class="msg-wrap ${isU?'user':'bot'}">
   <div class="msg-label">${isU?'Você':'Master Spirit · O Consolador'}</div>
   <div class="msg-bubble ${isU?'user':'bot'}">${display}</div>
-  ${copy}</div>`;
+  ${copy}${listen}</div>`;
 }
 
 function doCopy(fn,i){
@@ -923,6 +939,16 @@ function doCopy(fn,i){
     const btn=document.querySelector(`[data-fn="${fn}"][data-i="${i}"]`);
     if(btn){btn.textContent='✓ copiado';setTimeout(()=>btn.textContent='⎘ copiar',2000);}
   });
+}
+function listenMsg(fn,i){
+  var arr=fn==='copyMainMsg'?msgs:roomMsgs;
+  var m=arr[parseInt(i)];
+  if(!m) return;
+  var text=m.content||'';
+  // Parar qualquer áudio tocando
+  if(window._currentAudio){try{window._currentAudio.pause();}catch(ex){}}
+  if(window.speechSynthesis) window.speechSynthesis.cancel();
+  speakResponse(text);
 }
 
 function chipSend(idxStr){sendMsgText(CHIP_MSGS[parseInt(idxStr)]);}
@@ -1591,6 +1617,155 @@ async function validateRoom(){
 </script>
 
 <script>
+// ── VOICE INPUT (Speech-to-Text) ──
+var voiceRecognition=null;
+var isRecording=false;
+
+function toggleVoiceInput(){
+  if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window)){
+    alert('Seu navegador não suporta reconhecimento de voz. Use Chrome, Edge ou Safari.');
+    return;
+  }
+  if(isRecording){
+    stopVoiceInput();
+    return;
+  }
+  startVoiceInput();
+}
+
+function startVoiceInput(){
+  var SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
+  voiceRecognition=new SpeechRecognition();
+  voiceRecognition.lang='pt-BR';
+  voiceRecognition.continuous=true;
+  voiceRecognition.interimResults=true;
+
+  var inp=document.getElementById('msginput');
+  var btn=document.getElementById('mic-btn');
+  var finalText=inp.value;
+
+  voiceRecognition.onstart=function(){
+    isRecording=true;
+    btn.classList.add('recording');
+    btn.textContent='⏹';
+    inp.placeholder='Estou ouvindo...';
+  };
+
+  voiceRecognition.onresult=function(e){
+    var interim='';
+    var final='';
+    for(var i=e.resultIndex;i<e.results.length;i++){
+      if(e.results[i].isFinal){
+        final+=e.results[i][0].transcript;
+      } else {
+        interim+=e.results[i][0].transcript;
+      }
+    }
+    if(final){
+      finalText+=(finalText?' ':'')+final;
+    }
+    inp.value=finalText+(interim?(' '+interim):'');
+    inp.style.height='auto';
+    inp.style.height=inp.scrollHeight+'px';
+    // Habilitar botão de enviar
+    var sendBtn=document.getElementById('send-btn');
+    sendBtn.disabled=!inp.value.trim();
+  };
+
+  voiceRecognition.onerror=function(e){
+    console.warn('Voice error:',e.error);
+    if(e.error==='not-allowed'){
+      alert('Permissão de microfone negada. Habilite nas configurações do navegador.');
+    }
+    stopVoiceInput();
+  };
+
+  voiceRecognition.onend=function(){
+    // Se ainda está em modo recording, reinicia (para continuous funcionar)
+    if(isRecording){
+      try{voiceRecognition.start();}catch(ex){stopVoiceInput();}
+    }
+  };
+
+  try{
+    voiceRecognition.start();
+  }catch(ex){
+    alert('Erro ao iniciar o microfone. Verifique as permissões.');
+  }
+}
+
+function stopVoiceInput(){
+  isRecording=false;
+  var btn=document.getElementById('mic-btn');
+  btn.classList.remove('recording');
+  btn.textContent='🎙';
+  document.getElementById('msginput').placeholder='Fala comigo, filho...';
+  if(voiceRecognition){
+    try{voiceRecognition.stop();}catch(ex){}
+    voiceRecognition=null;
+  }
+}
+
+// ── ElevenLabs Config ──
+function saveElevenConfig(){
+  var key=document.getElementById('cfg-eleven-key').value.trim();
+  var voice=document.getElementById('cfg-eleven-voice').value.trim();
+  if(key) localStorage.setItem('spirit_eleven_key',key);
+  else localStorage.removeItem('spirit_eleven_key');
+  if(voice) localStorage.setItem('spirit_eleven_voice',voice);
+  else localStorage.removeItem('spirit_eleven_voice');
+  alert(key&&voice?'Voz personalizada configurada!':'Configuração salva. A voz padrão do navegador será usada.');
+}
+function loadElevenConfig(){
+  var k=localStorage.getItem('spirit_eleven_key')||'';
+  var v=localStorage.getItem('spirit_eleven_voice')||'';
+  var ek=document.getElementById('cfg-eleven-key');
+  var ev=document.getElementById('cfg-eleven-voice');
+  if(ek) ek.value=k;
+  if(ev) ev.value=v;
+}
+
+// ── TTS (Text-to-Speech) — Resposta em voz ──
+async function speakResponse(text){
+  var elevenKey=localStorage.getItem('spirit_eleven_key');
+  var voiceId=localStorage.getItem('spirit_eleven_voice')||'';
+
+  if(elevenKey&&voiceId){
+    // ElevenLabs TTS
+    try{
+      var r=await fetch('https://api.elevenlabs.io/v1/text-to-speech/'+voiceId,{
+        method:'POST',
+        headers:{'Content-Type':'application/json','xi-api-key':elevenKey},
+        body:JSON.stringify({
+          text:text.substring(0,5000),
+          model_id:'eleven_multilingual_v2',
+          voice_settings:{stability:0.6,similarity_boost:0.8,style:0.3}
+        })
+      });
+      if(r.ok){
+        var blob=await r.blob();
+        var audio=new Audio(URL.createObjectURL(blob));
+        audio.play();
+        return;
+      }
+    }catch(ex){console.warn('ElevenLabs TTS error:',ex);}
+  }
+
+  // Fallback: browser TTS
+  if('speechSynthesis' in window){
+    var utter=new SpeechSynthesisUtterance(text.substring(0,2000));
+    utter.lang='pt-BR';
+    utter.rate=0.9;
+    utter.pitch=0.85;
+    // Tentar voz masculina em português
+    var voices=speechSynthesis.getVoices();
+    var ptVoice=voices.find(function(v){return v.lang.startsWith('pt')&&v.name.toLowerCase().includes('male');})
+      ||voices.find(function(v){return v.lang.startsWith('pt');});
+    if(ptVoice) utter.voice=ptVoice;
+    speechSynthesis.speak(utter);
+  }
+}
+
 // ── CHAT USAGE CONTROL ──
 let userPlan = 'free';
 let chatsRemaining = 5;
@@ -1602,23 +1777,36 @@ async function initUsage() {
     const { data: { user } } = await window._sb.auth.getUser();
     if (!user) return;
 
+    const currentMonth = new Date().toISOString().slice(0, 7); // "2026-03"
+
     // Try to get existing usage row
     let { data, error } = await window._sb.from('user_usage')
-      .select('chats_used, plan')
+      .select('chats_used, plan, reset_month')
       .eq('id', user.id)
       .single();
 
     if (error || !data) {
-      // First time user — create usage row with 5 chats
-      const { data: inserted } = await window._sb.from('user_usage')
-        .insert({ id: user.id, chats_used: 5, plan: 'free' })
-        .select('chats_used, plan')
+      // First time user — create usage row
+      const { data: inserted, error: insErr } = await window._sb.from('user_usage')
+        .insert({ id: user.id, chats_used: 5, plan: 'free', reset_month: currentMonth })
+        .select('chats_used, plan, reset_month')
         .single();
-      data = inserted || { chats_used: 5, plan: 'free' };
+      if (insErr) console.warn('initUsage insert error:', insErr.message);
+      data = inserted || { chats_used: 5, plan: 'free', reset_month: currentMonth };
+    }
+
+    // Monthly reset: if stored month differs from current, reset chats
+    if (data.reset_month !== currentMonth) {
+      const limit = PLAN_LIMITS[data.plan || 'free'] || 5;
+      data.chats_used = limit;
+      data.reset_month = currentMonth;
+      window._sb.from('user_usage')
+        .update({ chats_used: limit, reset_month: currentMonth })
+        .eq('id', user.id).then(() => {});
     }
 
     userPlan = data.plan || 'free';
-    chatsRemaining = data.chats_used ?? 0;
+    chatsRemaining = data.chats_used ?? 5;
     updateChatCounter();
   } catch(e) { console.error('initUsage error:', e); }
 }
