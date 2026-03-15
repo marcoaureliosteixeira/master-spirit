@@ -1039,7 +1039,6 @@ async function validateRoom(){
   const name=document.getElementById('new-room-input').value.trim();
   const status=document.getElementById('room-status');
   if(!name){status.textContent='⚠ Digite o nome da obra';status.style.color='rgba(232,122,122,.8)';return;}
-  if(!key){status.textContent='⚠ Configure sua API Key primeiro';status.style.color='rgba(232,122,122,.8)';return;}
   status.textContent='✦ Verificando...';status.style.color='rgba(201,168,76,.6)';
   try{
     const r=await fetch(API_URL,{method:'POST',
