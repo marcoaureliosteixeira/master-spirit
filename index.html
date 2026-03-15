@@ -43,7 +43,10 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .form-sub{font-style:italic;font-size:.95rem;color:rgba(240,234,214,.38);margin-bottom:1.6rem}
 .field{margin-bottom:1rem}
 .field label{display:block;font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(240,234,214,.45);margin-bottom:.38rem}
+.field{position:relative}
 .field input{width:100%;padding:.68rem 1rem;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.2);border-radius:10px;color:var(--text);font-size:1rem;font-family:var(--font);font-style:italic;transition:border-color .2s,background .2s;outline:none}
+.toggle-pass{position:absolute;right:12px;top:50%;transform:translateY(25%);background:none;border:none;cursor:pointer;font-size:1.25rem;color:rgba(201,168,76,.7);padding:4px;line-height:1;transition:color .2s}
+.toggle-pass:hover{color:#C9A84C}
 .field input::placeholder{color:rgba(240,234,214,.2);font-style:italic}
 .field input:focus{border-color:rgba(201,168,76,.48);background:rgba(255,255,255,.08)}
 .row-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -165,7 +168,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
       <h2 class="form-title">Bem-vindo de volta</h2>
       <p class="form-sub">Acesse sua conta para continuar sua jornada</p>
       <div class="field"><label>E-mail</label><input type="email" id="login-email" placeholder="seu@email.com"></div>
-      <div class="field"><label>Senha</label><input type="password" id="login-pass" placeholder="••••••••"></div>
+      <div class="field"><label>Senha</label><input type="password" id="login-pass" placeholder="••••••••"><button type="button" class="toggle-pass" onclick="togglePass('login-pass',this)">👁</button></div>
       <div class="forgot"><a href="#" onclick="forgotPassword();return false;">Esqueceu a senha?</a></div>
       <button class="btn-primary" id="btn-login" onclick="doLogin()">✦ Entrar</button>
       <div class="divider">ou</div>
@@ -186,8 +189,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
         <div class="field"><label>Sobrenome</label><input type="text" id="signup-last" placeholder="Sobrenome"></div>
       </div>
       <div class="field"><label>E-mail</label><input type="email" id="signup-email" placeholder="seu@email.com"></div>
-      <div class="field"><label>Senha</label><input type="password" id="signup-pass" placeholder="Mínimo 8 caracteres"></div>
-      <div class="field"><label>Confirmar Senha</label><input type="password" id="signup-confirm" placeholder="Repita a senha"></div>
+      <div class="field"><label>Senha</label><input type="password" id="signup-pass" placeholder="Mínimo 8 caracteres"><button type="button" class="toggle-pass" onclick="togglePass('signup-pass',this)">👁</button></div>
+      <div class="field"><label>Confirmar Senha</label><input type="password" id="signup-confirm" placeholder="Repita a senha"><button type="button" class="toggle-pass" onclick="togglePass('signup-confirm',this)">👁</button></div>
       <button class="btn-primary" id="btn-signup" onclick="doSignup()">✦ Criar conta gratuita</button>
       <div class="divider">ou</div>
       <button class="btn-google" onclick="doGoogle()">
@@ -201,6 +204,13 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 </div>
 
 <script>
+// ── TOGGLE PASSWORD VISIBILITY ──
+function togglePass(id,btn){
+  var inp=document.getElementById(id);
+  if(inp.type==='password'){inp.type='text';btn.textContent='🙈';}
+  else{inp.type='password';btn.textContent='👁';}
+}
+
 // ── TABS — independente do Supabase ──
 function switchTab(t) {
   document.getElementById('tab-login').classList.toggle('active', t === 'login');
