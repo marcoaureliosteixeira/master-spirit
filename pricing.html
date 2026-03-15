@@ -113,11 +113,11 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',Geo
       <ul class="features">
         <li><span class="icon">✦</span> <span><span class="highlight">5 conversas</span> com o Consolador</span></li>
         <li><span class="icon">✦</span> Ensinamento do Dia com interpretação</li>
-        <li><span class="icon">✦</span> 1 sala de estudo (teaser)</li>
+        <li class="disabled"><span class="icon">✦</span> Salas de estudo</li>
         <li class="disabled"><span class="icon">✦</span> Voz de Jesus nas respostas</li>
-        <li class="disabled"><span class="icon">✦</span> Criar novas salas de estudo</li>
         <li class="disabled"><span class="icon">✦</span> Entrada por voz</li>
         <li class="disabled"><span class="icon">✦</span> Anexar imagens e PDFs</li>
+        <li class="disabled"><span class="icon">✦</span> Criar novas salas de estudo</li>
       </ul>
       <button class="btn-plan ghost">PLANO ATUAL</button>
     </div>
@@ -133,9 +133,9 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',Geo
       <ul class="features">
         <li><span class="icon">✦</span> <span><span class="highlight">50 conversas</span> por mês</span></li>
         <li><span class="icon">✦</span> Ensinamento do Dia com interpretação</li>
-        <li><span class="icon">✦</span> <span class="highlight">Voz de Jesus</span> nas respostas</li>
+        <li><span class="icon">✦</span> <span class="highlight">Voz de Jesus</span> em <span class="highlight">5 respostas</span>/mês</li>
         <li><span class="icon">✦</span> Entrada por voz (falar em vez de digitar)</li>
-        <li><span class="icon">✦</span> Todas as salas de estudo padrão</li>
+        <li><span class="icon">✦</span> <span class="highlight">3 salas de estudo</span></li>
         <li class="disabled"><span class="icon">✦</span> Criar novas salas de estudo</li>
         <li class="disabled"><span class="icon">✦</span> Anexar imagens e PDFs</li>
         <li class="disabled"><span class="icon">✦</span> Prioridade de resposta</li>
@@ -155,10 +155,10 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',Geo
       <ul class="features">
         <li><span class="icon">✦</span> <span>Conversas <span class="highlight">ilimitadas</span></span></li>
         <li><span class="icon">✦</span> Ensinamento do Dia com interpretação</li>
-        <li><span class="icon">✦</span> <span class="highlight">Voz de Jesus</span> nas respostas</li>
+        <li><span class="icon">✦</span> <span class="highlight">Voz de Jesus ilimitada</span> nas respostas</li>
         <li><span class="icon">✦</span> Entrada por voz (falar em vez de digitar)</li>
-        <li><span class="icon">✦</span> Todas as salas de estudo padrão</li>
-        <li><span class="icon">✦</span> <span class="highlight">Criar salas de estudo personalizadas</span></li>
+        <li><span class="icon">✦</span> <span class="highlight">Todas as salas de estudo</span> (padrão + inativas)</li>
+        <li><span class="icon">✦</span> <span class="highlight">Ativar salas inativas</span> e criar novas</li>
         <li><span class="icon">✦</span> Anexar imagens e PDFs ao chat</li>
         <li><span class="icon">✦</span> Prioridade de resposta</li>
         <li><span class="icon">✦</span> Acesso antecipado a novos recursos</li>
@@ -196,8 +196,8 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',Geo
         <tr>
           <td>Voz de Jesus (ElevenLabs)</td>
           <td class="no">—</td>
-          <td class="check">✦</td>
-          <td class="check">✦</td>
+          <td>5/mês</td>
+          <td class="check">Ilimitado</td>
         </tr>
         <tr>
           <td>Entrada por voz (microfone)</td>
@@ -206,10 +206,16 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',Geo
           <td class="check">✦</td>
         </tr>
         <tr>
-          <td>Salas de estudo padrão</td>
-          <td>1 (teaser)</td>
-          <td class="check">Todas</td>
-          <td class="check">Todas</td>
+          <td>Salas de estudo</td>
+          <td class="no">—</td>
+          <td>3 salas</td>
+          <td class="check">Todas + inativas</td>
+        </tr>
+        <tr>
+          <td>Ativar salas inativas</td>
+          <td class="no">—</td>
+          <td class="no">—</td>
+          <td class="check">✦</td>
         </tr>
         <tr>
           <td>Criar salas personalizadas</td>
