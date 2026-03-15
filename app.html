@@ -1419,7 +1419,11 @@ function viewDisclaimer(){
   pdfBtn.style.display='inline-block';
 }
 function printDisclaimer(mode){
-  var content=document.getElementById('disclaimer-text').innerHTML;
+  // Clonar o conteúdo e remover o stamp do app (que tem cores para fundo escuro)
+  var clone=document.getElementById('disclaimer-text').cloneNode(true);
+  var appStamp=clone.querySelector('#disclaimer-stamp');
+  if(appStamp) appStamp.remove();
+  var content=clone.innerHTML;
   var spyritLogo=document.querySelector('#app-footer img')?document.querySelector('#app-footer img').src:'';
   var stampData=null;
   try{stampData=JSON.parse(localStorage.getItem('spirit_disclaimer_stamp'));}catch(e){}
@@ -1446,9 +1450,9 @@ function printDisclaimer(mode){
   win.document.write('.print-header h1{font-size:20px;color:#8B7535;letter-spacing:5px;margin:0}');
   win.document.write('.print-header .sub{font-size:9px;color:#999;letter-spacing:2px;margin:0;font-style:italic}');
   // Footer fixo em todas as páginas com logo Spyrit + numeração
-  win.document.write('.print-footer{position:fixed;bottom:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:8px 20px;border-top:1px solid #ddd;background:#fff;font-size:9px;color:#999;z-index:100}');
-  win.document.write('.print-footer .spyrit{display:flex;align-items:center;gap:6px}');
-  win.document.write('.print-footer img{height:24px;opacity:.7}');
+  win.document.write('.print-footer{position:fixed;bottom:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:8px 20px;border-top:2px solid #222;background:#fff;font-size:9px;color:#333;z-index:100}');
+  win.document.write('.print-footer .spyrit{display:flex;align-items:center;gap:6px;font-weight:bold}');
+  win.document.write('.print-footer img{height:24px}');
   // Espaço para header e footer
   win.document.write('.content{padding-top:80px;padding-bottom:50px}');
   // Seções
@@ -1472,7 +1476,7 @@ function printDisclaimer(mode){
   win.document.write('<div class="spyrit">');
   if(spyritLogo) win.document.write('<img src="'+spyritLogo+'" alt="Spyrit Systems">');
   win.document.write('<span>Powered by Spyrit Systems</span></div>');
-  win.document.write('<span>© '+year+' Spyrit Systems — Todos os direitos reservados</span>');
+  win.document.write('<span style="color:#333">© '+year+' Spyrit Systems — Todos os direitos reservados</span>');
   win.document.write('</div>');
   // Conteúdo
   win.document.write('<div class="content">');
