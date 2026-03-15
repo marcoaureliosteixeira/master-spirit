@@ -1396,19 +1396,29 @@ function viewDisclaimer(){
   btn.style.cursor='pointer';
   btn.innerHTML='✦ Fechar';
   btn.onclick=function(){overlay.style.display='none';btn.onclick=acceptDisclaimer;btn.innerHTML='Role até o final para continuar';};
-  // Adicionar botão de imprimir ao lado
+  // Adicionar botões de imprimir e download
   var printBtn=document.getElementById('disclaimer-print-btn');
   if(!printBtn){
     printBtn=document.createElement('button');
     printBtn.id='disclaimer-print-btn';
-    printBtn.style.cssText='padding:14px 40px;background:rgba(201,168,76,.18);border:1px solid rgba(201,168,76,.6);border-radius:12px;color:#C9A84C;font-family:Cinzel,serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .3s;margin-left:10px';
+    printBtn.style.cssText='padding:12px 24px;background:rgba(201,168,76,.18);border:1px solid rgba(201,168,76,.6);border-radius:12px;color:#C9A84C;font-family:Cinzel,serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .3s;margin-left:8px';
     printBtn.textContent='🖨 Imprimir';
-    printBtn.onclick=printDisclaimer;
+    printBtn.onclick=function(){printDisclaimer('print');};
     btn.parentNode.appendChild(printBtn);
   }
   printBtn.style.display='inline-block';
+  var pdfBtn=document.getElementById('disclaimer-pdf-btn');
+  if(!pdfBtn){
+    pdfBtn=document.createElement('button');
+    pdfBtn.id='disclaimer-pdf-btn';
+    pdfBtn.style.cssText='padding:12px 24px;background:rgba(201,168,76,.18);border:1px solid rgba(201,168,76,.6);border-radius:12px;color:#C9A84C;font-family:Cinzel,serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .3s;margin-left:8px';
+    pdfBtn.textContent='📄 Salvar PDF';
+    pdfBtn.onclick=function(){printDisclaimer('pdf');};
+    btn.parentNode.appendChild(pdfBtn);
+  }
+  pdfBtn.style.display='inline-block';
 }
-function printDisclaimer(){
+function printDisclaimer(mode){
   var content=document.getElementById('disclaimer-text').innerHTML;
   var spyritLogo=document.querySelector('#app-footer img')?document.querySelector('#app-footer img').src:'';
   var stampData=null;
@@ -1425,7 +1435,8 @@ function printDisclaimer(){
   }
   var year=new Date().getFullYear();
   var win=window.open('','_blank','width=800,height=900');
-  win.document.write('<!DOCTYPE html><html><head><title>MASTER SPIRIT — Disclaimer e Termos de Uso</title>');
+  var fileTitle='MASTER SPIRIT - Disclaimer e Termos de Uso';
+  win.document.write('<!DOCTYPE html><html><head><title>'+fileTitle+'</title>');
   win.document.write('<style>');
   win.document.write('@page{size:A4;margin:20mm 15mm 25mm 15mm}');
   win.document.write('body{font-family:Georgia,"Times New Roman",serif;max-width:700px;margin:0 auto;padding:0 20px;color:#222;line-height:1.75;font-size:13px;counter-reset:page-num}');
@@ -1472,7 +1483,14 @@ function printDisclaimer(){
   win.document.write('</div>');
   win.document.write('</body></html>');
   win.document.close();
-  setTimeout(function(){win.print();},600);
+  setTimeout(function(){
+    if(mode==='pdf'){
+      // Instrução para salvar como PDF — o navegador abre o diálogo de impressão
+      // onde o usuário seleciona "Salvar como PDF" como destino
+      alert('Na janela de impressão, selecione "Salvar como PDF" como destino.\nO nome do arquivo será: '+fileTitle);
+    }
+    win.print();
+  },600);
 }
 function showDisclaimerIfNeeded(){
   if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
