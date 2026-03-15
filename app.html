@@ -1727,29 +1727,25 @@ function loadElevenConfig(){
 
 // ── TTS (Text-to-Speech) — Resposta em voz ──
 async function speakResponse(text){
-  var elevenKey=localStorage.getItem('spirit_eleven_key');
-  var voiceId=localStorage.getItem('spirit_eleven_voice')||'';
+  // Parar qualquer áudio anterior
+  if(window._currentAudio){try{window._currentAudio.pause();window._currentAudio=null;}catch(ex){}}
+  if(window.speechSynthesis) window.speechSynthesis.cancel();
 
-  if(elevenKey&&voiceId){
-    // ElevenLabs TTS
-    try{
-      var r=await fetch('https://api.elevenlabs.io/v1/text-to-speech/'+voiceId,{
-        method:'POST',
-        headers:{'Content-Type':'application/json','xi-api-key':elevenKey},
-        body:JSON.stringify({
-          text:text.substring(0,5000),
-          model_id:'eleven_multilingual_v2',
-          voice_settings:{stability:0.6,similarity_boost:0.8,style:0.3}
-        })
-      });
-      if(r.ok){
-        var blob=await r.blob();
-        var audio=new Audio(URL.createObjectURL(blob));
-        audio.play();
-        return;
-      }
-    }catch(ex){console.warn('ElevenLabs TTS error:',ex);}
-  }
+  // ElevenLabs via endpoint seguro do servidor
+  try{
+    var r=await fetch('/api/tts',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({text:text.substring(0,5000)})
+    });
+    if(r.ok){
+      var blob=await r.blob();
+      var audio=new Audio(URL.createObjectURL(blob));
+      window._currentAudio=audio;
+      audio.play();
+      return;
+    }
+  }catch(ex){console.warn('TTS server error:',ex);}
 
   // Fallback: browser TTS
   if('speechSynthesis' in window){
