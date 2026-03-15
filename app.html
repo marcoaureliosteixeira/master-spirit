@@ -1043,9 +1043,9 @@ async function validateRoom(){
   try{
     const r=await fetch(API_URL,{method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:MODEL,max_tokens:300,
-        system:'Você é um validador de obras espirituais. Responda APENAS em JSON válido, sem markdown.',
-        messages:[{role:'user',content:`Esta obra existe e é sobre espiritualidade, religião, filosofia espiritual ou crescimento da alma? Obra: "${name}"\n\nJSON exato:\n{"existe":true/false,"valida":true/false,"titulo":"título oficial","autor":"autor","icon":"emoji","desc":"descrição 1 frase","tags":["tag1","tag2","tag3"],"motivo":"se inválida, por que"}`}]
+      body:JSON.stringify({model:MODEL,max_tokens:500,
+        system:'Você é um validador de obras espirituais com amplo conhecimento de literatura espírita, religiosa e filosófica. Seja GENEROSO na validação: se a obra parece real e tem qualquer relação com espiritualidade, espiritismo, religião, filosofia, autoconhecimento ou crescimento da alma, aprove. Inclua obras psicografadas, mediunicas, espiritismo kardecista, Chico Xavier, Divaldo Franco, Yvonne Pereira, etc. Responda APENAS em JSON válido, sem markdown.',
+        messages:[{role:'user',content:`Verifique se esta obra existe (pode ser livro, texto ou obra literária de qualquer época). Se existir, verifique se tem relação com espiritualidade, religião, filosofia espiritual, espiritismo, mediunidade ou crescimento da alma.\n\nObra: "${name}"\n\nResponda APENAS com este JSON:\n{"existe":true,"valida":true,"titulo":"título oficial completo","autor":"autor principal","icon":"emoji representativo","desc":"descrição em 1 frase","tags":["tag1","tag2","tag3"]}\n\nSe não existir: {"existe":false,"valida":false,"titulo":"","autor":"","icon":"","desc":"","tags":[],"motivo":"razão"}\nSe existir mas não for espiritual: {"existe":true,"valida":false,"titulo":"título","autor":"autor","icon":"","desc":"","tags":[],"motivo":"razão"}`}]
       })
     });
     const d=await r.json();
