@@ -1460,6 +1460,14 @@ function printDisclaimer(mode){
   win.document.write('.section-text{margin-bottom:14px;text-align:justify}');
   win.document.write('.quote-block{border-left:3px solid #8B7535;padding-left:14px;color:#555;font-size:11.5px;line-height:1.65;margin-bottom:14px}');
   win.document.write('em{font-style:italic}strong{color:#8B7535}a{color:#8B7535}');
+  // Forçar cores legíveis em todos os elementos com estilos inline do tema escuro
+  win.document.write('p[style*="color:rgba(240"]{color:#444 !important}');
+  win.document.write('p[style*="border-left"]{color:#555 !important;border-left-color:#8B7535 !important}');
+  win.document.write('p[style*="font-size:12px"][style*="color:rgba"]{color:#555 !important;font-size:12px !important;line-height:1.7 !important}');
+  win.document.write('span[style*="color:rgba"]{color:#444 !important}');
+  win.document.write('span[style*="color:#C9A84C"]{color:#8B7535 !important}');
+  win.document.write('div[style*="color:rgba"]{color:#444 !important}');
+  win.document.write('a[style*="color:#C9A84C"]{color:#8B7535 !important}');
   // Stamp
   win.document.write('.stamp{margin-top:28px;padding:18px;border:2px solid #8B7535;border-radius:8px;background:#faf8f0;page-break-inside:avoid}');
   win.document.write('.stamp-title{text-align:center;color:#8B7535;font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;font-weight:bold}');
