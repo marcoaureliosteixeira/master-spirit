@@ -1528,8 +1528,8 @@ async function validateRoom(){
 <script>
 // ── CHAT USAGE CONTROL ──
 let userPlan = 'free';
-let chatsRemaining = 5;
-const PLAN_LIMITS = { free: 5, basic: 50, premium: 999999 };
+let chatsRemaining = 1;
+const PLAN_LIMITS = { free: 1, basic: 50, premium: 999999 };
 
 async function initUsage() {
   if (!window._sb) return;
@@ -1546,10 +1546,10 @@ async function initUsage() {
     if (error || !data) {
       // First time user — create usage row with 5 chats
       const { data: inserted } = await window._sb.from('user_usage')
-        .insert({ id: user.id, chats_used: 5, plan: 'free' })
+        .insert({ id: user.id, chats_used: 1, plan: 'free' })
         .select('chats_used, plan')
         .single();
-      data = inserted || { chats_used: 5, plan: 'free' };
+      data = inserted || { chats_used: 1, plan: 'free' };
     }
 
     userPlan = data.plan || 'free';
