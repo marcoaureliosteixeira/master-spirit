@@ -829,6 +829,8 @@ window.addEventListener('load',()=>{
 // ===================== TABS =====================
 function goTab(t){
   tab=t;
+  // Parar áudio ao mudar de aba
+  if(typeof stopAllAudio==='function') stopAllAudio();
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   const nb=document.getElementById('nb-'+t);
   if(nb) nb.classList.add('active');
@@ -924,7 +926,7 @@ function buildMsgHtml(m,i,copyFn){
   const isU=m.role==='user';
   const display=m._display||m.content;
   const copy=!isU?`<button class="copy-btn" data-i="${i}" data-fn="${copyFn}" onclick="doCopy(this.dataset.fn,this.dataset.i)">⎘ copiar</button>`:'';
-  const listen=!isU?`<button class="copy-btn" data-i="${i}" data-fn="${copyFn}" onclick="listenMsg(this.dataset.fn,this.dataset.i)">🔊 ouvir</button>`:'';
+  const listen=!isU?`<button class="copy-btn" data-i="${i}" data-fn="${copyFn}" onclick="toggleListen(this,this.dataset.fn,this.dataset.i)">🔊 ouvir</button>`:'';
   return `<div class="msg-wrap ${isU?'user':'bot'}">
   <div class="msg-label">${isU?'Você':'Master Spirit · O Consolador'}</div>
   <div class="msg-bubble ${isU?'user':'bot'}">${display}</div>
@@ -940,15 +942,24 @@ function doCopy(fn,i){
     if(btn){btn.textContent='✓ copiado';setTimeout(()=>btn.textContent='⎘ copiar',2000);}
   });
 }
-function listenMsg(fn,i){
+function toggleListen(btn,fn,i){
+  if(_ttsPlaying){
+    stopAllAudio();
+    btn.textContent='🔊 ouvir';
+    return;
+  }
   var arr=fn==='copyMainMsg'?msgs:roomMsgs;
   var m=arr[parseInt(i)];
   if(!m) return;
-  var text=m.content||'';
-  // Parar qualquer áudio tocando
-  if(window._currentAudio){try{window._currentAudio.pause();}catch(ex){}}
-  if(window.speechSynthesis) window.speechSynthesis.cancel();
-  speakResponse(text);
+  btn.textContent='⏹ parar';
+  speakResponse(m.content||'');
+  // Restaurar botão quando terminar
+  var check=setInterval(function(){
+    if(!_ttsPlaying){
+      btn.textContent='🔊 ouvir';
+      clearInterval(check);
+    }
+  },500);
 }
 
 function chipSend(idxStr){sendMsgText(CHIP_MSGS[parseInt(idxStr)]);}
@@ -1726,38 +1737,54 @@ function loadElevenConfig(){
 }
 
 // ── TTS (Text-to-Speech) — Resposta em voz ──
-async function speakResponse(text){
-  // Parar qualquer áudio anterior
-  if(window._currentAudio){try{window._currentAudio.pause();window._currentAudio=null;}catch(ex){}}
+var _ttsPlaying=false;
+
+function stopAllAudio(){
+  _ttsPlaying=false;
+  if(window._currentAudio){try{window._currentAudio.pause();window._currentAudio.currentTime=0;window._currentAudio=null;}catch(ex){}}
   if(window.speechSynthesis) window.speechSynthesis.cancel();
+}
 
-  // ElevenLabs via endpoint seguro do servidor
-  try{
-    var r=await fetch('/api/tts',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({text:text.substring(0,5000)})
-    });
-    if(r.ok){
-      var blob=await r.blob();
-      var audio=new Audio(URL.createObjectURL(blob));
-      window._currentAudio=audio;
-      audio.play();
-      return;
-    }
-  }catch(ex){console.warn('TTS server error:',ex);}
+// Parar áudio ao mudar de aba/página
+document.addEventListener('visibilitychange',function(){if(document.hidden) stopAllAudio();});
 
-  // Fallback: browser TTS
-  if('speechSynthesis' in window){
+async function speakResponse(text){
+  // Se já está tocando, para tudo
+  if(_ttsPlaying){stopAllAudio();return;}
+
+  stopAllAudio();
+  _ttsPlaying=true;
+
+  // Modo Jesus: ElevenLabs via servidor
+  if(chatMode==='jesus'){
+    try{
+      var r=await fetch('/api/tts',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({text:text.substring(0,5000)})
+      });
+      if(r.ok&&_ttsPlaying){
+        var blob=await r.blob();
+        var audio=new Audio(URL.createObjectURL(blob));
+        window._currentAudio=audio;
+        audio.onended=function(){_ttsPlaying=false;window._currentAudio=null;};
+        audio.play();
+        return;
+      }
+    }catch(ex){console.warn('TTS server error:',ex);}
+  }
+
+  // Modo Normal ou fallback: browser TTS
+  if(_ttsPlaying&&'speechSynthesis' in window){
     var utter=new SpeechSynthesisUtterance(text.substring(0,2000));
     utter.lang='pt-BR';
-    utter.rate=0.9;
-    utter.pitch=0.85;
-    // Tentar voz masculina em português
+    utter.rate=0.92;
+    utter.pitch=1.0;
     var voices=speechSynthesis.getVoices();
     var ptVoice=voices.find(function(v){return v.lang.startsWith('pt')&&v.name.toLowerCase().includes('male');})
       ||voices.find(function(v){return v.lang.startsWith('pt');});
     if(ptVoice) utter.voice=ptVoice;
+    utter.onend=function(){_ttsPlaying=false;};
     speechSynthesis.speak(utter);
   }
 }
