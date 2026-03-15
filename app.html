@@ -319,6 +319,68 @@ body.ff-sys{--font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
   </div>
 </div>
 
+<!-- Upgrade Modal -->
+<div class="modal" id="modal-upgrade">
+  <div class="modal-head">
+    <button class="back" onclick="closeModal('upgrade')">‹</button>
+    <h2>✦ EVOLUA SUA JORNADA</h2>
+  </div>
+  <div class="modal-inner" style="text-align:center">
+    <div style="font-size:48px;margin:20px 0 10px;animation:float 5s ease-in-out infinite">✦</div>
+    <p style="font-family:'Cinzel Decorative',serif;font-size:18px;color:var(--gold);margin-bottom:6px">Seus chats gratuitos acabaram</p>
+    <p style="font-size:14px;color:rgba(240,234,214,.5);font-style:italic;margin-bottom:30px;line-height:1.7">
+      "Pedi, e dar-se-vos-á; buscai, e encontrareis"<br>
+      <span style="font-size:11px;color:rgba(201,168,76,.4)">— Mateus 7:7</span>
+    </p>
+
+    <!-- Basic Plan -->
+    <div style="background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.3);border-radius:16px;padding:24px 20px;margin-bottom:14px;text-align:left;position:relative;overflow:hidden">
+      <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent)"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <div>
+          <p style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--gold)">PLANO BASIC</p>
+          <p style="font-size:12px;color:rgba(240,234,214,.4);margin-top:2px">Texto + Voz</p>
+        </div>
+        <div style="text-align:right">
+          <p style="font-family:'Cinzel',serif;font-size:22px;color:var(--text)">R$19<span style="font-size:12px;color:rgba(240,234,214,.4)">/mês</span></p>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:rgba(240,234,214,.7);margin-bottom:18px">
+        <div>✦ <span style="color:var(--gold)">50 chats</span> por mês</div>
+        <div>✦ Voz do Mestre em todas as respostas</div>
+        <div>✦ Salas de estudo básicas</div>
+      </div>
+      <button onclick="selectPlan('basic')" class="btn-gold" style="text-align:center">ESCOLHER BASIC</button>
+    </div>
+
+    <!-- Premium Plan -->
+    <div style="background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.5);border-radius:16px;padding:24px 20px;margin-bottom:14px;text-align:left;position:relative;overflow:hidden;box-shadow:0 0 30px rgba(201,168,76,.08)">
+      <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,transparent,#E8C97A,var(--gold),#E8C97A,transparent)"></div>
+      <div style="position:absolute;top:12px;right:14px;background:rgba(201,168,76,.2);border:1px solid rgba(201,168,76,.4);border-radius:20px;padding:2px 10px;font-family:'Cinzel',serif;font-size:7px;letter-spacing:1.5px;color:var(--gold)">RECOMENDADO</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <div>
+          <p style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--gold2)">PLANO PREMIUM</p>
+          <p style="font-size:12px;color:rgba(240,234,214,.4);margin-top:2px">Experiência completa</p>
+        </div>
+        <div style="text-align:right">
+          <p style="font-family:'Cinzel',serif;font-size:22px;color:var(--text)">R$39<span style="font-size:12px;color:rgba(240,234,214,.4)">/mês</span></p>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:rgba(240,234,214,.7);margin-bottom:18px">
+        <div>✦ Chats <span style="color:var(--gold2);font-weight:500">ilimitados</span></div>
+        <div>✦ Voz do Mestre em todas as respostas</div>
+        <div>✦ Todas as salas de estudo</div>
+        <div>✦ Prioridade de resposta</div>
+      </div>
+      <button onclick="selectPlan('premium')" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;border-radius:12px;color:#060a16;font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;cursor:pointer;font-weight:600;transition:all .2s;box-shadow:0 4px 20px rgba(201,168,76,.25)" onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 6px 24px rgba(201,168,76,.35)'" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 20px rgba(201,168,76,.25)'">ESCOLHER PREMIUM</button>
+    </div>
+
+    <p style="font-size:11px;color:rgba(240,234,214,.25);margin-top:20px;font-style:italic">
+      Pagamento seguro via Stripe · Cancele quando quiser
+    </p>
+  </div>
+</div>
+
 <!-- New Room -->
 <div class="modal" id="modal-newroom">
   <div class="modal-head">
@@ -628,6 +690,8 @@ function render(){
   else if(tab==='chat') c.innerHTML=renderChat();
   else if(tab==='study') c.innerHTML=renderStudy();
   else c.innerHTML=renderSab();
+  // Update chat counter after DOM is rendered
+  if(tab==='chat') setTimeout(updateChatCounter, 10);
 }
 
 // ===================== HOJE =====================
@@ -682,7 +746,7 @@ function renderChat(){
   if(msgs.length===0){
     const chips=CHIP_MSGS.map((c,i)=>`<button class="chip" data-ci="${i}" onclick="chipSend(this.dataset.ci)">${c}</button>`).join('');
     return `<div id="chat-wrap">
-    <div id="chat-head"><p class="t">MASTER SPIRIT · O Consolador</p><p class="s">Cristo · Espiritismo · Urantia · Bhagavad Gita</p></div>
+    <div id="chat-head"><p class="t">MASTER SPIRIT · O Consolador</p><p class="s">Cristo · Espiritismo · Urantia · Bhagavad Gita</p><div id="chat-counter" style="margin-top:6px;display:flex;align-items:center;justify-content:center;gap:2px"></div></div>
     <div id="msgs">
       <div class="fu" style="text-align:center;padding:28px 14px;color:rgba(240,234,214,.32)">
         <div style="font-size:36px;margin-bottom:12px;opacity:.5">🕊️</div>
@@ -694,7 +758,7 @@ function renderChat(){
   const msgsHtml=msgs.map((m,i)=>buildMsgHtml(m,i,'copyMainMsg')).join('');
   const typing=loading?`<div class="msg-wrap bot"><div class="msg-label">Master Spirit</div><div class="msg-bubble bot"><div class="dots"><span></span><span></span><span></span></div></div></div>`:'';
   return `<div id="chat-wrap">
-  <div id="chat-head"><p class="t">MASTER SPIRIT · O Consolador</p><p class="s">Cristo · Espiritismo · Urantia · Bhagavad Gita</p></div>
+  <div id="chat-head"><p class="t">MASTER SPIRIT · O Consolador</p><p class="s">Cristo · Espiritismo · Urantia · Bhagavad Gita</p><div id="chat-counter" style="margin-top:6px;display:flex;align-items:center;justify-content:center;gap:2px"></div></div>
   <div id="msgs">${msgsHtml}${typing}</div></div>`;
 }
 
@@ -739,6 +803,10 @@ function sendMsg(){
 async function sendMsgText(text){
   if(!text&&!attachData) return;
   if(loading) return;
+
+  // Check chat usage
+  const canSend = await decrementChat();
+  if(!canSend) return;
 
   let content;
   if(attachData){
@@ -985,6 +1053,10 @@ const ROOM_SYS=id=>{const r=rooms.find(x=>x.id===id)||{};return `Você é o MAST
 async function sendRoomMsgText(text){
   if(!text||roomLoading)return;
 
+  // Check chat usage
+  const canSend = await decrementChat();
+  if(!canSend) return;
+
   roomMsgs.push({role:'user',content:text});
   roomLoading=true;renderRoomChat();scrollChat('tab-chat');
   startObs('tab-chat');
@@ -1110,6 +1182,87 @@ async function validateRoom(){
 </script>
 
 <script>
+// ── CHAT USAGE CONTROL ──
+let userPlan = 'free';
+let chatsRemaining = 5;
+const PLAN_LIMITS = { free: 5, basic: 50, premium: 999999 };
+
+async function initUsage() {
+  if (!window._sb) return;
+  try {
+    const { data: { user } } = await window._sb.auth.getUser();
+    if (!user) return;
+
+    // Try to get existing usage row
+    let { data, error } = await window._sb.from('user_usage')
+      .select('chats_used, plan')
+      .eq('id', user.id)
+      .single();
+
+    if (error || !data) {
+      // First time user — create usage row with 5 chats
+      const { data: inserted } = await window._sb.from('user_usage')
+        .insert({ id: user.id, chats_used: 5, plan: 'free' })
+        .select('chats_used, plan')
+        .single();
+      data = inserted || { chats_used: 5, plan: 'free' };
+    }
+
+    userPlan = data.plan || 'free';
+    chatsRemaining = data.chats_used ?? 0;
+    updateChatCounter();
+  } catch(e) { console.error('initUsage error:', e); }
+}
+
+async function decrementChat() {
+  if (!window._sb) return false;
+  if (userPlan === 'premium') return true; // unlimited
+
+  if (chatsRemaining <= 0) {
+    openModal('upgrade');
+    return false;
+  }
+
+  try {
+    const { data: { user } } = await window._sb.auth.getUser();
+    if (!user) return false;
+
+    chatsRemaining = Math.max(0, chatsRemaining - 1);
+    await window._sb.from('user_usage')
+      .update({ chats_used: chatsRemaining })
+      .eq('id', user.id);
+
+    updateChatCounter();
+    return true;
+  } catch(e) { console.error('decrementChat error:', e); return true; }
+}
+
+function updateChatCounter() {
+  const el = document.getElementById('chat-counter');
+  if (!el) return;
+
+  if (userPlan === 'premium') {
+    el.innerHTML = '<span style="color:var(--gold2)">∞</span> <span style="color:rgba(240,234,214,.4);font-size:9px">ilimitado</span>';
+  } else {
+    const limit = PLAN_LIMITS[userPlan] || 5;
+    const dots = [];
+    for (let i = 0; i < limit && i < 10; i++) {
+      dots.push('<span style="display:inline-block;width:6px;height:6px;border-radius:50%;margin:0 2px;' +
+        (i < chatsRemaining
+          ? 'background:var(--gold);box-shadow:0 0 6px rgba(201,168,76,.4)'
+          : 'background:rgba(255,255,255,.1)') + '"></span>');
+    }
+    const label = chatsRemaining + '/' + limit;
+    el.innerHTML = dots.join('') + ' <span style="color:rgba(240,234,214,.35);font-size:9px;margin-left:4px">' + label + '</span>';
+  }
+}
+
+function selectPlan(plan) {
+  // TODO: integrate Stripe checkout
+  closeModal('upgrade');
+  alert('Integração com Stripe em breve! Plano selecionado: ' + plan.toUpperCase());
+}
+
 // ── LOGOUT ──
 async function doLogout() {
   try {
@@ -1130,6 +1283,8 @@ function initSupa() {
       window._sb.auth.getSession().then(function(r) {
         if (!r.data || !r.data.session) {
           window.location.href = 'index.html';
+        } else {
+          initUsage();
         }
       });
     }
