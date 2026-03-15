@@ -788,6 +788,8 @@ window.addEventListener('load',()=>{
   document.querySelectorAll('[data-ff]').forEach(b=>b.classList.toggle('active',b.dataset.ff===savedFf));
   // Load chat mode
   initChatMode();
+  // Pré-gerar interpretação do dia em background
+  preloadInterpretation();
   // Load rooms
   try{const cr=JSON.parse(localStorage.getItem('spirit_rooms')||'[]');rooms=[...DEFAULT_ROOMS,...cr];}catch(e){}
   // Render the dashboard first — user opens ⚙️ when ready
@@ -1245,54 +1247,60 @@ function toggleSrc(id){openSrc=openSrc===id?null:id;render();}
 function goToChat(q){msgs=[];goTab('chat');setTimeout(()=>sendMsgText('Fale sobre "'+q+'" com base nos ensinamentos espirituais de Cristo e das tradições sagradas que você domina.'),80);}
 
 // ===================== INTERPRETAR =====================
-function getInterpretHeader(teach){
-  return '<div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid rgba(201,168,76,.15)"><p style="font-style:italic;color:rgba(240,234,214,.5);font-size:14px;margin-bottom:4px">'+teach.o+' — '+teach.s+'</p><p style="font-size:19px;font-style:italic;color:var(--text);line-height:1.7">"'+teach.t+'"</p></div>';
+function getInterpretCacheKey(teach){return 'spirit_interp_'+teach.s.replace(/\s/g,'_');}
+
+function getInterpretBody(teach,txt){
+  return '<div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid rgba(201,168,76,.15)">'
+    +'<p style="font-style:italic;color:rgba(240,234,214,.5);font-size:14px;margin-bottom:4px">'+teach.o+' — '+teach.s+'</p>'
+    +'<p style="font-size:19px;font-style:italic;color:var(--text);line-height:1.7">"'+teach.t+'"</p></div>'
+    +'<div style="white-space:pre-wrap">'+txt+'</div>'
+    +'<div style="text-align:center;margin-top:20px;padding-top:16px;border-top:1px solid rgba(201,168,76,.1)">'
+    +'<button onclick="chatAboutTeaching()" style="background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.4);border-radius:20px;color:#C9A84C;font-family:Cinzel,serif;font-size:10px;letter-spacing:1.5px;padding:10px 24px;cursor:pointer;text-transform:uppercase;transition:all .25s" onmouseover="this.style.background=\'rgba(201,168,76,.22)\'" onmouseout="this.style.background=\'rgba(201,168,76,.12)\'">🕊️ Conversar sobre isso</button></div>';
 }
-async function interpretTeaching(){
-  const teach=getDayTeaching();
-  const cacheKey='spirit_interp_'+teach.s.replace(/\s/g,'_');
-  const modal=document.getElementById('modal-interpret');
-  const body=document.getElementById('interpret-content');
-  modal.classList.add('open');
 
-  // Verifica cache primeiro
-  const cached=localStorage.getItem(cacheKey);
-  if(cached){
-    body.innerHTML=getInterpretHeader(teach)+'<div style="white-space:pre-wrap">'+cached+'</div>';
-    return;
-  }
+// Gera interpretação em background ao carregar o app
+async function preloadInterpretation(){
+  var teach=getDayTeaching();
+  var cacheKey=getInterpretCacheKey(teach);
+  if(localStorage.getItem(cacheKey)) return; // já tem cache
 
-  body.innerHTML='<div class="mi-loading">Preparando a interpretação...</div>';
-  const prompt=`Interprete esta passagem de forma CLARA e CONCISA (máximo 3 parágrafos curtos):
-
-"${teach.t}" — ${teach.s} (${teach.o})
-
-Estrutura:
-1. O que o autor quis dizer (2-3 frases)
-2. Cuidado: algum termo que pode confundir? (ex: alma vs espírito, eterno vs imortal) — harmonize com a visão espírita em 2-3 frases
-3. Na prática: como aplicar isso hoje (2-3 frases)
-
-Seja direto, amoroso e acessível. Não repita a citação.`;
+  var prompt='Interprete esta passagem de forma CLARA e CONCISA (máximo 3 parágrafos curtos):\n\n"'+teach.t+'" — '+teach.s+' ('+teach.o+')\n\nEstrutura:\n1. O que o autor quis dizer (2-3 frases)\n2. Algum termo que pode confundir? (ex: alma vs espírito, eterno vs imortal) — harmonize com a visão espírita em 2-3 frases\n3. Na prática: como aplicar isso hoje (2-3 frases)\n\nSeja direto, amoroso e acessível. Não repita a citação. NÃO pergunte se quer aprofundar — isso será feito por um botão separado.';
 
   try{
-    const r=await fetch(API_URL,{method:'POST',
+    var r=await fetch(API_URL,{method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:MODEL,max_tokens:1200,
-        system:getSysPrompt(),
-        messages:[{role:'user',content:prompt}]
-      })
+      body:JSON.stringify({model:MODEL,max_tokens:1200,system:getSysPrompt(),messages:[{role:'user',content:prompt}]})
     });
-    const d=await r.json();
-    if(!r.ok){
-      body.innerHTML='<p style="color:rgba(232,122,122,.8)">Erro: '+(d.error?.message||'Tente novamente.')+'</p>';
-    } else {
-      const txt=d.content?.find(b=>b.type==='text')?.text||'Não foi possível interpretar. Tente novamente.';
-      localStorage.setItem(cacheKey,txt);
-      body.innerHTML=getInterpretHeader(teach)+'<div style="white-space:pre-wrap">'+txt+'</div>';
+    var d=await r.json();
+    if(r.ok){
+      var txt=d.content?.find(function(b){return b.type==='text';})?.text;
+      if(txt) localStorage.setItem(cacheKey,txt);
     }
-  }catch(e){
-    body.innerHTML='<p style="color:rgba(232,122,122,.8)">Erro de conexão. Tente novamente.</p>';
+  }catch(e){console.warn('Preload interpretation failed:',e);}
+}
+
+function interpretTeaching(){
+  var teach=getDayTeaching();
+  var cacheKey=getInterpretCacheKey(teach);
+  var modal=document.getElementById('modal-interpret');
+  var body=document.getElementById('interpret-content');
+  modal.classList.add('open');
+
+  var cached=localStorage.getItem(cacheKey);
+  if(cached){
+    body.innerHTML=getInterpretBody(teach,cached);
+  } else {
+    body.innerHTML='<div class="mi-loading">A interpretação está sendo preparada. Aguarde alguns instantes e tente novamente.</div>';
+    preloadInterpretation();
   }
+}
+
+function chatAboutTeaching(){
+  var teach=getDayTeaching();
+  closeInterpret();
+  msgs=[];
+  goTab('chat');
+  setTimeout(function(){sendMsgText('Quero aprofundar a passagem: "'+teach.t+'" ('+teach.s+', '+teach.o+'). Explique com mais detalhes.');},100);
 }
 function closeInterpret(){document.getElementById('modal-interpret').classList.remove('open');}
 
