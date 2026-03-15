@@ -1387,16 +1387,57 @@ function viewDisclaimer(){
     document.getElementById('stamp-email').textContent=stampData.email||'—';
     var dt=new Date(stampData.accepted_at);
     document.getElementById('stamp-date').textContent=dt.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'});
-  } else {
-    stamp.style.display='none';
   }
+  // Mostrar botões de fechar e imprimir (sem botão de aceitar)
   btn.disabled=false;
   btn.style.background='rgba(201,168,76,.18)';
   btn.style.borderColor='rgba(201,168,76,.6)';
   btn.style.color='#C9A84C';
   btn.style.cursor='pointer';
-  btn.textContent='✦ Fechar';
-  btn.onclick=function(){overlay.style.display='none';btn.onclick=acceptDisclaimer;};
+  btn.innerHTML='✦ Fechar';
+  btn.onclick=function(){overlay.style.display='none';btn.onclick=acceptDisclaimer;btn.innerHTML='Role até o final para continuar';};
+  // Adicionar botão de imprimir ao lado
+  var printBtn=document.getElementById('disclaimer-print-btn');
+  if(!printBtn){
+    printBtn=document.createElement('button');
+    printBtn.id='disclaimer-print-btn';
+    printBtn.style.cssText='padding:14px 40px;background:rgba(201,168,76,.18);border:1px solid rgba(201,168,76,.6);border-radius:12px;color:#C9A84C;font-family:Cinzel,serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .3s;margin-left:10px';
+    printBtn.textContent='🖨 Imprimir';
+    printBtn.onclick=printDisclaimer;
+    btn.parentNode.appendChild(printBtn);
+  }
+  printBtn.style.display='inline-block';
+}
+function printDisclaimer(){
+  var content=document.getElementById('disclaimer-text').innerHTML;
+  var stamp=document.getElementById('disclaimer-stamp');
+  var stampHtml=stamp?stamp.outerHTML:'';
+  var win=window.open('','_blank','width=800,height=900');
+  win.document.write('<html><head><title>MASTER SPIRIT — Termo de Uso Aceito</title>');
+  win.document.write('<style>body{font-family:Georgia,serif;max-width:700px;margin:40px auto;padding:20px;color:#222;line-height:1.8;font-size:14px}h1{text-align:center;color:#8B7535;letter-spacing:4px;font-size:22px}p.sub{text-align:center;color:#999;font-style:italic;font-size:12px;letter-spacing:2px}.stamp{margin-top:30px;padding:20px;border:2px solid #8B7535;border-radius:10px;background:#faf8f0}.stamp p{margin:4px 0;font-size:13px}.stamp span.label{color:#888}.stamp span.val{color:#333;font-weight:bold}.stamp .title{text-align:center;color:#8B7535;font-size:11px;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}p[style*="font-family"]{color:#8B7535;font-size:13px;letter-spacing:2px;text-transform:uppercase;margin-top:24px;margin-bottom:8px;font-weight:bold}p[style*="border-left"]{border-left:3px solid #8B7535;padding-left:14px;color:#555;font-size:12px;line-height:1.7}em{font-style:italic}strong{color:#8B7535}a{color:#8B7535}@media print{body{margin:20px}}</style>');
+  win.document.write('</head><body>');
+  win.document.write('<h1>MASTER SPIRIT</h1>');
+  win.document.write('<p class="sub">Disclaimer e Termos de Uso</p>');
+  win.document.write('<hr style="border:none;border-top:1px solid #ddd;margin:20px 0">');
+  win.document.write(content);
+  // Adicionar stamp formatado para impressão
+  var stampData=null;
+  try{stampData=JSON.parse(localStorage.getItem('spirit_disclaimer_stamp'));}catch(e){}
+  if(stampData){
+    var dt=new Date(stampData.accepted_at);
+    var dateStr=dt.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    win.document.write('<div class="stamp">');
+    win.document.write('<p class="title">Registro de Aceite</p>');
+    win.document.write('<p><span class="label">Usuário: </span><span class="val">'+(stampData.name||'—')+'</span></p>');
+    win.document.write('<p><span class="label">E-mail: </span><span class="val">'+(stampData.email||'—')+'</span></p>');
+    win.document.write('<p><span class="label">Data/Hora: </span><span class="val">'+dateStr+'</span></p>');
+    win.document.write('<p><span class="label">Versão do Termo: </span><span class="val">'+(stampData.version||'1.0')+'</span></p>');
+    win.document.write('</div>');
+  }
+  win.document.write('<div style="text-align:center;margin-top:30px;color:#ccc;font-size:10px;font-style:italic">© '+new Date().getFullYear()+' Spyrit Systems. Todos os direitos reservados.</div>');
+  win.document.write('</body></html>');
+  win.document.close();
+  setTimeout(function(){win.print();},500);
 }
 function showDisclaimerIfNeeded(){
   if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
