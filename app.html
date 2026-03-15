@@ -464,7 +464,9 @@ body.ff-sys{--font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
       <input id="new-room-input" class="input-field" type="text" placeholder="Digite o nome da obra ou escolha abaixo..." onkeydown="if(event.key==='Enter')validateRoom()">
       <button onclick="validateRoom()" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:rgba(201,168,76,.2);border:1px solid rgba(201,168,76,.4);border-radius:9px;width:32px;height:32px;cursor:pointer;color:var(--gold);font-size:14px">✦</button>
     </div>
+    <button onclick="validateRoom()" style="width:100%;padding:12px;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.4);border-radius:10px;color:#C9A84C;font-family:'Cinzel',serif;font-size:10px;letter-spacing:1.5px;cursor:pointer;text-transform:uppercase;transition:all .25s;margin-bottom:8px" onmouseover="this.style.background='rgba(201,168,76,.22)'" onmouseout="this.style.background='rgba(201,168,76,.12)'">✦ Buscar e Adicionar Obra</button>
     <p id="room-status" style="text-align:center;font-size:12px;font-style:italic;color:rgba(201,168,76,.6);margin-bottom:14px;min-height:18px"></p>
+    <p style="font-size:11px;color:rgba(240,234,214,.25);font-style:italic;margin-bottom:14px;text-align:center;line-height:1.5">Apenas obras de temática espiritual, religiosa, filosófica ou de crescimento da alma são aceitas.</p>
     <div id="suggestions"><!-- filled by JS --></div>
   </div>
 </div>
@@ -1408,21 +1410,22 @@ async function validateRoom(){
   const name=document.getElementById('new-room-input').value.trim();
   const status=document.getElementById('room-status');
   if(!name){status.textContent='⚠ Digite o nome da obra';status.style.color='rgba(232,122,122,.8)';return;}
-  if(!key){status.textContent='⚠ Configure sua API Key primeiro';status.style.color='rgba(232,122,122,.8)';return;}
   status.textContent='✦ Verificando...';status.style.color='rgba(201,168,76,.6)';
   try{
     const r=await fetch(API_URL,{method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({model:MODEL,max_tokens:300,
-        system:'Você é um validador de obras espirituais. Responda APENAS em JSON válido, sem markdown.',
-        messages:[{role:'user',content:`Esta obra existe e é sobre espiritualidade, religião, filosofia espiritual ou crescimento da alma? Obra: "${name}"\n\nJSON exato:\n{"existe":true/false,"valida":true/false,"titulo":"título oficial","autor":"autor","icon":"emoji","desc":"descrição 1 frase","tags":["tag1","tag2","tag3"],"motivo":"se inválida, por que"}`}]
+        system:'Você é um validador rigoroso de obras espirituais. Responda APENAS em JSON válido, sem markdown, sem comentários.',
+        messages:[{role:'user',content:`Verifique se esta obra existe e se pertence ao escopo espiritual/religioso/filosófico. Obra: "${name}"\n\nREGRAS DE VALIDAÇÃO:\n- ACEITAR: obras espíritas, cristãs, hinduístas, budistas, esotéricas, filosóficas espirituais, de crescimento da alma, revelações espirituais\n- REJEITAR: ficção comum, autoajuda genérica, obras puramente científicas/materialistas, romances sem temática espiritual\n\nResponda APENAS neste JSON exato:\n{"existe":true/false,"valida":true/false,"titulo":"título oficial","autor":"autor","icon":"emoji representativo","desc":"descrição em 1 frase","tags":["tag1","tag2","tag3"],"motivo":"se inválida, explique brevemente por que está fora do escopo espiritual"}`}]
       })
     });
     const d=await r.json();
+    if(!r.ok){status.textContent='⚠ Erro na API: '+(d.error?.message||'Tente novamente.');status.style.color='rgba(232,122,122,.8)';return;}
     const txt=d.content?.find(b=>b.type==='text')?.text||'{}';
-    const res=JSON.parse(txt.replace(/```json|```/g,'').trim());
+    var res;
+    try{res=JSON.parse(txt.replace(/```json|```/g,'').trim());}catch(pe){status.textContent='⚠ Erro ao processar. Tente novamente.';status.style.color='rgba(232,122,122,.8)';return;}
     if(!res.existe){status.textContent='⚠ Obra não encontrada. Verifique o nome.';status.style.color='rgba(232,122,122,.8)';return;}
-    if(!res.valida){status.textContent='✦ Fora do escopo espiritual do MASTER SPIRIT. '+res.motivo;status.style.color='rgba(232,122,122,.8)';return;}
+    if(!res.valida){status.textContent='⚠ Fora do escopo espiritual: '+(res.motivo||'Esta obra não se enquadra na temática do MASTER SPIRIT.');status.style.color='rgba(232,122,122,.8)';return;}
     const newRoom={id:'c'+Date.now(),icon:res.icon||'📗',title:res.titulo||name,author:res.autor||'',color:'#C9A84C',desc:res.desc||'',tags:res.tags||[],synopsis:''};
     rooms.push(newRoom);saveCustomRooms();
     closeModal('newroom');
