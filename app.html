@@ -419,54 +419,131 @@ body.ff-sys{--font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
   <div class="modal-inner" style="text-align:center">
     <div style="font-size:48px;margin:20px 0 10px;animation:float 5s ease-in-out infinite">✦</div>
     <p style="font-family:'Cinzel Decorative',serif;font-size:18px;color:var(--gold);margin-bottom:6px">Seus chats gratuitos acabaram</p>
-    <p style="font-size:14px;color:rgba(240,234,214,.5);font-style:italic;margin-bottom:30px;line-height:1.7">
+    <p style="font-size:14px;color:rgba(240,234,214,.5);font-style:italic;margin-bottom:24px;line-height:1.7">
       "Pedi, e dar-se-vos-á; buscai, e encontrareis"<br>
       <span style="font-size:11px;color:rgba(201,168,76,.4)">— Mateus 7:7</span>
     </p>
 
-    <!-- Basic Plan -->
-    <div style="background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.3);border-radius:16px;padding:24px 20px;margin-bottom:14px;text-align:left;position:relative;overflow:hidden">
-      <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent)"></div>
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-        <div>
-          <p style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--gold)">PLANO BASIC</p>
-          <p style="font-size:12px;color:rgba(240,234,214,.4);margin-top:2px">Presença e Palavra</p>
-        </div>
-        <div style="text-align:right">
-          <p style="font-family:'Cinzel',serif;font-size:22px;color:var(--text)">R$19,99<span style="font-size:12px;color:rgba(240,234,214,.4)">/mês</span></p>
-        </div>
+    <!-- Toggle Mensal / Anual -->
+    <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:24px">
+      <span id="lbl-mensal" style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:1.5px;color:var(--gold);cursor:pointer" onclick="setBilling('mensal')">MENSAL</span>
+      <div onclick="toggleBilling()" style="width:46px;height:24px;background:rgba(201,168,76,.2);border:1px solid rgba(201,168,76,.4);border-radius:12px;cursor:pointer;position:relative;transition:all .3s">
+        <div id="billing-knob" style="width:18px;height:18px;background:var(--gold);border-radius:50%;position:absolute;top:2px;left:3px;transition:all .3s"></div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:rgba(240,234,214,.7);margin-bottom:18px">
-        <div>✦ <span style="color:var(--gold)">50 chats</span> por mês</div>
-        <div>✦ Boas-vindas e ensinamentos em voz</div>
-        <div>✦ Voz do Mestre ao iniciar cada conversa</div>
-        <div>✦ Todas as salas de estudo</div>
-      </div>
-      <button onclick="selectPlan('basic')" class="btn-gold" style="text-align:center">ESCOLHER BASIC</button>
+      <span id="lbl-anual" style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:1.5px;color:rgba(240,234,214,.4);cursor:pointer" onclick="setBilling('anual')">ANUAL <span style="background:rgba(90,175,124,.2);color:#5BAF7C;border-radius:8px;padding:1px 6px;font-size:9px;margin-left:3px">-15%</span></span>
     </div>
 
-    <!-- Premium Plan -->
-    <div style="background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.5);border-radius:16px;padding:24px 20px;margin-bottom:14px;text-align:left;position:relative;overflow:hidden;box-shadow:0 0 30px rgba(201,168,76,.08)">
-      <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,transparent,#E8C97A,var(--gold),#E8C97A,transparent)"></div>
-      <div style="position:absolute;top:12px;right:14px;background:rgba(201,168,76,.2);border:1px solid rgba(201,168,76,.4);border-radius:20px;padding:2px 10px;font-family:'Cinzel',serif;font-size:7px;letter-spacing:1.5px;color:var(--gold)">RECOMENDADO</div>
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-        <div>
-          <p style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--gold2)">PLANO PREMIUM</p>
-          <p style="font-size:12px;color:rgba(240,234,214,.4);margin-top:2px">Experiência completa</p>
+    <!-- Tabs Individual / Coletivo -->
+    <div style="display:flex;gap:8px;margin-bottom:20px;background:rgba(255,255,255,.04);border-radius:12px;padding:4px">
+      <button id="tab-individual" onclick="setPlanTab('individual')" style="flex:1;padding:8px;border:none;border-radius:9px;background:rgba(201,168,76,.15);color:var(--gold);font-family:'Cinzel',serif;font-size:9px;letter-spacing:1.5px;cursor:pointer">INDIVIDUAL</button>
+      <button id="tab-coletivo" onclick="setPlanTab('coletivo')" style="flex:1;padding:8px;border:none;border-radius:9px;background:transparent;color:rgba(240,234,214,.4);font-family:'Cinzel',serif;font-size:9px;letter-spacing:1.5px;cursor:pointer">COLETIVO 5+</button>
+    </div>
+
+    <!-- Planos Individual -->
+    <div id="plans-individual">
+      <!-- Basic -->
+      <div style="background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.3);border-radius:16px;padding:24px 20px;margin-bottom:14px;text-align:left;position:relative;overflow:hidden">
+        <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent)"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <div>
+            <p style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--gold)">PLANO BASIC</p>
+            <p style="font-size:12px;color:rgba(240,234,214,.4);margin-top:2px">Presença e Palavra</p>
+          </div>
+          <div style="text-align:right">
+            <p id="price-basic" style="font-family:'Cinzel',serif;font-size:22px;color:var(--text)">R$19,99<span style="font-size:12px;color:rgba(240,234,214,.4)">/mês</span></p>
+            <p id="price-basic-anual" style="display:none;font-size:10px;color:rgba(240,234,214,.35)">R$203,90/ano</p>
+          </div>
         </div>
-        <div style="text-align:right">
-          <p style="font-family:'Cinzel',serif;font-size:22px;color:var(--text)">R$39,99<span style="font-size:12px;color:rgba(240,234,214,.4)">/mês</span></p>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:rgba(240,234,214,.7);margin-bottom:18px">
+          <div>✦ <span style="color:var(--gold)">50 chats</span> por mês</div>
+          <div>✦ Boas-vindas em voz de Jesus</div>
+          <div>✦ Ensinamentos do dia em voz</div>
+          <div>✦ Voz do Mestre ao iniciar cada conversa</div>
+          <div>✦ Todas as salas de estudo</div>
         </div>
+        <button onclick="selectPlan('basic')" class="btn-gold" style="text-align:center">ESCOLHER BASIC</button>
       </div>
-      <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:rgba(240,234,214,.7);margin-bottom:18px">
-        <div>✦ Chats <span style="color:var(--gold2);font-weight:500">ilimitados</span></div>
-        <div>✦ Boas-vindas e ensinamentos em voz</div>
-        <div>✦ Voz do Mestre ao iniciar cada conversa</div>
-        <div>✦ Encerramento em voz — "reflita em silêncio..."</div>
-        <div>✦ Todas as salas de estudo</div>
-        <div>✦ Prioridade de resposta</div>
+
+      <!-- Premium -->
+      <div style="background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.5);border-radius:16px;padding:24px 20px;margin-bottom:14px;text-align:left;position:relative;overflow:hidden;box-shadow:0 0 30px rgba(201,168,76,.08)">
+        <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,transparent,#E8C97A,var(--gold),#E8C97A,transparent)"></div>
+        <div style="position:absolute;top:12px;right:14px;background:rgba(201,168,76,.2);border:1px solid rgba(201,168,76,.4);border-radius:20px;padding:2px 10px;font-family:'Cinzel',serif;font-size:7px;letter-spacing:1.5px;color:var(--gold)">RECOMENDADO</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <div>
+            <p style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--gold2)">PLANO PREMIUM</p>
+            <p style="font-size:12px;color:rgba(240,234,214,.4);margin-top:2px">Experiência completa</p>
+          </div>
+          <div style="text-align:right">
+            <p id="price-premium" style="font-family:'Cinzel',serif;font-size:22px;color:var(--text)">R$39,99<span style="font-size:12px;color:rgba(240,234,214,.4)">/mês</span></p>
+            <p id="price-premium-anual" style="display:none;font-size:10px;color:rgba(240,234,214,.35)">R$407,90/ano</p>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:rgba(240,234,214,.7);margin-bottom:18px">
+          <div>✦ Chats <span style="color:var(--gold2);font-weight:500">ilimitados</span></div>
+          <div>✦ Boas-vindas em voz de Jesus</div>
+          <div>✦ Ensinamentos do dia em voz</div>
+          <div>✦ Voz do Mestre ao iniciar cada conversa</div>
+          <div>✦ Encerramento em voz — "reflita em silêncio..."</div>
+          <div>✦ Todas as salas de estudo</div>
+          <div>✦ Prioridade de resposta</div>
+        </div>
+        <button onclick="selectPlan('premium')" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;border-radius:12px;color:#060a16;font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;cursor:pointer;font-weight:600;transition:all .2s;box-shadow:0 4px 20px rgba(201,168,76,.25)" onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 6px 24px rgba(201,168,76,.35)'" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 20px rgba(201,168,76,.25)'">ESCOLHER PREMIUM</button>
       </div>
-      <button onclick="selectPlan('premium')" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;border-radius:12px;color:#060a16;font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;cursor:pointer;font-weight:600;transition:all .2s;box-shadow:0 4px 20px rgba(201,168,76,.25)" onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 6px 24px rgba(201,168,76,.35)'" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 20px rgba(201,168,76,.25)'">ESCOLHER PREMIUM</button>
+    </div>
+
+    <!-- Planos Coletivo -->
+    <div id="plans-coletivo" style="display:none">
+      <p style="font-size:12px;color:rgba(240,234,214,.45);margin-bottom:16px;font-style:italic">Mínimo 5 licenças · Gerencie sua equipe no painel</p>
+
+      <!-- Basic Coletivo -->
+      <div style="background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.3);border-radius:16px;padding:24px 20px;margin-bottom:14px;text-align:left;position:relative;overflow:hidden">
+        <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent)"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div>
+            <p style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--gold)">BASIC COLETIVO</p>
+            <p style="font-size:12px;color:rgba(240,234,214,.4);margin-top:2px">-10% por licença</p>
+          </div>
+          <div style="text-align:right">
+            <p id="price-basic-col" style="font-family:'Cinzel',serif;font-size:20px;color:var(--text)">R$17,99<span style="font-size:11px;color:rgba(240,234,214,.4)">/lic/mês</span></p>
+            <p id="price-basic-col-anual" style="display:none;font-size:10px;color:rgba(240,234,214,.35)">R$183,50/lic/ano</p>
+          </div>
+        </div>
+        <div style="margin-bottom:12px">
+          <label style="font-size:11px;color:rgba(240,234,214,.5);letter-spacing:1px">LICENÇAS</label>
+          <div style="display:flex;align-items:center;gap:10px;margin-top:6px">
+            <button onclick="changeLic('basic',-1)" style="width:28px;height:28px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:6px;color:var(--gold);font-size:16px;cursor:pointer;line-height:1">−</button>
+            <span id="lic-basic" style="font-family:'Cinzel',serif;font-size:18px;color:var(--text);min-width:24px;text-align:center">5</span>
+            <button onclick="changeLic('basic',1)" style="width:28px;height:28px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:6px;color:var(--gold);font-size:16px;cursor:pointer;line-height:1">+</button>
+            <span style="font-size:11px;color:rgba(240,234,214,.4)">= Total: <strong id="total-basic" style="color:var(--gold)">R$89,95/mês</strong></span>
+          </div>
+        </div>
+        <button onclick="selectPlan('basic-col')" class="btn-gold" style="text-align:center">ESCOLHER BASIC COLETIVO</button>
+      </div>
+
+      <!-- Premium Coletivo -->
+      <div style="background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.5);border-radius:16px;padding:24px 20px;margin-bottom:14px;text-align:left;position:relative;overflow:hidden;box-shadow:0 0 30px rgba(201,168,76,.08)">
+        <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,transparent,#E8C97A,var(--gold),#E8C97A,transparent)"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div>
+            <p style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--gold2)">PREMIUM COLETIVO</p>
+            <p style="font-size:12px;color:rgba(240,234,214,.4);margin-top:2px">-10% por licença</p>
+          </div>
+          <div style="text-align:right">
+            <p id="price-premium-col" style="font-family:'Cinzel',serif;font-size:20px;color:var(--text)">R$35,99<span style="font-size:11px;color:rgba(240,234,214,.4)">/lic/mês</span></p>
+            <p id="price-premium-col-anual" style="display:none;font-size:10px;color:rgba(240,234,214,.35)">R$367,10/lic/ano</p>
+          </div>
+        </div>
+        <div style="margin-bottom:12px">
+          <label style="font-size:11px;color:rgba(240,234,214,.5);letter-spacing:1px">LICENÇAS</label>
+          <div style="display:flex;align-items:center;gap:10px;margin-top:6px">
+            <button onclick="changeLic('premium',-1)" style="width:28px;height:28px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:6px;color:var(--gold);font-size:16px;cursor:pointer;line-height:1">−</button>
+            <span id="lic-premium" style="font-family:'Cinzel',serif;font-size:18px;color:var(--text);min-width:24px;text-align:center">5</span>
+            <button onclick="changeLic('premium',1)" style="width:28px;height:28px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:6px;color:var(--gold);font-size:16px;cursor:pointer;line-height:1">+</button>
+            <span style="font-size:11px;color:rgba(240,234,214,.4)">= Total: <strong id="total-premium" style="color:var(--gold2)">R$179,95/mês</strong></span>
+          </div>
+        </div>
+        <button onclick="selectPlan('premium-col')" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;border-radius:12px;color:#060a16;font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;cursor:pointer;font-weight:600;transition:all .2s;box-shadow:0 4px 20px rgba(201,168,76,.25)">ESCOLHER PREMIUM COLETIVO</button>
+      </div>
     </div>
 
     <p style="font-size:11px;color:rgba(240,234,214,.25);margin-top:20px;font-style:italic">
@@ -1971,6 +2048,74 @@ function updateChatCounter() {
     const label = chatsRemaining + '/' + limit;
     el.innerHTML = dots.join('') + ' <span style="color:rgba(240,234,214,.35);font-size:9px;margin-left:4px">' + label + '</span>';
   }
+}
+
+// ── Billing toggle (mensal / anual) ──────────────────────────
+var _billing = 'mensal';
+var _licBasic = 5, _licPremium = 5;
+
+function toggleBilling() { setBilling(_billing === 'mensal' ? 'anual' : 'mensal'); }
+
+function setBilling(mode) {
+  _billing = mode;
+  var knob = document.getElementById('billing-knob');
+  var lblM = document.getElementById('lbl-mensal');
+  var lblA = document.getElementById('lbl-anual');
+  if (knob) knob.style.left = mode === 'anual' ? '25px' : '3px';
+  if (lblM) lblM.style.color = mode === 'mensal' ? 'var(--gold)' : 'rgba(240,234,214,.4)';
+  if (lblA) lblA.style.color = mode === 'anual' ? 'var(--gold)' : 'rgba(240,234,214,.4)';
+
+  // Preços individuais
+  var pb = document.getElementById('price-basic');
+  var pp = document.getElementById('price-premium');
+  var pba = document.getElementById('price-basic-anual');
+  var ppa = document.getElementById('price-premium-anual');
+  if (pb) pb.innerHTML = mode === 'mensal' ? 'R$19,99<span style="font-size:12px;color:rgba(240,234,214,.4)">/mês</span>' : 'R$16,99<span style="font-size:12px;color:rgba(240,234,214,.4)">/mês</span>';
+  if (pp) pp.innerHTML = mode === 'mensal' ? 'R$39,99<span style="font-size:12px;color:rgba(240,234,214,.4)">/mês</span>' : 'R$33,99<span style="font-size:12px;color:rgba(240,234,214,.4)">/mês</span>';
+  if (pba) pba.style.display = mode === 'anual' ? 'block' : 'none';
+  if (ppa) ppa.style.display = mode === 'anual' ? 'block' : 'none';
+
+  // Preços coletivos
+  var pbc = document.getElementById('price-basic-col');
+  var ppc = document.getElementById('price-premium-col');
+  var pbca = document.getElementById('price-basic-col-anual');
+  var ppca = document.getElementById('price-premium-col-anual');
+  if (pbc) pbc.innerHTML = mode === 'mensal' ? 'R$17,99<span style="font-size:11px;color:rgba(240,234,214,.4)">/lic/mês</span>' : 'R$15,29<span style="font-size:11px;color:rgba(240,234,214,.4)">/lic/mês</span>';
+  if (ppc) ppc.innerHTML = mode === 'mensal' ? 'R$35,99<span style="font-size:11px;color:rgba(240,234,214,.4)">/lic/mês</span>' : 'R$30,59<span style="font-size:11px;color:rgba(240,234,214,.4)">/lic/mês</span>';
+  if (pbca) pbca.style.display = mode === 'anual' ? 'block' : 'none';
+  if (ppca) ppca.style.display = mode === 'anual' ? 'block' : 'none';
+
+  updateLicTotals();
+}
+
+function setPlanTab(tab) {
+  document.getElementById('plans-individual').style.display = tab === 'individual' ? 'block' : 'none';
+  document.getElementById('plans-coletivo').style.display = tab === 'coletivo' ? 'block' : 'none';
+  document.getElementById('tab-individual').style.background = tab === 'individual' ? 'rgba(201,168,76,.15)' : 'transparent';
+  document.getElementById('tab-individual').style.color = tab === 'individual' ? 'var(--gold)' : 'rgba(240,234,214,.4)';
+  document.getElementById('tab-coletivo').style.background = tab === 'coletivo' ? 'rgba(201,168,76,.15)' : 'transparent';
+  document.getElementById('tab-coletivo').style.color = tab === 'coletivo' ? 'var(--gold)' : 'rgba(240,234,214,.4)';
+}
+
+function changeLic(type, delta) {
+  if (type === 'basic') {
+    _licBasic = Math.max(5, _licBasic + delta);
+    document.getElementById('lic-basic').textContent = _licBasic;
+  } else {
+    _licPremium = Math.max(5, _licPremium + delta);
+    document.getElementById('lic-premium').textContent = _licPremium;
+  }
+  updateLicTotals();
+}
+
+function updateLicTotals() {
+  var priceBasic = _billing === 'mensal' ? 17.99 : 15.29;
+  var pricePremium = _billing === 'mensal' ? 35.99 : 30.59;
+  var sufixo = _billing === 'mensal' ? '/mês' : '/mês';
+  var tb = document.getElementById('total-basic');
+  var tp = document.getElementById('total-premium');
+  if (tb) tb.textContent = 'R$' + (_licBasic * priceBasic).toFixed(2).replace('.',',') + sufixo;
+  if (tp) tp.textContent = 'R$' + (_licPremium * pricePremium).toFixed(2).replace('.',',') + sufixo;
 }
 
 async function selectPlan(plan) {
