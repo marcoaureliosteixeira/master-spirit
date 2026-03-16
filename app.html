@@ -1836,18 +1836,21 @@ async function speakResponse(text){
   stopAllAudio();
   _ttsPlaying=true;
 
-  // Modo Jesus: ElevenLabs via proxy seguro
+  // Modo Jesus: ElevenLabs
+  // TEMP_DIRECT: chama API diretamente para diagnóstico — reverter após confirmar chave
   if(chatMode==='jesus'){
     try{
       unlockAudioCtx();
-      console.log('[TTS] AudioContext state='+window._audioCtx.state);
-      console.log('[TTS] Chamando /api/tts...');
-      var r=await fetch('/api/tts',{
+      var _elKey=localStorage.getItem('el_test_key')||'';
+      var _elVoice=localStorage.getItem('el_test_voice')||'XNKrDiLvCkrRbQpjHoYo';
+      if(!_elKey){console.error('[TTS] el_test_key não definida no localStorage');_ttsPlaying=false;return;}
+      console.log('[TTS] Chamando ElevenLabs direto, voice='+_elVoice);
+      var r=await fetch('https://api.elevenlabs.io/v1/text-to-speech/'+_elVoice,{
         method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({text:text.substring(0,5000)})
+        headers:{'Content-Type':'application/json','xi-api-key':_elKey},
+        body:JSON.stringify({text:text.substring(0,5000),model_id:'eleven_flash_v2_5',voice_settings:{stability:0.6,similarity_boost:0.8}})
       });
-      console.log('[TTS] Resposta status='+r.status+', _ttsPlaying='+_ttsPlaying);
+      console.log('[TTS] Resposta status='+r.status);
       if(r.ok&&_ttsPlaying){
         var arrayBuf=await r.arrayBuffer();
         console.log('[TTS] arrayBuf size='+arrayBuf.byteLength);
@@ -1861,7 +1864,7 @@ async function speakResponse(text){
         window._currentSource=source;
         console.log('[TTS] audio iniciado!');
         return;
-      }
+      }else if(!r.ok){var errTxt=await r.text();console.error('[TTS] Erro ElevenLabs:',r.status,errTxt);}
     }catch(ex){console.error('[TTS] ElevenLabs error:',ex);}
     _ttsPlaying=false;
     return;
