@@ -1770,11 +1770,22 @@ async function speakResponse(text){
         audio.onended=function(){_ttsPlaying=false;window._currentAudio=null;};
         audio.play();
         return;
+      } else {
+        // Log do erro para debug
+        var errData=null;
+        try{errData=await r.json();}catch(pe){}
+        console.error('ElevenLabs TTS failed:',r.status,errData);
+        _ttsPlaying=false;
+        return; // NÃO usar fallback no modo Jesus
       }
-    }catch(ex){console.warn('TTS server error:',ex);}
+    }catch(ex){
+      console.error('TTS fetch error:',ex);
+      _ttsPlaying=false;
+      return; // NÃO usar fallback no modo Jesus
+    }
   }
 
-  // Modo Normal ou fallback: browser TTS
+  // Modo Normal: browser TTS
   if(_ttsPlaying&&'speechSynthesis' in window){
     var utter=new SpeechSynthesisUtterance(text.substring(0,2000));
     utter.lang='pt-BR';

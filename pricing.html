@@ -168,6 +168,38 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',Geo
 
   </div>
 
+  <!-- Toggle Mensal/Anual -->
+  <div style="text-align:center;margin-bottom:40px">
+    <div style="display:inline-flex;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.2);border-radius:30px;padding:4px;gap:4px">
+      <button id="toggle-monthly" onclick="toggleBilling('monthly')" style="padding:10px 28px;border-radius:26px;border:none;font-family:'Cinzel',serif;font-size:11px;letter-spacing:1.5px;cursor:pointer;transition:all .2s;background:rgba(201,168,76,.2);color:#C9A84C">MENSAL</button>
+      <button id="toggle-annual" onclick="toggleBilling('annual')" style="padding:10px 28px;border-radius:26px;border:none;font-family:'Cinzel',serif;font-size:11px;letter-spacing:1.5px;cursor:pointer;transition:all .2s;background:transparent;color:rgba(240,234,214,.4)">ANUAL <span style="font-size:9px;color:#5BAF7C">-15%</span></button>
+    </div>
+  </div>
+
+  <!-- Plano Institucional -->
+  <div style="max-width:700px;margin:0 auto 40px;background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.2);border-radius:20px;padding:30px;position:relative;overflow:hidden">
+    <div style="position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,transparent,#5BAF7C,transparent)"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px">
+      <div>
+        <p style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:3px;color:#5BAF7C;text-transform:uppercase;margin-bottom:4px">Plano Institucional</p>
+        <p style="font-size:14px;color:rgba(240,234,214,.5);margin-bottom:8px">Para centros espíritas, igrejas e entidades religiosas</p>
+        <p style="font-size:13px;color:rgba(240,234,214,.6);line-height:1.7">
+          ✦ A partir de <span style="color:#5BAF7C;font-weight:600">3 licenças</span> Premium<br>
+          ✦ <span style="color:#5BAF7C;font-weight:600">R$29,99</span>/licença/mês <span style="color:rgba(240,234,214,.3)">(economia de 25%)</span><br>
+          ✦ Painel administrativo para gestão de usuários<br>
+          ✦ Suporte prioritário por e-mail<br>
+          ✦ Personalização do nome da instituição no app
+        </p>
+      </div>
+      <div style="text-align:center">
+        <p style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:2px;color:rgba(240,234,214,.3);margin-bottom:6px">A PARTIR DE</p>
+        <p style="font-family:'Cinzel',serif;font-size:28px;color:var(--text)">R$89,97<span style="font-size:12px;color:rgba(240,234,214,.4)">/mês</span></p>
+        <p style="font-size:11px;color:rgba(240,234,214,.3)">3 licenças</p>
+        <button style="margin-top:12px;padding:12px 28px;background:rgba(91,175,124,.15);border:1px solid rgba(91,175,124,.5);border-radius:12px;color:#5BAF7C;font-family:'Cinzel',serif;font-size:10px;letter-spacing:1.5px;cursor:pointer;text-transform:uppercase;transition:all .2s" onmouseover="this.style.background='rgba(91,175,124,.25)'" onmouseout="this.style.background='rgba(91,175,124,.15)'">SOLICITAR CONTATO</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Tabela Comparativa -->
   <div class="compare">
     <h2>Comparação de Recursos</h2>
@@ -289,6 +321,15 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',Geo
       <div class="faq-q">O aplicativo é seguro? Meus dados estão protegidos? <span class="faq-arrow">▼</span></div>
       <div class="faq-a">Sim. Utilizamos Supabase para autenticação, Stripe para pagamentos (seus dados de cartão nunca passam pelo nosso servidor) e seguimos a LGPD em todo o tratamento de dados pessoais.</div>
     </div>
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <div class="faq-q">Existe plano anual? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">Sim! No plano anual você economiza 15% em relação ao mensal. O Basic sai por R$16,99/mês (R$203,88/ano) e o Premium por R$33,99/mês (R$407,88/ano). Use o toggle Mensal/Anual acima para ver os preços.</div>
+    </div>
+
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <div class="faq-q">Existe plano para centros espíritas e entidades religiosas? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">Sim! O Plano Institucional é ideal para centros espíritas, igrejas e organizações religiosas. A partir de 3 licenças Premium, cada licença sai por R$29,99/mês — uma economia de 25%. Inclui painel administrativo e suporte prioritário. Entre em contato para saber mais.</div>
+    </div>
   </div>
 
   <!-- Footer -->
@@ -299,5 +340,44 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',Geo
 
 </div>
 
+<script>
+// Preços
+var prices={
+  basic:{monthly:'R$19,99',annual:'R$16,99',cycle_m:'Cobrado mensalmente · Cancele quando quiser',cycle_a:'Cobrado anualmente: R$203,88/ano · Economia de 15%'},
+  premium:{monthly:'R$39,99',annual:'R$33,99',cycle_m:'Cobrado mensalmente · Cancele quando quiser',cycle_a:'Cobrado anualmente: R$407,88/ano · Economia de 15%'}
+};
+function toggleBilling(mode){
+  var plans=document.querySelectorAll('.plan');
+  var btnM=document.getElementById('toggle-monthly');
+  var btnA=document.getElementById('toggle-annual');
+  if(mode==='annual'){
+    btnA.style.background='rgba(201,168,76,.2)';btnA.style.color='#C9A84C';
+    btnM.style.background='transparent';btnM.style.color='rgba(240,234,214,.4)';
+  } else {
+    btnM.style.background='rgba(201,168,76,.2)';btnM.style.color='#C9A84C';
+    btnA.style.background='transparent';btnA.style.color='rgba(240,234,214,.4)';
+  }
+  // Basic
+  var basicPrice=plans[1].querySelector('.plan-price');
+  var basicCycle=plans[1].querySelector('.plan-cycle');
+  if(mode==='annual'){
+    basicPrice.innerHTML=prices.basic.annual+'<span>/mês</span>';
+    basicCycle.textContent=prices.basic.cycle_a;
+  } else {
+    basicPrice.innerHTML=prices.basic.monthly+'<span>/mês</span>';
+    basicCycle.textContent=prices.basic.cycle_m;
+  }
+  // Premium
+  var premPrice=plans[2].querySelector('.plan-price');
+  var premCycle=plans[2].querySelector('.plan-cycle');
+  if(mode==='annual'){
+    premPrice.innerHTML=prices.premium.annual+'<span>/mês</span>';
+    premCycle.textContent=prices.premium.cycle_a;
+  } else {
+    premPrice.innerHTML=prices.premium.monthly+'<span>/mês</span>';
+    premCycle.textContent=prices.premium.cycle_m;
+  }
+}
+</script>
 </body>
 </html>
