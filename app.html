@@ -430,7 +430,7 @@ body.ff-sys{--font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
         <div>
           <p style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--gold)">PLANO BASIC</p>
-          <p style="font-size:12px;color:rgba(240,234,214,.4);margin-top:2px">Texto + Voz</p>
+          <p style="font-size:12px;color:rgba(240,234,214,.4);margin-top:2px">Presença e Palavra</p>
         </div>
         <div style="text-align:right">
           <p style="font-family:'Cinzel',serif;font-size:22px;color:var(--text)">R$19,99<span style="font-size:12px;color:rgba(240,234,214,.4)">/mês</span></p>
@@ -438,8 +438,9 @@ body.ff-sys{--font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
       </div>
       <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:rgba(240,234,214,.7);margin-bottom:18px">
         <div>✦ <span style="color:var(--gold)">50 chats</span> por mês</div>
-        <div>✦ Voz do Mestre em todas as respostas</div>
-        <div>✦ Salas de estudo básicas</div>
+        <div>✦ Boas-vindas e ensinamentos em voz</div>
+        <div>✦ Voz do Mestre ao iniciar cada conversa</div>
+        <div>✦ Todas as salas de estudo</div>
       </div>
       <button onclick="selectPlan('basic')" class="btn-gold" style="text-align:center">ESCOLHER BASIC</button>
     </div>
@@ -459,7 +460,9 @@ body.ff-sys{--font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
       </div>
       <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:rgba(240,234,214,.7);margin-bottom:18px">
         <div>✦ Chats <span style="color:var(--gold2);font-weight:500">ilimitados</span></div>
-        <div>✦ Voz do Mestre em todas as respostas</div>
+        <div>✦ Boas-vindas e ensinamentos em voz</div>
+        <div>✦ Voz do Mestre ao iniciar cada conversa</div>
+        <div>✦ Encerramento em voz — "reflita em silêncio..."</div>
         <div>✦ Todas as salas de estudo</div>
         <div>✦ Prioridade de resposta</div>
       </div>
@@ -1862,6 +1865,36 @@ async function speakResponse(text){
 let userPlan = 'free';
 let chatsRemaining = 5;
 const PLAN_LIMITS = { free: 5, basic: 50, premium: 999999 };
+
+// Controle de áudio por plano
+// free:    welcome + teachings
+// basic:   free + intros aleatórias do chat
+// premium: basic + encerramento "reflita..."
+const PLAN_AUDIO = {
+  free:    ['welcome','teaching'],
+  basic:   ['welcome','teaching','intro'],
+  premium: ['welcome','teaching','intro','outro'],
+};
+function canPlayAudio(type){
+  const allowed = PLAN_AUDIO[userPlan] || PLAN_AUDIO['free'];
+  return allowed.some(t => type.startsWith(t));
+}
+function playAudio(file, onended){
+  const audio = new Audio('/assets/audio/' + file);
+  audio.onended = onended || null;
+  audio.play().catch(()=>{ if(onended) onended(); });
+  return audio;
+}
+function playRandomIntro(onended){
+  if(!canPlayAudio('intro')){ if(onended) onended(); return; }
+  const n = Math.floor(Math.random()*10)+1;
+  const file = 'intro_' + String(n).padStart(2,'0') + '.mp3';
+  playAudio(file, onended);
+}
+function playOutro(){
+  if(!canPlayAudio('outro')) return;
+  playAudio('outro.mp3');
+}
 
 async function initUsage() {
   if (!window._sb) return;
