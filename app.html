@@ -1991,6 +1991,40 @@ async function doLogout() {
   window.location.href = 'index.html';
 }
 
+function checkMPReturn() {
+  var params = new URLSearchParams(window.location.search);
+  var status = params.get('collection_status') || params.get('status');
+  if (!status) return;
+
+  // Limpa URL sem recarregar
+  window.history.replaceState({}, '', window.location.pathname);
+
+  if (status === 'approved') {
+    setTimeout(function() {
+      // Recarrega plano do Supabase
+      initUsage();
+      // Mostra mensagem
+      var msg = document.createElement('div');
+      msg.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#1a2a1a,#0f1a0f);border:1px solid rgba(91,175,124,.5);border-radius:14px;padding:16px 24px;z-index:9999;text-align:center;color:#5BAF7C;font-family:Cinzel,serif;font-size:11px;letter-spacing:2px;box-shadow:0 8px 30px rgba(0,0,0,.5)';
+      msg.innerHTML = '✦ ASSINATURA ATIVADA ✦<br><span style="font-size:10px;color:rgba(240,234,214,.6);font-family:inherit;letter-spacing:1px">Bem-vindo ao plano premium</span>';
+      document.body.appendChild(msg);
+      setTimeout(function() { msg.remove(); }, 5000);
+    }, 1500);
+  } else if (status === 'pending') {
+    var msg = document.createElement('div');
+    msg.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:rgba(20,15,5,.95);border:1px solid rgba(201,168,76,.4);border-radius:14px;padding:16px 24px;z-index:9999;text-align:center;color:var(--gold);font-family:Cinzel,serif;font-size:11px;letter-spacing:2px;box-shadow:0 8px 30px rgba(0,0,0,.5)';
+    msg.innerHTML = '⏳ PAGAMENTO PENDENTE<br><span style="font-size:10px;color:rgba(240,234,214,.6);font-family:inherit;letter-spacing:1px">Seu plano será ativado em breve</span>';
+    document.body.appendChild(msg);
+    setTimeout(function() { msg.remove(); }, 5000);
+  } else if (status === 'failure') {
+    var msg = document.createElement('div');
+    msg.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:rgba(20,5,5,.95);border:1px solid rgba(175,91,91,.4);border-radius:14px;padding:16px 24px;z-index:9999;text-align:center;color:#AF5B5B;font-family:Cinzel,serif;font-size:11px;letter-spacing:2px;box-shadow:0 8px 30px rgba(0,0,0,.5)';
+    msg.innerHTML = '✕ PAGAMENTO NÃO APROVADO<br><span style="font-size:10px;color:rgba(240,234,214,.6);font-family:inherit;letter-spacing:1px">Tente novamente</span>';
+    document.body.appendChild(msg);
+    setTimeout(function() { msg.remove(); }, 5000);
+  }
+}
+
 function initSupa() {
   try {
     if (window.supabase) {
@@ -2003,6 +2037,7 @@ function initSupa() {
           window.location.href = 'index.html';
         } else {
           initUsage();
+          checkMPReturn();
         }
       });
     }
