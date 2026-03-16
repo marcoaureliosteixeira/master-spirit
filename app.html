@@ -1813,34 +1813,47 @@ var _ttsPlaying=false;
 
 function stopAllAudio(){
   _ttsPlaying=false;
+  if(window._currentSource){try{window._currentSource.stop();window._currentSource=null;}catch(ex){}}
   if(window._currentAudio){try{window._currentAudio.pause();window._currentAudio.currentTime=0;window._currentAudio=null;}catch(ex){}}
   if(window.speechSynthesis) window.speechSynthesis.cancel();
 }
+
+// Desbloqueia AudioContext no primeiro toque/clique
+function unlockAudioCtx(){
+  if(!window._audioCtx){
+    window._audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  }
+  if(window._audioCtx.state==='suspended') window._audioCtx.resume();
+}
+document.addEventListener('click',unlockAudioCtx,{once:false});
 
 // Parar áudio ao mudar de aba/página
 document.addEventListener('visibilitychange',function(){if(document.hidden) stopAllAudio();});
 
 async function speakResponse(text){
-  // Se já está tocando, para tudo
   if(_ttsPlaying){stopAllAudio();return;}
-
   stopAllAudio();
   _ttsPlaying=true;
 
   // Modo Jesus: ElevenLabs via proxy seguro
   if(chatMode==='jesus'){
     try{
+      // Garante AudioContext desbloqueado
+      unlockAudioCtx();
       var r=await fetch('/api/tts',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({text:text.substring(0,5000)})
       });
       if(r.ok&&_ttsPlaying){
-        var blob=await r.blob();
-        var audio=new Audio(URL.createObjectURL(blob));
-        window._currentAudio=audio;
-        audio.onended=function(){_ttsPlaying=false;window._currentAudio=null;};
-        audio.play();
+        var arrayBuf=await r.arrayBuffer();
+        var audioBuf=await window._audioCtx.decodeAudioData(arrayBuf);
+        var source=window._audioCtx.createBufferSource();
+        source.buffer=audioBuf;
+        source.connect(window._audioCtx.destination);
+        source.onended=function(){_ttsPlaying=false;window._currentSource=null;};
+        source.start(0);
+        window._currentSource=source;
         return;
       }
     }catch(ex){console.error('ElevenLabs error:',ex);}
