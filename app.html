@@ -1831,6 +1831,7 @@ document.addEventListener('click',unlockAudioCtx,{once:false});
 document.addEventListener('visibilitychange',function(){if(document.hidden) stopAllAudio();});
 
 async function speakResponse(text){
+  console.log('[TTS] speakResponse chamado, chatMode='+chatMode+', _ttsPlaying='+_ttsPlaying);
   if(_ttsPlaying){stopAllAudio();return;}
   stopAllAudio();
   _ttsPlaying=true;
@@ -1838,25 +1839,30 @@ async function speakResponse(text){
   // Modo Jesus: ElevenLabs via proxy seguro
   if(chatMode==='jesus'){
     try{
-      // Garante AudioContext desbloqueado
       unlockAudioCtx();
+      console.log('[TTS] AudioContext state='+window._audioCtx.state);
+      console.log('[TTS] Chamando /api/tts...');
       var r=await fetch('/api/tts',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({text:text.substring(0,5000)})
       });
+      console.log('[TTS] Resposta status='+r.status+', _ttsPlaying='+_ttsPlaying);
       if(r.ok&&_ttsPlaying){
         var arrayBuf=await r.arrayBuffer();
+        console.log('[TTS] arrayBuf size='+arrayBuf.byteLength);
         var audioBuf=await window._audioCtx.decodeAudioData(arrayBuf);
+        console.log('[TTS] audioBuf duration='+audioBuf.duration+'s');
         var source=window._audioCtx.createBufferSource();
         source.buffer=audioBuf;
         source.connect(window._audioCtx.destination);
-        source.onended=function(){_ttsPlaying=false;window._currentSource=null;};
+        source.onended=function(){_ttsPlaying=false;window._currentSource=null;console.log('[TTS] fim do audio');};
         source.start(0);
         window._currentSource=source;
+        console.log('[TTS] audio iniciado!');
         return;
       }
-    }catch(ex){console.error('ElevenLabs error:',ex);}
+    }catch(ex){console.error('[TTS] ElevenLabs error:',ex);}
     _ttsPlaying=false;
     return;
   }
