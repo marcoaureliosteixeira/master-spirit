@@ -1961,7 +1961,7 @@ function updateChatCounter() {
 }
 
 async function selectPlan(plan) {
-  const { data: { user } } = await _supabase.auth.getUser();
+  const { data: { user } } = await window._sb.auth.getUser();
   if (!user) { openModal('login'); return; }
 
   try {
