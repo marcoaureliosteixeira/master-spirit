@@ -396,13 +396,6 @@ body.ff-sys{--font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
       <button class="preset-btn" data-ff="ff-pal" onclick="setFf(this)" style="font-family:Palatino,serif">Palatino</button>
       <button class="preset-btn" data-ff="ff-sys" onclick="setFf(this)" style="font-family:-apple-system,sans-serif">Sistema</button>
     </div>
-    <p class="sec-label">Voz do Consolador (ElevenLabs)</p>
-    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">
-      <input id="cfg-eleven-key" type="password" class="input-field" placeholder="API Key do ElevenLabs (opcional)" style="font-size:12px;padding:8px 12px;font-family:-apple-system,sans-serif;font-style:normal">
-      <input id="cfg-eleven-voice" type="text" class="input-field" placeholder="Voice ID (ex: pNInz6obpgDQGcFmaJgB)" style="font-size:12px;padding:8px 12px;font-family:-apple-system,sans-serif;font-style:normal">
-      <button onclick="saveElevenConfig()" style="padding:8px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:8px;color:#C9A84C;font-family:'Cinzel',serif;font-size:9px;letter-spacing:1px;cursor:pointer;text-transform:uppercase">Salvar Configuração de Voz</button>
-      <p style="font-size:10px;color:rgba(240,234,214,.25);font-style:italic;line-height:1.5">Sem ElevenLabs, a voz padrão do navegador será usada. Crie sua conta em elevenlabs.io para uma voz personalizada.</p>
-    </div>
 
     <div style="display:flex;gap:10px">
       <button class="btn-ghost" onclick="closeModal('cfg')">FECHAR</button>
@@ -817,7 +810,6 @@ window.addEventListener('load',()=>{
   // Load chat mode
   initChatMode();
   // Load voice config
-  loadElevenConfig();
   // Pré-gerar interpretação do dia em background
   preloadInterpretation();
   // Load rooms
@@ -1790,23 +1782,6 @@ function stopVoiceInput(){
 }
 
 // ── ElevenLabs Config ──
-function saveElevenConfig(){
-  var key=document.getElementById('cfg-eleven-key').value.trim();
-  var voice=document.getElementById('cfg-eleven-voice').value.trim();
-  if(key) localStorage.setItem('spirit_eleven_key',key);
-  else localStorage.removeItem('spirit_eleven_key');
-  if(voice) localStorage.setItem('spirit_eleven_voice',voice);
-  else localStorage.removeItem('spirit_eleven_voice');
-  alert(key&&voice?'Voz personalizada configurada!':'Configuração salva. A voz padrão do navegador será usada.');
-}
-function loadElevenConfig(){
-  var k=localStorage.getItem('spirit_eleven_key')||'';
-  var v=localStorage.getItem('spirit_eleven_voice')||'';
-  var ek=document.getElementById('cfg-eleven-key');
-  var ev=document.getElementById('cfg-eleven-voice');
-  if(ek) ek.value=k;
-  if(ev) ev.value=v;
-}
 
 // ── TTS (Text-to-Speech) — Resposta em voz ──
 var _ttsPlaying=false;
