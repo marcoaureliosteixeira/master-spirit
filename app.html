@@ -2051,10 +2051,78 @@ function initSupa() {
         } else {
           initUsage();
           checkMPReturn();
+          initSessionControl();
         }
       });
     }
   } catch(e) {}
+}
+
+async function initSessionControl() {
+  try {
+    var { data: { user } } = await window._sb.auth.getUser();
+    if (!user) return;
+
+    // Gera ou recupera token desta sessão
+    var token = localStorage.getItem('_sess_token');
+    if (!token) {
+      token = crypto.randomUUID ? crypto.randomUUID() : (Math.random().toString(36)+Date.now().toString(36));
+      localStorage.setItem('_sess_token', token);
+    }
+
+    // Registra/atualiza sessão atual
+    await window._sb.from('user_sessions').upsert({
+      user_id: user.id,
+      session_token: token,
+      last_seen: new Date().toISOString()
+    }, { onConflict: 'session_token' });
+
+    // Remove sessões inativas há mais de 2h
+    await window._sb.from('user_sessions')
+      .delete()
+      .eq('user_id', user.id)
+      .lt('last_seen', new Date(Date.now() - 2*60*60*1000).toISOString());
+
+    // Verifica se há mais de 2 sessões ativas — derruba a mais antiga
+    var { data: sessions } = await window._sb.from('user_sessions')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('last_seen', { ascending: true });
+
+    if (sessions && sessions.length > 2) {
+      var toRemove = sessions.slice(0, sessions.length - 2);
+      for (var s of toRemove) {
+        await window._sb.from('user_sessions').delete().eq('session_token', s.session_token);
+      }
+    }
+
+    // Heartbeat a cada 30s — mantém sessão viva e verifica se foi derrubado
+    window._sessInterval = setInterval(async function() {
+      var { error } = await window._sb.from('user_sessions')
+        .update({ last_seen: new Date().toISOString() })
+        .eq('session_token', token);
+
+      // Se a sessão não existe mais, foi derrubada por outro dispositivo
+      var { data: check } = await window._sb.from('user_sessions')
+        .select('session_token')
+        .eq('session_token', token)
+        .maybeSingle();
+
+      if (!check) {
+        clearInterval(window._sessInterval);
+        alert('⚠️ Sua sessão foi encerrada pois outro dispositivo fez login na sua conta.');
+        localStorage.removeItem('_sess_token');
+        window._sb.auth.signOut();
+        window.location.href = 'index.html';
+      }
+    }, 30000);
+
+    // Remove sessão ao fechar a aba
+    window.addEventListener('beforeunload', function() {
+      window._sb.from('user_sessions').delete().eq('session_token', token);
+    });
+
+  } catch(e) { console.warn('Session control error:', e); }
 }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" onload="initSupa()"></script>
