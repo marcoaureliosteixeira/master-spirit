@@ -36,6 +36,7 @@ export default async function handler(req, res) {
         voice_settings: {
           stability: 0.5,
           similarity_boost: 1.0,
+          speed: 0.85,
         },
       }),
     });
