@@ -1829,6 +1829,11 @@ async function speakResponse(text){
 
   // Modo Jesus: ElevenLabs via servidor
   if(chatMode==='jesus'){
+    // Criar Audio ANTES do fetch para manter contexto de interação do usuário
+    var audio=new Audio();
+    window._currentAudio=audio;
+    audio.onended=function(){_ttsPlaying=false;window._currentAudio=null;};
+    audio.onerror=function(e){console.error('Audio playback error:',e);_ttsPlaying=false;window._currentAudio=null;};
     try{
       var r=await fetch('/api/tts',{
         method:'POST',
@@ -1837,23 +1842,26 @@ async function speakResponse(text){
       });
       if(r.ok&&_ttsPlaying){
         var blob=await r.blob();
-        var audio=new Audio(URL.createObjectURL(blob));
-        window._currentAudio=audio;
-        audio.onended=function(){_ttsPlaying=false;window._currentAudio=null;};
-        audio.play();
+        var url=URL.createObjectURL(blob);
+        audio.src=url;
+        audio.play().catch(function(e){
+          console.error('Play blocked:',e);
+          _ttsPlaying=false;
+        });
         return;
       } else {
-        // Log do erro para debug
         var errData=null;
         try{errData=await r.json();}catch(pe){}
         console.error('ElevenLabs TTS failed:',r.status,errData);
         _ttsPlaying=false;
-        return; // NÃO usar fallback no modo Jesus
+        window._currentAudio=null;
+        return;
       }
     }catch(ex){
       console.error('TTS fetch error:',ex);
       _ttsPlaying=false;
-      return; // NÃO usar fallback no modo Jesus
+      window._currentAudio=null;
+      return;
     }
   }
 
