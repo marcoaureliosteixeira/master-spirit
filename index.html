@@ -45,7 +45,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .speak-btn.playing{background:rgba(201,168,76,.08);border-color:var(--gold);animation:text-glow 1.5s ease-in-out infinite}
 .speak-btn .icon{font-size:14px}
 
-.welcome-msg{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:1.05rem;color:rgba(240,234,214,.7);text-align:center;max-width:260px;line-height:1.7;min-height:2.2rem;margin-top:.5rem;animation:fade-in-up .8s ease both}
+.welcome-msg{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:1.05rem;color:rgba(240,234,214,.7);text-align:center;max-width:260px;line-height:1.7;min-height:2.2rem;margin-top:.5rem;animation:fade-in-up .8s ease both;transition:opacity .4s ease}
 
 .particles{position:absolute;inset:0;pointer-events:none;z-index:1}
 .particle{position:absolute;width:4px;height:4px;border-radius:50%;background:var(--gold);animation:particle-up var(--d,3s) ease-out infinite var(--dl,0s);opacity:0}
@@ -183,9 +183,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 
     <p class="welcome-msg" id="welcome-msg">"A paz esteja convosco."</p>
 
-    <button class="speak-btn" id="speak-btn" onclick="playWelcome()">
-      <span class="icon">🕊️</span>
-      <span id="speak-lbl">OUVIR MENSAGEM</span>
+    <button class="speak-btn" id="speak-btn" onclick="toggleWelcome()" title="Silenciar">
+      <span id="speak-lbl">🔊</span>
     </button>
 
     <div class="free-badge" style="margin-top:1.5rem">
@@ -408,21 +407,10 @@ document.addEventListener('keydown', function(e) {
 (function(){
   var container = document.getElementById('particles');
   if (!container) return;
-  var msgs = ['"A paz esteja convosco."','"Eu sou o caminho."','"Buscai e encontrareis."','"Vinde a mim."'];
-  var msgEl = document.getElementById('welcome-msg');
-  var mi = 0;
-  setInterval(function(){
-    if (msgEl && !document.getElementById('speak-btn').classList.contains('playing')) {
-      mi = (mi + 1) % msgs.length;
-      msgEl.style.opacity = 0;
-      setTimeout(function(){ msgEl.textContent = msgs[mi]; msgEl.style.opacity = 1; }, 400);
-    }
-  }, 4000);
-
   for (var i = 0; i < 18; i++) {
     var p = document.createElement('div');
     p.className = 'particle';
-    p.style.cssText = 'left:' + (30 + Math.random()*40) + '%;bottom:' + (10 + Math.random()*40) + '%;'
+    p.style.cssText = 'left:' + (20 + Math.random()*60) + '%;bottom:' + (5 + Math.random()*50) + '%;'
       + '--d:' + (2.5 + Math.random()*3) + 's;--dl:' + (Math.random()*3) + 's;'
       + 'background:' + (Math.random()>.5 ? 'var(--gold)' : 'rgba(180,140,255,.7)') + ';'
       + 'width:' + (2+Math.random()*3) + 'px;height:' + (2+Math.random()*3) + 'px';
@@ -430,9 +418,32 @@ document.addEventListener('keydown', function(e) {
   }
 })();
 
+// ── Frases rotativas ─────────────────────────────────────────
+var FRASES = [
+  '"A paz esteja convosco."',
+  '"Eu sou o caminho, a verdade e a vida."',
+  '"Vinde a mim, todos os que estais cansados."',
+  '"Buscai e encontrareis."',
+  '"O reino de Deus está dentro de vós."'
+];
+var _fraseIdx = 0;
+var _msgEl = document.getElementById('welcome-msg');
+setInterval(function(){
+  if (!_msgEl) return;
+  _msgEl.style.opacity = '0';
+  setTimeout(function(){
+    _fraseIdx = (_fraseIdx + 1) % FRASES.length;
+    _msgEl.textContent = FRASES[_fraseIdx];
+    _msgEl.style.opacity = '1';
+  }, 400);
+}, 4000);
+
 // ── Welcome audio ──────────────────────────────────────────
 var _welcomeAudio = null;
 var _welcomePlaying = false;
+var _muted = false;
+var _autoPlayed = false;
+
 var WELCOME_MESSAGES = [
   'Bem-vindo. Estou aqui. O que há em teu coração?',
   'Que bom que vieste... estava esperando por ti.',
@@ -442,49 +453,51 @@ var WELCOME_MESSAGES = [
 ];
 
 function playWelcome() {
-  var btn = document.getElementById('speak-btn');
-  var lbl = document.getElementById('speak-lbl');
   var wrap = document.getElementById('logo-wrap');
-  var msgEl = document.getElementById('welcome-msg');
-
-  if (_welcomePlaying) {
-    if (_welcomeAudio) { _welcomeAudio.pause(); _welcomeAudio.currentTime = 0; }
-    stopWelcome();
-    return;
-  }
-
-  // Tenta tocar o MP3 pré-gravado
   _welcomeAudio = new Audio('assets/welcome.mp3');
   _welcomeAudio.onended = stopWelcome;
   _welcomeAudio.onerror = function() {
-    // Fallback: browser TTS
     var msg = WELCOME_MESSAGES[Math.floor(Math.random() * WELCOME_MESSAGES.length)];
-    if (msgEl) { msgEl.textContent = '"' + msg + '"'; }
     var u = new SpeechSynthesisUtterance(msg);
     u.lang = 'pt-BR'; u.rate = 0.85; u.pitch = 0.9;
     u.onend = stopWelcome;
     speechSynthesis.speak(u);
   };
-
   _welcomePlaying = true;
-  btn.classList.add('playing');
-  if (lbl) lbl.textContent = '⏹ PARAR';
   if (wrap) wrap.classList.add('speaking');
-
-  _welcomeAudio.play().catch(function() {
-    _welcomeAudio.onerror();
-  });
+  document.getElementById('speak-lbl').textContent = '🔇';
+  _welcomeAudio.play().catch(function(){ _welcomeAudio.onerror(); });
 }
 
 function stopWelcome() {
   _welcomePlaying = false;
-  var btn = document.getElementById('speak-btn');
-  var lbl = document.getElementById('speak-lbl');
   var wrap = document.getElementById('logo-wrap');
-  if (btn) btn.classList.remove('playing');
-  if (lbl) lbl.textContent = '🕊️ OUVIR MENSAGEM';
   if (wrap) wrap.classList.remove('speaking');
+  document.getElementById('speak-lbl').textContent = '🔊';
 }
+
+function toggleWelcome() {
+  if (_welcomePlaying) {
+    _muted = true;
+    if (_welcomeAudio) { _welcomeAudio.pause(); _welcomeAudio.currentTime = 0; }
+    speechSynthesis.cancel();
+    stopWelcome();
+  } else {
+    _muted = false;
+    playWelcome();
+  }
+}
+
+// Auto-play na primeira interação do usuário
+function autoPlay() {
+  if (_autoPlayed || _muted) return;
+  _autoPlayed = true;
+  document.removeEventListener('click', autoPlay);
+  document.removeEventListener('keydown', autoPlay);
+  playWelcome();
+}
+document.addEventListener('click', autoPlay);
+document.addEventListener('keydown', autoPlay);
 </script>
 </body>
 </html>
