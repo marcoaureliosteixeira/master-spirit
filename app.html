@@ -1836,36 +1836,29 @@ async function speakResponse(text){
   stopAllAudio();
   _ttsPlaying=true;
 
-  // Modo Jesus: ElevenLabs
-  // TEMP_DIRECT: chama API diretamente para diagnóstico — reverter após confirmar chave
+  // Modo Jesus: ElevenLabs via proxy seguro
   if(chatMode==='jesus'){
     try{
       unlockAudioCtx();
-      var _elKey=localStorage.getItem('el_test_key')||'';
-      var _elVoice=localStorage.getItem('el_test_voice')||'XNKrDiLvCkrRbQpjHoYo';
-      if(!_elKey){console.error('[TTS] el_test_key não definida no localStorage');_ttsPlaying=false;return;}
-      console.log('[TTS] Chamando ElevenLabs direto, voice='+_elVoice);
-      var r=await fetch('https://api.elevenlabs.io/v1/text-to-speech/'+_elVoice,{
+      console.log('[TTS] Chamando /api/tts...');
+      var r=await fetch('/api/tts',{
         method:'POST',
-        headers:{'Content-Type':'application/json','xi-api-key':_elKey},
-        body:JSON.stringify({text:text.substring(0,5000),model_id:'eleven_flash_v2_5',voice_settings:{stability:0.6,similarity_boost:0.8}})
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({text:text.substring(0,5000)})
       });
       console.log('[TTS] Resposta status='+r.status);
       if(r.ok&&_ttsPlaying){
         var arrayBuf=await r.arrayBuffer();
-        console.log('[TTS] arrayBuf size='+arrayBuf.byteLength);
         var audioBuf=await window._audioCtx.decodeAudioData(arrayBuf);
-        console.log('[TTS] audioBuf duration='+audioBuf.duration+'s');
         var source=window._audioCtx.createBufferSource();
         source.buffer=audioBuf;
         source.connect(window._audioCtx.destination);
-        source.onended=function(){_ttsPlaying=false;window._currentSource=null;console.log('[TTS] fim do audio');};
+        source.onended=function(){_ttsPlaying=false;window._currentSource=null;};
         source.start(0);
         window._currentSource=source;
-        console.log('[TTS] audio iniciado!');
         return;
-      }else if(!r.ok){var errTxt=await r.text();console.error('[TTS] Erro ElevenLabs:',r.status,errTxt);}
-    }catch(ex){console.error('[TTS] ElevenLabs error:',ex);}
+      }else if(!r.ok){var errTxt=await r.text();console.error('[TTS] Erro:',r.status,errTxt);}
+    }catch(ex){console.error('[TTS] error:',ex);}
     _ttsPlaying=false;
     return;
   }
