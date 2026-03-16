@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <link rel="icon" type="image/x-icon" href="favicon.ico">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png">
 <meta name="theme-color" content="#060a16">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1449,12 +1450,79 @@ function viewDisclaimer(){
     pdfBtn=document.createElement('button');
     pdfBtn.id='disclaimer-pdf-btn';
     pdfBtn.style.cssText='padding:12px 24px;background:rgba(201,168,76,.18);border:1px solid rgba(201,168,76,.6);border-radius:12px;color:#C9A84C;font-family:Cinzel,serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .3s;margin-left:8px';
-    pdfBtn.textContent='📄 Salvar PDF';
-    pdfBtn.onclick=function(){printDisclaimer('pdf');};
+    pdfBtn.textContent='📄 Baixar PDF';
+    pdfBtn.onclick=downloadDisclaimerPDF;
     btn.parentNode.appendChild(pdfBtn);
   }
   pdfBtn.style.display='inline-block';
 }
+function downloadDisclaimerPDF(){
+  // Criar container temporário para o PDF
+  var clone=document.getElementById('disclaimer-text').cloneNode(true);
+  var appStamp=clone.querySelector('#disclaimer-stamp');
+  if(appStamp) appStamp.remove();
+
+  var container=document.createElement('div');
+  container.style.cssText='font-family:Georgia,serif;max-width:700px;margin:0 auto;padding:30px;color:#222;line-height:1.75;font-size:13px;background:#fff';
+
+  // Header
+  container.innerHTML='<div style="text-align:center;margin-bottom:20px;display:flex;align-items:center;justify-content:center;gap:12px">'
+    +'<img src="'+LOGO_SRC+'" style="height:45px;border-radius:50%">'
+    +'<div><h1 style="font-size:20px;color:#8B7535;letter-spacing:5px;margin:0">MASTER SPIRIT</h1>'
+    +'<p style="font-size:9px;color:#999;letter-spacing:2px;margin:0;font-style:italic">O Consolador · Disseminador de Sabedoria</p></div></div>'
+    +'<div style="text-align:center;margin-bottom:16px"><p style="font-size:14px;color:#8B7535;letter-spacing:3px;font-weight:bold;text-transform:uppercase">Disclaimer e Termos de Uso</p>'
+    +'<p style="font-size:10px;color:#999;margin-top:4px">Versão 1.0 — Documento gerado em '+new Date().toLocaleDateString('pt-BR')+'</p></div>'
+    +'<hr style="border:none;border-top:2px solid #8B7535;margin:0 0 20px">';
+
+  // Conteúdo - limpar estilos inline do tema escuro
+  var content=clone.innerHTML;
+  content=content.replace(/color:rgba\(240,234,214,[^)]+\)/g,'color:#444');
+  content=content.replace(/color:#C9A84C/g,'color:#8B7535');
+  content=content.replace(/color:rgba\(201,168,76,[^)]+\)/g,'color:#8B7535');
+  container.innerHTML+=content;
+
+  // Stamp
+  var stampData=null;
+  try{stampData=JSON.parse(localStorage.getItem('spirit_disclaimer_stamp'));}catch(e){}
+  if(stampData){
+    var dt=new Date(stampData.accepted_at);
+    var dateStr=dt.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    container.innerHTML+='<div style="margin-top:24px;padding:18px;border:2px solid #8B7535;border-radius:8px;background:#faf8f0">'
+      +'<p style="text-align:center;color:#8B7535;font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;font-weight:bold">Registro de Aceite</p>'
+      +'<p style="margin:3px 0;font-size:12px"><span style="color:#888">Usuário: </span><span style="color:#222;font-weight:bold">'+(stampData.name||'—')+'</span></p>'
+      +'<p style="margin:3px 0;font-size:12px"><span style="color:#888">E-mail: </span><span style="color:#222;font-weight:bold">'+(stampData.email||'—')+'</span></p>'
+      +'<p style="margin:3px 0;font-size:12px"><span style="color:#888">Data/Hora: </span><span style="color:#222;font-weight:bold">'+dateStr+'</span></p>'
+      +'<p style="margin:3px 0;font-size:12px"><span style="color:#888">Versão do Termo: </span><span style="color:#222;font-weight:bold">'+(stampData.version||'1.0')+'</span></p>'
+      +'</div>';
+  }
+
+  // Footer
+  var spyritImg=document.querySelector('#app-footer img');
+  container.innerHTML+='<div style="text-align:center;margin-top:24px;padding-top:14px;border-top:2px solid #222">'
+    +(spyritImg?'<img src="'+spyritImg.src+'" style="height:24px;margin-bottom:4px"><br>':'')
+    +'<span style="font-size:9px;color:#333;font-weight:bold">Powered by Spyrit Systems</span><br>'
+    +'<span style="font-size:9px;color:#333">© '+new Date().getFullYear()+' Spyrit Systems — Todos os direitos reservados</span></div>';
+
+  // Adicionar ao body temporariamente
+  document.body.appendChild(container);
+
+  // Gerar PDF
+  var opt={
+    margin:[10,10,15,10],
+    filename:'MASTER SPIRIT - Disclaimer e Termos de Uso.pdf',
+    image:{type:'jpeg',quality:0.98},
+    html2canvas:{scale:2,useCORS:true},
+    jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
+    pagebreak:{mode:['avoid-all','css','legacy']}
+  };
+
+  html2pdf().set(opt).from(container).save().then(function(){
+    document.body.removeChild(container);
+  }).catch(function(){
+    document.body.removeChild(container);
+  });
+}
+
 function printDisclaimer(mode){
   // Clonar o conteúdo e remover o stamp do app (que tem cores para fundo escuro)
   var clone=document.getElementById('disclaimer-text').cloneNode(true);
@@ -1532,14 +1600,7 @@ function printDisclaimer(mode){
   win.document.write('</div>');
   win.document.write('</body></html>');
   win.document.close();
-  setTimeout(function(){
-    if(mode==='pdf'){
-      // Instrução para salvar como PDF — o navegador abre o diálogo de impressão
-      // onde o usuário seleciona "Salvar como PDF" como destino
-      alert('Na janela de impressão, selecione "Salvar como PDF" como destino.\nO nome do arquivo será: '+fileTitle);
-    }
-    win.print();
-  },600);
+  setTimeout(function(){win.print();},600);
 }
 function showDisclaimerIfNeeded(){
   if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
