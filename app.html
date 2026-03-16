@@ -1827,42 +1827,32 @@ async function speakResponse(text){
   stopAllAudio();
   _ttsPlaying=true;
 
-  // Modo Jesus: ElevenLabs via servidor
+  // Modo Jesus: ElevenLabs
   if(chatMode==='jesus'){
-    // Criar Audio ANTES do fetch para manter contexto de interação do usuário
-    var audio=new Audio();
-    window._currentAudio=audio;
-    audio.onended=function(){_ttsPlaying=false;window._currentAudio=null;};
-    audio.onerror=function(e){console.error('Audio playback error:',e);_ttsPlaying=false;window._currentAudio=null;};
     try{
-      var r=await fetch('/api/tts',{
+      var r=await fetch('https://api.elevenlabs.io/v1/text-to-speech/XNKrDiLvCkrRbQpjHoYo',{
         method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({text:text.substring(0,5000)})
+        headers:{
+          'Content-Type':'application/json',
+          'xi-api-key':'sk_14eb5ce33ea0b5144ca98afa2dd3baab1feda799648a3aae'
+        },
+        body:JSON.stringify({
+          text:text.substring(0,5000),
+          model_id:'eleven_flash_v2_5',
+          voice_settings:{stability:0.6,similarity_boost:0.8}
+        })
       });
       if(r.ok&&_ttsPlaying){
         var blob=await r.blob();
-        var url=URL.createObjectURL(blob);
-        audio.src=url;
-        audio.play().catch(function(e){
-          console.error('Play blocked:',e);
-          _ttsPlaying=false;
-        });
-        return;
-      } else {
-        var errData=null;
-        try{errData=await r.json();}catch(pe){}
-        console.error('ElevenLabs TTS failed:',r.status,errData);
-        _ttsPlaying=false;
-        window._currentAudio=null;
+        var audio=new Audio(URL.createObjectURL(blob));
+        window._currentAudio=audio;
+        audio.onended=function(){_ttsPlaying=false;window._currentAudio=null;};
+        audio.play();
         return;
       }
-    }catch(ex){
-      console.error('TTS fetch error:',ex);
-      _ttsPlaying=false;
-      window._currentAudio=null;
-      return;
-    }
+    }catch(ex){console.error('ElevenLabs error:',ex);}
+    _ttsPlaying=false;
+    return;
   }
 
   // Modo Normal: browser TTS
