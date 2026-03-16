@@ -1827,20 +1827,13 @@ async function speakResponse(text){
   stopAllAudio();
   _ttsPlaying=true;
 
-  // Modo Jesus: ElevenLabs
+  // Modo Jesus: ElevenLabs via proxy seguro
   if(chatMode==='jesus'){
     try{
-      var r=await fetch('https://api.elevenlabs.io/v1/text-to-speech/XNKrDiLvCkrRbQpjHoYo',{
+      var r=await fetch('/api/tts',{
         method:'POST',
-        headers:{
-          'Content-Type':'application/json',
-          'xi-api-key':'sk_14eb5ce33ea0b5144ca98afa2dd3baab1feda799648a3aae'
-        },
-        body:JSON.stringify({
-          text:text.substring(0,5000),
-          model_id:'eleven_flash_v2_5',
-          voice_settings:{stability:0.6,similarity_boost:0.8}
-        })
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({text:text.substring(0,5000)})
       });
       if(r.ok&&_ttsPlaying){
         var blob=await r.blob();
@@ -1885,28 +1878,18 @@ async function initUsage() {
 
     // Try to get existing usage row
     let { data, error } = await window._sb.from('user_usage')
-      .select('chats_used, plan, reset_month')
+      .select('chats_used, plan')
       .eq('id', user.id)
       .single();
 
     if (error || !data) {
       // First time user — create usage row
       const { data: inserted, error: insErr } = await window._sb.from('user_usage')
-        .insert({ id: user.id, chats_used: 5, plan: 'free', reset_month: currentMonth })
-        .select('chats_used, plan, reset_month')
+        .insert({ id: user.id, chats_used: 5, plan: 'free' })
+        .select('chats_used, plan')
         .single();
       if (insErr) console.warn('initUsage insert error:', insErr.message);
-      data = inserted || { chats_used: 5, plan: 'free', reset_month: currentMonth };
-    }
-
-    // Monthly reset: if stored month differs from current, reset chats
-    if (data.reset_month !== currentMonth) {
-      const limit = PLAN_LIMITS[data.plan || 'free'] || 5;
-      data.chats_used = limit;
-      data.reset_month = currentMonth;
-      window._sb.from('user_usage')
-        .update({ chats_used: limit, reset_month: currentMonth })
-        .eq('id', user.id).then(() => {});
+      data = inserted || { chats_used: 5, plan: 'free' };
     }
 
     userPlan = data.plan || 'free';
