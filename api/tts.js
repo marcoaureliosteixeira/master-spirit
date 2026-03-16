@@ -20,8 +20,9 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Text is required' });
     }
 
-    // Limitar texto a 5000 caracteres
-    const trimmedText = text.substring(0, 5000);
+    // Limitar a 300 caracteres + frase de encerramento
+    const HANDOFF = ' Agora te convido a ler e meditar sobre o que trouxe para ti...';
+    const trimmedText = text.substring(0, 300) + (text.length > 300 ? HANDOFF : '');
     const voiceId = voice_id || defaultVoice;
 
     const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
