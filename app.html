@@ -950,17 +950,21 @@ function toggleListen(btn,fn,i){
   if(_ttsPlaying){
     stopAllAudio();
     btn.textContent='🔊 ouvir';
+    window._ttsBtn=null;
     return;
   }
   var arr=fn==='copyMainMsg'?msgs:roomMsgs;
   var m=arr[parseInt(i)];
   if(!m) return;
-  btn.textContent='⏹ parar';
+  window._ttsBtn=btn;
+  btn.textContent='⏳ carregando...';
+  btn.disabled=true;
   speakResponse(m.content||'');
-  // Restaurar botão quando terminar
   var check=setInterval(function(){
     if(!_ttsPlaying){
       btn.textContent='🔊 ouvir';
+      btn.disabled=false;
+      window._ttsBtn=null;
       clearInterval(check);
     }
   },500);
@@ -1831,6 +1835,7 @@ async function speakResponse(text){
         source.onended=function(){_ttsPlaying=false;window._currentSource=null;};
         source.start(0);
         window._currentSource=source;
+        if(window._ttsBtn){window._ttsBtn.textContent='⏹ parar';window._ttsBtn.disabled=false;}
         return;
       }else if(!r.ok){var errTxt=await r.text();console.error('[TTS] Erro:',r.status,errTxt);}
     }catch(ex){console.error('[TTS] error:',ex);}
