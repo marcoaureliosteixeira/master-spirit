@@ -474,7 +474,7 @@ body.ff-sys{--font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
     </div>
 
     <p style="font-size:11px;color:rgba(240,234,214,.25);margin-top:20px;font-style:italic">
-      Pagamento seguro via Stripe · Cancele quando quiser
+      Pagamento seguro via Mercado Pago · Cancele quando quiser
     </p>
   </div>
 </div>
@@ -1960,10 +1960,25 @@ function updateChatCounter() {
   }
 }
 
-function selectPlan(plan) {
-  // TODO: integrate Stripe checkout
-  closeModal('upgrade');
-  alert('Integração com Stripe em breve! Plano selecionado: ' + plan.toUpperCase());
+async function selectPlan(plan) {
+  const { data: { user } } = await _supabase.auth.getUser();
+  if (!user) { openModal('login'); return; }
+
+  try {
+    const r = await fetch('/api/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ plan, user_id: user.id, user_email: user.email }),
+    });
+    const data = await r.json();
+    if (data.init_point) {
+      window.location.href = data.init_point;
+    } else {
+      alert('Erro ao iniciar pagamento. Tente novamente.');
+    }
+  } catch (err) {
+    alert('Erro ao iniciar pagamento. Tente novamente.');
+  }
 }
 
 // ── LOGOUT ──
