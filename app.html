@@ -899,7 +899,18 @@ function startChat(idxStr){
   if(!msg) return;
   msgs=[];
   goTab('chat');
-  setTimeout(()=>sendMsgText(msg),80);
+  // Pré-preencher o input em vez de enviar automaticamente
+  setTimeout(function(){
+    var inp=document.getElementById('msginput');
+    if(inp){
+      inp.value=msg;
+      inp.style.height='auto';
+      inp.style.height=inp.scrollHeight+'px';
+      inp.focus();
+      var sendBtn=document.getElementById('send-btn');
+      if(sendBtn) sendBtn.disabled=false;
+    }
+  },100);
 }
 
 // ===================== CHAT =====================
