@@ -223,15 +223,29 @@ body.ff-sys{--font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
 @keyframes spark-burst{0%{transform:translate(-50%,-50%) scale(0);opacity:0}20%{opacity:1;transform:translate(-50%,-50%) scale(1)}60%{transform:translate(-50%,-50%) scale(4);opacity:.8}100%{transform:translate(-50%,-50%) scale(8);opacity:0}}
 
 /* Espírito — nasce no centro e sobe */
+/* #spirit-wrap: só posição/escala (sem filter — evita conflito com mix-blend-mode no Safari iOS) */
 #spirit-wrap{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);animation:spirit-rise 2.5s cubic-bezier(.22,1,.36,1) .6s both}
 @keyframes spirit-rise{
-  0%{top:50%;transform:translate(-50%,-50%) scale(.4);opacity:0;filter:brightness(20) saturate(0) blur(16px)}
-  20%{opacity:1;filter:brightness(8) saturate(0) blur(8px);transform:translate(-50%,-50%) scale(1.1)}
-  50%{filter:brightness(3) saturate(.3) blur(2px);transform:translate(-50%,-50%) scale(1.03)}
-  75%{top:38%;transform:translate(-50%,-50%) scale(1);filter:brightness(1.5) saturate(.8)}
-  100%{top:38%;transform:translate(-50%,-50%) scale(1);filter:brightness(1) saturate(1) drop-shadow(0 0 30px rgba(201,168,76,.5)) drop-shadow(0 0 80px rgba(100,60,200,.35))}
+  0%{top:50%;transform:translate(-50%,-50%) scale(.4);opacity:0}
+  20%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}
+  50%{transform:translate(-50%,-50%) scale(1.03)}
+  75%{top:38%;transform:translate(-50%,-50%) scale(1)}
+  100%{top:38%;transform:translate(-50%,-50%) scale(1)}
 }
-#spirit-img{width:min(80vw,480px);height:min(80vw,480px);object-fit:contain;mix-blend-mode:screen;display:block}
+/* #spirit-img: filter + mix-blend-mode no mesmo elemento resolve o bug do Safari */
+#spirit-img{
+  width:min(80vw,480px);height:min(80vw,480px);object-fit:contain;display:block;
+  mix-blend-mode:screen;-webkit-mix-blend-mode:screen;
+  animation:spirit-filter 2.5s cubic-bezier(.22,1,.36,1) .6s both;
+  will-change:filter;
+}
+@keyframes spirit-filter{
+  0%{filter:brightness(20) saturate(0) blur(16px)}
+  20%{filter:brightness(8) saturate(0) blur(8px)}
+  50%{filter:brightness(3) saturate(.3) blur(2px)}
+  75%{filter:brightness(1.5) saturate(.8)}
+  100%{filter:brightness(1) saturate(1) drop-shadow(0 0 30px rgba(201,168,76,.5)) drop-shadow(0 0 80px rgba(100,60,200,.35))}
+}
 
 /* Anéis ao redor do espírito */
 .sp-ring{position:absolute;top:50%;left:50%;border-radius:50%;border:1px solid rgba(201,168,76,.4);animation:sp-ring-out 2.5s ease-out infinite;opacity:0;animation-delay:2s}
