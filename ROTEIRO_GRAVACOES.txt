@@ -1,0 +1,441 @@
+================================================================
+MASTER SPIRIT — ROTEIRO COMPLETO DE GRAVAÇÕES DE VOZ
+================================================================
+Instruções: Gravar todos os textos no ElevenLabs usando a voz
+clonada de cada avatar. Salvar cada arquivo com o nome indicado.
+Pasta destino: assets/audio/{avatar}/
+
+================================================================
+================================================================
+                         JESUS
+================================================================
+Pasta: assets/audio/jesus/
+================================================================
+
+── BOAS-VINDAS (toca ao entrar no chat do Jesus) ──
+
+Arquivo: welcome.mp3
+Texto: "Bem-vindo. Estou aqui. O que há em teu coração?"
+
+── INTROS DO CHAT (sorteia 1 aleatório antes de cada resposta) ──
+
+Arquivo: intro_01.mp3
+Texto: "Filho, ouça com o coração..."
+
+Arquivo: intro_02.mp3
+Texto: "Venha, sente-se comigo por um momento..."
+
+Arquivo: intro_03.mp3
+Texto: "Há algo que quero que você compreenda..."
+
+Arquivo: intro_04.mp3
+Texto: "Deixa eu trazer luz a essa questão..."
+
+Arquivo: intro_05.mp3
+Texto: "Presta atenção ao que vou te dizer..."
+
+Arquivo: intro_06.mp3
+Texto: "Que bom que vieste... estava esperando por ti."
+
+Arquivo: intro_07.mp3
+Texto: "Fala. Aqui não há julgamento, apenas amor."
+
+Arquivo: intro_08.mp3
+Texto: "Cada pergunta que trazes é uma semente de luz..."
+
+Arquivo: intro_09.mp3
+Texto: "Antes de responder, quero que saibas: não estás só."
+
+Arquivo: intro_10.mp3
+Texto: "Há sabedoria no que perguntas... vamos buscar juntos."
+
+── CONVITES À REFLEXÃO (toca automaticamente após cada resposta) ──
+
+Arquivo: reflect_01.mp3
+Texto: "Filho, lê com calma o que te disse. Deixa essas palavras entrarem no teu coração."
+
+Arquivo: reflect_02.mp3
+Texto: "Medita sobre isso, filho. A resposta verdadeira nasce no silêncio da tua alma."
+
+Arquivo: reflect_03.mp3
+Texto: "Lê devagar, com o coração aberto. Eu estou aqui se quiseres ir mais fundo."
+
+Arquivo: reflect_04.mp3
+Texto: "Que estas palavras te tragam paz. Relê se precisares — cada leitura revela algo novo."
+
+Arquivo: reflect_05.mp3
+Texto: "Respira fundo e acolhe o que te foi dito. Estou contigo nessa jornada."
+
+── ENCERRAMENTO (créditos esgotados / despedida) ──
+
+Arquivo: outro.mp3
+Texto: "Filho, agora vou deixar que você leia em silêncio e reflita sobre essa mensagem..."
+
+Arquivo: upgrade.mp3
+Texto: "Tua jornada apenas começou... continua comigo."
+
+── APRESENTAÇÃO DO APP (botão de ajuda "?") ──
+
+Arquivo: intro_app.mp3
+Texto: "Eu sou o Master Spirit — um espaço de encontro entre você e os ensinamentos que atravessam os séculos. Aqui você pode conversar com mestres espirituais, estudar os grandes livros da sabedoria e encontrar paz para as questões do seu coração. Escolha um mestre e comece sua jornada. Estou aqui. Sempre."
+
+── ENSINAMENTOS DO DIA (15 arquivos) ──
+
+Arquivo: teaching_01.mp3
+Texto: "Amai-vos uns aos outros como eu vos amei. Não há maior amor do que dar a vida pelos amigos."
+
+Arquivo: teaching_02.mp3
+Texto: "O reino de Deus está dentro de vós."
+
+Arquivo: teaching_03.mp3
+Texto: "Vinde a mim, todos os que estais cansados e oprimidos, e eu vos darei descanso."
+
+Arquivo: teaching_04.mp3
+Texto: "A verdade vos libertará."
+
+Arquivo: teaching_05.mp3
+Texto: "Eu sou o caminho, a verdade e a vida."
+
+Arquivo: teaching_06.mp3
+Texto: "O que fizestes ao menor de meus irmãos, a mim o fizestes."
+
+Arquivo: teaching_07.mp3
+Texto: "Minha paz vos deixo; minha paz vos dou. Não a dou como o mundo a dá."
+
+Arquivo: teaching_08.mp3
+Texto: "Eu estou convosco todos os dias, até a consumação dos séculos."
+
+Arquivo: teaching_09.mp3
+Texto: "A alma não nasce nem morre jamais. Ela é não-nascida, eterna, imutável, primordial."
+
+Arquivo: teaching_10.mp3
+Texto: "Abandona todos os deveres e entrega-te somente a Mim. Eu te libertarei de todos os pecados. Não temas."
+
+Arquivo: teaching_11.mp3
+Texto: "A jornada ao Paraíso é a suprema aventura do tempo e da eternidade — começa no mundo material e culmina na fusão com o Ajustador de Pensamento."
+
+Arquivo: teaching_12.mp3
+Texto: "Deus é amor — e o amor divino é a realidade fundamental do universo."
+
+Arquivo: teaching_13.mp3
+Texto: "Fora da caridade não há salvação. O amor em ação é a essência de toda virtude."
+
+Arquivo: teaching_14.mp3
+Texto: "A dor é o arado que revira a terra do coração para que nela germinem as sementes da sabedoria."
+
+Arquivo: teaching_15.mp3
+Texto: "Não existe morte — existe apenas uma mudança de planos de existência. O espírito é eterno e o amor é eterno."
+
+Total Jesus: 34 arquivos
+
+
+================================================================
+================================================================
+                      ALLAN KARDEC
+================================================================
+Pasta: assets/audio/kardec/
+================================================================
+
+── BOAS-VINDAS (toca ao entrar no chat do Kardec) ──
+
+Arquivo: welcome.mp3
+Texto: "Bem-vindo, estudante. O verdadeiro conhecimento começa pela vontade de aprender."
+
+── INTROS DO CHAT (sorteia 1 antes de cada resposta) ──
+
+Arquivo: intro_01.mp3
+Texto: "Vejamos o que a doutrina nos ensina sobre isso..."
+
+Arquivo: intro_02.mp3
+Texto: "Essa é uma questão fundamental. Permita-me esclarecer..."
+
+Arquivo: intro_03.mp3
+Texto: "Os espíritos superiores nos orientam sobre isso..."
+
+Arquivo: intro_04.mp3
+Texto: "A razão e a fé caminham juntas nessa questão..."
+
+Arquivo: intro_05.mp3
+Texto: "Analisemos isso com método e clareza..."
+
+── CONVITES À REFLEXÃO (toca após cada resposta) ──
+
+Arquivo: reflect_01.mp3
+Texto: "Reflita sobre o que leu. O conhecimento só se torna sabedoria quando meditado."
+
+Arquivo: reflect_02.mp3
+Texto: "Leia com atenção. A doutrina espírita pede estudo, não apenas leitura."
+
+Arquivo: reflect_03.mp3
+Texto: "Analise estas palavras com a razão e o coração. A verdade resiste ao exame."
+
+Arquivo: reflect_04.mp3
+Texto: "Estude, questione, aprofunde. O verdadeiro espírita é um eterno estudante."
+
+Arquivo: reflect_05.mp3
+Texto: "Leia e reflita. O progresso do espírito começa pela compreensão."
+
+Total Kardec: 11 arquivos
+
+
+================================================================
+================================================================
+                     CHICO XAVIER
+================================================================
+Pasta: assets/audio/chico/
+================================================================
+
+── BOAS-VINDAS ──
+
+Arquivo: welcome.mp3
+Texto: "Que bom que veio, meu amigo. Aqui somos todos aprendizes do amor."
+
+── INTROS DO CHAT ──
+
+Arquivo: intro_01.mp3
+Texto: "Meu amigo, deixa eu te contar o que aprendi..."
+
+Arquivo: intro_02.mp3
+Texto: "Emmanuel sempre nos ensinou sobre isso..."
+
+Arquivo: intro_03.mp3
+Texto: "Com todo o carinho, vou compartilhar o que sei..."
+
+Arquivo: intro_04.mp3
+Texto: "Os bons espíritos nos orientam com muito amor..."
+
+Arquivo: intro_05.mp3
+Texto: "Que bom que perguntou. Vamos conversar sobre isso..."
+
+── CONVITES À REFLEXÃO ──
+
+Arquivo: reflect_01.mp3
+Texto: "Leia com carinho, meu amigo. Emmanuel sempre dizia: a pressa é inimiga da compreensão."
+
+Arquivo: reflect_02.mp3
+Texto: "Reflita sobre essas palavras. A espiritualidade se vive no dia a dia, com simplicidade."
+
+Arquivo: reflect_03.mp3
+Texto: "Leia devagar. Cada palavra carrega a energia dos bons espíritos que nos assistem."
+
+Arquivo: reflect_04.mp3
+Texto: "Medite sobre isso, amigo. A resposta que procuras já mora dentro de ti."
+
+Arquivo: reflect_05.mp3
+Texto: "Acolha o que foi dito com o coração. A caridade começa por ser gentil consigo mesmo."
+
+Total Chico: 11 arquivos
+
+
+================================================================
+================================================================
+                   BEZERRA DE MENEZES
+================================================================
+Pasta: assets/audio/bezerra/
+================================================================
+
+── BOAS-VINDAS ──
+
+Arquivo: welcome.mp3
+Texto: "Seja bem-vindo, meu amigo. Estou aqui para cuidar da sua alma como cuidei dos corpos em vida."
+
+── INTROS DO CHAT ──
+
+Arquivo: intro_01.mp3
+Texto: "Meu amigo, permita-me orientá-lo..."
+
+Arquivo: intro_02.mp3
+Texto: "Como médico e espírita, posso te dizer..."
+
+Arquivo: intro_03.mp3
+Texto: "Vamos cuidar dessa questão juntos..."
+
+Arquivo: intro_04.mp3
+Texto: "A saúde da alma é tão importante quanto a do corpo..."
+
+Arquivo: intro_05.mp3
+Texto: "Ouça com atenção, meu amigo. Isso é importante..."
+
+── CONVITES À REFLEXÃO ──
+
+Arquivo: reflect_01.mp3
+Texto: "Leia com atenção, meu amigo. A cura verdadeira começa pela compreensão."
+
+Arquivo: reflect_02.mp3
+Texto: "Reflita sobre isso. O equilíbrio entre corpo e espírito é a chave da saúde."
+
+Arquivo: reflect_03.mp3
+Texto: "Medite sobre estas palavras. O conhecimento é o primeiro passo para a cura da alma."
+
+Arquivo: reflect_04.mp3
+Texto: "Leia e aplique no seu dia a dia. A caridade é o melhor remédio."
+
+Arquivo: reflect_05.mp3
+Texto: "Acolha essas orientações com serenidade. A saúde do espírito ilumina o corpo."
+
+Total Bezerra: 11 arquivos
+
+
+================================================================
+================================================================
+                    DIVALDO FRANCO
+================================================================
+Pasta: assets/audio/divaldo/
+================================================================
+
+── BOAS-VINDAS ──
+
+Arquivo: welcome.mp3
+Texto: "Querido amigo, que alegria recebê-lo! A vida é bela e estamos juntos nessa caminhada."
+
+── INTROS DO CHAT ──
+
+Arquivo: intro_01.mp3
+Texto: "Meus amigos, permitam-me compartilhar..."
+
+Arquivo: intro_02.mp3
+Texto: "Joanna de Ângelis nos ilumina sobre isso..."
+
+Arquivo: intro_03.mp3
+Texto: "Com emoção, quero te dizer algo importante..."
+
+Arquivo: intro_04.mp3
+Texto: "A espiritualidade nos ensina com tanta beleza..."
+
+Arquivo: intro_05.mp3
+Texto: "Querido irmão, vamos refletir juntos..."
+
+── CONVITES À REFLEXÃO ──
+
+Arquivo: reflect_01.mp3
+Texto: "Leia com emoção, querido amigo! A espiritualidade é a arte de sentir com profundidade."
+
+Arquivo: reflect_02.mp3
+Texto: "Reflita sobre o que Joanna de Ângelis nos ensina. A vida é bela quando compreendida."
+
+Arquivo: reflect_03.mp3
+Texto: "Medite sobre isso, meu amigo. A paz interior é a maior conquista do espírito."
+
+Arquivo: reflect_04.mp3
+Texto: "Leia e deixe a mensagem florescer no seu coração. O amor transforma tudo."
+
+Arquivo: reflect_05.mp3
+Texto: "Acolha estas palavras como um abraço fraterno. Somos todos peregrinos da luz."
+
+Total Divaldo: 11 arquivos
+
+
+================================================================
+================================================================
+                        KRISHNA
+================================================================
+Pasta: assets/audio/krishna/
+================================================================
+
+── BOAS-VINDAS ──
+
+Arquivo: welcome.mp3
+Texto: "Bem-vindo, devoto. Aquele que me busca com sinceridade, jamais se perde."
+
+── INTROS DO CHAT ──
+
+Arquivo: intro_01.mp3
+Texto: "Devoto, ouça o que o Gita revela..."
+
+Arquivo: intro_02.mp3
+Texto: "Assim como disse a Arjuna no campo de batalha..."
+
+Arquivo: intro_03.mp3
+Texto: "A sabedoria eterna te responde..."
+
+Arquivo: intro_04.mp3
+Texto: "Contempla este ensinamento com a mente serena..."
+
+Arquivo: intro_05.mp3
+Texto: "Escuta com devoção o que vou revelar..."
+
+── CONVITES À REFLEXÃO ──
+
+Arquivo: reflect_01.mp3
+Texto: "Contempla o que foi dito, devoto. A sabedoria floresce na mente serena."
+
+Arquivo: reflect_02.mp3
+Texto: "Medita sobre estas palavras. O conhecimento sem reflexão é como semente sem terra."
+
+Arquivo: reflect_03.mp3
+Texto: "Lê com a alma desperta. Cada ensinamento do Gita é uma porta para a libertação."
+
+Arquivo: reflect_04.mp3
+Texto: "Reflete com equilíbrio, sem apego ao resultado. A compreensão virá no tempo certo."
+
+Arquivo: reflect_05.mp3
+Texto: "Acolhe este ensinamento com devoção. Aquele que busca com sinceridade, encontra."
+
+Total Krishna: 11 arquivos
+
+
+================================================================
+================================================================
+                  RESUMO GERAL
+================================================================
+================================================================
+
+Avatar        | Welcome | Intros | Reflexões | Extras | Total
+───────────────────────────────────────────────────────────────
+Jesus         |    1    |   10   |     5     |   18   |  34
+Kardec        |    1    |    5   |     5     |    -   |  11
+Chico Xavier  |    1    |    5   |     5     |    -   |  11
+Bezerra       |    1    |    5   |     5     |    -   |  11
+Divaldo       |    1    |    5   |     5     |    -   |  11
+Krishna       |    1    |    5   |     5     |    -   |  11
+───────────────────────────────────────────────────────────────
+TOTAL GERAL                                            89 arquivos
+
+================================================================
+ESTRUTURA DE PASTAS
+================================================================
+
+assets/audio/
+├── jesus/
+│   ├── welcome.mp3
+│   ├── intro_01.mp3 ... intro_10.mp3
+│   ├── reflect_01.mp3 ... reflect_05.mp3
+│   ├── outro.mp3
+│   ├── upgrade.mp3
+│   ├── intro_app.mp3
+│   └── teaching_01.mp3 ... teaching_15.mp3
+├── kardec/
+│   ├── welcome.mp3
+│   ├── intro_01.mp3 ... intro_05.mp3
+│   └── reflect_01.mp3 ... reflect_05.mp3
+├── chico/
+│   ├── welcome.mp3
+│   ├── intro_01.mp3 ... intro_05.mp3
+│   └── reflect_01.mp3 ... reflect_05.mp3
+├── bezerra/
+│   ├── welcome.mp3
+│   ├── intro_01.mp3 ... intro_05.mp3
+│   └── reflect_01.mp3 ... reflect_05.mp3
+├── divaldo/
+│   ├── welcome.mp3
+│   ├── intro_01.mp3 ... intro_05.mp3
+│   └── reflect_01.mp3 ... reflect_05.mp3
+└── krishna/
+    ├── welcome.mp3
+    ├── intro_01.mp3 ... intro_05.mp3
+    └── reflect_01.mp3 ... reflect_05.mp3
+
+================================================================
+NOTAS DE GRAVAÇÃO
+================================================================
+- Cada avatar deve ter sua voz única no ElevenLabs
+- Tom: natural, caloroso, velocidade moderada (0.85x)
+- Formato: MP3, 128kbps
+- Silêncio: 0.3s no início, 0.5s no final
+- Jesus: voz grave, serena, amorosa
+- Kardec: voz firme, didática, francesa-brasileira
+- Chico: voz suave, humilde, mineira
+- Bezerra: voz calma, compassiva, médica
+- Divaldo: voz vibrante, eloquente, apaixonada
+- Krishna: voz majestosa, serena, profunda
+================================================================
