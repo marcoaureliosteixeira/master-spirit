@@ -300,6 +300,7 @@ body.ff-sys{--font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
       <p>o consolador · disseminador de sabedoria</p>
     </div>
     <button id="admin-btn" onclick="window.location.href='admin.html'" style="display:none;position:absolute;right:56px;top:50%;transform:translateY(-50%);background:rgba(91,175,124,.1);border:1px solid rgba(91,175,124,.3);border-radius:50%;width:34px;height:34px;cursor:pointer;font-size:15px;color:rgba(91,175,124,.8);align-items:center;justify-content:center;transition:all .2s" title="Admin">⚡</button>
+    <button id="qr-btn" onclick="openModal('qr')" title="Abrir no celular" style="position:absolute;right:98px;top:50%;transform:translateY(-50%);background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);border-radius:50%;width:34px;height:34px;cursor:pointer;font-size:16px;color:rgba(201,168,76,.7);display:none;align-items:center;justify-content:center;transition:all .2s">📱</button>
     <button id="cfg-btn" onclick="openModal('cfg')">⚙️</button>
   </div>
   <div id="nav">
@@ -397,6 +398,35 @@ body.ff-sys{--font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
   </div>
   <div class="mi-body" id="interpret-content">
     <div class="mi-loading">Consultando o Consolador...</div>
+  </div>
+</div>
+
+<!-- MODAL QR CODE -->
+<div class="modal" id="modal-qr">
+  <div class="modal-head">
+    <button class="back" onclick="closeModal('qr')">‹</button>
+    <h2>ABRIR NO CELULAR</h2>
+  </div>
+  <div class="modal-inner" style="text-align:center;padding:32px 24px 48px">
+    <p style="font-style:italic;font-size:14px;color:rgba(240,234,214,.5);margin-bottom:28px">Aponte a câmera do celular para o QR Code</p>
+    <div style="display:inline-block;padding:16px;background:#fff;border-radius:16px;box-shadow:0 0 40px rgba(201,168,76,.2)">
+      <img id="qr-img" src="" alt="QR Code" style="width:200px;height:200px;display:block">
+    </div>
+    <p style="margin-top:16px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:rgba(201,168,76,.6)" id="qr-url"></p>
+
+    <div style="margin-top:36px;text-align:left">
+      <p style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:2px;color:rgba(201,168,76,.5);text-transform:uppercase;margin-bottom:16px;text-align:center">Como salvar na tela inicial</p>
+
+      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:13px;padding:16px 18px;margin-bottom:10px">
+        <p style="font-family:'Cinzel',serif;font-size:10px;color:rgba(240,234,214,.7);margin-bottom:8px">🍎 &nbsp;iPhone / iPad (Safari)</p>
+        <p style="font-size:13px;color:rgba(240,234,214,.5);line-height:1.7">1. Abra o link no <strong style="color:rgba(240,234,214,.8)">Safari</strong><br>2. Toque em <strong style="color:rgba(240,234,214,.8)">Compartilhar</strong> (ícone de seta para cima)<br>3. Toque em <strong style="color:rgba(240,234,214,.8)">"Adicionar à Tela de Início"</strong><br>4. Confirme tocando em <strong style="color:rgba(240,234,214,.8)">Adicionar</strong></p>
+      </div>
+
+      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:13px;padding:16px 18px">
+        <p style="font-family:'Cinzel',serif;font-size:10px;color:rgba(240,234,214,.7);margin-bottom:8px">🤖 &nbsp;Android (Chrome)</p>
+        <p style="font-size:13px;color:rgba(240,234,214,.5);line-height:1.7">1. Abra o link no <strong style="color:rgba(240,234,214,.8)">Chrome</strong><br>2. Toque nos <strong style="color:rgba(240,234,214,.8)">3 pontinhos</strong> (menu)<br>3. Toque em <strong style="color:rgba(240,234,214,.8)">"Adicionar à tela inicial"</strong><br>4. Confirme tocando em <strong style="color:rgba(240,234,214,.8)">Adicionar</strong></p>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1493,8 +1523,21 @@ function chatAboutTeaching(){
 function closeInterpret(){document.getElementById('modal-interpret').classList.remove('open');}
 
 // ===================== MODALS =====================
-function openModal(id){document.getElementById('modal-'+id).classList.add('open');}
+function openModal(id){
+  if(id==='qr'){
+    const url=location.href;
+    document.getElementById('qr-img').src='https://api.qrserver.com/v1/create-qr-code/?size=200x200&color=060a16&bgcolor=ffffff&data='+encodeURIComponent(url);
+    document.getElementById('qr-url').textContent=url.replace('https://','');
+  }
+  document.getElementById('modal-'+id).classList.add('open');
+}
 function closeModal(id){document.getElementById('modal-'+id).classList.remove('open');}
+
+// Mostrar botão QR só em desktop (tela larga, sem touch)
+if(window.innerWidth>=768 && !('ontouchstart' in window)){
+  const qrBtn=document.getElementById('qr-btn');
+  if(qrBtn) qrBtn.style.display='flex';
+}
 
 // Settings
 // ===================== DISCLAIMER =====================
