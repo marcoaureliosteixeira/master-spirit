@@ -1077,6 +1077,13 @@ function skipSplash(){
   document.getElementById('app').style.display='flex';
 }
 
+function backToSplash(){
+  document.getElementById('app').style.display='none';
+  document.getElementById('splash').style.display='block';
+  // Reset animações removendo e readicionando (sem re-trigger da animação pesada)
+  sessionStorage.removeItem('spirit_splash_seen');
+}
+
 function splashGoMestres(){
   enterApp();
   setTimeout(()=>goTab('mestres'),600);
@@ -1196,7 +1203,10 @@ function renderMestres(){
     </div>`;
   }).join('');
   return `<div class="fu">
-    <p class="master-section-title">Mestres que orientam o caminho</p>
+    <div style="display:flex;align-items:center;gap:10px;padding:14px 14px 0">
+      <button onclick="backToSplash()" style="background:none;border:none;cursor:pointer;color:rgba(201,168,76,.6);font-size:22px;padding:0">‹</button>
+      <p class="master-section-title" style="margin:0;flex:1">Mestres que orientam o caminho</p>
+    </div>
     <p style="text-align:center;font-style:italic;font-size:13px;color:rgba(240,234,214,.3);padding:4px 14px 0">Escolha um mestre para conversar</p>
     <div class="master-grid">${cards}</div>
   </div>`;
@@ -1548,7 +1558,7 @@ function renderStudy(){
   <div style="position:sticky;top:0;z-index:30;background:rgba(6,10,22,.97);backdrop-filter:blur(10px);border-bottom:1px solid rgba(201,168,76,.1)">
     <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px 8px">
       <div style="display:flex;align-items:center;gap:10px">
-        <button onclick="goTab('mestres')" style="background:none;border:none;cursor:pointer;color:rgba(201,168,76,.6);font-size:22px;padding:0">‹</button>
+        <button onclick="backToSplash()" style="background:none;border:none;cursor:pointer;color:rgba(201,168,76,.6);font-size:22px;padding:0">‹</button>
         <p style="font-family:'Cinzel',serif;font-size:11.5px;letter-spacing:2.5px;color:var(--gold)">📚 SALAS DE ESTUDO</p>
       </div>
       <button onclick="openModal('newroom')" style="background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.35);border-radius:11px;padding:7px 12px;cursor:pointer;color:var(--gold);font-family:'Cinzel',serif;font-size:8.5px;letter-spacing:1.5px;display:flex;align-items:center;gap:5px;transition:all .2s">
