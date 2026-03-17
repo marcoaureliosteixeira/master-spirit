@@ -253,6 +253,16 @@ body.ff-sys{--font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
 </style>
 </head>
 <body class="fs-lg">
+<script>
+// Previne flash: se disclaimer não aceito, esconde tudo exceto disclaimer
+if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
+  document.documentElement.style.setProperty('--splash-init','none');
+  document.documentElement.style.setProperty('--disclaimer-init','block');
+} else {
+  document.documentElement.style.setProperty('--splash-init','block');
+  document.documentElement.style.setProperty('--disclaimer-init','none');
+}
+</script>
 <div id="stars"></div>
 
 <!-- SPLASH SCREEN — responsive portrait + landscape -->
@@ -342,7 +352,7 @@ body.ff-sys{--font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
 }
 </style>
 
-<div id="splash">
+<div id="splash" style="display:var(--splash-init,block)">
   <div id="spark"></div>
   <div id="spirit-wrap">
     <div class="sp-ring"></div>
@@ -409,7 +419,7 @@ body.ff-sys{--font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
 </div>
 
 <!-- DISCLAIMER MODAL -->
-<div id="disclaimer-overlay" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(6,10,22,.98);backdrop-filter:blur(16px);overflow-y:auto;max-width:900px;margin:0 auto">
+<div id="disclaimer-overlay" style="display:var(--disclaimer-init,none);position:fixed;inset:0;z-index:9999;background:rgba(6,10,22,.98);backdrop-filter:blur(16px);overflow-y:auto;max-width:900px;margin:0 auto">
   <div style="padding:30px 22px 40px;max-width:700px;margin:0 auto">
     <div style="text-align:center;margin-bottom:28px">
       <p style="font-family:'Cinzel Decorative',serif;font-size:22px;color:#C9A84C;letter-spacing:4px;margin-bottom:6px">MASTER SPIRIT</p>
