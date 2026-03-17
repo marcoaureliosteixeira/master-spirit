@@ -707,6 +707,43 @@ if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
   </div>
 </div>
 
+<!-- Criar Grupo de Estudo -->
+<div class="modal" id="modal-newgroup">
+  <div class="modal-head">
+    <button class="back" onclick="closeModal('newgroup')">‹</button>
+    <h2>👥 CRIAR GRUPO DE ESTUDO</h2>
+  </div>
+  <div class="modal-inner">
+    <p style="font-size:13px;font-style:italic;color:rgba(240,234,214,.5);line-height:1.6;margin-bottom:18px">Crie um grupo, associe a uma sala de estudo e convide até 10 pessoas para estudar juntas.</p>
+
+    <p class="sec-label">Nome do Grupo</p>
+    <input id="group-name" class="input-field" type="text" placeholder="Ex: Grupo Fraternidade — Livro dos Espíritos" style="margin-bottom:14px">
+
+    <p class="sec-label">Descrição (opcional)</p>
+    <input id="group-desc" class="input-field" type="text" placeholder="Breve descrição do grupo..." style="margin-bottom:14px">
+
+    <p class="sec-label">Sala de Estudo Associada</p>
+    <div id="group-room-list" style="max-height:200px;overflow-y:auto;margin-bottom:14px"></div>
+
+    <button onclick="createStudyGroup()" class="btn-gold" style="margin-bottom:10px">✦ Criar Grupo</button>
+    <p id="group-status" style="text-align:center;font-size:12px;font-style:italic;color:rgba(201,168,76,.6);min-height:18px"></p>
+
+    <div style="height:1px;background:rgba(255,255,255,.07);margin:20px 0"></div>
+    <p style="font-size:10px;color:rgba(240,234,214,.25);font-style:italic;text-align:center;line-height:1.5">Disponível no plano Premium. Máximo 10 membros por grupo.</p>
+  </div>
+</div>
+
+<!-- Grupo de Estudo — Detalhes / Convites -->
+<div class="modal" id="modal-groupdetail">
+  <div class="modal-head">
+    <button class="back" onclick="closeModal('groupdetail')">‹</button>
+    <h2 id="groupdetail-title">👥 GRUPO</h2>
+  </div>
+  <div class="modal-inner">
+    <div id="groupdetail-content"></div>
+  </div>
+</div>
+
 <!-- Study Room -->
 <div class="modal" id="modal-room">
   <div class="modal-head">
@@ -1320,8 +1357,139 @@ function clearMasterChat(id){
 }
 
 function openHelpChat(){
-  // Master Spirit guide - opens a simple help modal
-  alert('Master Spirit — Seu Guia\\n\\nEste app conecta você a mestres espirituais para conversar, consolar e aprender.\\n\\n🕊️ Mestres: Escolha um mestre e converse diretamente com ele.\\n📚 Salas de Estudo: Estude livros espíritas com guia interativo.\\n\\nCada mestre tem sua própria personalidade e conhecimento.');
+  alert('Master Spirit — Seu Guia\n\nEste app conecta você a mestres espirituais para conversar, consolar e aprender.\n\n🕊️ Mestres: Escolha um mestre e converse diretamente com ele.\n📚 Salas de Estudo: Estude livros espíritas com guia interativo.\n👥 Grupos: Crie grupos e convide amigos para estudar juntos.\n\nCada mestre tem sua própria personalidade e conhecimento.');
+}
+
+// ===================== GRUPOS DE ESTUDO =====================
+let _selectedGroupRoom=null;
+let _myGroups=[];
+
+function openGroupModal(){
+  _selectedGroupRoom=null;
+  document.getElementById('group-name').value='';
+  document.getElementById('group-desc').value='';
+  document.getElementById('group-status').textContent='';
+  // Preencher lista de salas
+  const list=document.getElementById('group-room-list');
+  list.innerHTML=rooms.map(r=>`<div class="card" style="margin-bottom:6px;${_selectedGroupRoom===r.id?'border-color:rgba(91,175,124,.6);background:rgba(91,175,124,.1)':''}" onclick="selectGroupRoom('${r.id}',this)">
+    <span class="ico">${r.icon}</span>
+    <div class="body"><h3>${r.title}</h3><div class="auth">${r.author}</div></div>
+    <span class="arr" style="color:${_selectedGroupRoom===r.id?'rgba(91,175,124,.8)':'rgba(201,168,76,.3)'}">${_selectedGroupRoom===r.id?'✓':'›'}</span>
+  </div>`).join('');
+  openModal('newgroup');
+}
+
+function selectGroupRoom(roomId,el){
+  _selectedGroupRoom=roomId;
+  // Re-render list
+  const list=document.getElementById('group-room-list');
+  list.querySelectorAll('.card').forEach(c=>{
+    c.style.borderColor='rgba(255,255,255,.14)';c.style.background='rgba(255,255,255,.055)';
+    c.querySelector('.arr').style.color='rgba(201,168,76,.3)';c.querySelector('.arr').textContent='›';
+  });
+  el.style.borderColor='rgba(91,175,124,.6)';el.style.background='rgba(91,175,124,.1)';
+  el.querySelector('.arr').style.color='rgba(91,175,124,.8)';el.querySelector('.arr').textContent='✓';
+}
+
+async function createStudyGroup(){
+  const name=document.getElementById('group-name').value.trim();
+  const desc=document.getElementById('group-desc').value.trim();
+  const status=document.getElementById('group-status');
+  if(!name){status.textContent='Digite o nome do grupo.';return;}
+  if(!_selectedGroupRoom){status.textContent='Selecione uma sala de estudo.';return;}
+  status.textContent='Criando grupo...';
+  try{
+    const token=await getAuthToken();
+    if(!token){status.textContent='Faça login para criar um grupo.';return;}
+    const r=await fetch('/api/study-groups',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'create_group',token,name,description:desc,room_id:_selectedGroupRoom})});
+    const d=await r.json();
+    if(!r.ok){status.textContent=d.error||'Erro ao criar grupo.';return;}
+    status.style.color='rgba(91,175,124,.8)';
+    status.textContent='Grupo criado com sucesso!';
+    setTimeout(()=>{closeModal('newgroup');openGroupDetail(d.group.id);},1000);
+  }catch(e){status.textContent='Erro de conexão.';}
+}
+
+async function getAuthToken(){
+  try{
+    if(!window._sb) return null;
+    const s=await window._sb.auth.getSession();
+    return s?.data?.session?.access_token||null;
+  }catch(e){return null;}
+}
+
+async function openGroupDetail(groupId){
+  const content=document.getElementById('groupdetail-content');
+  content.innerHTML='<p style="text-align:center;padding:30px;color:rgba(201,168,76,.5);font-style:italic">Carregando...</p>';
+  openModal('groupdetail');
+  try{
+    const token=await getAuthToken();
+    const r=await fetch('/api/study-groups',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'group_details',token,group_id:groupId})});
+    const d=await r.json();
+    if(!r.ok){content.innerHTML='<p style="text-align:center;padding:30px;color:rgba(232,122,122,.7)">'+d.error+'</p>';return;}
+    const g=d.group;const room=rooms.find(x=>x.id===g.room_id);
+    document.getElementById('groupdetail-title').textContent='👥 '+g.name;
+    let html=`
+      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(91,175,124,.2);border-radius:12px;padding:14px;margin-bottom:16px">
+        <p style="font-size:13px;color:rgba(240,234,214,.7)">${g.description||'Sem descrição'}</p>
+        <p style="font-size:11px;color:rgba(91,175,124,.6);margin-top:6px">📚 Sala: ${room?room.title:g.room_id}</p>
+      </div>
+      <p class="sec-label">Membros (${d.members.length}/10)</p>`;
+    d.members.forEach(m=>{
+      html+=`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)">
+        <span style="font-size:14px">${m.role==='coordinator'?'👑':'👤'}</span>
+        <span style="flex:1;font-size:13px;color:var(--text)">${m.email}</span>
+        <span style="font-size:10px;font-style:italic;color:rgba(201,168,76,.4)">${m.role==='coordinator'?'Coordenador':'Membro'}</span>
+      </div>`;
+    });
+    if(d.pending_invites.length>0){
+      html+=`<p class="sec-label" style="margin-top:14px">Convites Pendentes</p>`;
+      d.pending_invites.forEach(inv=>{
+        html+=`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)">
+          <span style="font-size:14px">✉️</span>
+          <span style="flex:1;font-size:13px;color:rgba(240,234,214,.6)">${inv.email}</span>
+          <span style="font-size:10px;font-style:italic;color:rgba(232,201,122,.5)">pendente</span>
+        </div>`;
+      });
+    }
+    if(d.members.length<10){
+      html+=`<div style="margin-top:18px">
+        <p class="sec-label">Convidar por Email</p>
+        <div style="display:flex;gap:8px">
+          <input id="invite-email" class="input-field" type="email" placeholder="email@exemplo.com" style="flex:1">
+          <button onclick="sendGroupInvite('${groupId}')" style="background:rgba(91,175,124,.15);border:1px solid rgba(91,175,124,.4);border-radius:10px;padding:10px 16px;cursor:pointer;color:rgba(91,175,124,.8);font-family:'Cinzel',serif;font-size:9px;letter-spacing:1px;white-space:nowrap">Convidar</button>
+        </div>
+        <p id="invite-status" style="font-size:11px;font-style:italic;color:rgba(91,175,124,.6);margin-top:6px;min-height:16px"></p>
+      </div>`;
+    }
+    content.innerHTML=html;
+  }catch(e){content.innerHTML='<p style="text-align:center;padding:30px;color:rgba(232,122,122,.7)">Erro de conexão.</p>';}
+}
+
+async function sendGroupInvite(groupId){
+  const email=document.getElementById('invite-email').value.trim();
+  const status=document.getElementById('invite-status');
+  if(!email){status.textContent='Digite um email.';return;}
+  status.textContent='Enviando convite...';
+  try{
+    const token=await getAuthToken();
+    const r=await fetch('/api/study-groups',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'invite',token,group_id:groupId,email})});
+    const d=await r.json();
+    if(!r.ok){status.style.color='rgba(232,122,122,.7)';status.textContent=d.error;return;}
+    status.style.color='rgba(91,175,124,.8)';
+    status.textContent=d.message;
+    document.getElementById('invite-email').value='';
+    // Enviar email
+    const room=rooms.find(x=>x.id===d.invite?.room_id);
+    fetch('/api/send-invite-email',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email,group_name:document.getElementById('groupdetail-title').textContent.replace('👥 ',''),room_name:room?room.title:'',is_registered:d.user_registered})
+    }).catch(()=>{});
+    // Recarregar detalhes
+    setTimeout(()=>openGroupDetail(groupId),1500);
+  }catch(e){status.textContent='Erro de conexão.';}
 }
 
 // ===================== HOJE =====================
@@ -1576,8 +1744,18 @@ function renderStudy(){
         <button onclick="backToSplash()" style="background:none;border:none;cursor:pointer;color:rgba(201,168,76,.6);font-size:22px;padding:0">‹</button>
         <p style="font-family:'Cinzel',serif;font-size:11.5px;letter-spacing:2.5px;color:var(--gold)">📚 SALAS DE ESTUDO</p>
       </div>
-      <button onclick="openModal('newroom')" style="background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.35);border-radius:11px;padding:7px 12px;cursor:pointer;color:var(--gold);font-family:'Cinzel',serif;font-size:8.5px;letter-spacing:1.5px;display:flex;align-items:center;gap:5px;transition:all .2s">
-        <span style="font-size:13px">+</span> Nova Sala
+    </div>
+    <!-- 2 cards de ação -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px 14px">
+      <button onclick="openModal('newroom')" style="background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.25);border-radius:12px;padding:14px 10px;cursor:pointer;text-align:center;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:6px" onmouseover="this.style.borderColor='rgba(201,168,76,.55)';this.style.background='rgba(201,168,76,.12)'" onmouseout="this.style.borderColor='rgba(201,168,76,.25)';this.style.background='rgba(201,168,76,.06)'">
+        <span style="font-size:22px">📖</span>
+        <span style="font-family:'Cinzel',serif;font-size:8px;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase">Nova Sala</span>
+        <span style="font-size:10px;font-style:italic;color:rgba(240,234,214,.35)">Crie sua sala pessoal</span>
+      </button>
+      <button onclick="openGroupModal()" style="background:rgba(91,175,124,.06);border:1px solid rgba(91,175,124,.25);border-radius:12px;padding:14px 10px;cursor:pointer;text-align:center;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:6px" onmouseover="this.style.borderColor='rgba(91,175,124,.55)';this.style.background='rgba(91,175,124,.12)'" onmouseout="this.style.borderColor='rgba(91,175,124,.25)';this.style.background='rgba(91,175,124,.06)'">
+        <span style="font-size:22px">👥</span>
+        <span style="font-family:'Cinzel',serif;font-size:8px;letter-spacing:1.5px;color:rgba(91,175,124,.8);text-transform:uppercase">Grupo de Estudo</span>
+        <span style="font-size:10px;font-style:italic;color:rgba(240,234,214,.35)">Convide amigos para estudar</span>
       </button>
     </div>
     <div class="search-box">
