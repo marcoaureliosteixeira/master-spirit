@@ -216,7 +216,7 @@ body.ff-sys{--font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
 
 <!-- SPLASH SCREEN — responsive portrait + landscape -->
 <style>
-#splash{position:fixed;inset:0;z-index:999;background:var(--bg);overflow:hidden}
+#splash{position:fixed;inset:0;z-index:999;background:var(--bg)}
 
 /* Faísca de luz */
 #spark{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:8px;height:8px;border-radius:50%;background:#fff;box-shadow:0 0 12px 6px rgba(255,240,180,.9),0 0 40px 20px rgba(201,168,76,.5),0 0 80px 40px rgba(100,60,200,.3);animation:spark-burst 1s cubic-bezier(.22,1,.36,1) forwards}
@@ -237,7 +237,6 @@ body.ff-sys{--font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
   width:min(80vw,480px);height:min(80vw,480px);object-fit:contain;display:block;
   mix-blend-mode:screen;-webkit-mix-blend-mode:screen;
   animation:spirit-filter 2.5s cubic-bezier(.22,1,.36,1) .6s both;
-  will-change:filter;
 }
 @keyframes spirit-filter{
   0%{filter:brightness(20) saturate(0) blur(16px)}
