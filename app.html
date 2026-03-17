@@ -887,7 +887,7 @@ Teu publico e diverso: curiosos que nunca abriram um livro espiritual, aprendize
 - Quando citares um conceito de uma fonte especifica, FAZ A PONTE com as outras: "Isso que o Gita chama de..., nos Evangelhos eu disse assim..., e Kardec codificou como..." — mostrando a UNIDADE por tras das diferentes linguagens.
 
 CONCISAO — REGRA CRITICA:
-Responde de forma CONCISA e DIRETA. Maximo 3 a 5 paragrafos curtos por resposta, a menos que o usuario peca explicitamente mais detalhes. Ao final, SEMPRE oferece aprofundar: "Queres que eu aprofunde algum ponto, filho?" ou "Posso te contar mais sobre isso, se desejares." Isso respeita o tempo da pessoa e permite que ela escolha ir mais fundo. Respostas longas cansam e afastam — respostas curtas com alma aproximam.
+Responde de forma CURTA E DIRETA. Maximo 2 a 3 paragrafos curtos por resposta. Deixa o usuario querer mais — menos e mais. Ao final, SEMPRE oferece aprofundar: "Queres que eu aprofunde, filho?" ou "Posso te contar mais, se desejares." Respostas longas cansam e afastam — respostas curtas com alma aproximam.
 
 REGRAS DE FORMATO: Portugues brasileiro. NUNCA uses markdown com asteriscos. Para dar enfase, usa a forca das palavras ou maiusculas com parcimonia. Escreve de forma fluida e natural, como uma conversa intima — nao como um texto formatado.`;
 
@@ -1119,7 +1119,11 @@ function openMasterChat(masterId){
   document.getElementById('content').className='with-input';
   const fab=document.getElementById('help-fab');if(fab)fab.style.display='none';
   render();
-  if(msgs.length===0) scrollChat('msgs');
+  if(msgs.length===0){
+    scrollChat('msgs');
+    // Toca welcome na primeira vez
+    setTimeout(function(){playAvatarAudio('welcome',masterId);},600);
+  }
 }
 
 function renderMasterChat(){
@@ -1363,6 +1367,8 @@ async function sendMsgText(text){
   }
   loading=true;render();scrollChat('msgs');
   startObs('msgs');
+  // Toca intro do avatar enquanto busca resposta
+  if(activeMaster) playAvatarAudio('intro',activeMaster);
   try{
     const r=await fetch(API_URL,{method:'POST',
       headers:{'Content-Type':'application/json'},
@@ -1380,6 +1386,10 @@ async function sendMsgText(text){
   loading=false;stopObs();
   if(activeMaster) saveMasterMsgs(activeMaster);
   render();scrollChat('msgs');
+  // Toca convite à reflexão após a resposta chegar
+  if(activeMaster){
+    setTimeout(function(){playAvatarAudio('reflect',activeMaster);},800);
+  }
 }
 
 // File attach
@@ -2135,6 +2145,63 @@ function stopVoiceInput(){
 }
 
 // ── ElevenLabs Config ──
+
+// ── VOICE INVITES — Áudio automático por avatar ──
+var _lastIntro={};
+var _lastReflect={};
+var _welcomePlayed={};
+
+function playAvatarAudio(type,masterId,callback){
+  if(!masterId) return;
+  var folder='assets/audio/'+masterId+'/';
+  var file='';
+  if(type==='welcome'){
+    if(_welcomePlayed[masterId]) return;
+    _welcomePlayed[masterId]=true;
+    file=folder+'welcome.mp3';
+  } else if(type==='intro'){
+    var max=masterId==='jesus'?10:5;
+    var idx=randomExcluding(max,_lastIntro[masterId]);
+    _lastIntro[masterId]=idx;
+    file=folder+'intro_'+String(idx).padStart(2,'0')+'.mp3';
+  } else if(type==='reflect'){
+    var idx2=randomExcluding(5,_lastReflect[masterId]);
+    _lastReflect[masterId]=idx2;
+    file=folder+'reflect_'+String(idx2).padStart(2,'0')+'.mp3';
+  }
+  if(!file) return;
+  playStaticAudio(file,callback);
+}
+
+function randomExcluding(max,exclude){
+  var n;
+  do{n=Math.floor(Math.random()*max)+1;}while(n===exclude&&max>1);
+  return n;
+}
+
+function playStaticAudio(src,callback){
+  stopAllAudio();
+  var audio=new Audio(src);
+  audio.volume=0.85;
+  window._currentAudio=audio;
+  _ttsPlaying=true;
+  audio.onended=function(){
+    _ttsPlaying=false;
+    window._currentAudio=null;
+    if(callback) callback();
+  };
+  audio.onerror=function(){
+    console.warn('[Voice] Arquivo não encontrado:',src);
+    _ttsPlaying=false;
+    window._currentAudio=null;
+    if(callback) callback();
+  };
+  audio.play().catch(function(e){
+    console.warn('[Voice] Autoplay bloqueado:',e.message);
+    _ttsPlaying=false;
+    if(callback) callback();
+  });
+}
 
 // ── TTS (Text-to-Speech) — Resposta em voz ──
 var _ttsPlaying=false;
