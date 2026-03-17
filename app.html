@@ -1059,14 +1059,12 @@ function enterApp(){
   setTimeout(()=>{
     document.getElementById('splash').style.display='none';
     document.getElementById('app').style.display='flex';
-    showDisclaimerIfNeeded();
   },500);
 }
 
 function skipSplash(){
   document.getElementById('splash').style.display='none';
   document.getElementById('app').style.display='flex';
-  showDisclaimerIfNeeded();
 }
 
 function splashGoMestres(){
@@ -1098,16 +1096,9 @@ const styleEl=document.createElement('style');
 styleEl.textContent='@keyframes fadeout{from{opacity:1}to{opacity:0}}';
 document.head.appendChild(styleEl);
 
-window.addEventListener('load',()=>{
-  // Skip splash se já viu nesta sessão
-  if(sessionStorage.getItem('spirit_splash_seen')){
-    skipSplash();
-  }
-  // Logo
-  document.getElementById('logo').src=LOGO_SRC;
-  initSplashLogo();
-  // Stars
+function initStars(){
   const sf=document.getElementById('stars');
+  if(!sf||sf.children.length>0) return;
   for(let i=0;i<130;i++){
     const d=document.createElement('div');
     d.className='star';
@@ -1116,18 +1107,38 @@ window.addEventListener('load',()=>{
     d.style.cssText=`left:${(Math.random()*100).toFixed(1)}%;top:${(Math.random()*100).toFixed(1)}%;width:${sz}px;height:${sz}px;--d:${(Math.random()*4+2).toFixed(1)}s;--dl:${(Math.random()*5).toFixed(1)}s;box-shadow:${bright?`0 0 ${Math.floor(sz*3)}px rgba(201,168,76,.4)`:'none'}`;
     sf.appendChild(d);
   }
-  // Load settings
+}
+function initSettings(){
   const savedFs=localStorage.getItem('spirit_fs')||'fs-lg';
   const savedFf=localStorage.getItem('spirit_ff')||'';
   document.body.className=savedFs+(savedFf?' '+savedFf:'');
-  // Sync settings buttons
   document.querySelectorAll('[data-fs]').forEach(b=>b.classList.toggle('active',b.dataset.fs===savedFs));
   document.querySelectorAll('[data-ff]').forEach(b=>b.classList.toggle('active',b.dataset.ff===savedFf));
-  // Load rooms
+}
+function loadRooms(){
   try{const cr=JSON.parse(localStorage.getItem('spirit_rooms')||'[]');rooms=[...DEFAULT_ROOMS,...cr];}catch(e){}
-  // Render the dashboard first — user opens ⚙️ when ready
+}
+
+window.addEventListener('load',()=>{
+  // Disclaimer antes de tudo (só 1ª vez)
+  if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
+    document.getElementById('splash').style.display='none';
+    document.getElementById('app').style.display='none';
+    document.getElementById('disclaimer-overlay').style.display='block';
+    return;
+  }
+  // Init normal
+  document.getElementById('logo').src=LOGO_SRC;
+  initSplashLogo();
+  initStars();
+  initSettings();
+  loadRooms();
+  // Skip splash se já viu nesta sessão
+  if(sessionStorage.getItem('spirit_splash_seen')){
+    skipSplash();
+  }
   render();
-  buildSuggestions();
+  if(typeof buildSuggestions==='function') buildSuggestions();
 });
 
 // ===================== TABS =====================
@@ -1915,6 +1926,18 @@ async function acceptDisclaimer(){
     }
   }catch(e){}
   document.getElementById('disclaimer-overlay').style.display='none';
+  // Após aceitar, iniciar o app (splash ou direto)
+  if(!document.getElementById('app').style.display||document.getElementById('app').style.display==='none'){
+    document.getElementById('splash').style.display='block';
+    // Inicializar logo, stars, settings que o load teria feito
+    document.getElementById('logo').src=LOGO_SRC;
+    initSplashLogo();
+    initStars();
+    initSettings();
+    loadRooms();
+    render();
+    if(typeof buildSuggestions==='function') buildSuggestions();
+  }
 }
 function viewDisclaimer(){
   closeModal('cfg');
