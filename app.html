@@ -209,6 +209,36 @@ body.ff-sys{--font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
 .preset-btn{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:10px 6px;cursor:pointer;font-family:'Cinzel',serif;font-size:9px;letter-spacing:1px;color:rgba(240,234,214,.45);transition:all .2s;text-align:center}
 .preset-btn:hover{background:rgba(201,168,76,.1);border-color:rgba(201,168,76,.35);color:rgba(240,234,214,.8)}
 .preset-btn.active{background:rgba(201,168,76,.2);border-color:rgba(201,168,76,.5);color:var(--gold)}
+/* MASTER GRID */
+.master-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding:18px 14px}
+.master-card{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:20px 12px 16px;cursor:pointer;text-align:center;transition:all .25s;position:relative;overflow:hidden}
+.master-card:hover,.master-card:active{background:rgba(201,168,76,.1);border-color:rgba(201,168,76,.5);transform:translateY(-3px);box-shadow:0 8px 30px rgba(201,168,76,.15)}
+.master-card .master-avatar{width:90px;height:90px;border-radius:50%;object-fit:cover;margin:0 auto 12px;display:block;border:2px solid rgba(201,168,76,.3);box-shadow:0 0 20px rgba(201,168,76,.15);transition:all .3s}
+.master-card:hover .master-avatar{border-color:rgba(201,168,76,.6);box-shadow:0 0 30px rgba(201,168,76,.3)}
+.master-card .master-name{font-family:'Cinzel',serif;font-size:11px;letter-spacing:1.5px;color:var(--gold);margin-bottom:4px;text-transform:uppercase}
+.master-card .master-desc{font-size:12px;font-style:italic;color:rgba(240,234,214,.45);line-height:1.4}
+.master-section-title{font-family:'Cinzel',serif;font-size:10px;letter-spacing:3px;color:rgba(201,168,76,.5);text-transform:uppercase;text-align:center;padding:16px 14px 0}
+/* MASTER CHAT HEADER */
+.mchat-header{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid rgba(201,168,76,.12);flex-shrink:0}
+.mchat-back{background:none;border:none;cursor:pointer;color:rgba(201,168,76,.6);font-size:22px;padding:0;transition:color .2s}
+.mchat-back:hover{color:var(--gold)}
+.mchat-avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,168,76,.3)}
+.mchat-info h3{font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;color:var(--gold)}
+.mchat-info p{font-size:10px;font-style:italic;color:rgba(240,234,214,.35);margin-top:1px}
+/* HELP FAB */
+#help-fab{position:fixed;bottom:20px;right:20px;z-index:90;width:48px;height:48px;border-radius:50%;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.4);cursor:pointer;font-family:'Cinzel',serif;font-size:18px;color:var(--gold);display:flex;align-items:center;justify-content:center;transition:all .25s;box-shadow:0 4px 20px rgba(201,168,76,.12)}
+#help-fab:hover{background:rgba(201,168,76,.3);box-shadow:0 6px 30px rgba(201,168,76,.25);transform:translateY(-2px)}
+@media(max-width:600px){
+  .master-grid{grid-template-columns:repeat(2,1fr);gap:10px;padding:14px 10px}
+  .master-card .master-avatar{width:72px;height:72px}
+  .master-card .master-name{font-size:9.5px}
+  .master-card .master-desc{font-size:11px}
+}
+@media(max-width:360px){
+  .master-grid{gap:8px;padding:12px 8px}
+  .master-card{padding:14px 8px 12px}
+  .master-card .master-avatar{width:60px;height:60px}
+}
 </style>
 </head>
 <body class="fs-lg">
@@ -297,18 +327,15 @@ body.ff-sys{--font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
     <img id="logo" src="" alt="MASTER SPIRIT">
     <div id="header-text">
       <h1>MASTER SPIRIT</h1>
-      <p>o consolador · disseminador de sabedoria</p>
+      <p>sabedoria espiritual para a evolução da alma</p>
     </div>
     <button id="admin-btn" onclick="window.location.href='admin.html'" style="display:none;position:absolute;right:56px;top:50%;transform:translateY(-50%);background:rgba(91,175,124,.1);border:1px solid rgba(91,175,124,.3);border-radius:50%;width:34px;height:34px;cursor:pointer;font-size:15px;color:rgba(91,175,124,.8);align-items:center;justify-content:center;transition:all .2s" title="Admin">⚡</button>
     <button id="qr-btn" onclick="openModal('qr')" title="Abrir no celular" style="position:absolute;right:98px;top:50%;transform:translateY(-50%);background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);border-radius:50%;width:34px;height:34px;cursor:pointer;font-size:16px;color:rgba(201,168,76,.7);display:none;align-items:center;justify-content:center;transition:all .2s">📱</button>
     <button id="cfg-btn" onclick="openModal('cfg')">⚙️</button>
   </div>
   <div id="nav">
-    <button class="nav-btn active" id="nb-hoje" onclick="goTab('hoje')"><span class="ico">✦</span><span class="lbl">Hoje</span></button>
-    <button class="nav-btn" id="nb-chat" onclick="goTab('chat')"><span class="ico">🕊️</span><span class="lbl">Conversar</span></button>
-    <button class="nav-btn" id="nb-study" onclick="goTab('study')"><span class="ico">📚</span><span class="lbl">Estudar</span></button>
-    <button class="nav-btn" id="nb-sab" onclick="goTab('sab')"><span class="ico">◎</span><span class="lbl">Sabedoria</span></button>
-    <button class="nav-btn" onclick="doLogout()" style="color:rgba(232,122,122,.7)"><span class="ico">⟶</span><span class="lbl">Sair</span></button>
+    <button class="nav-btn active" id="nb-mestres" onclick="goTab('mestres')"><span class="ico">🕊️</span><span class="lbl">Mestres</span></button>
+    <button class="nav-btn" id="nb-study" onclick="goTab('study')"><span class="ico">📚</span><span class="lbl">Salas de Estudo</span></button>
   </div>
 
   <div id="content"><!-- filled by render() --></div>
@@ -322,6 +349,9 @@ body.ff-sys{--font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
       <p style="font-size:9px;color:rgba(240,234,214,.35);letter-spacing:1px;font-style:italic;margin-top:4px">v1.0.0 &nbsp;·&nbsp; © 2025 Spyrit Systems</p>
   </div>
 </div><!-- end app -->
+
+<!-- HELP FAB -->
+<button id="help-fab" onclick="openHelpChat()" title="Master Spirit · Ajuda">?</button>
 
 <!-- FIXED INPUT BAR -->
 <div id="input-bar">
@@ -443,13 +473,6 @@ body.ff-sys{--font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
       <button class="preset-btn active" data-fs="fs-lg" onclick="setFs(this)">Grande</button>
       <button class="preset-btn" data-fs="fs-xl" onclick="setFs(this)">Extra</button>
     </div>
-    <p class="sec-label">Modo do Chat</p>
-    <div class="preset-grid" style="grid-template-columns:1fr 1fr">
-      <button class="preset-btn" id="mode-jesus" data-mode="jesus" onclick="setChatMode('jesus')">✝ Jesus em 1a pessoa</button>
-      <button class="preset-btn" id="mode-normal" data-mode="normal" onclick="setChatMode('normal')">✦ Guia Espiritual</button>
-    </div>
-    <p style="font-style:italic;font-size:11px;color:rgba(240,234,214,.3);margin:-6px 0 14px 2px;line-height:1.5" id="mode-hint"></p>
-
     <p class="sec-label">Família de Fonte</p>
     <div class="preset-grid" style="grid-template-columns:repeat(2,1fr)">
       <button class="preset-btn active" data-ff="" onclick="setFf(this)" style="font-family:'Cormorant Garamond',serif">Cormorant</button>
@@ -892,11 +915,65 @@ CONCISAO: Responde de forma CONCISA — maximo 3 a 5 paragrafos curtos. Ao final
 
 REGRAS DE FORMATO: Portugues brasileiro. NUNCA uses markdown com asteriscos. Escreve de forma fluida e natural.`;
 
-let chatMode=localStorage.getItem('spirit_chat_mode')||'jesus';
-function getSysPrompt(){return chatMode==='jesus'?SYS_PROMPT_JESUS:SYS_PROMPT_NORMAL;}
+// ===================== MASTERS CONFIG =====================
+const MASTERS=[
+  {id:'jesus',name:'Jesus',fullName:'Jesus de Nazaré',desc:'O Mestre dos Mestres · Amor Universal',avatar:'avatar-jesus.png',agent:'jesus',color:'#C9A84C'},
+  {id:'kardec',name:'Allan Kardec',fullName:'Allan Kardec',desc:'Codificador do Espiritismo',avatar:'avatar-kardec.png',agent:'kardec',color:'#5BAF7C'},
+  {id:'chico',name:'Chico Xavier',fullName:'Francisco Cândido Xavier',desc:'O maior médium do Brasil · Psicografia',avatar:'avatar-chico-xavier.png',agent:'chico',color:'#4A9EBF'},
+  {id:'bezerra',name:'Bezerra de Menezes',fullName:'Dr. Bezerra de Menezes',desc:'O médico dos pobres · Cura espiritual',avatar:'avatar-bezerra.png',agent:'bezerra',color:'#7CAF5B'},
+  {id:'divaldo',name:'Divaldo Franco',fullName:'Divaldo Pereira Franco',desc:'Orador e mensageiro da espiritualidade',avatar:'avatar-divaldo.png',agent:'divaldo',color:'#BF7A4A'},
+  {id:'krishna',name:'Krishna',fullName:'Sri Krishna',desc:'Sabedoria do Bhagavad Gita',avatar:'avatar-krishna.png',agent:'krishna',color:'#A87DCA'}
+];
+
+const MASTER_QUOTES={
+  jesus:[
+    "Vinde a mim, todos os que estais cansados e oprimidos, e eu vos darei descanso.",
+    "Eu sou o caminho, a verdade e a vida.",
+    "Amai-vos uns aos outros como eu vos amei.",
+    "A verdade vos libertará.",
+    "O reino de Deus está dentro de vós."
+  ],
+  kardec:[
+    "Nascer, morrer, renascer ainda e progredir sempre — tal é a lei.",
+    "Fora da caridade não há salvação.",
+    "O Espiritismo é a ciência que trata da natureza, origem e destino dos espíritos.",
+    "A dúvida é o caminho para a verdade.",
+    "Conhece-te a ti mesmo e conhecerás o universo e os deuses."
+  ],
+  chico:[
+    "Embora ninguém possa voltar atrás e fazer um novo começo, qualquer um pode começar agora e fazer um novo fim.",
+    "Feliz Natal! A vida continua, sempre.",
+    "Não fui eu, foi o espírito.",
+    "Agradeça sempre. A gratidão é a memória do coração.",
+    "Onde houver alguém precisando de ajuda, ali está a nossa missão."
+  ],
+  bezerra:[
+    "A caridade é o melhor remédio para todas as dores.",
+    "O corpo adoece quando a alma sofre.",
+    "Curar é um ato de amor, não apenas de ciência.",
+    "O médico do corpo precisa ser também médico da alma.",
+    "A verdadeira saúde começa no espírito."
+  ],
+  divaldo:[
+    "A vida é bela! Precisamos aprender a enxergar a beleza em tudo.",
+    "O amor é a única força capaz de transformar um inimigo em amigo.",
+    "A paz começa dentro de nós. Não a busquemos fora.",
+    "Somos todos peregrinos da eternidade, caminhando para a luz.",
+    "A mediunidade é dom divino para servir, nunca para explorar."
+  ],
+  krishna:[
+    "Tu tens direito à ação, mas nunca aos seus frutos.",
+    "A alma não nasce nem morre. É eterna, imutável e primordial.",
+    "Quando a mente está serena, a sabedoria floresce.",
+    "Abandona todo apego ao resultado e age com equilíbrio.",
+    "Aquele que me vê em tudo e tudo vê em mim, nunca se separa de mim."
+  ]
+};
 
 // ===================== STATE =====================
-let tab='hoje';
+let tab='mestres';
+let activeMaster=null;
+let masterMsgs={};
 let msgs=[];
 let loading=false;
 let rooms=[...DEFAULT_ROOMS];
@@ -907,6 +984,12 @@ let roomLoading=false;
 let roomSearch='';
 let openSrc=null;
 let attachData=null,attachType=null,attachName=null;
+
+// Load per-master chat history from localStorage
+MASTERS.forEach(function(m){
+  try{masterMsgs[m.id]=JSON.parse(localStorage.getItem('spirit_chat_'+m.id)||'[]');}catch(e){masterMsgs[m.id]=[];}
+});
+function saveMasterMsgs(id){try{localStorage.setItem('spirit_chat_'+id,JSON.stringify(masterMsgs[id]||[]));}catch(e){}}
 
 // ===================== SPLASH VERSES =====================
 (function(){
@@ -966,11 +1049,6 @@ window.addEventListener('load',()=>{
   // Sync settings buttons
   document.querySelectorAll('[data-fs]').forEach(b=>b.classList.toggle('active',b.dataset.fs===savedFs));
   document.querySelectorAll('[data-ff]').forEach(b=>b.classList.toggle('active',b.dataset.ff===savedFf));
-  // Load chat mode
-  initChatMode();
-  // Load voice config
-  // Pré-gerar interpretação do dia em background
-  preloadInterpretation();
   // Load rooms
   try{const cr=JSON.parse(localStorage.getItem('spirit_rooms')||'[]');rooms=[...DEFAULT_ROOMS,...cr];}catch(e){}
   // Render the dashboard first — user opens ⚙️ when ready
@@ -980,29 +1058,146 @@ window.addEventListener('load',()=>{
 
 // ===================== TABS =====================
 function goTab(t){
+  // Legacy fallback: 'chat' redirects to Jesus master chat
+  if(t==='chat'||t==='hoje'||t==='sab'){openMasterChat('jesus');return;}
   tab=t;
+  if(t!=='master-chat') activeMaster=null;
   // Parar áudio ao mudar de aba
   if(typeof stopAllAudio==='function') stopAllAudio();
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   const nb=document.getElementById('nb-'+t);
   if(nb) nb.classList.add('active');
+  // For master-chat, highlight Mestres tab
+  if(t==='master-chat'){const nm=document.getElementById('nb-mestres');if(nm)nm.classList.add('active');}
   // show/hide input bar
   const bar=document.getElementById('input-bar');
-  bar.className=t==='chat'?'show':'';
+  bar.className=t==='master-chat'?'show':'';
   // add padding to content when input bar is visible
   const content=document.getElementById('content');
-  if(content) content.className=t==='chat'?'with-input':'';
+  if(content) content.className=t==='master-chat'?'with-input':'';
+  // show/hide help fab
+  const fab=document.getElementById('help-fab');
+  if(fab) fab.style.display=t==='master-chat'?'none':'flex';
   render();
 }
 
 function render(){
   const c=document.getElementById('content');
-  if(tab==='hoje') c.innerHTML=renderHoje();
-  else if(tab==='chat') c.innerHTML=renderChat();
+  if(tab==='mestres') c.innerHTML=renderMestres();
   else if(tab==='study') c.innerHTML=renderStudy();
-  else c.innerHTML=renderSab();
-  // Update chat counter after DOM is rendered
-  if(tab==='chat') setTimeout(updateChatCounter, 10);
+  else if(tab==='master-chat') c.innerHTML=renderMasterChat();
+  else c.innerHTML=renderMestres();
+}
+
+// ===================== MESTRES GRID =====================
+function renderMestres(){
+  const cards=MASTERS.map(m=>{
+    const hasHistory=(masterMsgs[m.id]||[]).length>0;
+    return `<div class="master-card" onclick="openMasterChat('${m.id}')">
+      <img class="master-avatar" src="${m.avatar}" alt="${m.name}" onerror="this.src='master-spirit-avatar.png'">
+      <div class="master-name">${m.name}</div>
+      <div class="master-desc">${m.desc}</div>
+      ${hasHistory?'<div style="margin-top:8px;font-size:10px;color:rgba(201,168,76,.5);font-style:italic">● conversa ativa</div>':''}
+    </div>`;
+  }).join('');
+  return `<div class="fu">
+    <p class="master-section-title">Mestres que orientam o caminho</p>
+    <p style="text-align:center;font-style:italic;font-size:13px;color:rgba(240,234,214,.3);padding:4px 14px 0">Escolha um mestre para conversar</p>
+    <div class="master-grid">${cards}</div>
+  </div>`;
+}
+
+// ===================== MASTER CHAT =====================
+function openMasterChat(masterId){
+  activeMaster=masterId;
+  if(!masterMsgs[masterId]) masterMsgs[masterId]=[];
+  msgs=masterMsgs[masterId];
+  tab='master-chat';
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  const nm=document.getElementById('nb-mestres');if(nm)nm.classList.add('active');
+  document.getElementById('input-bar').className='show';
+  document.getElementById('content').className='with-input';
+  const fab=document.getElementById('help-fab');if(fab)fab.style.display='none';
+  render();
+  if(msgs.length===0) scrollChat('msgs');
+}
+
+function renderMasterChat(){
+  const m=MASTERS.find(x=>x.id===activeMaster);
+  if(!m) return renderMestres();
+  const quotes=MASTER_QUOTES[m.id]||[];
+  const randomQuote=quotes[Math.floor(Math.random()*quotes.length)]||'';
+
+  if(msgs.length===0){
+    const chips=getMasterChips(m.id).map((c,i)=>`<button class="chip" data-mc="${i}" onclick="masterChipSend(${i})">${c}</button>`).join('');
+    return `<div id="chat-wrap">
+    <div class="mchat-header">
+      <button class="mchat-back" onclick="goTab('mestres')">‹</button>
+      <img class="mchat-avatar" src="${m.avatar}" alt="${m.name}" onerror="this.src='master-spirit-avatar.png'">
+      <div class="mchat-info"><h3>${m.name}</h3><p>${m.desc}</p></div>
+    </div>
+    <div id="msgs">
+      <div class="fu" style="text-align:center;padding:28px 14px;color:rgba(240,234,214,.32)">
+        <img src="${m.avatar}" onerror="this.src='master-spirit-avatar.png'" style="width:80px;height:80px;border-radius:50%;object-fit:cover;margin-bottom:14px;border:2px solid rgba(201,168,76,.3);box-shadow:0 0 25px rgba(201,168,76,.2)">
+        <p style="font-family:'Cinzel',serif;font-size:13px;color:var(--gold);letter-spacing:2px;margin-bottom:8px">${m.fullName}</p>
+        <p style="font-style:italic;font-size:16px;line-height:1.75;margin-bottom:22px;color:rgba(240,234,214,.5)">"${randomQuote}"</p>
+        <div class="chip-grid">${chips}</div>
+      </div>
+    </div></div>`;
+  }
+  const msgsHtml=msgs.map((msg,i)=>buildMasterMsgHtml(msg,i)).join('');
+  const typing=loading?`<div class="msg-wrap bot"><div class="msg-label">${m.name}</div><div class="msg-bubble bot"><div class="dots"><span></span><span></span><span></span></div></div></div>`:'';
+  return `<div id="chat-wrap">
+  <div class="mchat-header">
+    <button class="mchat-back" onclick="goTab('mestres')">‹</button>
+    <img class="mchat-avatar" src="${m.avatar}" alt="${m.name}" onerror="this.src='master-spirit-avatar.png'">
+    <div class="mchat-info"><h3>${m.name}</h3><p>${m.desc}</p></div>
+    <button onclick="clearMasterChat('${m.id}')" style="margin-left:auto;background:none;border:none;cursor:pointer;font-size:11px;color:rgba(240,234,214,.25);font-family:'Cinzel',serif;letter-spacing:1px;padding:6px" title="Limpar conversa">↺</button>
+  </div>
+  <div id="msgs">${msgsHtml}${typing}</div></div>`;
+}
+
+function buildMasterMsgHtml(m,i){
+  const isU=m.role==='user';
+  const master=MASTERS.find(x=>x.id===activeMaster);
+  const label=isU?'Você':(master?master.name:'Mestre');
+  const display=m._display||m.content;
+  const copy=!isU?`<button class="copy-btn" data-i="${i}" data-fn="copyMasterMsg" onclick="doCopy('copyMasterMsg',${i})">⎘ copiar</button>`:'';
+  const listen=!isU?`<button class="copy-btn" data-i="${i}" data-fn="copyMasterMsg" onclick="toggleListen(this,'copyMasterMsg',${i})">🔊 ouvir</button>`:'';
+  return `<div class="msg-wrap ${isU?'user':'bot'}">
+  <div class="msg-label">${label}</div>
+  <div class="msg-bubble ${isU?'user':'bot'}">${display}</div>
+  ${copy}${listen}</div>`;
+}
+
+function getMasterChips(id){
+  const chips={
+    jesus:['Estou sofrendo e preciso de consolo...','O que acontece após a morte?','Como o perdão me liberta?','O que é o Ajustador de Pensamento?','Por que existe o sofrimento?','Como encontrar paz interior?'],
+    kardec:['O que são os espíritos?','Como funciona a reencarnação?','O que é mediunidade?','O que é a lei de causa e efeito?','O que acontece com a alma após a morte?','Existe destino ou livre-arbítrio?'],
+    chico:['O que Emmanuel te ensinou?','Conte sobre Nosso Lar...','Como lidar com a dor da perda?','O que é a caridade verdadeira?','Fale sobre as cartas da sua mãe...','Como a mediunidade te transformou?'],
+    bezerra:['O que é a obsessão espiritual?','Como a alma influencia a saúde?','O que é a desobsessão?','Como a caridade cura?','Qual a relação entre corpo e espírito?','Como manter a saúde espiritual?'],
+    divaldo:['O que Joanna de Ângelis te ensinou?','Como encontrar a felicidade?','Fale sobre a psicologia espiritual...','Como lidar com a ansiedade?','O que é a mediunidade responsável?','Como cultivar o amor próprio?'],
+    krishna:['O que é o Dharma?','Explique o Karma Yoga...','O que é a alma imortal (Atman)?','Como me libertar do apego?','O que revelaste a Arjuna?','Como alcançar a paz interior?']
+  };
+  return chips[id]||chips.jesus;
+}
+
+function masterChipSend(idx){
+  const chips=getMasterChips(activeMaster);
+  if(chips[idx]) sendMsgText(chips[idx]);
+}
+
+function clearMasterChat(id){
+  if(!confirm('Limpar a conversa com este mestre?')) return;
+  masterMsgs[id]=[];
+  if(activeMaster===id) msgs=masterMsgs[id];
+  saveMasterMsgs(id);
+  render();
+}
+
+function openHelpChat(){
+  // Master Spirit guide - opens a simple help modal
+  alert('Master Spirit — Seu Guia\\n\\nEste app conecta você a mestres espirituais para conversar, consolar e aprender.\\n\\n🕊️ Mestres: Escolha um mestre e converse diretamente com ele.\\n📚 Salas de Estudo: Estude livros espíritas com guia interativo.\\n\\nCada mestre tem sua própria personalidade e conhecimento.');
 }
 
 // ===================== HOJE =====================
@@ -1097,7 +1292,7 @@ function buildMsgHtml(m,i,copyFn){
 }
 
 function doCopy(fn,i){
-  const arr=fn==='copyMainMsg'?msgs:roomMsgs;
+  const arr=fn==='copyMasterMsg'?msgs:(fn==='copyMainMsg'?msgs:roomMsgs);
   const m=arr[parseInt(i)];
   if(!m) return;
   navigator.clipboard.writeText(m.content||'').then(()=>{
@@ -1112,7 +1307,7 @@ function toggleListen(btn,fn,i){
     window._ttsBtn=null;
     return;
   }
-  var arr=fn==='copyMainMsg'?msgs:roomMsgs;
+  var arr=fn==='copyMasterMsg'?msgs:(fn==='copyMainMsg'?msgs:roomMsgs);
   var m=arr[parseInt(i)];
   if(!m) return;
   window._ttsBtn=btn;
@@ -1171,7 +1366,7 @@ async function sendMsgText(text){
   try{
     const r=await fetch(API_URL,{method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:MODEL,max_tokens:4096,system:getSysPrompt(),messages:msgs.map(m=>({role:m.role,content:m.content}))})
+      body:JSON.stringify({model:MODEL,max_tokens:4096,agent:activeMaster||'jesus',messages:msgs.map(m=>({role:m.role,content:m.content}))})
     });
     const d=await r.json();
     if(!r.ok){
@@ -1182,7 +1377,9 @@ async function sendMsgText(text){
       msgs.push({role:'assistant',content:txt||'Resposta vazia da API. Tente novamente.'});
     }
   }catch(e){console.error('Fetch error:',e);msgs.push({role:'assistant',content:'Erro de conexão. Tente novamente.'});}
-  loading=false;stopObs();render();scrollChat('msgs');
+  loading=false;stopObs();
+  if(activeMaster) saveMasterMsgs(activeMaster);
+  render();scrollChat('msgs');
 }
 
 // File attach
@@ -1787,26 +1984,6 @@ function showDisclaimerIfNeeded(){
   }
 }
 
-function setChatMode(mode){
-  chatMode=mode;
-  localStorage.setItem('spirit_chat_mode',mode);
-  document.getElementById('mode-jesus').classList.toggle('active',mode==='jesus');
-  document.getElementById('mode-normal').classList.toggle('active',mode==='normal');
-  document.getElementById('mode-hint').textContent=mode==='jesus'
-    ?'O Consolador fala como Jesus em primeira pessoa — com amor, parábolas e bênçãos.'
-    :'O Consolador fala como um guia espiritual sábio, sem assumir a identidade de Jesus.';
-  msgs=[];render();
-}
-function initChatMode(){
-  const m=localStorage.getItem('spirit_chat_mode')||'jesus';
-  chatMode=m;
-  document.getElementById('mode-jesus').classList.toggle('active',m==='jesus');
-  document.getElementById('mode-normal').classList.toggle('active',m==='normal');
-  document.getElementById('mode-hint').textContent=m==='jesus'
-    ?'O Consolador fala como Jesus em primeira pessoa — com amor, parábolas e bênçãos.'
-    :'O Consolador fala como um guia espiritual sábio, sem assumir a identidade de Jesus.';
-}
-
 function setFs(btn){
   const fs=btn.dataset.fs;
   const cur=document.body.className.match(/ff-\w+/);
@@ -1982,13 +2159,13 @@ document.addEventListener('click',unlockAudioCtx,{once:false});
 document.addEventListener('visibilitychange',function(){if(document.hidden) stopAllAudio();});
 
 async function speakResponse(text){
-  console.log('[TTS] speakResponse chamado, chatMode='+chatMode+', _ttsPlaying='+_ttsPlaying);
+  console.log('[TTS] speakResponse chamado, activeMaster='+activeMaster+', _ttsPlaying='+_ttsPlaying);
   if(_ttsPlaying){stopAllAudio();return;}
   stopAllAudio();
   _ttsPlaying=true;
 
   // Modo Jesus: ElevenLabs via proxy seguro
-  if(chatMode==='jesus'){
+  if(activeMaster==='jesus'){
     try{
       unlockAudioCtx();
       console.log('[TTS] Chamando /api/tts...');
