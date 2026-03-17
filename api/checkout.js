@@ -7,8 +7,8 @@ export default async function handler(req, res) {
 
   if (!accessToken) return res.status(500).json({ error: 'MP não configurado' });
 
-  const prices = { basic: 19.99, premium: 39.99 };
-  const names  = { basic: 'Master Spirit Basic', premium: 'Master Spirit Premium' };
+  const prices = { essencial: 19.90, basic: 19.90, premium: 39.90, sala: 9.90 };
+  const names  = { essencial: 'Master Spirit Essencial', basic: 'Master Spirit Essencial', premium: 'Master Spirit Premium', sala: 'Master Spirit Sala de Estudo' };
 
   if (!prices[plan]) return res.status(400).json({ error: 'Plano inválido' });
 

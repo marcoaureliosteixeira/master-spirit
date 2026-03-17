@@ -707,6 +707,66 @@ if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
   </div>
 </div>
 
+<!-- Help Modal -->
+<div class="modal" id="modal-help">
+  <div class="modal-head">
+    <button class="back" onclick="closeModal('help')">‹</button>
+    <h2>✦ COMO FUNCIONA</h2>
+  </div>
+  <div class="modal-inner">
+    <div style="text-align:center;margin-bottom:20px">
+      <img src="master-spirit-avatar.png" style="width:70px;height:70px;border-radius:50%;border:2px solid rgba(201,168,76,.3);box-shadow:0 0 20px rgba(201,168,76,.2)" alt="Master Spirit">
+      <p style="font-family:'Cinzel Decorative',serif;font-size:16px;color:var(--gold);letter-spacing:3px;margin-top:10px">MASTER SPIRIT</p>
+      <p style="font-style:italic;font-size:12px;color:rgba(240,234,214,.4);margin-top:3px">Seu guia espiritual</p>
+    </div>
+
+    <div style="background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.15);border-radius:13px;padding:16px;margin-bottom:12px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+        <span style="font-size:20px">🕊️</span>
+        <div>
+          <p style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:1.5px;color:var(--gold)">MESTRES ESPIRITUAIS</p>
+          <p style="font-size:13px;color:rgba(240,234,214,.6);line-height:1.5;margin-top:3px">Converse com Jesus, Kardec, Chico Xavier, Bezerra de Menezes, Divaldo Franco e Krishna. Cada mestre tem sua própria personalidade e sabedoria.</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.15);border-radius:13px;padding:16px;margin-bottom:12px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+        <span style="font-size:20px">📚</span>
+        <div>
+          <p style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:1.5px;color:var(--gold)">SALAS DE ESTUDO</p>
+          <p style="font-size:13px;color:rgba(240,234,214,.6);line-height:1.5;margin-top:3px">Estude as grandes obras espirituais com um tutor especialista. Acompanhe seu progresso capítulo a capítulo.</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.15);border-radius:13px;padding:16px;margin-bottom:12px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+        <span style="font-size:20px">👥</span>
+        <div>
+          <p style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:1.5px;color:var(--gold)">GRUPOS DE ESTUDO</p>
+          <p style="font-size:13px;color:rgba(240,234,214,.6);line-height:1.5;margin-top:3px">Crie grupos de estudo, convide amigos por email e estudem juntos uma obra espiritual. Até 10 membros por grupo.</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.15);border-radius:13px;padding:16px;margin-bottom:20px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+        <span style="font-size:20px">🔊</span>
+        <div>
+          <p style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:1.5px;color:var(--gold)">VOZ DOS MESTRES</p>
+          <p style="font-size:13px;color:rgba(240,234,214,.6);line-height:1.5;margin-top:3px">Ouça os mestres falando com você. No plano Premium, Jesus responde com voz no chat (10 por mês).</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center;padding:10px 0;border-top:1px solid rgba(201,168,76,.1)">
+      <p style="font-style:italic;font-size:13px;color:rgba(240,234,214,.35);line-height:1.6">"A verdade é una, mas os sábios<br>a chamam por muitos nomes."</p>
+      <p style="font-family:'Cinzel',serif;font-size:8px;letter-spacing:2px;color:rgba(201,168,76,.3);margin-top:6px">RIG VEDA</p>
+    </div>
+  </div>
+</div>
+
 <!-- Criar Grupo de Estudo -->
 <div class="modal" id="modal-newgroup">
   <div class="modal-head">
@@ -1357,7 +1417,7 @@ function clearMasterChat(id){
 }
 
 function openHelpChat(){
-  alert('Master Spirit — Seu Guia\n\nEste app conecta você a mestres espirituais para conversar, consolar e aprender.\n\n🕊️ Mestres: Escolha um mestre e converse diretamente com ele.\n📚 Salas de Estudo: Estude livros espíritas com guia interativo.\n👥 Grupos: Crie grupos e convide amigos para estudar juntos.\n\nCada mestre tem sua própria personalidade e conhecimento.');
+  openModal('help');
 }
 
 // ===================== GRUPOS DE ESTUDO =====================
@@ -1674,6 +1734,14 @@ async function sendMsgText(text){
   loading=false;stopObs();
   if(activeMaster) saveMasterMsgs(activeMaster);
   render();scrollChat('msgs');
+  // Premium: Jesus responde com voz automática (10/mês)
+  if(canUseVoiceChat()&&msgs.length>0&&msgs[msgs.length-1].role==='assistant'){
+    var canSpeak=await decrementVoice();
+    if(canSpeak){
+      setTimeout(function(){speakResponse(msgs[msgs.length-1].content);},500);
+      return; // Não toca reflect se vai falar a resposta inteira
+    }
+  }
   // Toca convite à reflexão após a resposta chegar
   if(activeMaster){
     setTimeout(function(){playAvatarAudio('reflect',activeMaster);},800);
@@ -2605,17 +2673,20 @@ async function speakResponse(text){
 
 // ── CHAT USAGE CONTROL ──
 let userPlan = 'free';
-let chatsRemaining = 5;
-const PLAN_LIMITS = { free: 5, basic: 50, premium: 999999 };
+let chatsRemaining = 7;
+let voiceRemaining = 0;
+const PLAN_LIMITS = { free: 7, essencial: 50, basic: 50, premium: 999999 };
+const VOICE_LIMIT_PREMIUM = 10; // Jesus voz por mês no premium
 
 // Controle de áudio por plano
-// free:    welcome + teachings
-// basic:   free + intros aleatórias do chat
-// premium: basic + encerramento "reflita..."
+// free:    experiência premium completa por 7 chats (welcome + intros + reflexões)
+// essencial: tudo
+// premium: tudo + Jesus voz no chat (10/mês)
 const PLAN_AUDIO = {
-  free:    ['welcome','teaching'],
-  basic:   ['welcome','teaching','intro'],
-  premium: ['welcome','teaching','intro','outro'],
+  free:    ['welcome','teaching','intro','reflect'],
+  essencial:['welcome','teaching','intro','reflect'],
+  basic:   ['welcome','teaching','intro','reflect'],
+  premium: ['welcome','teaching','intro','reflect','outro'],
 };
 function canPlayAudio(type){
   const allowed = PLAN_AUDIO[userPlan] || PLAN_AUDIO['free'];
@@ -2648,29 +2719,38 @@ async function initUsage() {
 
     // Try to get existing usage row
     let { data, error } = await window._sb.from('user_usage')
-      .select('chats_used, plan')
+      .select('chats_used, plan, voice_count, voice_reset_date')
       .eq('id', user.id)
       .single();
 
     if (error || !data) {
-      // First time user — create usage row
       const { data: inserted, error: insErr } = await window._sb.from('user_usage')
-        .insert({ id: user.id, chats_used: 5, plan: 'free' })
-        .select('chats_used, plan')
+        .insert({ id: user.id, chats_used: 7, plan: 'free', voice_count: 0 })
+        .select('chats_used, plan, voice_count, voice_reset_date')
         .single();
       if (insErr) console.warn('initUsage insert error:', insErr.message);
-      data = inserted || { chats_used: 5, plan: 'free' };
+      data = inserted || { chats_used: 7, plan: 'free', voice_count: 0 };
     }
 
     userPlan = data.plan || 'free';
-    chatsRemaining = data.chats_used ?? 5;
+    chatsRemaining = data.chats_used ?? 7;
+
+    // Voice counter — reset mensal
+    var currentMonth = new Date().toISOString().slice(0,7);
+    var resetDate = data.voice_reset_date||'';
+    if(!resetDate.startsWith(currentMonth)){
+      voiceRemaining = VOICE_LIMIT_PREMIUM;
+      await window._sb.from('user_usage').update({voice_count:VOICE_LIMIT_PREMIUM,voice_reset_date:new Date().toISOString().slice(0,10)}).eq('id',user.id);
+    } else {
+      voiceRemaining = data.voice_count ?? 0;
+    }
     updateChatCounter();
   } catch(e) { console.error('initUsage error:', e); }
 }
 
 async function decrementChat() {
   if (!window._sb) return true; // sem Supabase, permite usar
-  if (userPlan === 'premium') return true; // ilimitado
+  if (userPlan === 'premium' || userPlan === 'essencial') return true; // ilimitado
 
   // Se já acabou, mostra upgrade
   if (chatsRemaining <= 0) {
@@ -2699,10 +2779,10 @@ function updateChatCounter() {
   const el = document.getElementById('chat-counter');
   if (!el) return;
 
-  if (userPlan === 'premium') {
+  if (userPlan === 'premium' || userPlan === 'essencial') {
     el.innerHTML = '<span style="color:var(--gold2)">∞</span> <span style="color:rgba(240,234,214,.4);font-size:9px">ilimitado</span>';
   } else {
-    const limit = PLAN_LIMITS[userPlan] || 5;
+    const limit = PLAN_LIMITS[userPlan] || 7;
     const dots = [];
     for (let i = 0; i < limit && i < 10; i++) {
       dots.push('<span style="display:inline-block;width:6px;height:6px;border-radius:50%;margin:0 2px;' +
@@ -2713,6 +2793,25 @@ function updateChatCounter() {
     const label = chatsRemaining + '/' + limit;
     el.innerHTML = dots.join('') + ' <span style="color:rgba(240,234,214,.35);font-size:9px;margin-left:4px">' + label + '</span>';
   }
+}
+
+// ── Voz do Jesus no chat (Premium, 10/mês) ──
+async function decrementVoice(){
+  if(userPlan!=='premium') return false;
+  if(voiceRemaining<=0){
+    alert('Você atingiu o limite de 10 respostas com voz este mês. Renova no próximo mês.');
+    return false;
+  }
+  voiceRemaining--;
+  try{
+    const{data:{user}}=await window._sb.auth.getUser();
+    if(user) await window._sb.from('user_usage').update({voice_count:voiceRemaining}).eq('id',user.id);
+  }catch(e){}
+  return true;
+}
+
+function canUseVoiceChat(){
+  return userPlan==='premium'&&voiceRemaining>0&&activeMaster==='jesus';
 }
 
 // ── Billing toggle (mensal / anual) ──────────────────────────
