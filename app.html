@@ -1079,8 +1079,23 @@ function skipSplash(){
 
 function backToSplash(){
   document.getElementById('app').style.display='none';
-  document.getElementById('splash').style.display='block';
-  // Reset animações removendo e readicionando (sem re-trigger da animação pesada)
+  var splash=document.getElementById('splash');
+  splash.style.display='block';
+  splash.style.animation='none';
+  // Forçar todos os elementos animados a ficarem visíveis (animações já rodaram)
+  var sc=document.getElementById('splash-content');
+  if(sc) sc.style.animation='none';
+  // Mostrar spirit sem animação
+  var sw=document.getElementById('spirit-wrap');
+  if(sw){sw.style.animation='none';sw.style.top='38%';sw.style.opacity='1';}
+  var si=document.getElementById('spirit-img');
+  if(si) si.style.animation='none';
+  // Esconder spark (já terminou)
+  var sp=document.getElementById('spark');
+  if(sp) sp.style.display='none';
+  // Mostrar cards sem animação
+  var cards=splash.querySelectorAll('#splash-content > div:last-child');
+  cards.forEach(function(c){c.style.animation='none';});
   sessionStorage.removeItem('spirit_splash_seen');
 }
 
