@@ -237,7 +237,7 @@ body.ff-sys{--font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
 .mchat-info h3{font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;color:var(--gold)}
 .mchat-info p{font-size:10px;font-style:italic;color:rgba(240,234,214,.35);margin-top:1px}
 /* HELP FAB */
-#help-fab{position:fixed;bottom:20px;right:20px;z-index:90;width:48px;height:48px;border-radius:50%;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.4);cursor:pointer;font-family:'Cinzel',serif;font-size:18px;color:var(--gold);display:flex;align-items:center;justify-content:center;transition:all .25s;box-shadow:0 4px 20px rgba(201,168,76,.12)}
+#help-fab{position:fixed;bottom:20px;right:20px;z-index:1000;width:48px;height:48px;border-radius:50%;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.4);cursor:pointer;font-family:'Cinzel',serif;font-size:18px;color:var(--gold);display:flex;align-items:center;justify-content:center;transition:all .25s;box-shadow:0 4px 20px rgba(201,168,76,.12)}
 #help-fab:hover{background:rgba(201,168,76,.3);box-shadow:0 6px 30px rgba(201,168,76,.25);transform:translateY(-2px)}
 @media(max-width:600px){
   .master-grid{grid-template-columns:repeat(2,1fr);gap:10px;padding:14px 10px}
@@ -264,6 +264,9 @@ if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
 }
 </script>
 <div id="stars"></div>
+
+<!-- HELP FAB — global, visível em todas as telas -->
+<button id="help-fab" onclick="openHelpChat()" title="Master Spirit · Ajuda">?</button>
 
 <!-- SPLASH SCREEN — responsive portrait + landscape -->
 <style>
@@ -371,7 +374,7 @@ if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
         <span>Mestres</span>
       </div>
       <div class="splash-entry-card" onclick="splashGoStudy()">
-        <img src="shelf-books.png" onerror="this.style.background='rgba(201,168,76,.15)';this.style.height='80px'" alt="Estudar">
+        <img src="shelf-books.png" onerror="this.onerror=null;this.style.display='none';this.parentElement.querySelector('span').style.paddingTop='40px'" alt="Estudar">
         <span>Salas de Estudo</span>
       </div>
     </div>
@@ -402,9 +405,6 @@ if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
       <p style="font-size:9px;color:rgba(240,234,214,.35);letter-spacing:1px;font-style:italic;margin-top:4px">v1.0.0 &nbsp;·&nbsp; © 2025 Spyrit Systems</p>
   </div>
 </div><!-- end app -->
-
-<!-- HELP FAB -->
-<button id="help-fab" onclick="openHelpChat()" title="Master Spirit · Ajuda">?</button>
 
 <!-- FIXED INPUT BAR -->
 <div id="input-bar">
