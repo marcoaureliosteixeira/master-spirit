@@ -1014,7 +1014,7 @@ const MASTER_QUOTES={
 };
 
 // ===================== STATE =====================
-let tab='home';
+let tab='mestres';
 let activeMaster=null;
 let masterMsgs={};
 let msgs=[];
@@ -1168,34 +1168,10 @@ function goTab(t){
 
 function render(){
   const c=document.getElementById('content');
-  if(tab==='home') c.innerHTML=renderHome();
-  else if(tab==='mestres') c.innerHTML=renderMestres();
+  if(tab==='mestres') c.innerHTML=renderMestres();
   else if(tab==='study') c.innerHTML=renderStudy();
   else if(tab==='master-chat') c.innerHTML=renderMasterChat();
-  else c.innerHTML=renderHome();
-}
-
-// ===================== HOME =====================
-function renderHome(){
-  return `<div class="fu">
-    <p style="text-align:center;font-family:'Cinzel',serif;font-size:9px;letter-spacing:3.5px;color:rgba(201,168,76,.45);text-transform:uppercase;padding:18px 14px 0">Escolha sua jornada</p>
-    <div class="home-grid">
-      <div class="home-card" onclick="goTab('mestres')">
-        <img class="home-card-img" src="avatar-jesus.png" onerror="this.src='master-spirit-avatar.png'" alt="Mestres">
-        <div class="home-card-body">
-          <div class="home-card-title">Mestres</div>
-          <div class="home-card-desc">Converse com mestres espirituais</div>
-        </div>
-      </div>
-      <div class="home-card" onclick="goTab('study')">
-        <img class="home-card-img" src="shelf-books.png" onerror="this.style.background='rgba(201,168,76,.08)'" alt="Salas de Estudo">
-        <div class="home-card-body">
-          <div class="home-card-title">Salas de Estudo</div>
-          <div class="home-card-desc">Estude as grandes obras espirituais</div>
-        </div>
-      </div>
-    </div>
-  </div>`;
+  else c.innerHTML=renderMestres();
 }
 
 // ===================== MESTRES GRID =====================
@@ -1210,10 +1186,7 @@ function renderMestres(){
     </div>`;
   }).join('');
   return `<div class="fu">
-    <div style="display:flex;align-items:center;gap:10px;padding:14px 14px 0">
-      <button onclick="goTab('home')" style="background:none;border:none;cursor:pointer;color:rgba(201,168,76,.6);font-size:22px;padding:0">‹</button>
-      <p class="master-section-title" style="margin:0;flex:1">Mestres que orientam o caminho</p>
-    </div>
+    <p class="master-section-title">Mestres que orientam o caminho</p>
     <p style="text-align:center;font-style:italic;font-size:13px;color:rgba(240,234,214,.3);padding:4px 14px 0">Escolha um mestre para conversar</p>
     <div class="master-grid">${cards}</div>
   </div>`;
@@ -1565,7 +1538,7 @@ function renderStudy(){
   <div style="position:sticky;top:0;z-index:30;background:rgba(6,10,22,.97);backdrop-filter:blur(10px);border-bottom:1px solid rgba(201,168,76,.1)">
     <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px 8px">
       <div style="display:flex;align-items:center;gap:10px">
-        <button onclick="goTab('home')" style="background:none;border:none;cursor:pointer;color:rgba(201,168,76,.6);font-size:22px;padding:0">‹</button>
+        <button onclick="goTab('mestres')" style="background:none;border:none;cursor:pointer;color:rgba(201,168,76,.6);font-size:22px;padding:0">‹</button>
         <p style="font-family:'Cinzel',serif;font-size:11.5px;letter-spacing:2.5px;color:var(--gold)">📚 SALAS DE ESTUDO</p>
       </div>
       <button onclick="openModal('newroom')" style="background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.35);border-radius:11px;padding:7px 12px;cursor:pointer;color:var(--gold);font-family:'Cinzel',serif;font-size:8.5px;letter-spacing:1.5px;display:flex;align-items:center;gap:5px;transition:all .2s">
