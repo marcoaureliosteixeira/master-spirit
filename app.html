@@ -274,12 +274,7 @@ body.ff-sys{--font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
     <h1>MASTER<br>SPIRIT</h1>
     <p class="sub">O Consolador · Disseminador de Sabedoria</p>
     <div class="divider" style="width:60px;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.5),transparent);margin:0 auto 18px"></div>
-    <p class="verse">
-      "Vinde a mim, todos os que estais<br>
-      cansados e oprimidos,<br>
-      e eu vos darei descanso."
-      <span>— MATEUS 11:28</span>
-    </p>
+    <p class="verse" id="splash-verse">"Vinde a mim, todos os que estais cansados e oprimidos, e eu vos darei descanso."</p>
     <button id="splash-btn" onclick="enterApp()">✦ &nbsp;Entrar&nbsp; ✦</button>
   </div>
 </div>
@@ -869,6 +864,24 @@ let roomLoading=false;
 let roomSearch='';
 let openSrc=null;
 let attachData=null,attachType=null,attachName=null;
+
+// ===================== SPLASH VERSES =====================
+(function(){
+  const verses=[
+    "Vinde a mim, todos os que estais cansados e oprimidos, e eu vos darei descanso.",
+    "Eu sou o caminho, a verdade e a vida.",
+    "A verdade vos libertará.",
+    "O reino de Deus está dentro de vós.",
+    "Amai-vos uns aos outros como eu vos amei.",
+    "Pedi e recebereis, buscai e encontrareis, batei e abrir-se-vos-á.",
+    "Bem-aventurados os puros de coração, porque eles verão a Deus.",
+    "Eu sou a luz do mundo; quem me segue não andará em trevas.",
+    "Com Deus, tudo é possível.",
+    "Não sejais ansiosos por coisa alguma. Confiai em mim."
+  ];
+  const el=document.getElementById('splash-verse');
+  if(el) el.textContent='"'+verses[Math.floor(Math.random()*verses.length)]+'"';
+})();
 
 // ===================== INIT =====================
 function enterApp(){
