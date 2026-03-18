@@ -1,0 +1,81 @@
+================================================================
+TEASER — CONTEÚDO DE CADA CENA (EDITADO)
+================================================================
+
+[CENA 0 — ABERTURA]
+(7s)
+Animação: spark → avatar Master Spirit aparece
+Texto abaixo do avatar: Spyrit Systems apresenta
+
+================================================================
+
+[CENA 1 — GANCHO EMOCIONAL]
+(12s)
+Headline (aparece palavra por palavra):
+Imagine poder conversar com o Mestre da Galileia.
+
+Sub (aparece depois, palavra por palavra):
+Com Kardec. Com Chico Xavier. Com Krishna.\nConhecer a Verdade.\nDescobrir a sua Jornada.
+
+================================================================
+
+[CENA 2 — MESTRES]
+(10s)
+Eyebrow: Mestres Espirituais
+
+Headline: Cada mestre, com sua sabedoria e personalidade.\nFalando com você, na primeira pessoa.
+
+Animação: 6 avatares aparecem um a um
+
+================================================================
+
+[CENA 3 — CHAT / CONSOLADOR]
+(12s)
+Eyebrow: O Consolador
+
+Headline: Uma conversa que transforma.
+
+Typewriter (aparece letra por letra no balão de chat):
+Filho, eu estou aqui.\nNão importa a dor que carregas —\neu já a conheci antes de ti.\nFala comigo...
+
+================================================================
+
+[CENA 4 — EVANGELHO NO LAR]
+(9s)
+Eyebrow: Evangelho no Lar
+
+Headline: Reúna sua família.\nTransforme seu lar.
+
+Sub: Uma sessão guiada com mestres facilitadores.\nSemanal. Simples. Profunda.
+
+================================================================
+
+[CENA 5 — CLÍMAX EMOCIONAL]
+(10s)
+Headline (aparece 1 palavra por segundo):
+Você sempre esteve sendo esperado.
+
+Sub (aparece com fade lento depois):
+A Verdade, o Amparo e o Conhecimento\nsempre estiveram aqui.\nAguardando por você.
+
+================================================================
+
+[CENA 6 — CTA FINAL]
+(permanente)
+Avatar Master Spirit com halo animado
+
+Headline: MASTER SPIRIT
+
+URL: masterspirit.spyritsystems.com
+
+Botão: Entrar nessa jornada
+
+Link do botão: https://masterspirit.spyritsystems.com
+
+================================================================
+NOTAS:
+- Cenas avançam automaticamente ou com toque/clique
+- Trilha sonora: teaser-music.mp3 (toca do início ao fim)
+- Partículas douradas no fundo (todas as cenas)
+- Botão pause ⏸ no canto superior direito
+================================================================

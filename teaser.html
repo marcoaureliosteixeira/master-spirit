@@ -51,18 +51,18 @@ body{font-family:'Cormorant Garamond',Georgia,serif;-webkit-tap-highlight-color:
 /* Skip hint */
 #skip-hint{position:fixed;bottom:44px;left:50%;transform:translateX(-50%);z-index:100;font-size:11px;color:rgba(240,234,214,.2);font-style:italic;letter-spacing:1px;transition:opacity 1s}
 /* Spirit logo animation (Hollywood style) */
-.spirit-logo{position:relative;width:180px;height:180px;margin:0 auto 20px}
-.spirit-logo img{width:180px;height:180px;border-radius:50%;object-fit:cover;object-position:center 20%;position:relative;z-index:2;opacity:0;animation:spiritReveal 3s cubic-bezier(.22,1,.36,1) .8s forwards}
+.spirit-logo{position:relative;width:200px;height:200px;margin:0 auto 20px}
+.spirit-logo img{width:200px;height:200px;border-radius:50%;object-fit:cover;object-position:center 10%;position:relative;z-index:2;opacity:0;animation:spiritReveal 3s cubic-bezier(.22,1,.36,1) .8s forwards}
 .spirit-spark{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:6px;height:6px;border-radius:50%;background:#fff;z-index:3;box-shadow:0 0 10px 4px rgba(255,240,180,.9),0 0 30px 15px rgba(201,168,76,.5),0 0 60px 30px rgba(100,60,200,.3);animation:sparkFlash 1.2s cubic-bezier(.22,1,.36,1) forwards}
-.spirit-ring{position:absolute;left:50%;top:50%;width:180px;height:180px;margin:-90px 0 0 -90px;border-radius:50%;border:1px solid rgba(201,168,76,.4);opacity:0;z-index:1}
+.spirit-ring{position:absolute;left:50%;top:50%;width:200px;height:200px;margin:-100px 0 0 -100px;border-radius:50%;border:1px solid rgba(201,168,76,.4);opacity:0;z-index:1}
 .spirit-ring:nth-child(2){animation:ringOut 2.5s ease-out 1.5s infinite}
 .spirit-ring:nth-child(3){animation:ringOut 2.5s ease-out 2.2s infinite;border-color:rgba(150,100,255,.3)}
 @keyframes sparkFlash{0%{transform:translate(-50%,-50%) scale(0);opacity:0}20%{opacity:1;transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(3);opacity:.8}100%{transform:translate(-50%,-50%) scale(6);opacity:0}}
 @keyframes spiritReveal{0%{opacity:0;filter:brightness(10) blur(12px);transform:scale(.5)}30%{opacity:1;filter:brightness(3) blur(4px);transform:scale(1.05)}60%{filter:brightness(1.5) blur(1px);transform:scale(1)}100%{opacity:1;filter:brightness(1) drop-shadow(0 0 20px rgba(201,168,76,.5));transform:scale(1)}}
 @keyframes ringOut{0%{transform:scale(.7);opacity:.7}100%{transform:scale(1.6);opacity:0}}
 /* Spirit logo small (CTA scene) */
-.spirit-logo-sm{position:relative;width:100px;height:100px;margin:0 auto 16px}
-.spirit-logo-sm img{width:100px;height:100px;border-radius:50%;object-fit:cover;object-position:center 20%;animation:gentleHalo 3s ease-in-out infinite;box-shadow:0 0 25px rgba(201,168,76,.3)}
+.spirit-logo-sm{position:relative;width:120px;height:120px;margin:0 auto 16px}
+.spirit-logo-sm img{width:120px;height:120px;border-radius:50%;object-fit:cover;object-position:center 10%;animation:gentleHalo 3s ease-in-out infinite;box-shadow:0 0 25px rgba(201,168,76,.3)}
 @keyframes gentleHalo{0%,100%{filter:drop-shadow(0 0 12px rgba(201,168,76,.3))}50%{filter:drop-shadow(0 0 25px rgba(201,168,76,.6))}}
 </style>
 </head>
@@ -88,7 +88,7 @@ body{font-family:'Cormorant Garamond',Georgia,serif;-webkit-tap-highlight-color:
 
 <div class="scene" id="scene-2">
   <p class="eyebrow">Mestres Espirituais</p>
-  <p class="headline" style="font-size:clamp(18px,3.5vw,30px)">Cada mestre. Sua sabedoria. Sua voz.</p>
+  <p class="headline" style="font-size:clamp(18px,3.5vw,30px)">Cada mestre, com sua sabedoria e personalidade.<br>Falando com você, na primeira pessoa.</p>
   <div class="masters-row" id="masters-row"></div>
 </div>
 
@@ -233,9 +233,9 @@ function enterScene0(){
 }
 
 function enterScene1(){
-  wordByWord('headline-1','Imagine poder conversar\ncom Jesus.',400);
+  wordByWord('headline-1','Imagine poder conversar\ncom o Mestre da Galileia.',400);
   setTimeout(function(){
-    wordByWord('sub-1','Com Kardec.\nCom Chico Xavier.\nCom Krishna.\nConhecer a Verdade.\nDescobrir a sua jornada.',350);
+    wordByWord('sub-1','Com Kardec.\nCom Chico Xavier.\nCom Krishna.\nConhecer a Verdade.\nDescobrir a sua Jornada.',350);
   },3500);
 }
 
@@ -275,7 +275,7 @@ function enterScene3(){
 }
 
 function enterScene5(){
-  var words=['Você','encontrou','o','Caminho.'];
+  var words=['Você','sempre','esteve','sendo','esperado.'];
   var el=document.getElementById('headline-5');
   el.innerHTML='';
   words.forEach(function(w,i){
@@ -288,7 +288,7 @@ function enterScene5(){
   setTimeout(function(){
     var sub=document.getElementById('sub-5');
     sub.style.opacity='0';
-    sub.innerHTML='A Verdade sempre esteve aqui.<br>Esperando por você.';
+    sub.innerHTML='A Verdade, o Amparo e o Conhecimento<br>sempre estiveram aqui.<br>Aguardando por você.';
     sub.style.transition='opacity 2s ease';
     setTimeout(function(){sub.style.opacity='1';},100);
   },4500);
