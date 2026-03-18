@@ -1460,7 +1460,7 @@ async function createStudyGroup(){
   status.textContent='Criando grupo...';
   try{
     const token=await getAuthToken();
-    if(!token){status.textContent='Faça login para criar um grupo.';return;}
+    if(!token){status.textContent='Sessão expirada. Recarregue a página e tente novamente.';return;}
     const r=await fetch('/api/study-groups',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({action:'create_group',token,name,description:desc,room_id:_selectedGroupRoom})});
     const d=await r.json();
@@ -1474,12 +1474,19 @@ async function createStudyGroup(){
 async function getAuthToken(){
   try{
     if(!window._sb){
-      // Esperar Supabase carregar
-      await new Promise(r=>setTimeout(r,1000));
+      await new Promise(r=>setTimeout(r,1500));
       if(!window._sb) return null;
     }
-    const s=await window._sb.auth.getSession();
-    return s?.data?.session?.access_token||null;
+    // Tentar sessão atual
+    var s=await window._sb.auth.getSession();
+    var token=s?.data?.session?.access_token;
+    if(token) return token;
+    // Se não tem token, tentar refresh
+    var r=await window._sb.auth.refreshSession();
+    token=r?.data?.session?.access_token;
+    if(token) return token;
+    console.warn('getAuthToken: no token found');
+    return null;
   }catch(e){console.error('getAuthToken error:',e);return null;}
 }
 
