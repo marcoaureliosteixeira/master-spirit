@@ -72,17 +72,6 @@ body{font-family:'Cormorant Garamond',Georgia,serif;-webkit-tap-highlight-color:
 <canvas id="canvas-bg"></canvas>
 <div id="progress"><div id="progress-fill"></div></div>
 
-<div class="scene active" id="scene-start" style="cursor:pointer" onclick="startTeaser()">
-  <div style="animation:fadeup 1s ease .5s both;text-align:center">
-    <img src="master-spirit-avatar.png" style="width:80px;height:80px;object-fit:contain;mix-blend-mode:screen;opacity:.6;margin-bottom:16px" alt="" onerror="this.style.display='none'">
-    <p style="font-family:'Cinzel Decorative',serif;font-size:clamp(16px,3vw,24px);color:#E8C97A;letter-spacing:4px;margin-bottom:20px">MASTER SPIRIT</p>
-    <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.35);border-radius:30px;padding:12px 28px;cursor:pointer;transition:all .3s" onmouseover="this.style.background='rgba(201,168,76,.2)'" onmouseout="this.style.background='rgba(201,168,76,.1)'">
-      <span style="font-size:16px">▶</span>
-      <span style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:#E8C97A;text-transform:uppercase">Iniciar</span>
-    </div>
-  </div>
-</div>
-
 <div class="scene" id="scene-0">
   <div class="spirit-logo" id="spirit-logo-0">
     <div class="spirit-spark"></div>
@@ -147,7 +136,7 @@ body{font-family:'Cormorant Garamond',Georgia,serif;-webkit-tap-highlight-color:
 
 <div id="dots"></div>
 <div id="skip-hint">toque para avançar</div>
-<!-- botão mute removido — som é automático -->
+<button id="mute-btn" onclick="toggleSound()" style="position:fixed;top:16px;right:16px;z-index:100;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:50%;width:40px;height:40px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:rgba(201,168,76,.7);transition:all .2s">🔊</button>
 
 <script>
 // ── CONFIG ──
@@ -363,32 +352,55 @@ function wordByWord(elId,text,delay){
 
 // ── AUDIO ──
 var _audioStarted=false;
-var _teaserStarted=false;
 
-function startTeaser(){
-  if(_teaserStarted) return;
-  _teaserStarted=true;
-  // Iniciar música
+function initAudio(){
   audio=new Audio('teaser-music.mp3');
   audio.volume=0.85;
   audio.loop=true;
-  audio.play().then(function(){_audioStarted=true;}).catch(function(){});
-  // Esconder tela de start e ir pra cena 0
-  document.getElementById('scene-start').classList.remove('active');
-  document.getElementById('scene-start').style.display='none';
-  goToScene(0);
+  var p=audio.play();
+  if(p!==undefined){
+    p.then(function(){
+      _audioStarted=true;
+      document.getElementById('mute-btn').textContent='🔊';
+    }).catch(function(){
+      // Autoplay bloqueado
+      document.getElementById('mute-btn').textContent='🔇';
+    });
+  }
 }
 
-function initAudio(){
-  // Não faz nada — áudio inicia no startTeaser
+function toggleSound(){
+  if(!_audioStarted){
+    // Primeiro clique: iniciar áudio
+    if(audio){
+      audio.play().then(function(){
+        _audioStarted=true;
+        muted=false;
+        document.getElementById('mute-btn').textContent='🔊';
+      }).catch(function(){});
+    }
+    return;
+  }
+  muted=!muted;
+  if(audio){
+    if(muted){audio.pause();document.getElementById('mute-btn').textContent='🔇';}
+    else{audio.play().catch(function(){});document.getElementById('mute-btn').textContent='🔊';}
+  }
 }
 
 // ── CONTROLS ──
 document.addEventListener('click',function(e){
-  if(!_teaserStarted) return; // Aguardando botão Iniciar
-  if(e.target.closest('#dots')||e.target.closest('.cta-btn')) return;
+  if(e.target.closest('#mute-btn')||e.target.closest('#dots')||e.target.closest('.cta-btn')) return;
+  // Se áudio não iniciou, primeiro clique inicia sem avançar
+  if(!_audioStarted){
+    if(audio) audio.play().then(function(){_audioStarted=true;muted=false;document.getElementById('mute-btn').textContent='🔊';}).catch(function(){});
+    return;
+  }
   goToScene(currentScene+1);
 });
+document.addEventListener('touchstart',function(){
+  if(!_audioStarted&&audio) audio.play().then(function(){_audioStarted=true;muted=false;document.getElementById('mute-btn').textContent='🔊';}).catch(function(){});
+},{passive:true,once:true});
 document.addEventListener('keydown',function(e){
   if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();goToScene(currentScene+1);}
   if(e.key==='ArrowLeft'){e.preventDefault();goToScene(currentScene-1);}
@@ -396,7 +408,8 @@ document.addEventListener('keydown',function(e){
 
 // ── START ──
 window.addEventListener('load',function(){
-  // Tela de start já está visível — aguarda clique do usuário
+  initAudio();
+  goToScene(0);
 });
 </script>
 </body>
