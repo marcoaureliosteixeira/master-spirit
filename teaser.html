@@ -32,9 +32,7 @@ body{font-family:'Cormorant Garamond',Georgia,serif;-webkit-tap-highlight-color:
 #dots{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:100;display:flex;gap:8px}
 .dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.15);cursor:pointer;transition:all .3s}
 .dot.active{background:#C9A84C;box-shadow:0 0 8px rgba(201,168,76,.5)}
-/* Mute button */
-#mute-btn{position:fixed;top:16px;right:16px;z-index:100;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:50%;width:40px;height:40px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:rgba(201,168,76,.7);transition:all .2s}
-#mute-btn:hover{background:rgba(201,168,76,.25)}
+/* (botão mute removido — som automático) */
 /* Masters row */
 .masters-row{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin:20px 0}
 .master-circle{width:clamp(50px,10vw,70px);height:clamp(50px,10vw,70px);border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.3);box-shadow:0 0 20px rgba(201,168,76,.2);opacity:0;animation:masterIn .6s ease forwards}
@@ -138,7 +136,7 @@ body{font-family:'Cormorant Garamond',Georgia,serif;-webkit-tap-highlight-color:
 
 <div id="dots"></div>
 <div id="skip-hint">toque para avançar</div>
-<button id="mute-btn" onclick="toggleMute()">▶</button>
+<!-- botão mute removido — som é automático -->
 
 <script>
 // ── CONFIG ──
@@ -163,12 +161,12 @@ function stopSceneVoice(){
 }
 
 var SCENES=[
-  {id:'scene-0',duration:22000,onEnter:enterScene0},
-  {id:'scene-1',duration:17000,onEnter:enterScene1},
-  {id:'scene-2',duration:13000,onEnter:enterScene2},
-  {id:'scene-3',duration:16000,onEnter:enterScene3},
-  {id:'scene-4',duration:14000,onEnter:null},
-  {id:'scene-5',duration:11000,onEnter:enterScene5},
+  {id:'scene-0',duration:26000,onEnter:enterScene0},
+  {id:'scene-1',duration:16000,onEnter:enterScene1},
+  {id:'scene-2',duration:12000,onEnter:enterScene2},
+  {id:'scene-3',duration:15000,onEnter:enterScene3},
+  {id:'scene-4',duration:13000,onEnter:null},
+  {id:'scene-5',duration:10000,onEnter:enterScene5},
   {id:'scene-6',duration:999999,onEnter:null}
 ];
 var currentScene=0;
@@ -352,64 +350,33 @@ function wordByWord(elId,text,delay){
   next();
 }
 
-// ── AUDIO ──
+// ── AUDIO (autoplay automático) ──
 var _audioStarted=false;
 
 function initAudio(){
   audio=new Audio('teaser-music.mp3');
   audio.volume=0.85;
   audio.loop=true;
-  tryPlayAudio();
-}
-
-function tryPlayAudio(){
-  if(!audio||_audioStarted) return;
   var p=audio.play();
   if(p!==undefined){
-    p.then(function(){
-      _audioStarted=true;
-      updateMuteBtn();
-    }).catch(function(){
-      // Autoplay bloqueado — esperar interação
+    p.then(function(){_audioStarted=true;}).catch(function(){
+      // Autoplay bloqueado — tocar no primeiro toque
     });
   }
 }
 
-function updateMuteBtn(){
-  var btn=document.getElementById('mute-btn');
-  if(!btn) return;
-  if(_audioStarted&&!muted) btn.textContent='⏹';
-  else btn.textContent='▶';
-}
-
-function toggleMute(){
-  if(!_audioStarted){
-    // Primeira vez: iniciar áudio
-    muted=false;
-    if(audio){
-      audio.play().then(function(){
-        _audioStarted=true;
-        updateMuteBtn();
-      }).catch(function(){});
-    }
-    return;
-  }
-  muted=!muted;
-  if(audio){
-    if(muted) audio.pause();
-    else audio.play().catch(function(){});
-  }
-  updateMuteBtn();
+function tryStartAudio(){
+  if(_audioStarted||!audio) return;
+  audio.play().then(function(){_audioStarted=true;}).catch(function(){});
 }
 
 // ── CONTROLS ──
 document.addEventListener('click',function(e){
-  // Tentar iniciar áudio se bloqueado
-  if(!_audioStarted) tryPlayAudio();
-  if(e.target.closest('#mute-btn')||e.target.closest('#dots')||e.target.closest('.cta-btn')) return;
+  if(e.target.closest('#dots')||e.target.closest('.cta-btn')) return;
+  if(!_audioStarted){tryStartAudio();return;}
   goToScene(currentScene+1);
 });
-document.addEventListener('touchstart',function(){if(!_audioStarted) tryPlayAudio();},{passive:true});
+document.addEventListener('touchstart',function(){if(!_audioStarted) tryStartAudio();},{passive:true});
 document.addEventListener('keydown',function(e){
   if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();goToScene(currentScene+1);}
   if(e.key==='ArrowLeft'){e.preventDefault();goToScene(currentScene-1);}
