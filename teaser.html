@@ -50,6 +50,20 @@ body{font-family:'Cormorant Garamond',Georgia,serif;-webkit-tap-highlight-color:
 @keyframes blink{50%{opacity:0}}
 /* Skip hint */
 #skip-hint{position:fixed;bottom:44px;left:50%;transform:translateX(-50%);z-index:100;font-size:11px;color:rgba(240,234,214,.2);font-style:italic;letter-spacing:1px;transition:opacity 1s}
+/* Spirit logo animation (Hollywood style) */
+.spirit-logo{position:relative;width:120px;height:120px;margin:0 auto 20px}
+.spirit-logo img{width:120px;height:120px;border-radius:50%;object-fit:cover;position:relative;z-index:2;opacity:0;animation:spiritReveal 3s cubic-bezier(.22,1,.36,1) .8s forwards}
+.spirit-spark{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:6px;height:6px;border-radius:50%;background:#fff;z-index:3;box-shadow:0 0 10px 4px rgba(255,240,180,.9),0 0 30px 15px rgba(201,168,76,.5),0 0 60px 30px rgba(100,60,200,.3);animation:sparkFlash 1.2s cubic-bezier(.22,1,.36,1) forwards}
+.spirit-ring{position:absolute;left:50%;top:50%;width:120px;height:120px;margin:-60px 0 0 -60px;border-radius:50%;border:1px solid rgba(201,168,76,.4);opacity:0;z-index:1}
+.spirit-ring:nth-child(2){animation:ringOut 2.5s ease-out 1.5s infinite}
+.spirit-ring:nth-child(3){animation:ringOut 2.5s ease-out 2.2s infinite;border-color:rgba(150,100,255,.3)}
+@keyframes sparkFlash{0%{transform:translate(-50%,-50%) scale(0);opacity:0}20%{opacity:1;transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(3);opacity:.8}100%{transform:translate(-50%,-50%) scale(6);opacity:0}}
+@keyframes spiritReveal{0%{opacity:0;filter:brightness(10) blur(12px);transform:scale(.5)}30%{opacity:1;filter:brightness(3) blur(4px);transform:scale(1.05)}60%{filter:brightness(1.5) blur(1px);transform:scale(1)}100%{opacity:1;filter:brightness(1) drop-shadow(0 0 20px rgba(201,168,76,.5));transform:scale(1)}}
+@keyframes ringOut{0%{transform:scale(.7);opacity:.7}100%{transform:scale(1.6);opacity:0}}
+/* Spirit logo small (CTA scene) */
+.spirit-logo-sm{position:relative;width:80px;height:80px;margin:0 auto 16px}
+.spirit-logo-sm img{width:80px;height:80px;border-radius:50%;object-fit:cover;animation:gentleHalo 3s ease-in-out infinite;box-shadow:0 0 25px rgba(201,168,76,.3)}
+@keyframes gentleHalo{0%,100%{filter:drop-shadow(0 0 12px rgba(201,168,76,.3))}50%{filter:drop-shadow(0 0 25px rgba(201,168,76,.6))}}
 </style>
 </head>
 <body>
@@ -57,8 +71,13 @@ body{font-family:'Cormorant Garamond',Georgia,serif;-webkit-tap-highlight-color:
 <div id="progress"><div id="progress-fill"></div></div>
 
 <div class="scene" id="scene-0">
-  <img src="logo.png" style="width:80px;height:80px;border-radius:50%;margin-bottom:16px;opacity:.8" alt="Spyrit Systems" onerror="this.style.display='none'">
-  <p class="eyebrow">Spyrit Systems apresenta</p>
+  <div class="spirit-logo" id="spirit-logo-0">
+    <div class="spirit-spark"></div>
+    <div class="spirit-ring"></div>
+    <div class="spirit-ring"></div>
+    <img src="master-spirit-avatar.png" alt="Master Spirit" onerror="this.src='logo.png'">
+  </div>
+  <p class="eyebrow" style="animation:fadeup 1s ease 2.5s both">Spyrit Systems apresenta</p>
 </div>
 
 <div class="scene" id="scene-1">
@@ -97,7 +116,9 @@ body{font-family:'Cormorant Garamond',Georgia,serif;-webkit-tap-highlight-color:
 </div>
 
 <div class="scene" id="scene-6">
-  <img src="logo.png" style="width:70px;height:70px;border-radius:50%;margin-bottom:14px;box-shadow:0 0 30px rgba(201,168,76,.3)" alt="Master Spirit" onerror="this.style.display='none'">
+  <div class="spirit-logo-sm">
+    <img src="master-spirit-avatar.png" alt="Master Spirit" onerror="this.src='logo.png'">
+  </div>
   <p class="headline" style="font-size:clamp(26px,5vw,42px)">MASTER<br>SPIRIT</p>
   <p style="font-size:11px;color:rgba(240,234,214,.3);letter-spacing:2px;margin:8px 0 20px">masterspirit.spyritsystems.com</p>
   <a class="cta-btn" href="https://masterspirit.spyritsystems.com" target="_blank">Entrar nessa jornada</a>
@@ -110,7 +131,7 @@ body{font-family:'Cormorant Garamond',Georgia,serif;-webkit-tap-highlight-color:
 <script>
 // ── CONFIG ──
 var SCENES=[
-  {id:'scene-0',duration:6000,onEnter:null},
+  {id:'scene-0',duration:7000,onEnter:enterScene0},
   {id:'scene-1',duration:12000,onEnter:enterScene1},
   {id:'scene-2',duration:10000,onEnter:enterScene2},
   {id:'scene-3',duration:12000,onEnter:enterScene3},
@@ -201,6 +222,12 @@ function goToScene(n){
 }
 
 // ── SCENE CALLBACKS ──
+function enterScene0(){
+  // Reiniciar animação do spirit logo
+  var logo=document.getElementById('spirit-logo-0');
+  if(logo){var clone=logo.cloneNode(true);logo.parentNode.replaceChild(clone,logo);}
+}
+
 function enterScene1(){
   wordByWord('headline-1','Imagine poder conversar\ncom Jesus.',400);
   setTimeout(function(){
