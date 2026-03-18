@@ -137,7 +137,7 @@ body{font-family:'Cormorant Garamond',Georgia,serif;-webkit-tap-highlight-color:
 
 <div id="dots"></div>
 <div id="skip-hint">toque para avançar</div>
-<button id="mute-btn" onclick="toggleMute()">⏹</button>
+<button id="mute-btn" onclick="toggleMute()">▶</button>
 
 <script>
 // ── CONFIG ──
@@ -352,46 +352,63 @@ function wordByWord(elId,text,delay){
 }
 
 // ── AUDIO ──
+var _audioStarted=false;
+
 function initAudio(){
   audio=new Audio('teaser-music.mp3');
   audio.volume=0.85;
   audio.loop=true;
-  // Tenta autoplay imediatamente
+  tryPlayAudio();
+}
+
+function tryPlayAudio(){
+  if(!audio||_audioStarted) return;
   var p=audio.play();
   if(p!==undefined){
     p.then(function(){
-      document.getElementById('mute-btn').textContent='⏹';
+      _audioStarted=true;
+      updateMuteBtn();
     }).catch(function(){
-      // Autoplay bloqueado — forçar no primeiro toque/clique
-      document.addEventListener('touchstart',forcePlay);
-      document.addEventListener('click',forcePlay);
+      // Autoplay bloqueado — esperar interação
     });
   }
 }
-function forcePlay(){
-  if(audio&&!muted){
-    audio.play().then(function(){
-      document.getElementById('mute-btn').textContent='⏹';
-    }).catch(function(){});
-  }
-  document.removeEventListener('touchstart',forcePlay);
-  document.removeEventListener('click',forcePlay);
+
+function updateMuteBtn(){
+  var btn=document.getElementById('mute-btn');
+  if(!btn) return;
+  if(_audioStarted&&!muted) btn.textContent='⏹';
+  else btn.textContent='▶';
 }
 
 function toggleMute(){
+  if(!_audioStarted){
+    // Primeira vez: iniciar áudio
+    muted=false;
+    if(audio){
+      audio.play().then(function(){
+        _audioStarted=true;
+        updateMuteBtn();
+      }).catch(function(){});
+    }
+    return;
+  }
   muted=!muted;
-  document.getElementById('mute-btn').textContent=muted?'▶':'⏹';
   if(audio){
     if(muted) audio.pause();
     else audio.play().catch(function(){});
   }
+  updateMuteBtn();
 }
 
 // ── CONTROLS ──
 document.addEventListener('click',function(e){
+  // Tentar iniciar áudio se bloqueado
+  if(!_audioStarted) tryPlayAudio();
   if(e.target.closest('#mute-btn')||e.target.closest('#dots')||e.target.closest('.cta-btn')) return;
   goToScene(currentScene+1);
 });
+document.addEventListener('touchstart',function(){if(!_audioStarted) tryPlayAudio();},{passive:true});
 document.addEventListener('keydown',function(e){
   if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();goToScene(currentScene+1);}
   if(e.key==='ArrowLeft'){e.preventDefault();goToScene(currentScene-1);}
