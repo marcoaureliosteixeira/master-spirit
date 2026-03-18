@@ -150,6 +150,12 @@ var SCENE_VOICES={
   5:'teaser-voice-08.mp3',
   6:null
 };
+// Voz encadeada após cena 0: Jesus fala depois do locutor
+var SCENE_VOICE_CHAIN={
+  0:['teaser-voice-01b.mp3'],
+  1:['teaser-voice-03.mp3','teaser-voice-04.mp3'],
+  5:['teaser-voice-09.mp3']
+};
 // voice-03 = "Com Kardec..." toca logo após voice-02 na cena 1
 // voice-04 = "Conhecer a Verdade..." toca logo após voice-03 na cena 1
 var _voiceAudio=null;
@@ -160,34 +166,29 @@ function playSceneVoice(sceneIdx){
   if(!file||muted) return;
   _voiceAudio=new Audio(file);
   _voiceAudio.volume=1.0;
-  // Baixar música de fundo enquanto voz toca
   if(audio) audio.volume=0.25;
   _voiceAudio.onended=function(){
     _voiceAudio=null;
-    if(audio&&!muted) audio.volume=0.85;
-    // Cena 1: encadear vozes 03 e 04
-    if(sceneIdx===1) playChainVoice('teaser-voice-03.mp3','teaser-voice-04.mp3');
+    // Encadear vozes adicionais desta cena
+    var chain=SCENE_VOICE_CHAIN[sceneIdx];
+    if(chain&&chain.length>0){
+      playVoiceChain(chain,0);
+    } else {
+      if(audio&&!muted) audio.volume=0.85;
+    }
   };
   _voiceAudio.onerror=function(){_voiceAudio=null;if(audio&&!muted) audio.volume=0.85;};
   _voiceAudio.play().catch(function(){});
 }
 
-function playChainVoice(file1,file2){
-  if(muted) return;
-  _voiceAudio=new Audio(file1);
+function playVoiceChain(files,idx){
+  if(muted||idx>=files.length){if(audio&&!muted) audio.volume=0.85;_voiceAudio=null;return;}
+  _voiceAudio=new Audio(files[idx]);
   _voiceAudio.volume=1.0;
   if(audio) audio.volume=0.25;
-  _voiceAudio.onended=function(){
-    if(file2){
-      _voiceAudio=new Audio(file2);
-      _voiceAudio.volume=1.0;
-      _voiceAudio.onended=function(){_voiceAudio=null;if(audio&&!muted) audio.volume=0.85;};
-      _voiceAudio.play().catch(function(){});
-    } else {
-      _voiceAudio=null;if(audio&&!muted) audio.volume=0.85;
-    }
-  };
-  _voiceAudio.play().catch(function(){});
+  _voiceAudio.onended=function(){playVoiceChain(files,idx+1);};
+  _voiceAudio.onerror=function(){playVoiceChain(files,idx+1);};
+  _voiceAudio.play().catch(function(){playVoiceChain(files,idx+1);});
 }
 
 function stopSceneVoice(){
