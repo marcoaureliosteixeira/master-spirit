@@ -110,12 +110,12 @@ body{font-family:'Cormorant Garamond',Georgia,serif;-webkit-tap-highlight-color:
 <script>
 // ── CONFIG ──
 var SCENES=[
-  {id:'scene-0',duration:5000,onEnter:null},
-  {id:'scene-1',duration:8000,onEnter:enterScene1},
-  {id:'scene-2',duration:8000,onEnter:enterScene2},
-  {id:'scene-3',duration:9000,onEnter:enterScene3},
-  {id:'scene-4',duration:7000,onEnter:null},
-  {id:'scene-5',duration:8000,onEnter:enterScene5},
+  {id:'scene-0',duration:6000,onEnter:null},
+  {id:'scene-1',duration:12000,onEnter:enterScene1},
+  {id:'scene-2',duration:10000,onEnter:enterScene2},
+  {id:'scene-3',duration:12000,onEnter:enterScene3},
+  {id:'scene-4',duration:9000,onEnter:null},
+  {id:'scene-5',duration:10000,onEnter:enterScene5},
   {id:'scene-6',duration:999999,onEnter:null}
 ];
 var currentScene=0;
@@ -202,10 +202,10 @@ function goToScene(n){
 
 // ── SCENE CALLBACKS ──
 function enterScene1(){
-  wordByWord('headline-1','Imagine poder conversar com Jesus.',300);
+  wordByWord('headline-1','Imagine poder conversar\ncom Jesus.',400);
   setTimeout(function(){
-    wordByWord('sub-1','Com Kardec. Com Chico Xavier. Com Krishna.\nConhecer a Verdade. Descobrir a sua jornada.',150);
-  },2500);
+    wordByWord('sub-1','Com Kardec.\nCom Chico Xavier.\nCom Krishna.\nConhecer a Verdade.\nDescobrir a sua jornada.',350);
+  },3500);
 }
 
 function enterScene2(){
@@ -225,34 +225,42 @@ function enterScene2(){
 function enterScene3(){
   var el=document.getElementById('typewriter-text');
   el.innerHTML='';
-  var text='Filho, eu estou aqui. Não importa a dor que carregas — eu já a conheci antes de ti. Fala comigo...';
+  var text='Filho, eu estou aqui.\nNão importa a dor que carregas\n— eu já a conheci antes de ti.\nFala comigo...';
   var i=0;
+  var html='';
   function type(){
     if(i<text.length){
-      el.textContent+=text.charAt(i);i++;
-      setTimeout(type,40);
+      var ch=text.charAt(i);
+      if(ch==='\n') html+='<br>';
+      else html+=ch;
+      el.innerHTML=html+'<span class="cursor"></span>';
+      i++;
+      setTimeout(type,55);
+    } else {
+      el.innerHTML=html;
     }
   }
   type();
 }
 
 function enterScene5(){
-  var words=['Você','encontrou','o Caminho.'];
+  var words=['Você','encontrou','o','Caminho.'];
   var el=document.getElementById('headline-5');
   el.innerHTML='';
   words.forEach(function(w,i){
     var span=document.createElement('span');
     span.className='word';
     span.textContent=w+' ';
-    span.style.animationDelay=(i*0.6)+'s';
+    span.style.animationDelay=(i*1.0)+'s';
     el.appendChild(span);
   });
   setTimeout(function(){
     var sub=document.getElementById('sub-5');
-    sub.style.opacity='0';sub.textContent='A Verdade sempre esteve aqui.';
-    sub.style.transition='opacity 1.5s ease';
+    sub.style.opacity='0';
+    sub.innerHTML='A Verdade sempre esteve aqui.<br>Esperando por você.';
+    sub.style.transition='opacity 2s ease';
     setTimeout(function(){sub.style.opacity='1';},100);
-  },2500);
+  },4500);
 }
 
 function wordByWord(elId,text,delay){
