@@ -351,56 +351,40 @@ function wordByWord(elId,text,delay){
 }
 
 // ── AUDIO ──
-var _audioStarted=false;
-
 function initAudio(){
   audio=new Audio('teaser-music.mp3');
   audio.volume=0.85;
   audio.loop=true;
-  var p=audio.play();
-  if(p!==undefined){
-    p.then(function(){
-      _audioStarted=true;
-      document.getElementById('mute-btn').textContent='🔊';
-    }).catch(function(){
-      // Autoplay bloqueado
-      document.getElementById('mute-btn').textContent='🔇';
-    });
+}
+
+function ensureAudioPlaying(){
+  if(!audio) return;
+  if(audio.paused&&!muted){
+    audio.play().catch(function(){});
   }
 }
 
 function toggleSound(){
-  if(!_audioStarted){
-    // Primeiro clique: iniciar áudio
-    if(audio){
-      audio.play().then(function(){
-        _audioStarted=true;
-        muted=false;
-        document.getElementById('mute-btn').textContent='🔊';
-      }).catch(function(){});
-    }
-    return;
-  }
-  muted=!muted;
-  if(audio){
-    if(muted){audio.pause();document.getElementById('mute-btn').textContent='🔇';}
-    else{audio.play().catch(function(){});document.getElementById('mute-btn').textContent='🔊';}
+  if(!audio) return;
+  if(audio.paused){
+    muted=false;
+    audio.play().then(function(){
+      document.getElementById('mute-btn').textContent='🔊';
+    }).catch(function(){});
+  } else {
+    muted=true;
+    audio.pause();
+    document.getElementById('mute-btn').textContent='🔇';
   }
 }
 
 // ── CONTROLS ──
 document.addEventListener('click',function(e){
   if(e.target.closest('#mute-btn')||e.target.closest('#dots')||e.target.closest('.cta-btn')) return;
-  // Se áudio não iniciou, primeiro clique inicia sem avançar
-  if(!_audioStarted){
-    if(audio) audio.play().then(function(){_audioStarted=true;muted=false;document.getElementById('mute-btn').textContent='🔊';}).catch(function(){});
-    return;
-  }
+  ensureAudioPlaying();
   goToScene(currentScene+1);
 });
-document.addEventListener('touchstart',function(){
-  if(!_audioStarted&&audio) audio.play().then(function(){_audioStarted=true;muted=false;document.getElementById('mute-btn').textContent='🔊';}).catch(function(){});
-},{passive:true,once:true});
+document.addEventListener('touchstart',function(){ensureAudioPlaying();},{passive:true,once:true});
 document.addEventListener('keydown',function(e){
   if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();goToScene(currentScene+1);}
   if(e.key==='ArrowLeft'){e.preventDefault();goToScene(currentScene-1);}
@@ -409,6 +393,14 @@ document.addEventListener('keydown',function(e){
 // ── START ──
 window.addEventListener('load',function(){
   initAudio();
+  // Tentar autoplay
+  if(audio){
+    audio.play().then(function(){
+      document.getElementById('mute-btn').textContent='🔊';
+    }).catch(function(){
+      document.getElementById('mute-btn').textContent='🔇';
+    });
+  }
   goToScene(0);
 });
 </script>
