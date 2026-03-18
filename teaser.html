@@ -140,6 +140,61 @@ body{font-family:'Cormorant Garamond',Georgia,serif;-webkit-tap-highlight-color:
 
 <script>
 // ── CONFIG ──
+// Mapeamento: cena → arquivo de voz (null = sem voz)
+var SCENE_VOICES={
+  0:'teaser-voice-01.mp3',
+  1:'teaser-voice-02.mp3',
+  2:'teaser-voice-05.mp3',
+  3:'teaser-voice-06.mp3',
+  4:'teaser-voice-07.mp3',
+  5:'teaser-voice-08.mp3',
+  6:null
+};
+// voice-03 = "Com Kardec..." toca logo após voice-02 na cena 1
+// voice-04 = "Conhecer a Verdade..." toca logo após voice-03 na cena 1
+var _voiceAudio=null;
+
+function playSceneVoice(sceneIdx){
+  stopSceneVoice();
+  var file=SCENE_VOICES[sceneIdx];
+  if(!file||muted) return;
+  _voiceAudio=new Audio(file);
+  _voiceAudio.volume=1.0;
+  // Baixar música de fundo enquanto voz toca
+  if(audio) audio.volume=0.25;
+  _voiceAudio.onended=function(){
+    _voiceAudio=null;
+    if(audio&&!muted) audio.volume=0.85;
+    // Cena 1: encadear vozes 03 e 04
+    if(sceneIdx===1) playChainVoice('teaser-voice-03.mp3','teaser-voice-04.mp3');
+  };
+  _voiceAudio.onerror=function(){_voiceAudio=null;if(audio&&!muted) audio.volume=0.85;};
+  _voiceAudio.play().catch(function(){});
+}
+
+function playChainVoice(file1,file2){
+  if(muted) return;
+  _voiceAudio=new Audio(file1);
+  _voiceAudio.volume=1.0;
+  if(audio) audio.volume=0.25;
+  _voiceAudio.onended=function(){
+    if(file2){
+      _voiceAudio=new Audio(file2);
+      _voiceAudio.volume=1.0;
+      _voiceAudio.onended=function(){_voiceAudio=null;if(audio&&!muted) audio.volume=0.85;};
+      _voiceAudio.play().catch(function(){});
+    } else {
+      _voiceAudio=null;if(audio&&!muted) audio.volume=0.85;
+    }
+  };
+  _voiceAudio.play().catch(function(){});
+}
+
+function stopSceneVoice(){
+  if(_voiceAudio){try{_voiceAudio.pause();_voiceAudio=null;}catch(e){}}
+  if(audio&&!muted) audio.volume=0.85;
+}
+
 var SCENES=[
   {id:'scene-0',duration:7000,onEnter:enterScene0},
   {id:'scene-1',duration:12000,onEnter:enterScene1},
@@ -225,6 +280,8 @@ function goToScene(n){
   document.getElementById('skip-hint').style.opacity='0';
   // onEnter callback
   if(SCENES[n].onEnter) SCENES[n].onEnter();
+  // Narração da cena
+  setTimeout(function(){playSceneVoice(n);},800);
   // Auto advance
   if(dur<999999){
     autoTimer=setTimeout(function(){goToScene(n+1);},dur);
