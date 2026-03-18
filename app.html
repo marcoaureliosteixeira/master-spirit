@@ -1473,10 +1473,14 @@ async function createStudyGroup(){
 
 async function getAuthToken(){
   try{
-    if(!window._sb) return null;
+    if(!window._sb){
+      // Esperar Supabase carregar
+      await new Promise(r=>setTimeout(r,1000));
+      if(!window._sb) return null;
+    }
     const s=await window._sb.auth.getSession();
     return s?.data?.session?.access_token||null;
-  }catch(e){return null;}
+  }catch(e){console.error('getAuthToken error:',e);return null;}
 }
 
 async function openGroupDetail(groupId){
@@ -1696,7 +1700,7 @@ function sendMsg(){
 
 async function sendMsgText(text){
   if(!text&&!attachData) return;
-  if(loading) return;
+  if(loading){console.warn('sendMsgText blocked: loading=true');return;}
 
   // Check chat usage
   const canSend = await decrementChat();
@@ -2811,7 +2815,7 @@ async function decrementVoice(){
 }
 
 function canUseVoiceChat(){
-  return userPlan==='premium'&&voiceRemaining>0&&activeMaster==='jesus';
+  try{return userPlan==='premium'&&voiceRemaining>0&&activeMaster==='jesus';}catch(e){return false;}
 }
 
 // ── Billing toggle (mensal / anual) ──────────────────────────
