@@ -63,7 +63,10 @@ body{font-family:'Cormorant Garamond',Georgia,serif;-webkit-tap-highlight-color:
 @keyframes ringOut{0%{transform:scale(.8);opacity:.7}100%{transform:scale(1.8);opacity:0}}
 /* Spirit logo small (CTA scene) */
 .spirit-logo-sm{position:relative;width:min(35vw,160px);height:min(35vw,160px);margin:0 auto 10px}
-.spirit-logo-sm img{width:min(35vw,160px);height:min(35vw,160px);object-fit:contain;display:block;mix-blend-mode:screen;-webkit-mix-blend-mode:screen;animation:gentleHalo 3s ease-in-out infinite;filter:drop-shadow(0 0 20px rgba(201,168,76,.4))}
+.spirit-logo-sm img{width:min(35vw,160px);height:min(35vw,160px);object-fit:contain;display:block;position:relative;z-index:2;mix-blend-mode:screen;-webkit-mix-blend-mode:screen;animation:gentleHalo 3s ease-in-out infinite;filter:drop-shadow(0 0 20px rgba(201,168,76,.4))}
+.spirit-ring-sm{position:absolute;left:50%;top:50%;width:140px;height:140px;margin:-70px 0 0 -70px;border-radius:50%;border:1px solid rgba(201,168,76,.4);opacity:0;z-index:1}
+.spirit-ring-sm:nth-child(1){animation:ringOut 2.5s ease-out .5s infinite}
+.spirit-ring-sm:nth-child(2){animation:ringOut 2.5s ease-out 1.2s infinite;border-color:rgba(150,100,255,.3)}
 @keyframes gentleHalo{0%,100%{filter:drop-shadow(0 0 12px rgba(201,168,76,.3))}50%{filter:drop-shadow(0 0 25px rgba(201,168,76,.6))}}
 </style>
 </head>
@@ -118,6 +121,8 @@ body{font-family:'Cormorant Garamond',Georgia,serif;-webkit-tap-highlight-color:
 
 <div class="scene" id="scene-6">
   <div class="spirit-logo-sm">
+    <div class="spirit-ring-sm"></div>
+    <div class="spirit-ring-sm"></div>
     <img src="master-spirit-avatar.png" alt="Master Spirit" onerror="this.src='logo.png'">
   </div>
   <p class="headline" style="font-size:clamp(22px,4vw,36px)">MASTER<br>SPIRIT</p>
