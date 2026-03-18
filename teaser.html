@@ -83,6 +83,7 @@ body{font-family:'Cormorant Garamond',Georgia,serif;-webkit-tap-highlight-color:
   </div>
   <p class="headline" style="font-size:clamp(22px,4.5vw,38px);animation:fadeup 1.2s ease 2s both;margin-bottom:6px">MASTER<br>SPIRIT</p>
   <p class="eyebrow" style="animation:fadeup 1s ease 3s both">Spyrit Systems apresenta</p>
+  <p class="sub" style="animation:fadeup 1s ease 4s both;margin-top:8px">Sua Jornada Começa aqui</p>
 </div>
 
 <div class="scene" id="scene-1">
@@ -93,7 +94,7 @@ body{font-family:'Cormorant Garamond',Georgia,serif;-webkit-tap-highlight-color:
 
 <div class="scene" id="scene-2">
   <p class="eyebrow">Mestres Espirituais</p>
-  <p class="headline" style="font-size:clamp(18px,3.5vw,30px)">Cada mestre, com sua sabedoria e personalidade.<br>Falando com você, na primeira pessoa.</p>
+  <p class="headline" style="font-size:clamp(18px,3.5vw,30px)">Cada Mestre, com sua Sabedoria e Personalidade.<br>Falando com você, na primeira pessoa.</p>
   <div class="masters-row" id="masters-row"></div>
 </div>
 
@@ -109,7 +110,7 @@ body{font-family:'Cormorant Garamond',Georgia,serif;-webkit-tap-highlight-color:
 
 <div class="scene" id="scene-4">
   <p class="eyebrow">Evangelho no Lar</p>
-  <p class="headline" style="font-size:clamp(18px,3.5vw,30px)">Reúna sua família.<br>Transforme seu lar.</p>
+  <p class="headline" style="font-size:clamp(18px,3.5vw,30px)">Reúna sua família<br>e transforme seu lar.</p>
   <div class="divider"></div>
   <p class="sub">Uma sessão guiada com mestres facilitadores.<br>Semanal. Simples. Profunda.</p>
 </div>
@@ -162,7 +163,7 @@ function stopSceneVoice(){
 }
 
 var SCENES=[
-  {id:'scene-0',duration:28000,onEnter:enterScene0},
+  {id:'scene-0',duration:12000,onEnter:enterScene0},
   {id:'scene-1',duration:17000,onEnter:enterScene1},
   {id:'scene-2',duration:13000,onEnter:enterScene2},
   {id:'scene-3',duration:16000,onEnter:enterScene3},
@@ -262,7 +263,7 @@ function enterScene0(){
 }
 
 function enterScene1(){
-  wordByWord('headline-1','Imagine poder conversar\ncom o Mestre da Galileia.',400);
+  wordByWord('headline-1','Imagine poder conversar\ncomigo, o Mestre da Galileia.',400);
   setTimeout(function(){
     wordByWord('sub-1','Com Kardec.\nCom Chico Xavier.\nCom Krishna.\nConhecer a Verdade.\nDescobrir a sua Jornada.',350);
   },3500);
@@ -304,7 +305,7 @@ function enterScene3(){
 }
 
 function enterScene5(){
-  var words=['Você','sempre','esteve','sendo','esperado.'];
+  var words=['Você','encontrou','o','Caminho.'];
   var el=document.getElementById('headline-5');
   el.innerHTML='';
   words.forEach(function(w,i){
@@ -317,7 +318,7 @@ function enterScene5(){
   setTimeout(function(){
     var sub=document.getElementById('sub-5');
     sub.style.opacity='0';
-    sub.innerHTML='A Verdade, o Amparo e o Conhecimento<br>sempre estiveram aqui.<br>Aguardando por você.';
+    sub.innerHTML='O Caminho da Luz e do Amor.';
     sub.style.transition='opacity 2s ease';
     setTimeout(function(){sub.style.opacity='1';},100);
   },4500);
