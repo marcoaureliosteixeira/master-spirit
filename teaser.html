@@ -136,7 +136,7 @@ body{font-family:'Cormorant Garamond',Georgia,serif;-webkit-tap-highlight-color:
 
 <div id="dots"></div>
 <div id="skip-hint">toque para avançar</div>
-<button id="mute-btn" onclick="toggleMute()">⏸</button>
+<button id="mute-btn" onclick="toggleMute()">⏹</button>
 
 <script>
 // ── CONFIG ──
@@ -333,18 +333,26 @@ function initAudio(){
   audio=new Audio('teaser-music.mp3');
   audio.volume=0.85;
   audio.loop=true;
-  audio.play().catch(function(){
-    // Autoplay blocked — wait for interaction
-    document.addEventListener('click',function tryPlay(){
-      if(audio&&!muted) audio.play().catch(function(){});
-      document.removeEventListener('click',tryPlay);
-    },{once:false});
-  });
+  // Tenta autoplay imediatamente
+  var playPromise=audio.play();
+  if(playPromise!==undefined){
+    playPromise.catch(function(){
+      // Autoplay bloqueado — toca no primeiro toque
+      document.addEventListener('touchstart',forcePlay,{once:true});
+      document.addEventListener('click',forcePlay,{once:true});
+    });
+  }
+}
+function forcePlay(){
+  if(audio&&!muted){
+    audio.play().catch(function(){});
+    document.getElementById('mute-btn').textContent='⏹';
+  }
 }
 
 function toggleMute(){
   muted=!muted;
-  document.getElementById('mute-btn').textContent=muted?'▶':'⏸';
+  document.getElementById('mute-btn').textContent=muted?'▶':'⏹';
   if(audio){
     if(muted) audio.pause();
     else audio.play().catch(function(){});
