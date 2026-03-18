@@ -1707,11 +1707,16 @@ function sendMsg(){
 
 async function sendMsgText(text){
   if(!text&&!attachData) return;
-  if(loading){console.warn('sendMsgText blocked: loading=true');return;}
+  if(loading){
+    console.warn('sendMsgText blocked: loading=true — forçando reset');
+    loading=false; // Safety reset
+  }
 
   // Check chat usage
-  const canSend = await decrementChat();
-  if(!canSend) return;
+  try{
+    const canSend = await decrementChat();
+    if(!canSend) return;
+  }catch(e){console.warn('decrementChat error:',e);}
 
   let content;
   if(attachData){
@@ -1726,14 +1731,16 @@ async function sendMsgText(text){
   }
   loading=true;render();scrollChat('msgs');
   startObs('msgs');
-  // Toca intro do avatar enquanto busca resposta
-  if(activeMaster) playAvatarAudio('intro',activeMaster);
+  // Toca intro do avatar (não bloqueia o fluxo)
+  try{if(activeMaster) playAvatarAudio('intro',activeMaster);}catch(e){}
   try{
+    console.log('[Chat] Enviando para',activeMaster||'jesus','msgs:',msgs.length);
     const r=await fetch(API_URL,{method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({model:MODEL,max_tokens:4096,agent:activeMaster||'jesus',messages:msgs.map(m=>({role:m.role,content:m.content}))})
     });
     const d=await r.json();
+    console.log('[Chat] Resposta status:',r.status);
     if(!r.ok){
       console.error('API error:',d);
       msgs.push({role:'assistant',content:'Erro na API: '+(d.error?.message||JSON.stringify(d))});
@@ -1741,22 +1748,26 @@ async function sendMsgText(text){
       const txt=d.content?.find(b=>b.type==='text')?.text;
       msgs.push({role:'assistant',content:txt||'Resposta vazia da API. Tente novamente.'});
     }
-  }catch(e){console.error('Fetch error:',e);msgs.push({role:'assistant',content:'Erro de conexão. Tente novamente.'});}
-  loading=false;stopObs();
-  if(activeMaster) saveMasterMsgs(activeMaster);
-  render();scrollChat('msgs');
+  }catch(e){
+    console.error('Fetch error:',e);
+    msgs.push({role:'assistant',content:'Erro de conexão. Tente novamente.'});
+  }finally{
+    loading=false;stopObs();
+    if(activeMaster) saveMasterMsgs(activeMaster);
+    render();scrollChat('msgs');
+  }
   // Premium: Jesus responde com voz automática (10/mês)
-  if(canUseVoiceChat()&&msgs.length>0&&msgs[msgs.length-1].role==='assistant'){
-    var canSpeak=await decrementVoice();
-    if(canSpeak){
-      setTimeout(function(){speakResponse(msgs[msgs.length-1].content);},500);
-      return; // Não toca reflect se vai falar a resposta inteira
+  try{
+    if(canUseVoiceChat()&&msgs.length>0&&msgs[msgs.length-1].role==='assistant'){
+      var canSpeak=await decrementVoice();
+      if(canSpeak){
+        setTimeout(function(){speakResponse(msgs[msgs.length-1].content);},500);
+        return;
+      }
     }
-  }
+  }catch(e){}
   // Toca convite à reflexão após a resposta chegar
-  if(activeMaster){
-    setTimeout(function(){playAvatarAudio('reflect',activeMaster);},800);
-  }
+  try{if(activeMaster) setTimeout(function(){playAvatarAudio('reflect',activeMaster);},800);}catch(e){}
 }
 
 // File attach
