@@ -1241,8 +1241,8 @@ function splashGoStudy(){
 }
 
 function splashGoEstudos(){
-  enterApp();
-  setTimeout(()=>goTab('estudos'),600);
+  sessionStorage.setItem('spirit_splash_seen','1');
+  window.location.href='estudos.html';
 }
 
 function splashEnterMaster(id){
