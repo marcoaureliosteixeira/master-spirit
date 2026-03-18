@@ -152,7 +152,10 @@ function playSceneVoice(sceneIdx){
   if(audio) audio.volume=0.25;
   _voiceAudio.onended=function(){_voiceAudio=null;if(audio&&!muted) audio.volume=0.85;};
   _voiceAudio.onerror=function(){_voiceAudio=null;if(audio&&!muted) audio.volume=0.85;};
-  _voiceAudio.play().catch(function(){});
+  _voiceAudio.play().catch(function(){
+    // Bloqueado — guardar pra tentar após interação
+    window._pendingVoice=_voiceAudio;
+  });
 }
 
 function stopSceneVoice(){
@@ -362,6 +365,11 @@ function ensureAudioPlaying(){
   if(audio.paused&&!muted){
     audio.play().catch(function(){});
   }
+  // Tocar voz pendente que foi bloqueada
+  if(window._pendingVoice){
+    window._pendingVoice.play().catch(function(){});
+    window._pendingVoice=null;
+  }
 }
 
 function toggleSound(){
@@ -379,12 +387,18 @@ function toggleSound(){
 }
 
 // ── CONTROLS ──
+var _firstInteraction=true;
 document.addEventListener('click',function(e){
   if(e.target.closest('#mute-btn')||e.target.closest('#dots')||e.target.closest('.cta-btn')) return;
   ensureAudioPlaying();
+  // Primeiro clique só inicia áudio, não avança
+  if(_firstInteraction){_firstInteraction=false;return;}
   goToScene(currentScene+1);
 });
-document.addEventListener('touchstart',function(){ensureAudioPlaying();},{passive:true,once:true});
+document.addEventListener('touchstart',function(){
+  ensureAudioPlaying();
+  _firstInteraction=false;
+},{passive:true,once:true});
 document.addEventListener('keydown',function(e){
   if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();goToScene(currentScene+1);}
   if(e.key==='ArrowLeft'){e.preventDefault();goToScene(currentScene-1);}
