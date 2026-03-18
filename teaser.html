@@ -54,12 +54,13 @@ body{font-family:'Cormorant Garamond',Georgia,serif;-webkit-tap-highlight-color:
 .spirit-logo{position:relative;width:min(70vw,380px);height:min(70vw,380px);margin:0 auto 10px}
 .spirit-logo img{width:min(70vw,380px);height:min(70vw,380px);object-fit:contain;display:block;position:relative;z-index:2;opacity:0;mix-blend-mode:screen;-webkit-mix-blend-mode:screen;animation:spiritReveal 3s cubic-bezier(.22,1,.36,1) .8s forwards}
 .spirit-spark{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:8px;height:8px;border-radius:50%;background:#fff;z-index:3;box-shadow:0 0 12px 6px rgba(255,240,180,.9),0 0 40px 20px rgba(201,168,76,.5),0 0 80px 40px rgba(100,60,200,.3);animation:sparkFlash 1.2s cubic-bezier(.22,1,.36,1) forwards}
-.spirit-ring{position:absolute;left:50%;top:50%;width:280px;height:280px;margin:-140px 0 0 -140px;border-radius:50%;border:1px solid rgba(201,168,76,.4);opacity:0;z-index:1}
-.spirit-ring:nth-child(2){animation:ringOut 2.5s ease-out 1.5s infinite}
-.spirit-ring:nth-child(3){animation:ringOut 2.5s ease-out 2.2s infinite;border-color:rgba(150,100,255,.3)}
+.spirit-ring{position:absolute;left:50%;top:50%;width:280px;height:280px;margin:-140px 0 0 -140px;border-radius:50%;border:2px solid rgba(201,168,76,.5);opacity:0;z-index:1}
+.spirit-ring:nth-child(2){animation:ringBirth .8s ease-out 3.8s forwards,ringOut 2.5s ease-out 4.8s infinite}
+.spirit-ring:nth-child(3){animation:ringBirth .8s ease-out 4.2s forwards,ringOut 2.5s ease-out 5.2s infinite;border-color:rgba(150,100,255,.35)}
 @keyframes sparkFlash{0%{transform:translate(-50%,-50%) scale(0);opacity:0}20%{opacity:1;transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(3);opacity:.8}100%{transform:translate(-50%,-50%) scale(6);opacity:0}}
 @keyframes spiritReveal{0%{opacity:0;filter:brightness(10) blur(12px);transform:scale(.5)}30%{opacity:1;filter:brightness(3) blur(4px);transform:scale(1.05)}60%{filter:brightness(1.5) blur(1px);transform:scale(1)}100%{opacity:1;filter:brightness(1) drop-shadow(0 0 20px rgba(201,168,76,.5));transform:scale(1)}}
-@keyframes ringOut{0%{transform:scale(.7);opacity:.7}100%{transform:scale(1.6);opacity:0}}
+@keyframes ringBirth{0%{opacity:0;transform:scale(.3)}100%{opacity:.8;transform:scale(1)}}
+@keyframes ringOut{0%{transform:scale(.8);opacity:.7}100%{transform:scale(1.8);opacity:0}}
 /* Spirit logo small (CTA scene) */
 .spirit-logo-sm{position:relative;width:min(35vw,160px);height:min(35vw,160px);margin:0 auto 10px}
 .spirit-logo-sm img{width:min(35vw,160px);height:min(35vw,160px);object-fit:contain;display:block;mix-blend-mode:screen;-webkit-mix-blend-mode:screen;animation:gentleHalo 3s ease-in-out infinite;filter:drop-shadow(0 0 20px rgba(201,168,76,.4))}
