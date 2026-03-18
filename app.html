@@ -804,6 +804,40 @@ if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
   </div>
 </div>
 
+<!-- Sessão ao Vivo -->
+<div class="modal" id="modal-session">
+  <div class="modal-head" style="border-bottom:1px solid rgba(91,175,124,.2)">
+    <button class="back" onclick="endSession()">‹</button>
+    <h2 id="session-title" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">🎓 Sessão</h2>
+    <span id="session-live-badge" style="display:none;background:rgba(220,60,60,.2);border:1px solid rgba(220,60,60,.4);border-radius:20px;padding:3px 10px;font-size:9px;letter-spacing:1.5px;color:rgba(220,60,60,.8);font-family:'Cinzel',serif;animation:mic-pulse 2s ease-in-out infinite">AO VIVO</span>
+  </div>
+  <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column" id="session-body">
+    <!-- Progresso das sessões -->
+    <div id="session-progress" style="display:flex;gap:4px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.05);flex-shrink:0;flex-wrap:wrap"></div>
+    <!-- Quadro do professor -->
+    <div id="professor-board" style="flex:1;padding:18px 16px;overflow-y:auto">
+      <div id="professor-content" style="font-size:var(--fs);line-height:1.85;color:var(--text);white-space:pre-wrap"></div>
+    </div>
+    <!-- Q&A -->
+    <div id="session-qa" style="border-top:1px solid rgba(201,168,76,.12);max-height:40vh;overflow-y:auto;display:none">
+      <div id="qa-messages" style="padding:10px 14px"></div>
+    </div>
+  </div>
+  <!-- Controles -->
+  <div id="session-controls" style="flex-shrink:0;border-top:1px solid rgba(201,168,76,.15);padding:10px 14px;background:rgba(6,10,22,.95);display:flex;gap:8px;align-items:center">
+    <button id="btn-start-lesson" onclick="startLesson()" class="btn-gold" style="flex:1;padding:10px">▶ Iniciar Aula</button>
+    <button id="btn-open-qa" onclick="openQA()" style="display:none;flex:1;padding:10px;background:rgba(91,175,124,.12);border:1px solid rgba(91,175,124,.35);border-radius:12px;color:rgba(91,175,124,.8);font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:1.5px;cursor:pointer">🙋 Perguntas</button>
+    <button id="btn-next-session" onclick="nextSession()" style="display:none;padding:10px 16px;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.35);border-radius:12px;color:var(--gold);font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:1.5px;cursor:pointer">→ Próxima</button>
+  </div>
+  <!-- Input de pergunta -->
+  <div id="qa-input-bar" style="display:none;border-top:1px solid rgba(91,175,124,.15);padding:10px 14px;background:rgba(6,10,22,.95)">
+    <div style="display:flex;gap:8px;align-items:flex-end">
+      <input id="qa-input" class="input-field" type="text" placeholder="Faça sua pergunta ao professor..." style="flex:1" onkeydown="if(event.key==='Enter')askQuestion()">
+      <button onclick="askQuestion()" style="background:rgba(91,175,124,.15);border:1px solid rgba(91,175,124,.4);border-radius:10px;padding:10px 14px;cursor:pointer;color:rgba(91,175,124,.8);font-size:14px">↑</button>
+    </div>
+  </div>
+</div>
+
 <!-- Study Room -->
 <div class="modal" id="modal-room">
   <div class="modal-head">
@@ -1502,12 +1536,49 @@ async function openGroupDetail(groupId){
     if(!r.ok){content.innerHTML='<p style="text-align:center;padding:30px;color:rgba(232,122,122,.7)">'+d.error+'</p>';return;}
     const g=d.group;const room=rooms.find(x=>x.id===g.room_id);
     document.getElementById('groupdetail-title').textContent='👥 '+g.name;
+
+    // Buscar ou gerar currículo (salvo no localStorage)
+    var currKey='spirit_curriculum_'+g.room_id;
+    var curriculum=null;
+    try{curriculum=JSON.parse(localStorage.getItem(currKey));}catch(e){}
+
     let html=`
       <div style="background:rgba(255,255,255,.04);border:1px solid rgba(91,175,124,.2);border-radius:12px;padding:14px;margin-bottom:16px">
         <p style="font-size:13px;color:rgba(240,234,214,.7)">${g.description||'Sem descrição'}</p>
         <p style="font-size:11px;color:rgba(91,175,124,.6);margin-top:6px">📚 Sala: ${room?room.title:g.room_id}</p>
-      </div>
-      <p class="sec-label">Membros (${d.members.length}/10)</p>`;
+        ${curriculum?'<p style="font-size:10px;color:rgba(240,234,214,.35);margin-top:4px">'+curriculum.totalSessions+' sessões · ~'+curriculum.estimatedHours+'h</p>':''}
+      </div>`;
+
+    // Currículo / Sessões
+    if(curriculum && curriculum.sessions){
+      html+=`<p class="sec-label">Plano de Estudos (${curriculum.totalSessions} sessões)</p>`;
+      html+=`<p style="font-size:12px;font-style:italic;color:rgba(240,234,214,.5);margin-bottom:12px;line-height:1.5">${curriculum.overview||''}</p>`;
+      curriculum.sessions.forEach(function(s,i){
+        var typeColors={lecture:'rgba(201,168,76,.5)',discussion:'rgba(91,175,124,.5)',practice:'rgba(168,125,202,.5)',review:'rgba(74,158,191,.5)'};
+        var typeLabels={lecture:'Aula',discussion:'Debate',practice:'Prática',review:'Revisão'};
+        html+=`<div class="section-card" style="cursor:pointer" onclick="openSession('${groupId}',JSON.parse(localStorage.getItem('${currKey}')),${i+1},'${(room?room.title:'').replace(/'/g,"\\'")}','${(room?room.author:'').replace(/'/g,"\\'")}')">
+          <div style="display:flex;gap:11px;align-items:flex-start">
+            <div class="num">${i+1}</div>
+            <div style="flex:1">
+              <h4>${s.title}</h4>
+              <div class="range">${s.chapters||''} · ${s.durationMinutes||60} min</div>
+              <div class="sdesc">${(s.topics||[]).join(' · ')}</div>
+            </div>
+            <span style="font-size:9px;padding:3px 8px;border-radius:10px;background:${typeColors[s.type]||typeColors.lecture}18;color:${typeColors[s.type]||typeColors.lecture};border:1px solid ${typeColors[s.type]||typeColors.lecture}40">${typeLabels[s.type]||'Aula'}</span>
+          </div>
+        </div>`;
+      });
+    } else {
+      html+=`<div style="text-align:center;padding:20px 0;margin-bottom:16px">
+        <button onclick="generateCurriculum('${groupId}','${g.room_id}')" class="btn-gold" style="width:auto;padding:12px 24px" id="gen-curr-btn">
+          ✦ Gerar Plano de Estudos com IA
+        </button>
+        <p id="gen-curr-status" style="font-size:11px;font-style:italic;color:rgba(201,168,76,.5);margin-top:8px;min-height:16px"></p>
+      </div>`;
+    }
+
+    // Membros
+    html+=`<p class="sec-label">Membros (${d.members.length}/10)</p>`;
     d.members.forEach(m=>{
       html+=`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)">
         <span style="font-size:14px">${m.role==='coordinator'?'👑':'👤'}</span>
@@ -1539,6 +1610,26 @@ async function openGroupDetail(groupId){
   }catch(e){content.innerHTML='<p style="text-align:center;padding:30px;color:rgba(232,122,122,.7)">Erro de conexão.</p>';}
 }
 
+async function generateCurriculum(groupId,roomId){
+  var btn=document.getElementById('gen-curr-btn');
+  var status=document.getElementById('gen-curr-status');
+  if(btn) btn.disabled=true;
+  if(status) status.textContent='Gerando plano de estudos... (pode levar alguns segundos)';
+  var room=rooms.find(x=>x.id===roomId);
+  try{
+    var r=await fetch('/api/study-curriculum',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'generate_curriculum',bookTitle:room?room.title:roomId,bookAuthor:room?room.author:'',bookYear:null})});
+    var d=await r.json();
+    if(!r.ok){if(status) status.textContent='Erro: '+(d.error||'Tente novamente.');if(btn) btn.disabled=false;return;}
+    // Salvar no localStorage
+    localStorage.setItem('spirit_curriculum_'+roomId,JSON.stringify(d.curriculum));
+    if(status) status.style.color='rgba(91,175,124,.8)';
+    if(status) status.textContent='Plano gerado com '+d.curriculum.totalSessions+' sessões!';
+    // Recarregar detalhes
+    setTimeout(()=>openGroupDetail(groupId),1000);
+  }catch(e){if(status) status.textContent='Erro de conexão.';if(btn) btn.disabled=false;}
+}
+
 async function sendGroupInvite(groupId){
   const email=document.getElementById('invite-email').value.trim();
   const status=document.getElementById('invite-status');
@@ -1561,6 +1652,174 @@ async function sendGroupInvite(groupId){
     // Recarregar detalhes
     setTimeout(()=>openGroupDetail(groupId),1500);
   }catch(e){status.textContent='Erro de conexão.';}
+}
+
+// ===================== SESSÃO AO VIVO =====================
+let _sessionData=null; // {groupId, curriculum, currentSession, bookTitle, bookAuthor, lessonText, qaMessages}
+
+async function openSession(groupId, curriculum, sessionNumber, bookTitle, bookAuthor){
+  _sessionData={groupId, curriculum, currentSession:sessionNumber, bookTitle:bookTitle||'', bookAuthor:bookAuthor||'', lessonText:'', qaMessages:[]};
+  const sess=curriculum.sessions[sessionNumber-1];
+  if(!sess){alert('Sessão não encontrada.');return;}
+
+  document.getElementById('session-title').textContent='🎓 '+sess.title;
+  document.getElementById('session-live-badge').style.display='none';
+  document.getElementById('professor-content').textContent='';
+  document.getElementById('qa-messages').innerHTML='';
+  document.getElementById('session-qa').style.display='none';
+  document.getElementById('qa-input-bar').style.display='none';
+  document.getElementById('btn-start-lesson').style.display='block';
+  document.getElementById('btn-open-qa').style.display='none';
+  document.getElementById('btn-next-session').style.display='none';
+
+  // Progresso
+  var prog=document.getElementById('session-progress');
+  prog.innerHTML=curriculum.sessions.map(function(s,i){
+    var isCurrent=(i+1)===sessionNumber;
+    var isDone=(i+1)<sessionNumber;
+    return '<div style="width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;'+
+      (isCurrent?'background:rgba(201,168,76,.3);border:1px solid rgba(201,168,76,.6);color:var(--gold)':
+       isDone?'background:rgba(91,175,124,.2);border:1px solid rgba(91,175,124,.4);color:rgba(91,175,124,.8)':
+       'background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(240,234,214,.3)')+
+      '" title="'+s.title+'">'+(isDone?'✓':(i+1))+'</div>';
+  }).join('');
+
+  openModal('session');
+}
+
+async function startLesson(){
+  if(!_sessionData) return;
+  var sess=_sessionData.curriculum.sessions[_sessionData.currentSession-1];
+  if(!sess) return;
+
+  document.getElementById('btn-start-lesson').style.display='none';
+  document.getElementById('session-live-badge').style.display='inline-block';
+  document.getElementById('professor-content').innerHTML='<div style="text-align:center;padding:30px;color:rgba(201,168,76,.5);font-style:italic">O professor está preparando a aula...</div>';
+
+  try{
+    var r=await fetch('/api/study-curriculum',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        action:'teach',
+        bookTitle:_sessionData.bookTitle,
+        bookAuthor:_sessionData.bookAuthor,
+        sessionTitle:sess.title,
+        sessionChapters:sess.chapters||'',
+        sessionTopics:sess.topics||[],
+        sessionNumber:_sessionData.currentSession,
+        totalSessions:_sessionData.curriculum.totalSessions
+      })
+    });
+    var d=await r.json();
+    if(!r.ok){
+      document.getElementById('professor-content').textContent='Erro: '+(d.error?.message||JSON.stringify(d));
+      return;
+    }
+    _sessionData.lessonText=d.lesson;
+    // Efeito typewriter
+    typewriterEffect(d.lesson, document.getElementById('professor-content'), function(){
+      document.getElementById('btn-open-qa').style.display='block';
+      if(_sessionData.currentSession<_sessionData.curriculum.sessions.length){
+        document.getElementById('btn-next-session').style.display='block';
+      }
+    });
+  }catch(e){
+    document.getElementById('professor-content').textContent='Erro de conexão. Tente novamente.';
+    document.getElementById('btn-start-lesson').style.display='block';
+  }
+}
+
+function typewriterEffect(text, el, onDone){
+  el.textContent='';
+  var i=0;
+  var speed=15; // ms por caractere
+  function type(){
+    if(i<text.length){
+      el.textContent+=text.charAt(i);
+      i++;
+      // Scroll o board
+      var board=document.getElementById('professor-board');
+      if(board) board.scrollTop=board.scrollHeight;
+      setTimeout(type,speed);
+    } else {
+      if(onDone) onDone();
+    }
+  }
+  type();
+}
+
+function openQA(){
+  document.getElementById('session-qa').style.display='block';
+  document.getElementById('qa-input-bar').style.display='block';
+  document.getElementById('btn-open-qa').style.display='none';
+  // Adicionar mensagem do professor
+  addQAMessage('professor','O professor abriu para perguntas. Fiquem à vontade para perguntar sobre o que estudamos hoje.');
+  document.getElementById('qa-input').focus();
+}
+
+async function askQuestion(){
+  var input=document.getElementById('qa-input');
+  var question=input.value.trim();
+  if(!question) return;
+  input.value='';
+
+  addQAMessage('student',question);
+  addQAMessage('professor','<span style="color:rgba(201,168,76,.5);font-style:italic">Pensando...</span>');
+
+  try{
+    var r=await fetch('/api/study-curriculum',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        action:'answer_question',
+        bookTitle:_sessionData.bookTitle,
+        bookAuthor:_sessionData.bookAuthor,
+        sessionTitle:_sessionData.curriculum.sessions[_sessionData.currentSession-1]?.title||'',
+        question:question,
+        studentName:'Aluno',
+        lessonContext:_sessionData.lessonText
+      })
+    });
+    var d=await r.json();
+    // Remover "Pensando..."
+    var msgs=document.getElementById('qa-messages');
+    if(msgs.lastChild) msgs.removeChild(msgs.lastChild);
+    addQAMessage('professor',d.answer||'Não consegui responder. Tente reformular.');
+  }catch(e){
+    var msgs2=document.getElementById('qa-messages');
+    if(msgs2.lastChild) msgs2.removeChild(msgs2.lastChild);
+    addQAMessage('professor','Erro de conexão. Tente novamente.');
+  }
+}
+
+function addQAMessage(type,text){
+  var msgs=document.getElementById('qa-messages');
+  var div=document.createElement('div');
+  div.style.cssText='margin-bottom:10px;padding:10px 14px;border-radius:12px;font-size:14px;line-height:1.7;animation:fadeup .3s ease';
+  if(type==='professor'){
+    div.style.background='rgba(255,255,255,.06)';
+    div.style.borderLeft='3px solid rgba(201,168,76,.4)';
+    div.innerHTML='<span style="font-family:Cinzel,serif;font-size:8px;letter-spacing:1.5px;color:rgba(201,168,76,.5);display:block;margin-bottom:4px">PROFESSOR</span>'+text;
+  } else {
+    div.style.background='rgba(201,168,76,.08)';
+    div.style.borderLeft='3px solid rgba(91,175,124,.4)';
+    div.innerHTML='<span style="font-family:Cinzel,serif;font-size:8px;letter-spacing:1.5px;color:rgba(91,175,124,.5);display:block;margin-bottom:4px">VOCÊ</span>'+text;
+  }
+  msgs.appendChild(div);
+  var qa=document.getElementById('session-qa');
+  if(qa) qa.scrollTop=qa.scrollHeight;
+}
+
+function nextSession(){
+  if(!_sessionData) return;
+  var next=_sessionData.currentSession+1;
+  if(next>_sessionData.curriculum.sessions.length){
+    alert('Parabéns! Você concluiu todas as sessões deste curso!');
+    return;
+  }
+  openSession(_sessionData.groupId,_sessionData.curriculum,next,_sessionData.bookTitle,_sessionData.bookAuthor);
+}
+
+function endSession(){
+  closeModal('session');
+  _sessionData=null;
 }
 
 // ===================== HOJE =====================
