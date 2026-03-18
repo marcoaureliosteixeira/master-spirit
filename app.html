@@ -703,7 +703,7 @@ if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
 <!-- Help Modal -->
 <div class="modal" id="modal-help">
   <div class="modal-head">
-    <button class="back" onclick="closeModal('help')">‹</button>
+    <button class="back" onclick="closeHelpChat()">‹</button>
     <h2>✦ COMO FUNCIONA</h2>
   </div>
   <div class="modal-inner">
@@ -1193,14 +1193,27 @@ function startSplashMusic(){
     _splashAudio=new Audio('splash-music.mp3');
     _splashAudio.volume=0;
     _splashAudio.loop=true;
-    _splashAudio.play().catch(function(){});
-    var vol=0;
-    var fi=setInterval(function(){
-      vol+=0.015;
-      if(vol>=0.4){vol=0.4;clearInterval(fi);}
-      if(_splashAudio) _splashAudio.volume=vol;
-    },100);
+    var playPromise=_splashAudio.play();
+    if(playPromise!==undefined){
+      playPromise.then(function(){fadeSplashIn();}).catch(function(){
+        // Autoplay bloqueado — toca no primeiro toque
+        document.addEventListener('touchstart',splashMusicRetry,{once:true});
+        document.addEventListener('click',splashMusicRetry,{once:true});
+      });
+    }
   }catch(e){}
+}
+function splashMusicRetry(){
+  if(_splashAudio){_splashAudio.play().then(function(){fadeSplashIn();}).catch(function(){});}
+}
+function fadeSplashIn(){
+  if(!_splashAudio) return;
+  var vol=0;
+  var fi=setInterval(function(){
+    vol+=0.015;
+    if(vol>=0.4){vol=0.4;clearInterval(fi);}
+    if(_splashAudio) _splashAudio.volume=vol;
+  },100);
 }
 function stopSplashMusic(){
   if(!_splashAudio) return;
@@ -1268,6 +1281,8 @@ function backToSplash(){
   var cards=splash.querySelectorAll('#splash-content > div:last-child');
   cards.forEach(function(c){c.style.animation='none';});
   sessionStorage.removeItem('spirit_splash_seen');
+  // Reiniciar música
+  startSplashMusic();
 }
 
 function splashGoMestres(){
@@ -1582,7 +1597,12 @@ function clearMasterChat(id){
 }
 
 function openHelpChat(){
-  openModal('help');
+  var m=document.getElementById('modal-help');
+  if(m){m.style.display='flex';m.classList.add('open');m.style.zIndex='9998';}
+}
+function closeHelpChat(){
+  var m=document.getElementById('modal-help');
+  if(m){m.classList.remove('open');m.style.display='';m.style.zIndex='';}
 }
 
 // ===================== GRUPOS DE ESTUDO =====================
