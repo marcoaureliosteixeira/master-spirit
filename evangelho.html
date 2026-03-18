@@ -254,6 +254,8 @@ function iniciarSessao(){
 
 function avancar(){
   if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
+  // Parar música da prece ao sair da etapa
+  if(fase==='prece1'||fase==='prece2') stopPreceMusic();
   var fases=['config','facilitador','prece1','leitura','comentarios','vibracoes','prece2','fim'];
   var idx=fases.indexOf(fase);
   if(idx<fases.length-1){fase=fases[idx+1];renderFase();}
@@ -288,7 +290,38 @@ function renderLeitura(){
 }
 
 // ── PRECE (IA) ──
+// ── MÚSICA DE PRECE ──
+var _preceAudio=null;
+function startPreceMusic(){
+  stopPreceMusic();
+  _preceAudio=new Audio('splash-music.mp3');
+  _preceAudio.volume=0;
+  _preceAudio.loop=true;
+  _preceAudio.play().catch(function(){});
+  // Fade in suave
+  var vol=0;
+  var fadeIn=setInterval(function(){
+    vol+=0.02;
+    if(vol>=0.5){vol=0.5;clearInterval(fadeIn);}
+    if(_preceAudio) _preceAudio.volume=vol;
+  },100);
+}
+function stopPreceMusic(){
+  if(!_preceAudio) return;
+  // Fade out suave
+  var fadeOut=setInterval(function(){
+    if(!_preceAudio){clearInterval(fadeOut);return;}
+    _preceAudio.volume=Math.max(0,_preceAudio.volume-0.02);
+    if(_preceAudio.volume<=0.01){
+      _preceAudio.pause();_preceAudio.currentTime=0;_preceAudio=null;
+      clearInterval(fadeOut);
+    }
+  },80);
+}
+
 async function gerarPrece(tipo){
+  // Iniciar música de fundo
+  startPreceMusic();
   try{
     var r=await fetch('/api/evangelho-chat',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({action:tipo,facilitador:facilitador,capitulo:trechoAtual.cap,item:trechoAtual.item,participantes:config.participantes,contexto:config.contexto})});
