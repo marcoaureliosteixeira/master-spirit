@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="theme-color" content="#060a16">
+<title>MASTER SPIRIT — Evangelho no Lar</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold2:#E8C97A;--bg:#060a16;--text:#F5EFE0;--fs:18px;--font:'Cormorant Garamond',Georgia,serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:var(--fs);-webkit-tap-highlight-color:transparent}
+#app{display:flex;flex-direction:column;height:100%;max-width:900px;margin:0 auto}
+#hdr{flex-shrink:0;background:rgba(12,18,38,.88);backdrop-filter:blur(16px);border-bottom:1px solid rgba(201,168,76,.12);padding:14px 16px;display:flex;align-items:center;gap:12px;z-index:50}
+.back{background:none;border:none;cursor:pointer;color:rgba(201,168,76,.6);font-size:24px;padding:0}
+#hdr-info{flex:1}
+#hdr-info h1{font-family:'Cinzel',serif;font-size:13px;color:var(--gold);letter-spacing:2px}
+#hdr-info p{font-size:10px;font-style:italic;color:rgba(240,234,214,.35);margin-top:1px}
+#step-badge{font-family:'Cinzel',serif;font-size:8px;letter-spacing:1.5px;color:rgba(201,168,76,.5);background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.25);border-radius:20px;padding:4px 10px;white-space:nowrap}
+#main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:20px 16px 30px}
+#controls{flex-shrink:0;border-top:1px solid rgba(201,168,76,.12);padding:12px 16px;background:rgba(6,10,22,.95);display:flex;gap:10px;align-items:center;justify-content:center}
+.btn-g{background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.4);border-radius:12px;padding:12px 24px;color:var(--gold);font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;cursor:pointer;transition:all .2s;text-transform:uppercase}
+.btn-g:hover{background:rgba(201,168,76,.3)}
+.btn-g:disabled{opacity:.4;cursor:not-allowed}
+.btn-s{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:12px 20px;color:rgba(240,234,214,.5);font-family:'Cinzel',serif;font-size:10px;letter-spacing:1.5px;cursor:pointer;transition:all .2s}
+/* Config */
+.cfg-section{margin-bottom:20px}
+.cfg-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:2.5px;color:rgba(201,168,76,.5);text-transform:uppercase;margin-bottom:8px}
+.cfg-row{display:flex;gap:8px;flex-wrap:wrap}
+.cfg-opt{padding:10px 16px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);cursor:pointer;font-size:14px;color:rgba(240,234,214,.6);transition:all .2s;min-width:48px;text-align:center}
+.cfg-opt:hover{border-color:rgba(201,168,76,.4)}
+.cfg-opt.active{background:rgba(201,168,76,.2);border-color:rgba(201,168,76,.5);color:var(--gold)}
+/* Facilitador */
+.fac-card{text-align:center;padding:24px;background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.15);border-radius:16px;margin-bottom:16px}
+.fac-emoji{font-size:60px;margin-bottom:12px;display:block}
+.fac-name{font-family:'Cinzel',serif;font-size:16px;color:var(--gold);letter-spacing:2px;margin-bottom:4px}
+.fac-desc{font-size:14px;font-style:italic;color:rgba(240,234,214,.45);margin-bottom:8px}
+.fac-style{font-size:11px;color:rgba(201,168,76,.4);font-family:'Cinzel',serif;letter-spacing:1.5px}
+/* Session content */
+.session-text{font-size:var(--fs);line-height:1.85;white-space:pre-wrap;color:var(--text);animation:fadeup .5s ease}
+.ref-text{font-family:'Cinzel',serif;font-size:9px;letter-spacing:2px;color:rgba(201,168,76,.5);margin-top:14px;text-align:right}
+/* Timer */
+.timer{text-align:center;padding:40px 20px}
+.timer-num{font-family:'Cinzel Decorative',serif;font-size:48px;color:var(--gold);letter-spacing:4px;text-shadow:0 0 30px rgba(201,168,76,.3)}
+.timer-label{font-style:italic;font-size:13px;color:rgba(240,234,214,.35);margin-top:8px}
+/* Breathing */
+.breath{width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.15),transparent);margin:20px auto;animation:breathe 6s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:scale(.8);opacity:.4}50%{transform:scale(1.2);opacity:.8}}
+/* Chat Q&A */
+.qa-msg{margin-bottom:10px;padding:10px 14px;border-radius:12px;font-size:15px;line-height:1.7;animation:fadeup .3s ease}
+.qa-prof{background:rgba(255,255,255,.06);border-left:3px solid rgba(201,168,76,.4)}
+.qa-user{background:rgba(201,168,76,.08);border-left:3px solid rgba(91,175,124,.4)}
+.qa-label{font-family:'Cinzel',serif;font-size:8px;letter-spacing:1.5px;color:rgba(201,168,76,.5);display:block;margin-bottom:4px}
+#qa-input-row{display:flex;gap:8px;margin-top:14px}
+#qa-input-row input{flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.22);border-radius:12px;padding:11px 16px;color:var(--text);font-family:var(--font);font-size:15px;font-style:italic;outline:none}
+#qa-input-row button{background:rgba(91,175,124,.15);border:1px solid rgba(91,175,124,.4);border-radius:10px;padding:10px 14px;cursor:pointer;color:rgba(91,175,124,.8);font-size:14px}
+/* Stars */
+#stars{position:fixed;inset:0;pointer-events:none;z-index:0;max-width:900px;margin:0 auto}
+.star{position:absolute;background:white;border-radius:50%;animation:tw var(--d,3s) ease-in-out infinite var(--dl,0s)}
+@keyframes tw{0%,100%{opacity:.05}50%{opacity:.65}}
+@keyframes fadeup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+<div id="stars"></div>
+<div id="app">
+  <div id="hdr">
+    <button class="back" onclick="goBack()">‹</button>
+    <div id="hdr-info">
+      <h1>EVANGELHO NO LAR</h1>
+      <p>O Evangelho Segundo o Espiritismo</p>
+    </div>
+    <span id="step-badge">Configuração</span>
+  </div>
+  <div id="main"></div>
+  <div id="controls"></div>
+</div>
+
+<script>
+// ── FACILITADORES ──
+var FACILITADORES=[
+  {id:'serafina',nome:'Irmã Serafina',descricao:'Antiga missionária espírita, gentil e maternal',estilo:'acolhedor',emoji:'👩‍🦳'},
+  {id:'elias',nome:'Mentor Elias',descricao:'Sábio ancião, profundo conhecedor das escrituras',estilo:'sábio',emoji:'🧔'},
+  {id:'aurora',nome:'Guia Aurora',descricao:'Espírito jovem e luminoso, cheia de esperança',estilo:'animado',emoji:'👩'},
+  {id:'benedito',nome:'Irmão Benedito',descricao:'Humilde e contemplativo, homem de poucas mas profundas palavras',estilo:'contemplativo',emoji:'🧓'},
+  {id:'clara',nome:'Irmã Clara',descricao:'Educadora paciente, especialista em ensinar com amor',estilo:'encorajador',emoji:'👩‍🏫'},
+  {id:'rafael',nome:'Mentor Rafael',descricao:'Médico espiritual, cuida da alma com a mesma dedicação que cuida do corpo',estilo:'compassivo',emoji:'👨‍⚕️'}
+];
+
+// ── PASSAGENS DO EVANGELHO (amostra caps 1-5) ──
+var PASSAGENS=[
+  {cap:1,titulo:'Não vim destruir a lei',itens:[
+    {n:1,texto:'Não penseis que vim destruir a lei ou os profetas; não vim para destruir, mas para cumprir.'},
+    {n:2,texto:'O Cristo não veio destruir a lei mosaica, mas dar-lhe o verdadeiro sentido, desenvolvê-la e completá-la.'},
+    {n:3,texto:'A lei mosaica pode dividir-se em duas partes: a lei de Moisés propriamente dita e a lei de Deus.'}
+  ]},
+  {cap:2,titulo:'Meu reino não é deste mundo',itens:[
+    {n:1,texto:'Respondeu Jesus: O meu reino não é deste mundo; se o meu reino fosse deste mundo, os meus servos teriam combatido.'},
+    {n:2,texto:'A vida futura é a vida normal do espírito; a vida terrestre é transitória e passageira.'},
+    {n:3,texto:'Jesus definiu claramente a diferença entre a vida terrestre e a vida espiritual, indicando que a verdadeira pátria do espírito não é a Terra.'}
+  ]},
+  {cap:3,titulo:'Há muitas moradas na casa de meu Pai',itens:[
+    {n:1,texto:'Na casa de meu Pai há muitas moradas; se assim não fosse, eu vo-lo teria dito, pois vou preparar-vos um lugar.'},
+    {n:2,texto:'A casa do Pai é o Universo. As diferentes moradas são os mundos que circulam no espaço infinito e oferecem aos espíritos errantes estações apropriadas ao seu adiantamento.'},
+    {n:3,texto:'A pluralidade dos mundos habitados é uma das grandes verdades reveladas pelo Espiritismo, confirmando as palavras de Jesus.'}
+  ]},
+  {cap:4,titulo:'Ninguém poderá ver o reino de Deus se não nascer de novo',itens:[
+    {n:1,texto:'Em verdade vos digo: se alguém não nascer de novo, não poderá ver o reino de Deus.'},
+    {n:2,texto:'A reencarnação é o princípio fundamental da doutrina espírita. A alma, criada simples e ignorante, progride através de existências sucessivas.'},
+    {n:3,texto:'Nascer de novo é renascer em outro corpo. A alma já viveu e viverá ainda. Cada existência é um passo a mais na estrada do progresso.'}
+  ]},
+  {cap:5,titulo:'Bem-aventurados os aflitos',itens:[
+    {n:1,texto:'Bem-aventurados os que choram, porque serão consolados.'},
+    {n:2,texto:'As aflições da Terra são provas e expiações. Felizes os que as suportam com paciência, porque delas sairão purificados.'},
+    {n:3,texto:'O sofrimento é ao mesmo tempo a consequência das faltas passadas e a escola onde o espírito aprende e se fortalece.'},
+    {n:4,texto:'Jesus disse: Bem-aventurados os aflitos — não porque o sofrimento seja um bem em si, mas porque é o caminho necessário para a cura da alma.'}
+  ]}
+];
+
+// ── ESTADO ──
+var fase='config'; // config, facilitador, prece1, leitura, comentarios, vibracoes, prece2, fim
+var facilitador=null;
+var config={duracao:20,modo:'sequencial',participantes:'1',contexto:''};
+var trechoAtual={cap:1,item:1,titulo:'',texto:''};
+var timerInterval=null;
+var lessonContext='';
+
+// ── INIT ──
+window.addEventListener('load',function(){
+  // Stars
+  var sf=document.getElementById('stars');
+  for(var i=0;i<80;i++){var d=document.createElement('div');d.className='star';var sz=(Math.random()*2.5+.5).toFixed(1);d.style.cssText='left:'+(Math.random()*100).toFixed(1)+'%;top:'+(Math.random()*100).toFixed(1)+'%;width:'+sz+'px;height:'+sz+'px;--d:'+(Math.random()*4+2).toFixed(1)+'s;--dl:'+(Math.random()*5).toFixed(1)+'s';sf.appendChild(d);}
+  // Load config
+  try{var saved=JSON.parse(localStorage.getItem('spirit_evangelho_config'));if(saved) config=saved;}catch(e){}
+  // Load progress
+  try{var prog=JSON.parse(localStorage.getItem('spirit_evangelho_prog'));if(prog){trechoAtual.cap=prog.cap||1;trechoAtual.item=prog.item||1;}}catch(e){}
+  renderFase();
+});
+
+function goBack(){
+  if(fase==='config') window.location.href='estudos.html';
+  else{fase='config';renderFase();}
+}
+
+function renderFase(){
+  var m=document.getElementById('main');
+  var c=document.getElementById('controls');
+  var badge=document.getElementById('step-badge');
+
+  if(fase==='config'){
+    badge.textContent='Configuração';
+    m.innerHTML=renderConfig();
+    c.innerHTML='<button class="btn-g" onclick="iniciarSessao()">✦ Iniciar Sessão</button>';
+  }
+  else if(fase==='facilitador'){
+    badge.textContent='Facilitador';
+    m.innerHTML=renderFacilitador();
+    c.innerHTML='<button class="btn-s" onclick="sortearFacilitador()">🎲 Outro</button><button class="btn-g" onclick="avancar()">Confirmar</button>';
+  }
+  else if(fase==='prece1'){
+    badge.textContent='1 de 5 · Prece Inicial';
+    m.innerHTML='<div class="session-text" style="text-align:center;padding:20px;color:rgba(201,168,76,.5);font-style:italic">O facilitador está preparando a prece...</div>';
+    c.innerHTML='<button class="btn-g" onclick="avancar()" disabled id="btn-av">Estamos prontos</button>';
+    gerarPrece('prece_inicial');
+  }
+  else if(fase==='leitura'){
+    badge.textContent='2 de 5 · Leitura';
+    selecionarTrecho();
+    m.innerHTML=renderLeitura();
+    c.innerHTML=(config.modo==='aleatorio'?'<button class="btn-s" onclick="selecionarTrecho(true);document.getElementById(\'main\').innerHTML=renderLeitura()">🎲 Outra</button>':'')+'<button class="btn-g" onclick="avancar()">Li a passagem</button>';
+  }
+  else if(fase==='comentarios'){
+    badge.textContent='3 de 5 · Comentários';
+    m.innerHTML='<div class="session-text" style="text-align:center;padding:20px;color:rgba(201,168,76,.5);font-style:italic">O facilitador está preparando os comentários...</div>';
+    c.innerHTML='<button class="btn-g" onclick="avancar()">Encerrar comentários</button>';
+    gerarComentarios();
+  }
+  else if(fase==='vibracoes'){
+    badge.textContent='4 de 5 · Vibrações';
+    var mins=config.duracao<=15?1:config.duracao<=20?2:3;
+    m.innerHTML=renderVibracoes(mins);
+    c.innerHTML='<button class="btn-s" onclick="avancar()">Pular</button>';
+    iniciarTimer(mins*60);
+  }
+  else if(fase==='prece2'){
+    badge.textContent='5 de 5 · Prece Final';
+    m.innerHTML='<div class="session-text" style="text-align:center;padding:20px;color:rgba(201,168,76,.5);font-style:italic">O facilitador está preparando a prece de encerramento...</div>';
+    c.innerHTML='<button class="btn-g" onclick="avancar()" disabled id="btn-av">Concluir sessão</button>';
+    gerarPrece('prece_final');
+  }
+  else if(fase==='fim'){
+    badge.textContent='Concluído';
+    m.innerHTML=renderFim();
+    c.innerHTML='<button class="btn-s" onclick="window.location.href=\'estudos.html\'">Voltar</button><button class="btn-g" onclick="fase=\'config\';renderFase()">Nova sessão</button>';
+    salvarProgresso();
+  }
+}
+
+// ── CONFIG ──
+function renderConfig(){
+  var progText='';
+  if(config.modo==='sequencial') progText='<p style="font-size:12px;color:rgba(201,168,76,.4);margin-top:6px">Progresso: Cap. '+trechoAtual.cap+' · Item '+trechoAtual.item+'</p>';
+  return '<div style="animation:fadeup .4s ease">'+
+    '<div class="cfg-section"><p class="cfg-label">Duração da Sessão</p><div class="cfg-row">'+
+    '<div class="cfg-opt'+(config.duracao===15?' active':'')+'" onclick="setConfig(\'duracao\',15)">15 min</div>'+
+    '<div class="cfg-opt'+(config.duracao===20?' active':'')+'" onclick="setConfig(\'duracao\',20)">20 min</div>'+
+    '<div class="cfg-opt'+(config.duracao===30?' active':'')+'" onclick="setConfig(\'duracao\',30)">30 min</div>'+
+    '</div></div>'+
+    '<div class="cfg-section"><p class="cfg-label">Modo de Leitura</p><div class="cfg-row">'+
+    '<div class="cfg-opt'+(config.modo==='sequencial'?' active':'')+'" onclick="setConfig(\'modo\',\'sequencial\')" style="flex:1">🔄 Sequencial</div>'+
+    '<div class="cfg-opt'+(config.modo==='aleatorio'?' active':'')+'" onclick="setConfig(\'modo\',\'aleatorio\')" style="flex:1">🎲 Aleatório</div>'+
+    '</div>'+progText+'</div>'+
+    '<div class="cfg-section"><p class="cfg-label">Participantes</p><div class="cfg-row">'+
+    '<div class="cfg-opt'+(config.participantes==='1'?' active':'')+'" onclick="setConfig(\'participantes\',\'1\')">Sozinho</div>'+
+    '<div class="cfg-opt'+(config.participantes==='2-4'?' active':'')+'" onclick="setConfig(\'participantes\',\'2-4\')">2-4</div>'+
+    '<div class="cfg-opt'+(config.participantes==='5+'?' active':'')+'" onclick="setConfig(\'participantes\',\'5+\')">5+</div>'+
+    '</div></div>'+
+    '<div class="cfg-section"><p class="cfg-label">Contexto Familiar (opcional)</p>'+
+    '<input type="text" value="'+(config.contexto||'')+'" maxlength="200" placeholder="Ex: família com crianças pequenas..." onchange="setConfig(\'contexto\',this.value)" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.22);border-radius:12px;padding:11px 16px;color:var(--text);font-family:var(--font);font-size:15px;font-style:italic;outline:none">'+
+    '</div></div>';
+}
+
+function setConfig(k,v){
+  config[k]=v;
+  localStorage.setItem('spirit_evangelho_config',JSON.stringify(config));
+  document.getElementById('main').innerHTML=renderConfig();
+}
+
+// ── FACILITADOR ──
+function sortearFacilitador(){
+  var idx=Math.floor(Math.random()*FACILITADORES.length);
+  facilitador=FACILITADORES[idx];
+  document.getElementById('main').innerHTML=renderFacilitador();
+}
+
+function renderFacilitador(){
+  if(!facilitador) sortearFacilitador();
+  return '<div class="fac-card"><span class="fac-emoji">'+facilitador.emoji+'</span>'+
+    '<div class="fac-name">'+facilitador.nome+'</div>'+
+    '<div class="fac-desc">'+facilitador.descricao+'</div>'+
+    '<div class="fac-style">Estilo: '+facilitador.estilo+'</div></div>'+
+    '<p style="text-align:center;font-style:italic;font-size:13px;color:rgba(240,234,214,.3)">Este será o facilitador da sua sessão de hoje</p>';
+}
+
+// ── NAVEGAÇÃO ──
+function iniciarSessao(){
+  sortearFacilitador();
+  fase='facilitador';
+  renderFase();
+}
+
+function avancar(){
+  if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
+  var fases=['config','facilitador','prece1','leitura','comentarios','vibracoes','prece2','fim'];
+  var idx=fases.indexOf(fase);
+  if(idx<fases.length-1){fase=fases[idx+1];renderFase();}
+}
+
+// ── SELEÇÃO DE TRECHO ──
+function selecionarTrecho(random){
+  if(config.modo==='aleatorio'||random){
+    var cap=PASSAGENS[Math.floor(Math.random()*PASSAGENS.length)];
+    var item=cap.itens[Math.floor(Math.random()*cap.itens.length)];
+    trechoAtual={cap:cap.cap,item:item.n,titulo:cap.titulo,texto:item.texto};
+  } else {
+    // Sequencial
+    var cap=PASSAGENS.find(function(p){return p.cap===trechoAtual.cap;});
+    if(!cap){cap=PASSAGENS[0];trechoAtual.cap=cap.cap;trechoAtual.item=1;}
+    var item=cap.itens.find(function(i){return i.n===trechoAtual.item;});
+    if(!item){item=cap.itens[0];trechoAtual.item=item.n;}
+    trechoAtual.titulo=cap.titulo;
+    trechoAtual.texto=item.texto;
+  }
+}
+
+function renderLeitura(){
+  return '<div style="animation:fadeup .5s ease">'+
+    '<p style="font-family:Cinzel,serif;font-size:11px;letter-spacing:2px;color:rgba(201,168,76,.6);text-align:center;margin-bottom:6px">CAPÍTULO '+trechoAtual.cap+'</p>'+
+    '<p style="font-family:Cinzel,serif;font-size:15px;color:var(--gold);text-align:center;margin-bottom:16px;letter-spacing:1px">'+trechoAtual.titulo+'</p>'+
+    '<div style="background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.15);border-radius:14px;padding:20px;position:relative">'+
+    '<div style="position:absolute;top:-8px;left:14px;font-size:60px;color:rgba(201,168,76,.06);font-family:Georgia;pointer-events:none">"</div>'+
+    '<p style="font-size:var(--fs);line-height:1.85;font-style:italic;color:var(--text)">"'+trechoAtual.texto+'"</p>'+
+    '<p style="font-family:Cinzel,serif;font-size:9px;letter-spacing:2px;color:rgba(201,168,76,.4);text-align:right;margin-top:12px">Item '+trechoAtual.item+' — Allan Kardec</p>'+
+    '</div></div>';
+}
+
+// ── PRECE (IA) ──
+async function gerarPrece(tipo){
+  try{
+    var r=await fetch('/api/evangelho-chat',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:tipo,facilitador:facilitador,capitulo:trechoAtual.cap,item:trechoAtual.item,participantes:config.participantes,contexto:config.contexto})});
+    var d=await r.json();
+    var txt=d.text||'Não foi possível gerar a prece.';
+    document.getElementById('main').innerHTML='<div class="session-text" style="padding:10px">'+txt+'</div>'+
+      (tipo==='prece_final'?'<div style="margin-top:20px;padding:16px;background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.15);border-radius:14px"><p style="font-family:Cinzel,serif;font-size:10px;letter-spacing:2px;color:rgba(201,168,76,.5);text-align:center;margin-bottom:10px">PAI NOSSO</p><p style="font-size:16px;line-height:1.85;text-align:center;font-style:italic;color:rgba(240,234,214,.8)">Pai nosso, que estais nos céus, santificado seja o Vosso nome. Venha a nós o Vosso reino. Seja feita a Vossa vontade, assim na Terra como no Céu. O pão nosso de cada dia nos dai hoje. Perdoai as nossas ofensas, assim como nós perdoamos a quem nos tem ofendido. E não nos deixeis cair em tentação, mas livrai-nos do mal. Amém.</p></div>':'');
+    var btn=document.getElementById('btn-av');if(btn) btn.disabled=false;
+  }catch(e){
+    document.getElementById('main').innerHTML='<div class="session-text" style="color:rgba(232,122,122,.7);text-align:center">Erro de conexão. Tente novamente.</div>';
+  }
+}
+
+// ── COMENTÁRIOS (IA + Q&A) ──
+async function gerarComentarios(){
+  try{
+    var r=await fetch('/api/evangelho-chat',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'comentarios',facilitador:facilitador,trecho:trechoAtual.texto,capitulo:trechoAtual.cap,item:trechoAtual.item,participantes:config.participantes,contexto:config.contexto})});
+    var d=await r.json();
+    lessonContext=d.text||'';
+    document.getElementById('main').innerHTML='<div id="qa-area">'+
+      '<div class="qa-msg qa-prof"><span class="qa-label">'+facilitador.nome+'</span>'+lessonContext+'</div>'+
+      '<div id="qa-list"></div>'+
+      '<div id="qa-input-row"><input id="qa-inp" type="text" placeholder="Compartilhe sua reflexão..." onkeydown="if(event.key===\'Enter\')enviarReflexao()"><button onclick="enviarReflexao()">↑</button></div>'+
+      '</div>';
+  }catch(e){
+    document.getElementById('main').innerHTML='<div class="session-text" style="color:rgba(232,122,122,.7);text-align:center">Erro de conexão.</div>';
+  }
+}
+
+async function enviarReflexao(){
+  var inp=document.getElementById('qa-inp');
+  var txt=inp.value.trim();if(!txt) return;
+  inp.value='';
+  var list=document.getElementById('qa-list');
+  list.innerHTML+='<div class="qa-msg qa-user"><span class="qa-label">Você</span>'+txt+'</div>';
+  list.innerHTML+='<div class="qa-msg qa-prof" id="qa-loading"><span class="qa-label">'+facilitador.nome+'</span><em style="color:rgba(201,168,76,.4)">Pensando...</em></div>';
+  try{
+    var r=await fetch('/api/evangelho-chat',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'responder_reflexao',facilitador:facilitador,trecho:trechoAtual.texto,capitulo:trechoAtual.cap,item:trechoAtual.item,reflexao_usuario:txt,participantes:config.participantes,contexto:config.contexto})});
+    var d=await r.json();
+    var el=document.getElementById('qa-loading');if(el) el.outerHTML='<div class="qa-msg qa-prof"><span class="qa-label">'+facilitador.nome+'</span>'+(d.text||'...')+'</div>';
+  }catch(e){
+    var el2=document.getElementById('qa-loading');if(el2) el2.outerHTML='<div class="qa-msg qa-prof"><span class="qa-label">'+facilitador.nome+'</span>Erro de conexão.</div>';
+  }
+}
+
+// ── VIBRAÇÕES ──
+function renderVibracoes(mins){
+  return '<div class="timer" style="animation:fadeup .5s ease">'+
+    '<div class="breath"></div>'+
+    '<p style="font-family:Cinzel,serif;font-size:10px;letter-spacing:3px;color:rgba(201,168,76,.4);margin-bottom:16px">MOMENTO DE SILÊNCIO E VIBRAÇÕES</p>'+
+    '<div class="timer-num" id="timer-display">'+String(mins).padStart(2,'0')+':00</div>'+
+    '<p class="timer-label">Feche os olhos. Respire. Envie boas vibrações.</p>'+
+    '</div>';
+}
+
+function iniciarTimer(secs){
+  var remaining=secs;
+  updateTimerDisplay(remaining);
+  timerInterval=setInterval(function(){
+    remaining--;
+    if(remaining<=0){clearInterval(timerInterval);timerInterval=null;avancar();return;}
+    updateTimerDisplay(remaining);
+  },1000);
+}
+
+function updateTimerDisplay(s){
+  var m=Math.floor(s/60);var sec=s%60;
+  var el=document.getElementById('timer-display');
+  if(el) el.textContent=String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');
+}
+
+// ── FIM ──
+function renderFim(){
+  return '<div style="text-align:center;padding:20px;animation:fadeup .5s ease">'+
+    '<span style="font-size:48px;display:block;margin-bottom:14px">🕊️</span>'+
+    '<p style="font-family:Cinzel,serif;font-size:14px;color:var(--gold);letter-spacing:2px;margin-bottom:8px">Sessão Concluída</p>'+
+    '<p style="font-style:italic;font-size:14px;color:rgba(240,234,214,.5);margin-bottom:20px">Que a paz do Senhor esteja convosco.</p>'+
+    '<div style="background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.15);border-radius:12px;padding:14px;text-align:left">'+
+    '<p style="font-size:12px;color:rgba(240,234,214,.5)"><strong style="color:var(--gold)">Facilitador:</strong> '+facilitador.nome+'</p>'+
+    '<p style="font-size:12px;color:rgba(240,234,214,.5);margin-top:4px"><strong style="color:var(--gold)">Leitura:</strong> Cap. '+trechoAtual.cap+' — '+trechoAtual.titulo+' (Item '+trechoAtual.item+')</p>'+
+    '<p style="font-size:12px;color:rgba(240,234,214,.5);margin-top:4px"><strong style="color:var(--gold)">Data:</strong> '+new Date().toLocaleDateString('pt-BR')+'</p>'+
+    '</div></div>';
+}
+
+function salvarProgresso(){
+  // Avançar progresso sequencial
+  var cap=PASSAGENS.find(function(p){return p.cap===trechoAtual.cap;});
+  if(cap){
+    var nextItem=trechoAtual.item+1;
+    if(nextItem>cap.itens.length){
+      var capIdx=PASSAGENS.indexOf(cap);
+      if(capIdx<PASSAGENS.length-1){trechoAtual.cap=PASSAGENS[capIdx+1].cap;trechoAtual.item=1;}
+      else{trechoAtual.cap=1;trechoAtual.item=1;} // voltou ao início
+    } else {trechoAtual.item=nextItem;}
+  }
+  localStorage.setItem('spirit_evangelho_prog',JSON.stringify({cap:trechoAtual.cap,item:trechoAtual.item}));
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" onload="checkAuth()"></script>
+<script>
+function checkAuth(){
+  try{
+    var sb=window.supabase.createClient('https://jwdvbtujzvqvktzxycwj.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp3ZHZidHVqenZxdmt0enh5Y3dqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1Mjc2NDksImV4cCI6MjA4OTEwMzY0OX0.ZfkRgdYcTjYF_E4qr1_1CZMtSiCvKLeUsoRSLoO16Mw');
+    sb.auth.getSession().then(function(r){if(!r.data||!r.data.session) window.location.href='index.html';});
+  }catch(e){}
+}
+</script>
+</body>
+</html>
