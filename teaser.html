@@ -150,12 +150,19 @@ function playSceneVoice(sceneIdx){
   _voiceAudio=new Audio(file);
   _voiceAudio.volume=1.0;
   if(audio) audio.volume=0.25;
-  _voiceAudio.onended=function(){_voiceAudio=null;if(audio&&!muted) audio.volume=0.85;};
+  _voiceAudio.onended=function(){
+    _voiceAudio=null;
+    if(audio&&!muted) audio.volume=0.85;
+    // Voz terminou → avançar cena automaticamente (com 1s de pausa)
+    if(autoTimer){clearTimeout(autoTimer);autoTimer=null;}
+    autoTimer=setTimeout(function(){goToScene(currentScene+1);},1000);
+  };
   _voiceAudio.onerror=function(){_voiceAudio=null;if(audio&&!muted) audio.volume=0.85;};
   _voiceAudio.play().catch(function(){
-    // Bloqueado — guardar pra tentar após interação
     window._pendingVoice=_voiceAudio;
   });
+  // Cancelar o timer fixo — a voz controla quando avança
+  if(autoTimer){clearTimeout(autoTimer);autoTimer=null;}
 }
 
 function stopSceneVoice(){
