@@ -141,55 +141,19 @@ body{font-family:'Cormorant Garamond',Georgia,serif;-webkit-tap-highlight-color:
 
 <script>
 // ── CONFIG ──
-// Mapeamento: cena → arquivo de voz (null = sem voz)
-var SCENE_VOICES={
-  0:'teaser-voice-01.mp3',
-  1:'teaser-voice-02.mp3',
-  2:'teaser-voice-05.mp3',
-  3:'teaser-voice-06.mp3',
-  4:'teaser-voice-07.mp3',
-  5:'teaser-voice-08.mp3',
-  6:null
-};
-// Voz encadeada após cena 0: Jesus fala depois do locutor
-var SCENE_VOICE_CHAIN={
-  0:['teaser-voice-01b.mp3'],
-  1:['teaser-voice-03.mp3','teaser-voice-04.mp3'],
-  5:['teaser-voice-09.mp3']
-};
-// voice-03 = "Com Kardec..." toca logo após voice-02 na cena 1
-// voice-04 = "Conhecer a Verdade..." toca logo após voice-03 na cena 1
+// 1 voz = 1 cena (teaser-voice-00.mp3 a teaser-voice-06.mp3)
 var _voiceAudio=null;
 
 function playSceneVoice(sceneIdx){
   stopSceneVoice();
-  var file=SCENE_VOICES[sceneIdx];
-  if(!file||muted) return;
+  var file='teaser-voice-'+String(sceneIdx).padStart(2,'0')+'.mp3';
+  if(muted) return;
   _voiceAudio=new Audio(file);
   _voiceAudio.volume=1.0;
   if(audio) audio.volume=0.25;
-  _voiceAudio.onended=function(){
-    _voiceAudio=null;
-    // Encadear vozes adicionais desta cena
-    var chain=SCENE_VOICE_CHAIN[sceneIdx];
-    if(chain&&chain.length>0){
-      playVoiceChain(chain,0);
-    } else {
-      if(audio&&!muted) audio.volume=0.85;
-    }
-  };
+  _voiceAudio.onended=function(){_voiceAudio=null;if(audio&&!muted) audio.volume=0.85;};
   _voiceAudio.onerror=function(){_voiceAudio=null;if(audio&&!muted) audio.volume=0.85;};
   _voiceAudio.play().catch(function(){});
-}
-
-function playVoiceChain(files,idx){
-  if(muted||idx>=files.length){if(audio&&!muted) audio.volume=0.85;_voiceAudio=null;return;}
-  _voiceAudio=new Audio(files[idx]);
-  _voiceAudio.volume=1.0;
-  if(audio) audio.volume=0.25;
-  _voiceAudio.onended=function(){playVoiceChain(files,idx+1);};
-  _voiceAudio.onerror=function(){playVoiceChain(files,idx+1);};
-  _voiceAudio.play().catch(function(){playVoiceChain(files,idx+1);});
 }
 
 function stopSceneVoice(){
@@ -198,12 +162,12 @@ function stopSceneVoice(){
 }
 
 var SCENES=[
-  {id:'scene-0',duration:10000,onEnter:enterScene0},
-  {id:'scene-1',duration:12000,onEnter:enterScene1},
-  {id:'scene-2',duration:10000,onEnter:enterScene2},
-  {id:'scene-3',duration:12000,onEnter:enterScene3},
-  {id:'scene-4',duration:9000,onEnter:null},
-  {id:'scene-5',duration:10000,onEnter:enterScene5},
+  {id:'scene-0',duration:28000,onEnter:enterScene0},
+  {id:'scene-1',duration:17000,onEnter:enterScene1},
+  {id:'scene-2',duration:13000,onEnter:enterScene2},
+  {id:'scene-3',duration:16000,onEnter:enterScene3},
+  {id:'scene-4',duration:14000,onEnter:null},
+  {id:'scene-5',duration:11000,onEnter:enterScene5},
   {id:'scene-6',duration:999999,onEnter:null}
 ];
 var currentScene=0;
@@ -393,20 +357,25 @@ function initAudio(){
   audio.volume=0.85;
   audio.loop=true;
   // Tenta autoplay imediatamente
-  var playPromise=audio.play();
-  if(playPromise!==undefined){
-    playPromise.catch(function(){
-      // Autoplay bloqueado — toca no primeiro toque
-      document.addEventListener('touchstart',forcePlay,{once:true});
-      document.addEventListener('click',forcePlay,{once:true});
+  var p=audio.play();
+  if(p!==undefined){
+    p.then(function(){
+      document.getElementById('mute-btn').textContent='⏹';
+    }).catch(function(){
+      // Autoplay bloqueado — forçar no primeiro toque/clique
+      document.addEventListener('touchstart',forcePlay);
+      document.addEventListener('click',forcePlay);
     });
   }
 }
 function forcePlay(){
   if(audio&&!muted){
-    audio.play().catch(function(){});
-    document.getElementById('mute-btn').textContent='⏹';
+    audio.play().then(function(){
+      document.getElementById('mute-btn').textContent='⏹';
+    }).catch(function(){});
   }
+  document.removeEventListener('touchstart',forcePlay);
+  document.removeEventListener('click',forcePlay);
 }
 
 function toggleMute(){
