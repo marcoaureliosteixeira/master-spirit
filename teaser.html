@@ -105,17 +105,17 @@ body{font-family:'Cormorant Garamond',Georgia,serif;-webkit-tap-highlight-color:
 
 <div id="dots"></div>
 <div id="skip-hint">toque para avançar</div>
-<button id="mute-btn" onclick="toggleMute()">🔊</button>
+<button id="mute-btn" onclick="toggleMute()">⏸</button>
 
 <script>
 // ── CONFIG ──
 var SCENES=[
-  {id:'scene-0',duration:4000,onEnter:null},
-  {id:'scene-1',duration:6000,onEnter:enterScene1},
-  {id:'scene-2',duration:6000,onEnter:enterScene2},
-  {id:'scene-3',duration:7000,onEnter:enterScene3},
-  {id:'scene-4',duration:5000,onEnter:null},
-  {id:'scene-5',duration:6000,onEnter:enterScene5},
+  {id:'scene-0',duration:5000,onEnter:null},
+  {id:'scene-1',duration:8000,onEnter:enterScene1},
+  {id:'scene-2',duration:8000,onEnter:enterScene2},
+  {id:'scene-3',duration:9000,onEnter:enterScene3},
+  {id:'scene-4',duration:7000,onEnter:null},
+  {id:'scene-5',duration:8000,onEnter:enterScene5},
   {id:'scene-6',duration:999999,onEnter:null}
 ];
 var currentScene=0;
@@ -259,15 +259,21 @@ function wordByWord(elId,text,delay){
   var el=document.getElementById(elId);
   if(!el)return;
   el.innerHTML='';
-  var words=text.split(/(\s+)/);
+  var lines=text.split('\n');
+  var allWords=[];
+  lines.forEach(function(line,li){
+    var words=line.trim().split(/\s+/);
+    words.forEach(function(w){if(w) allWords.push(w);});
+    if(li<lines.length-1) allWords.push('__BR__');
+  });
   var i=0;
   function next(){
-    if(i<words.length){
-      if(words[i]==='\n'){el.appendChild(document.createElement('br'));}
+    if(i<allWords.length){
+      if(allWords[i]==='__BR__'){el.appendChild(document.createElement('br'));}
       else{
         var span=document.createElement('span');
         span.className='word';
-        span.textContent=words[i];
+        span.textContent=allWords[i]+' ';
         span.style.animationDelay='0s';
         el.appendChild(span);
       }
@@ -293,7 +299,7 @@ function initAudio(){
 
 function toggleMute(){
   muted=!muted;
-  document.getElementById('mute-btn').textContent=muted?'🔇':'🔊';
+  document.getElementById('mute-btn').textContent=muted?'▶':'⏸';
   if(audio){
     if(muted) audio.pause();
     else audio.play().catch(function(){});
