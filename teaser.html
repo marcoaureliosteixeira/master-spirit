@@ -246,10 +246,12 @@ function goToScene(n){
   }
   // Hide skip hint after first interaction
   document.getElementById('skip-hint').style.opacity='0';
+  // Parar voz da cena anterior imediatamente
+  stopSceneVoice();
   // onEnter callback
   if(SCENES[n].onEnter) SCENES[n].onEnter();
-  // Narração da cena
-  setTimeout(function(){playSceneVoice(n);},800);
+  // Narração da cena (delay curto só pra transição visual)
+  setTimeout(function(){playSceneVoice(n);},300);
   // Auto advance
   if(dur<999999){
     autoTimer=setTimeout(function(){goToScene(n+1);},dur);
