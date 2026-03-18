@@ -373,9 +373,9 @@ if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
         <img src="avatar-jesus.png" onerror="this.src='master-spirit-avatar.png'" alt="Mestres">
         <span>Mestres</span>
       </div>
-      <div class="splash-entry-card" onclick="splashGoStudy()">
-        <img src="shelf-books.png" onerror="this.onerror=null;this.style.display='none';this.parentElement.querySelector('span').style.paddingTop='40px'" alt="Estudar">
-        <span>Salas de Estudo</span>
+      <div class="splash-entry-card" onclick="splashGoEstudos()">
+        <img src="estudos-espiritas.png" onerror="this.src='shelf-books.png'" alt="Estudos Espíritas">
+        <span>Estudos Espíritas</span>
       </div>
     </div>
   </div>
@@ -1240,6 +1240,11 @@ function splashGoStudy(){
   setTimeout(()=>goTab('study'),600);
 }
 
+function splashGoEstudos(){
+  enterApp();
+  setTimeout(()=>goTab('estudos'),600);
+}
+
 function splashEnterMaster(id){
   enterApp();
   setTimeout(()=>openMasterChat(id),600);
@@ -1332,9 +1337,92 @@ function goTab(t){
 function render(){
   const c=document.getElementById('content');
   if(tab==='mestres') c.innerHTML=renderMestres();
+  else if(tab==='estudos') c.innerHTML=renderEstudos();
   else if(tab==='study') c.innerHTML=renderStudy();
+  else if(tab==='evangelho') c.innerHTML=renderEvangelhoHome();
   else if(tab==='master-chat') c.innerHTML=renderMasterChat();
   else c.innerHTML=renderMestres();
+}
+
+// ===================== ESTUDOS ESPÍRITAS (hub) =====================
+function renderEstudos(){
+  return `<div class="fu">
+    <div style="display:flex;align-items:center;gap:10px;padding:14px 14px 0">
+      <button onclick="backToSplash()" style="background:none;border:none;cursor:pointer;color:rgba(201,168,76,.6);font-size:22px;padding:0">‹</button>
+      <p class="master-section-title" style="margin:0;flex:1">Estudos Espíritas</p>
+    </div>
+    <p style="text-align:center;font-style:italic;font-size:13px;color:rgba(240,234,214,.3);padding:4px 14px 8px">Escolha como deseja estudar</p>
+    <div class="home-grid" style="max-width:500px">
+      <div class="home-card" onclick="goTab('study')">
+        <img class="home-card-img" src="shelf-books.png" onerror="this.style.background='rgba(201,168,76,.08)'" alt="Salas de Estudo">
+        <div class="home-card-body">
+          <div class="home-card-title">Salas de Estudo</div>
+          <div class="home-card-desc">Estude obras espirituais com tutor IA e grupos</div>
+        </div>
+      </div>
+      <div class="home-card" onclick="goTab('evangelho')">
+        <img class="home-card-img" src="evangelho-lar.png" onerror="this.style.background='rgba(201,168,76,.08)'" alt="Evangelho no Lar">
+        <div class="home-card-body">
+          <div class="home-card-title">Evangelho no Lar</div>
+          <div class="home-card-desc">Sessão guiada com facilitador IA</div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ===================== EVANGELHO NO LAR (home) =====================
+function renderEvangelhoHome(){
+  return `<div class="fu">
+    <div style="display:flex;align-items:center;gap:10px;padding:14px 14px 0">
+      <button onclick="goTab('estudos')" style="background:none;border:none;cursor:pointer;color:rgba(201,168,76,.6);font-size:22px;padding:0">‹</button>
+      <p class="master-section-title" style="margin:0;flex:1">Evangelho no Lar</p>
+    </div>
+    <div style="padding:18px 14px;text-align:center">
+      <img src="evangelho-lar.png" onerror="this.style.display='none'" style="width:120px;height:120px;border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.3);box-shadow:0 0 25px rgba(201,168,76,.2);margin-bottom:16px">
+      <p style="font-family:'Cinzel',serif;font-size:14px;color:var(--gold);letter-spacing:2px;margin-bottom:6px">O Evangelho Segundo o Espiritismo</p>
+      <p style="font-style:italic;font-size:13px;color:rgba(240,234,214,.4);line-height:1.6;margin-bottom:24px">Sessão guiada de estudo em família com facilitador espiritual IA.<br>15 a 30 minutos de prece, leitura, reflexão e vibrações.</p>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:360px;margin:0 auto 24px">
+        <div style="background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.15);border-radius:10px;padding:12px 8px;text-align:center">
+          <p style="font-size:18px;margin-bottom:4px">📖</p>
+          <p style="font-size:10px;color:rgba(240,234,214,.5)">28 capítulos</p>
+        </div>
+        <div style="background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.15);border-radius:10px;padding:12px 8px;text-align:center">
+          <p style="font-size:18px;margin-bottom:4px">🕯️</p>
+          <p style="font-size:10px;color:rgba(240,234,214,.5)">5 etapas</p>
+        </div>
+        <div style="background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.15);border-radius:10px;padding:12px 8px;text-align:center">
+          <p style="font-size:18px;margin-bottom:4px">⏱️</p>
+          <p style="font-size:10px;color:rgba(240,234,214,.5)">15-30 min</p>
+        </div>
+      </div>
+      <p style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:2px;color:rgba(201,168,76,.4);margin-bottom:12px">COMO FUNCIONA</p>
+      <div style="text-align:left;max-width:360px;margin:0 auto 24px">
+        <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px">
+          <span style="width:24px;height:24px;border-radius:50%;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.3);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--gold);flex-shrink:0">1</span>
+          <p style="font-size:13px;color:rgba(240,234,214,.6)"><strong style="color:var(--gold)">Prece Inicial</strong> — Abertura com oração espontânea</p>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px">
+          <span style="width:24px;height:24px;border-radius:50%;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.3);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--gold);flex-shrink:0">2</span>
+          <p style="font-size:13px;color:rgba(240,234,214,.6)"><strong style="color:var(--gold)">Leitura</strong> — Trecho do Evangelho de Kardec</p>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px">
+          <span style="width:24px;height:24px;border-radius:50%;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.3);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--gold);flex-shrink:0">3</span>
+          <p style="font-size:13px;color:rgba(240,234,214,.6)"><strong style="color:var(--gold)">Comentários</strong> — Reflexão guiada pelo facilitador IA</p>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px">
+          <span style="width:24px;height:24px;border-radius:50%;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.3);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--gold);flex-shrink:0">4</span>
+          <p style="font-size:13px;color:rgba(240,234,214,.6)"><strong style="color:var(--gold)">Vibrações</strong> — Momento de silêncio e meditação</p>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px">
+          <span style="width:24px;height:24px;border-radius:50%;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.3);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--gold);flex-shrink:0">5</span>
+          <p style="font-size:13px;color:rgba(240,234,214,.6)"><strong style="color:var(--gold)">Prece Final</strong> — Encerramento + Pai Nosso</p>
+        </div>
+      </div>
+      <button onclick="alert('Em breve! Estamos preparando esta experiência para você.')" class="btn-gold" style="width:auto;padding:14px 36px;font-size:11px">✦ Iniciar Sessão</button>
+      <p style="font-size:10px;font-style:italic;color:rgba(240,234,214,.25);margin-top:12px">Em breve: facilitadores com voz, leitura sequencial e histórico de sessões</p>
+    </div>
+  </div>`;
 }
 
 // ===================== MESTRES GRID =====================
@@ -2090,7 +2178,7 @@ function renderStudy(){
   <div style="position:sticky;top:0;z-index:30;background:rgba(6,10,22,.97);backdrop-filter:blur(10px);border-bottom:1px solid rgba(201,168,76,.1)">
     <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px 8px">
       <div style="display:flex;align-items:center;gap:10px">
-        <button onclick="backToSplash()" style="background:none;border:none;cursor:pointer;color:rgba(201,168,76,.6);font-size:22px;padding:0">‹</button>
+        <button onclick="goTab('estudos')" style="background:none;border:none;cursor:pointer;color:rgba(201,168,76,.6);font-size:22px;padding:0">‹</button>
         <p style="font-family:'Cinzel',serif;font-size:11.5px;letter-spacing:2.5px;color:var(--gold)">📚 SALAS DE ESTUDO</p>
       </div>
     </div>
