@@ -84,12 +84,24 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:va
 <div id="stars"></div>
 <div id="page">
   <div id="hdr">
-    <button class="back" onclick="goBack()">‹</button>
+    <button class="back" onclick="goBack()" title="Voltar">‹</button>
     <img src="shelf-books.png" style="width:44px;height:44px;border-radius:10px;object-fit:cover;flex-shrink:0" alt="" onerror="this.style.display='none'">
-    <div>
+    <div style="flex:1">
       <h1>SALAS DE ESTUDO</h1>
       <p>crie sua sala de estudo personalizada</p>
     </div>
+    <button onclick="toggleNav()" style="background:none;border:1px solid var(--card-border);border-radius:10px;padding:8px 10px;cursor:pointer;font-size:14px;color:var(--gold)" title="Menu">☰</button>
+  </div>
+  <!-- Nav dropdown -->
+  <div id="nav-menu" style="display:none;position:sticky;top:60px;z-index:49;background:var(--card-bg);border-bottom:1px solid var(--card-border);padding:10px 18px;box-shadow:0 4px 12px rgba(0,0,0,.08)">
+    <a href="app.html" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--soft);text-decoration:none;color:var(--text)">
+      <span style="font-size:18px">🕊️</span><span style="font-size:15px">Mestres Espirituais</span></a>
+    <a href="salas.html" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--soft);text-decoration:none;color:var(--gold);font-weight:600">
+      <span style="font-size:18px">📚</span><span style="font-size:15px">Salas de Estudo</span></a>
+    <a href="evangelho.html" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--soft);text-decoration:none;color:var(--text)">
+      <span style="font-size:18px">🕯️</span><span style="font-size:15px">Evangelho no Lar</span></a>
+    <a href="app.html" style="display:flex;align-items:center;gap:10px;padding:10px 0;text-decoration:none;color:#8A7D6B">
+      <span style="font-size:18px">🏠</span><span style="font-size:15px">Início (Splash)</span></a>
   </div>
   <div id="main">
     <!-- STEP 1: Nome e Objetivo -->
@@ -263,11 +275,16 @@ window.addEventListener('load',function(){
   renderFacilitators();
 });
 
+function toggleNav(){
+  var m=document.getElementById('nav-menu');
+  m.style.display=m.style.display==='none'?'block':'none';
+}
+
 function goBack(){
   var active=document.querySelector('.step.active');
   var num=parseInt(active.id.split('-')[1]);
   if(num>1) nextStep(num-1);
-  else window.location.href='app.html';
+  else toggleNav();
 }
 
 function nextStep(n){

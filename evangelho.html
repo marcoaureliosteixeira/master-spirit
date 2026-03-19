@@ -68,12 +68,23 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:va
 <div id="stars"></div>
 <div id="app">
   <div id="hdr">
-    <button class="back" onclick="goBack()">‹</button>
-    <div id="hdr-info">
+    <button class="back" onclick="goBack()" title="Voltar">‹</button>
+    <div id="hdr-info" style="flex:1">
       <h1>EVANGELHO NO LAR</h1>
       <p>O Evangelho Segundo o Espiritismo</p>
     </div>
     <span id="step-badge">Configuração</span>
+    <button onclick="toggleNav()" style="background:none;border:1px solid var(--card-border,#E8E0D0);border-radius:10px;padding:8px 10px;cursor:pointer;font-size:14px;color:var(--gold,#8B7535);margin-left:8px" title="Menu">☰</button>
+  </div>
+  <div id="nav-menu" style="display:none;position:sticky;top:56px;z-index:49;background:#FFFFFF;border-bottom:1px solid #E8E0D0;padding:10px 18px;box-shadow:0 4px 12px rgba(0,0,0,.08)">
+    <a href="app.html" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #F0EBE1;text-decoration:none;color:#2C2416">
+      <span style="font-size:18px">🕊️</span><span style="font-size:15px">Mestres Espirituais</span></a>
+    <a href="salas.html" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #F0EBE1;text-decoration:none;color:#2C2416">
+      <span style="font-size:18px">📚</span><span style="font-size:15px">Salas de Estudo</span></a>
+    <a href="evangelho.html" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #F0EBE1;text-decoration:none;color:#8B7535;font-weight:600">
+      <span style="font-size:18px">🕯️</span><span style="font-size:15px">Evangelho no Lar</span></a>
+    <a href="app.html" style="display:flex;align-items:center;gap:10px;padding:10px 0;text-decoration:none;color:#8A7D6B">
+      <span style="font-size:18px">🏠</span><span style="font-size:15px">Início (Splash)</span></a>
   </div>
   <div id="main"></div>
   <div id="controls"></div>
@@ -144,8 +155,13 @@ window.addEventListener('load',function(){
   renderFase();
 });
 
+function toggleNav(){
+  var m=document.getElementById('nav-menu');
+  m.style.display=m.style.display==='none'?'block':'none';
+}
+
 function goBack(){
-  if(fase==='config') window.location.href='app.html';
+  if(fase==='config') toggleNav();
   else{fase='config';renderFase();}
 }
 
