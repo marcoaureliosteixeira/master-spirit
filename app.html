@@ -1275,7 +1275,7 @@ function toggleFooterMusic(){
 // ===================== INIT =====================
 function enterApp(){
   sessionStorage.setItem('spirit_splash_seen','1');
-  stopSplashMusic();
+  // Música continua como fundo — não para ao entrar
   document.getElementById('splash').style.animation='fadeout .5s ease forwards';
   setTimeout(()=>{
     document.getElementById('splash').style.display='none';
@@ -1286,6 +1286,8 @@ function enterApp(){
 function skipSplash(){
   document.getElementById('splash').style.display='none';
   document.getElementById('app').style.display='flex';
+  // Música de fundo ao entrar direto (sem splash)
+  startSplashMusic();
 }
 
 function backToSplash(){
@@ -1411,8 +1413,12 @@ function goTab(t){
   // Legacy fallback
   if(t==='chat'||t==='hoje'||t==='sab'){openMasterChat('jesus');return;}
   tab=t;
-  if(t!=='master-chat') activeMaster=null;
-  // Parar áudio ao mudar de aba
+  if(t!=='master-chat'){
+    activeMaster=null;
+    // Voltar música de fundo ao sair do chat
+    startSplashMusic();
+  }
+  // Parar áudio de voz ao mudar de aba
   if(typeof stopAllAudio==='function') stopAllAudio();
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   const nb=document.getElementById('nb-'+t);
@@ -1545,6 +1551,7 @@ function renderMestres(){
 
 // ===================== MASTER CHAT =====================
 function openMasterChat(masterId){
+  stopSplashMusic(); // Parar música ao entrar no chat
   activeMaster=masterId;
   if(!masterMsgs[masterId]) masterMsgs[masterId]=[];
   msgs=masterMsgs[masterId];
