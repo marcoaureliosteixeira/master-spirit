@@ -110,8 +110,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:va
       <p class="step-title">Nome e Objetivo da Sala</p>
       <p class="field-label">Nome da Sala</p>
       <input class="field-input" id="sala-nome" type="text" placeholder="Ex: Grupo Fraternidade — Livro dos Espíritos">
-      <p class="field-label">Objetivo do Estudo</p>
-      <textarea class="field-input field-textarea" id="sala-objetivo" placeholder="Descreva o objetivo desta sala de estudo..."></textarea>
+      <p class="field-label">Objetivo da Sala *</p>
+      <textarea class="field-input field-textarea" id="sala-objetivo" placeholder="Ex: Aprofundar o estudo sobre reencarnação e vida após a morte para encontrar consolo e compreensão..."></textarea>
+      <p style="font-size:13px;color:#8A7D6B;font-style:italic;margin:-10px 0 14px;line-height:1.5">A IA usará o objetivo para sugerir livros e personalizar o currículo de estudo.</p>
       <button class="btn-next" onclick="nextStep(2)">Próximo →</button>
     </div>
 
@@ -288,6 +289,15 @@ function goBack(){
 }
 
 function nextStep(n){
+  // Validações por step
+  if(n===2){
+    var nome=document.getElementById('sala-nome').value.trim();
+    var obj=document.getElementById('sala-objetivo').value.trim();
+    if(!nome){alert('Digite o nome da sala.');return;}
+    if(!obj){alert('Descreva o objetivo da sala. A IA usará isso para personalizar seu estudo.');return;}
+  }
+  if(n===3&&sala.livros.length===0){alert('Selecione pelo menos um livro.');return;}
+  if(n===5&&!sala.facilitador){alert('Selecione um facilitador.');return;}
   document.querySelectorAll('.step').forEach(function(s){s.classList.remove('active');});
   document.getElementById('step-'+n).classList.add('active');
   if(n===5) updateResumo();
