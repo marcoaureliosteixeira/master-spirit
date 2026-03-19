@@ -160,19 +160,21 @@ var VOICE_DURATIONS=[28,16,11,15,13,9,12];
 
 function playSceneVoice(sceneIdx){
   stopSceneVoice();
-  var file='teaser-voice-'+String(sceneIdx).padStart(2,'0')+'.mp3';
   if(muted) return;
-  _voiceAudio=new Audio(file);
+  // Usar voz pré-carregada do pool (iOS compatível)
+  _voiceAudio=_voicePool[sceneIdx];
+  if(!_voiceAudio){
+    // Fallback: criar novo (funciona no desktop)
+    _voiceAudio=new Audio('teaser-voice-'+String(sceneIdx).padStart(2,'0')+'.mp3');
+  }
+  _voiceAudio.currentTime=0;
   _voiceAudio.volume=1.0;
   if(audio) audio.volume=0.25;
-  // Usar timer baseado na duração conhecida (não onended que pode falhar)
   var dur=VOICE_DURATIONS[sceneIdx]||10;
   _voiceAudio.onended=function(){_voiceAudio=null;if(audio&&!muted) audio.volume=0.85;};
   _voiceAudio.onerror=function(){_voiceAudio=null;if(audio&&!muted) audio.volume=0.85;};
-  _voiceAudio.play().catch(function(){
-    window._pendingVoice=_voiceAudio;
-  });
-  // Cancelar timer fixo e usar duração da voz + 1s
+  _voiceAudio.play().catch(function(){});
+  // Timer baseado na duração da voz
   if(autoTimer){clearTimeout(autoTimer);autoTimer=null;}
   if(sceneIdx<6){
     autoTimer=setTimeout(function(){
@@ -394,10 +396,21 @@ function wordByWord(elId,text,delay){
 }
 
 // ── AUDIO ──
+var _voicePool=[];
+
 function initAudio(){
   audio=new Audio('teaser-music.mp3');
   audio.volume=0.85;
   audio.loop=true;
+}
+
+function preloadVoices(){
+  // Pré-carregar todas as vozes DENTRO do handler de toque (obrigatório iOS)
+  for(var i=0;i<=6;i++){
+    var a=new Audio('teaser-voice-'+String(i).padStart(2,'0')+'.mp3');
+    a.load();
+    _voicePool[i]=a;
+  }
 }
 
 function ensureAudioPlaying(){
@@ -448,11 +461,13 @@ document.addEventListener('keydown',function(e){
 function unlockAndStart(){
   var overlay=document.getElementById('audio-unlock');
   if(overlay) overlay.style.display='none';
-  // CRIAR o Audio aqui dentro do handler de toque (obrigatório no iOS)
+  // CRIAR tudo dentro do handler de toque (obrigatório iOS)
   audio=new Audio('teaser-music.mp3');
   audio.volume=0.85;
   audio.loop=true;
   audio.play();
+  // Pré-carregar TODAS as vozes agora (dentro do toque)
+  preloadVoices();
   muted=false;
   _firstInteraction=false;
   document.getElementById('mute-btn').textContent='🔊';
