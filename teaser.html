@@ -21,9 +21,9 @@ body{font-family:'Cormorant Garamond',Georgia,serif;-webkit-tap-highlight-color:
 #canvas-bg{position:fixed;inset:0;z-index:0}
 .scene{position:fixed;inset:0;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity 1.2s ease}
 .scene.active{opacity:1;pointer-events:auto}
-.eyebrow{font-family:'Cinzel',serif;font-size:clamp(9px,1.5vw,12px);letter-spacing:clamp(3px,0.5vw,5px);color:rgba(201,168,76,.5);text-transform:uppercase;margin-bottom:12px}
-.headline{font-family:'Cinzel Decorative',serif;font-size:clamp(18px,3.5vw,30px);color:#E8C97A;letter-spacing:clamp(2px,0.4vw,4px);text-shadow:0 0 40px rgba(232,201,122,.4);text-align:center;line-height:1.4;margin-bottom:16px}
-.sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(13px,2vw,18px);color:rgba(240,234,214,.55);line-height:1.7;text-align:center;max-width:500px}
+.eyebrow{font-family:'Cinzel',serif;font-size:clamp(12px,2vw,16px);letter-spacing:clamp(3px,0.5vw,5px);color:rgba(201,168,76,.5);text-transform:uppercase;margin-bottom:12px}
+.headline{font-family:'Cinzel Decorative',serif;font-size:clamp(22px,4.5vw,38px);color:#E8C97A;letter-spacing:clamp(2px,0.4vw,4px);text-shadow:0 0 40px rgba(232,201,122,.4);text-align:center;line-height:1.4;margin-bottom:16px}
+.sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(16px,2.5vw,22px);color:rgba(240,234,214,.55);line-height:1.7;text-align:center;max-width:500px}
 .divider{width:60px;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.5),transparent);margin:14px auto}
 /* Progress bar */
 #progress{position:fixed;top:0;left:0;right:0;height:2px;z-index:100}
@@ -104,23 +104,23 @@ body{font-family:'Cormorant Garamond',Georgia,serif;-webkit-tap-highlight-color:
 
 <div class="scene" id="scene-2">
   <p class="eyebrow">Mestres Espirituais</p>
-  <p class="headline" style="font-size:clamp(18px,3.5vw,30px)">Cada Mestre, com sua Sabedoria e Personalidade.<br>Falando com você, na primeira pessoa.</p>
+  <p class="headline" style="font-size:clamp(22px,4vw,34px)">Cada Mestre, com sua Sabedoria e Personalidade.<br>Falando com você, na primeira pessoa.</p>
   <div class="masters-row" id="masters-row"></div>
 </div>
 
 <div class="scene" id="scene-3">
   <p class="eyebrow">O Consolador</p>
-  <p class="headline" style="font-size:clamp(18px,3.5vw,30px)">Uma conversa que transforma.</p>
+  <p class="headline" style="font-size:clamp(22px,4vw,34px)">Uma conversa que transforma.</p>
   <div class="divider"></div>
   <div style="background:rgba(255,255,255,.06);border:1px solid rgba(201,168,76,.2);border-radius:14px;padding:16px 20px;max-width:400px;margin-top:16px">
     <p style="font-family:'Cinzel',serif;font-size:8px;letter-spacing:2px;color:rgba(201,168,76,.5);margin-bottom:8px">JESUS · O CONSOLADOR</p>
-    <p id="typewriter-text" style="font-size:17px;font-style:italic;line-height:1.7;color:rgba(240,234,214,.8)"></p>
+    <p id="typewriter-text" style="font-size:20px;font-style:italic;line-height:1.7;color:rgba(240,234,214,.8)"></p>
   </div>
 </div>
 
 <div class="scene" id="scene-4">
   <p class="eyebrow">Evangelho no Lar</p>
-  <p class="headline" style="font-size:clamp(18px,3.5vw,30px)">Reúna sua família<br>e transforme seu lar.</p>
+  <p class="headline" style="font-size:clamp(22px,4vw,34px)">Reúna sua família<br>e transforme seu lar.</p>
   <div class="divider"></div>
   <p class="sub">Uma sessão guiada com mestres facilitadores.<br>Semanal. Simples. Profunda.</p>
 </div>
@@ -448,13 +448,14 @@ document.addEventListener('keydown',function(e){
 function unlockAndStart(){
   var overlay=document.getElementById('audio-unlock');
   if(overlay) overlay.style.display='none';
-  // Iniciar música (agora desbloqueado pela interação)
-  initAudio();
-  audio.play().then(function(){
-    document.getElementById('mute-btn').textContent='🔊';
-  }).catch(function(){});
+  // Usar o audio já criado no load (não criar novo)
+  if(!audio) initAudio();
   muted=false;
   _firstInteraction=false;
+  // Play música — interação do usuário garante desbloqueio no iOS
+  audio.play().then(function(){
+    document.getElementById('mute-btn').textContent='🔊';
+  }).catch(function(e){console.warn('audio play failed:',e);});
   goToScene(0);
 }
 
