@@ -2549,7 +2549,7 @@ function closeInterpret(){document.getElementById('modal-interpret').classList.r
 // ===================== MODALS =====================
 function openModal(id){
   if(id==='qr'){
-    const url=location.href;
+    const url=location.origin+location.pathname;
     document.getElementById('qr-img').src='https://api.qrserver.com/v1/create-qr-code/?size=200x200&color=060a16&bgcolor=ffffff&data='+encodeURIComponent(url);
     document.getElementById('qr-url').textContent=url.replace('https://','');
   }
