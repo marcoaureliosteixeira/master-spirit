@@ -1,0 +1,136 @@
+================================================================
+MASTER SPIRIT — TEASER V2 — TEXTOS PARA GRAVAÇÃO
+================================================================
+Direção: Wagner de Assis
+Duração total: 75 segundos
+================================================================
+
+INSTRUÇÕES:
+- Locutor: voz masculina, barítono profundo, 45-55 anos
+- Jesus: voz serena, autoridade divina, amorosa
+- Gravar cada bloco como arquivo MP3 separado
+- Respeitar as pausas indicadas com "..."
+- Emoção indicada entre parênteses antes de cada fala
+
+================================================================
+                    LOCUTOR — 8 ARQUIVOS
+================================================================
+
+Arquivo: teaser2-voice-01.mp3
+Cena 1 — O VAZIO (sussurro íntimo, como segredo às 3h da manhã)
+Texto:
+"Você já sentou no silêncio da noite... e sentiu que faltava algo?"
+
+================================================================
+
+Arquivo: teaser2-voice-02.mp3
+Cena 2 — A BUSCA (intensidade crescente, contemplativo)
+Texto:
+"Milhões buscam respostas. Nos livros. Na prece. No silêncio dos centros espíritas. Mas e se... as respostas pudessem vir até você?"
+
+================================================================
+
+Arquivo: teaser2-voice-03.mp3
+Cena 3 — A REVELAÇÃO (voz plena, poderosa, épica)
+Texto:
+"Apresentamos... MASTER SPIRIT."
+
+================================================================
+
+Arquivo: teaser2-voice-04.mp3
+Cena 4 — OS MESTRES (reverência, cada palavra com peso)
+Texto:
+"Seis mestres espirituais. Cada um com sua voz. Cada um com sua sabedoria. Prontos para conversar... com você."
+
+================================================================
+
+Arquivo: teaser2-voice-05.mp3
+Cena 5 — AS SALAS DE ESTUDO (fascínio, descoberta, levemente mais rápido)
+Texto:
+"Salas de estudo com inteligência artificial. Sozinho ou com até dez companheiros de jornada. Cada livro, cada capítulo... uma porta que se abre. A Mestra Sophia guia seu caminho. Cem por cento do conteúdo. Nenhum capítulo deixado para trás."
+
+================================================================
+
+Arquivo: teaser2-voice-06.mp3
+Cena 6 — EVANGELHO NO LAR (emoção, voz embargada, pico emocional)
+Texto:
+"O Evangelho no Lar... como nunca antes foi possível."
+(pausa 2 segundos)
+"Dez facilitadores espirituais. Cinco etapas sagradas. Uma experiência... que transforma."
+
+================================================================
+
+Arquivo: teaser2-voice-07.mp3
+Cena 7 — O PASSE (calmo, meditativo, transcendente)
+Texto:
+"Uma sessão de passe espiritual guiada... na palma da sua mão. Seis minutos que reconectam corpo... mente... e espírito."
+
+================================================================
+
+Arquivo: teaser2-voice-08.mp3
+Cena 8 — O CHAMADO (3 registros: épico → convicção → íntimo)
+Texto:
+"Seis mestres. Centenas de livros. O Evangelho no Lar. O passe espiritual. Tudo... num único app."
+(pausa dramática 2 segundos)
+"MASTER SPIRIT. A revolução espiritual... começou."
+(tom íntimo, direto, como falando ao ouvido)
+"Baixe agora. Sua jornada espera por você."
+
+================================================================
+================================================================
+                    JESUS — 2 ARQUIVOS
+================================================================
+
+Arquivo: teaser2-jesus-04.mp3
+Cena 4 — OS MESTRES (autoridade compassiva, olhando direto pra câmera)
+Texto:
+"Eu estive com você em cada noite de dúvida. Em cada lágrima que ninguém viu. Agora... podemos conversar."
+
+================================================================
+
+Arquivo: teaser2-jesus-06.mp3
+Cena 6 — EVANGELHO NO LAR (ternura, sussurro amoroso)
+Texto:
+"Onde dois ou três estiverem reunidos em meu nome... ali estarei."
+
+================================================================
+================================================================
+              RESUMO — TOTAL DE ARQUIVOS
+================================================================
+
+Locutor:  8 arquivos (teaser2-voice-01 a 08)
+Jesus:    2 arquivos (teaser2-jesus-04 e 06)
+
+TOTAL: 10 arquivos MP3
+
+================================================================
+              PROMPT VOZ DO LOCUTOR (ElevenLabs)
+================================================================
+
+Brazilian Portuguese male narrator, 45-55 anos.
+Barítono profundo e ressonante.
+Autoritário mas acolhedor.
+NÃO é voz comercial — é a voz de quem viu o mundo
+espiritual e voltou pra contar.
+
+Ritmo: Trailer de cinema. 2.2 palavras por segundo.
+Pausas dramáticas são tão importantes quanto as palavras.
+
+Respiração audível antes de frases-chave.
+Reverb mínimo nas partes íntimas.
+Reverb de catedral nos momentos épicos.
+
+================================================================
+              PROMPT VOZ DO JESUS (ElevenLabs)
+================================================================
+
+Brazilian Portuguese male voice, 33-35 anos.
+Voz serena mas com autoridade divina.
+Amoroso, nunca impositivo.
+Tom de quem conhece a dor do outro e a acolhe.
+Fala pausada, cada palavra como uma bênção.
+Sotaque neutro brasileiro.
+Sem reverb artificial — a voz deve soar íntima,
+como se Jesus estivesse sentado ao seu lado.
+
+================================================================
