@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="theme-color" content="#060a16">
+<title>Master Spirit — Cena 1 (Jesus)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:#060a16;color:#F5EFE0}
+body{font-family:'Cormorant Garamond',Georgia,serif}
+
+#canvas-bg{position:fixed;inset:0;z-index:0}
+
+.page{position:fixed;inset:0;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center}
+
+/* Video container */
+.video-circle{width:min(60vw,300px);height:min(60vw,300px);border-radius:50%;overflow:hidden;border:2px solid rgba(201,168,76,.4);box-shadow:0 0 40px rgba(201,168,76,.25),0 0 80px rgba(100,60,200,.15);margin-bottom:20px;position:relative}
+.video-circle video{width:100%;height:100%;object-fit:cover;display:block}
+
+/* Rings behind video */
+.ring-wrap{position:relative;display:inline-block}
+.ring{position:absolute;left:50%;top:50%;width:min(60vw,300px);height:min(60vw,300px);margin:min(-30vw,-150px) 0 0 min(-30vw,-150px);border-radius:50%;border:1px solid rgba(201,168,76,.4);opacity:0;z-index:-1}
+.ring:nth-child(1){animation:ringOut 2.5s ease-out 1s infinite}
+.ring:nth-child(2){animation:ringOut 2.5s ease-out 1.7s infinite;border-color:rgba(150,100,255,.3)}
+@keyframes ringOut{0%{transform:scale(.8);opacity:.7}100%{transform:scale(1.8);opacity:0}}
+
+.name{font-family:'Cinzel Decorative',serif;font-size:clamp(20px,4vw,32px);color:#E8C97A;letter-spacing:clamp(3px,.5vw,6px);text-shadow:0 0 30px rgba(232,201,122,.4);margin-bottom:6px}
+.subtitle{font-style:italic;font-size:clamp(14px,2.2vw,18px);color:rgba(240,234,214,.45);letter-spacing:2px}
+
+/* Stars */
+.star{position:absolute;background:white;border-radius:50%;animation:tw var(--d,3s) ease-in-out infinite var(--dl,0s)}
+@keyframes tw{0%,100%{opacity:.05}50%{opacity:.65}}
+@keyframes fadeup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+<canvas id="canvas-bg"></canvas>
+
+<div class="page">
+  <div class="ring-wrap" style="animation:fadeup 1s ease .5s both">
+    <div class="ring"></div>
+    <div class="ring"></div>
+    <div class="video-circle">
+      <video id="jesus-video" playsinline>
+        <source src="cena1.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
+  <p class="name" style="animation:fadeup 1s ease 1s both">JESUS</p>
+  <p class="subtitle" style="animation:fadeup 1s ease 1.5s both">O Mestre da Galileia</p>
+</div>
+
+<script>
+// Stars
+var canvas=document.getElementById('canvas-bg');
+var ctx=canvas.getContext('2d');
+var particles=[];
+function resizeCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
+window.addEventListener('resize',resizeCanvas);
+resizeCanvas();
+for(var i=0;i<80;i++){
+  particles.push({
+    x:Math.random()*canvas.width,
+    y:Math.random()*canvas.height,
+    r:Math.random()*2+0.5,
+    vx:(Math.random()-0.5)*0.3,
+    vy:(Math.random()-0.5)*0.3,
+    alpha:Math.random()*0.5+0.2,
+    pulse:Math.random()*Math.PI*2
+  });
+}
+function drawParticles(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  var t=Date.now()*0.001;
+  particles.forEach(function(p){
+    p.x+=p.vx;p.y+=p.vy;
+    if(p.x<0)p.x=canvas.width;if(p.x>canvas.width)p.x=0;
+    if(p.y<0)p.y=canvas.height;if(p.y>canvas.height)p.y=0;
+    var a=p.alpha*(0.5+0.5*Math.sin(t*1.5+p.pulse));
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle='rgba(201,168,76,'+a+')';ctx.fill();
+  });
+  requestAnimationFrame(drawParticles);
+}
+drawParticles();
+
+// Music + Video
+var music=new Audio('teaser-music.mp3');
+music.volume=0.3;
+music.loop=true;
+
+var video=document.getElementById('jesus-video');
+
+// Start on click/touch (iOS requires interaction)
+function startAll(){
+  music.play().catch(function(){});
+  video.play().catch(function(){});
+  document.removeEventListener('click',startAll);
+  document.removeEventListener('touchstart',startAll);
+}
+document.addEventListener('click',startAll);
+document.addEventListener('touchstart',startAll,{passive:true});
+
+// Try autoplay
+window.addEventListener('load',function(){
+  music.play().then(function(){
+    video.play().catch(function(){});
+  }).catch(function(){
+    // Wait for interaction
+  });
+});
+</script>
+</body>
+</html>
