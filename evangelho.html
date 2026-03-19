@@ -259,7 +259,7 @@ function iniciarSessao(){
 function avancar(){
   if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
   // Parar música da prece ao sair da etapa
-  if(fase==='prece1'||fase==='prece2') stopPreceMusic();
+  if(fase==='prece1'||fase==='prece2'){stopPreceMusic();stopPaiNosso();}
   var fases=['config','facilitador','prece1','leitura','comentarios','vibracoes','prece2','fim'];
   var idx=fases.indexOf(fase);
   if(idx<fases.length-1){fase=fases[idx+1];renderFase();}
@@ -334,9 +334,22 @@ async function gerarPrece(tipo){
     document.getElementById('main').innerHTML='<div class="session-text" style="padding:10px">'+txt+'</div>'+
       (tipo==='prece_final'?'<div style="margin-top:20px;padding:16px;background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.15);border-radius:14px"><p style="font-family:Cinzel,serif;font-size:10px;letter-spacing:2px;color:rgba(201,168,76,.5);text-align:center;margin-bottom:10px">PAI NOSSO</p><p style="font-size:16px;line-height:1.85;text-align:center;font-style:italic;color:rgba(240,234,214,.8)">Pai nosso, que estais nos céus, santificado seja o Vosso nome. Venha a nós o Vosso reino. Seja feita a Vossa vontade, assim na Terra como no Céu. O pão nosso de cada dia nos dai hoje. Perdoai as nossas ofensas, assim como nós perdoamos a quem nos tem ofendido. E não nos deixeis cair em tentação, mas livrai-nos do mal. Amém.</p></div>':'');
     var btn=document.getElementById('btn-av');if(btn) btn.disabled=false;
+    // Tocar áudio do Pai Nosso na prece final
+    if(tipo==='prece_final'){
+      stopPreceMusic();
+      setTimeout(function(){
+        window._paiNossoAudio=new Audio('oracao-pai-nosso.mp3');
+        window._paiNossoAudio.volume=0.9;
+        window._paiNossoAudio.play().catch(function(){});
+      },1500);
+    }
   }catch(e){
     document.getElementById('main').innerHTML='<div class="session-text" style="color:rgba(232,122,122,.7);text-align:center">Erro de conexão. Tente novamente.</div>';
   }
+}
+
+function stopPaiNosso(){
+  if(window._paiNossoAudio){try{window._paiNossoAudio.pause();window._paiNossoAudio=null;}catch(e){}}
 }
 
 // ── COMENTÁRIOS (IA + Q&A) ──
