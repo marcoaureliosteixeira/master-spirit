@@ -138,52 +138,19 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:va
       <button class="btn-back" onclick="nextStep(1)">← Voltar</button>
     </div>
 
-    <!-- STEP 3: Solo ou Grupo -->
+    <!-- STEP 3: Configurar cada livro (solo/grupo + facilitador) -->
     <div class="step" id="step-3">
-      <p class="step-num">Passo 3 de 5</p>
-      <p class="step-title">Tipo de Estudo</p>
-
-      <div class="freq-row">
-        <div class="freq-opt active" onclick="setTipo('solo')" id="tipo-solo" style="flex:1">🧘 Solo</div>
-        <div class="freq-opt" onclick="setTipo('grupo')" id="tipo-grupo" style="flex:1">👥 Grupo de Estudo</div>
-      </div>
-
-      <div id="grupo-config" style="display:none">
-        <p class="field-label">Convidar Membros (email ou WhatsApp)</p>
-        <div style="display:flex;gap:8px;margin-bottom:8px">
-          <input class="field-input" id="invite-input" type="text" placeholder="email@exemplo.com" style="margin-bottom:0;flex:1">
-          <button onclick="addMember()" style="background:rgba(91,175,124,.12);border:1px solid rgba(91,175,124,.35);border-radius:12px;padding:10px 16px;cursor:pointer;color:rgba(91,175,124,.8);font-family:'Cinzel',serif;font-size:9px;white-space:nowrap">Convidar</button>
-        </div>
-        <div id="members-list"></div>
-        <p style="font-size:11px;color:rgba(240,234,214,.3);font-style:italic;margin-top:6px">Máximo 10 membros por grupo</p>
-      </div>
-
+      <p class="step-num">Passo 3 de 4</p>
+      <p class="step-title">Configurar Livros</p>
+      <p style="font-size:14px;color:#8A7D6B;font-style:italic;margin-bottom:16px">Para cada livro, defina o tipo de estudo e o facilitador</p>
+      <div id="books-config"></div>
       <button class="btn-next" onclick="nextStep(4)">Próximo →</button>
       <button class="btn-back" onclick="nextStep(2)">← Voltar</button>
     </div>
 
-    <!-- STEP 4: Facilitador -->
+    <!-- STEP 4: Frequência -->
     <div class="step" id="step-4">
-      <p class="step-num">Passo 4 de 5</p>
-      <p class="step-title">Escolha o Facilitador</p>
-      <p style="font-size:13px;color:rgba(240,234,214,.4);font-style:italic;margin-bottom:14px">Cada facilitador tem uma personalidade e estilo de ensino únicos</p>
-
-      <p class="field-label">Facilitadores Generalistas</p>
-      <div class="fac-grid" id="fac-gen-grid"></div>
-
-      <div id="fac-spec-section" style="display:none">
-        <p class="field-label" style="margin-top:14px">Especialistas Recomendados</p>
-        <p style="font-size:11px;color:rgba(168,125,202,.5);font-style:italic;margin-bottom:8px">Recomendado para o livro selecionado</p>
-        <div class="fac-grid" id="fac-spec-grid"></div>
-      </div>
-
-      <button class="btn-next" onclick="nextStep(5)">Próximo →</button>
-      <button class="btn-back" onclick="nextStep(3)">← Voltar</button>
-    </div>
-
-    <!-- STEP 5: Frequência -->
-    <div class="step" id="step-5">
-      <p class="step-num">Passo 5 de 5</p>
+      <p class="step-num">Passo 4 de 4</p>
       <p class="step-title">Frequência e Horário</p>
 
       <p class="field-label">Dias da Semana</p>
@@ -214,7 +181,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:va
 
       <button class="btn-next" onclick="criarSala()" id="btn-criar">✦ Criar Sala de Estudo</button>
       <p class="status" id="criar-status"></p>
-      <button class="btn-back" onclick="nextStep(4)">← Voltar</button>
+      <button class="btn-back" onclick="nextStep(3)">← Voltar</button>
     </div>
   </div>
   <div id="ft">
@@ -263,7 +230,8 @@ var FACILITADORES_SPEC=[
 ];
 
 // ── STATE ──
-var sala={nome:'',objetivo:'',livros:[],tipo:'solo',membros:[],facilitador:null,dias:[],horario:'19:30',duracao:60};
+var sala={nome:'',objetivo:'',livros:[],dias:[],horario:'19:30',duracao:60};
+// Cada livro terá: {id, name, author, icon, tipo:'solo'|'grupo', facilitador:null, membros:[]}
 var personalLibrary=[];
 try{personalLibrary=JSON.parse(localStorage.getItem('spirit_personal_library')||'[]');}catch(e){}
 
@@ -273,7 +241,7 @@ window.addEventListener('load',function(){
   var sf=document.getElementById('stars');
   for(var i=0;i<60;i++){var d=document.createElement('div');d.className='star';var sz=(Math.random()*2+.5).toFixed(1);d.style.cssText='left:'+(Math.random()*100).toFixed(1)+'%;top:'+(Math.random()*100).toFixed(1)+'%;width:'+sz+'px;height:'+sz+'px;--d:'+(Math.random()*4+2).toFixed(1)+'s;--dl:'+(Math.random()*5).toFixed(1)+'s';sf.appendChild(d);}
   renderBooks();
-  renderFacilitators();
+  // facilitadores agora renderizados no step 3 por livro
 });
 
 function toggleNav(){
@@ -297,10 +265,15 @@ function nextStep(n){
     if(!obj){alert('Descreva o objetivo da sala. A IA usará isso para personalizar seu estudo.');return;}
   }
   if(n===3&&sala.livros.length===0){alert('Selecione pelo menos um livro.');return;}
-  if(n===5&&!sala.facilitador){alert('Selecione um facilitador.');return;}
+  if(n===4){
+    // Validar que todos os livros têm facilitador
+    var semFac=sala.livros.filter(function(l){return !l.facilitador;});
+    if(semFac.length>0){alert('Selecione um facilitador para: '+semFac.map(function(l){return l.name;}).join(', '));return;}
+  }
   document.querySelectorAll('.step').forEach(function(s){s.classList.remove('active');});
   document.getElementById('step-'+n).classList.add('active');
-  if(n===5) updateResumo();
+  if(n===3) renderBooksConfig();
+  if(n===4) updateResumo();
   window.scrollTo(0,0);
 }
 
@@ -326,7 +299,7 @@ function toggleBook(id){
   if(idx>=0) sala.livros.splice(idx,1);
   else sala.livros.push(book);
   renderBooks();
-  renderFacilitators();
+  // facilitadores agora renderizados no step 3 por livro
 }
 
 function renderSelectedBooks(){
@@ -357,77 +330,95 @@ function addCustomBook(){
   setTimeout(function(){status.textContent='';status.style.color='';},3000);
 }
 
-// ── TIPO (solo/grupo) ──
-function setTipo(t){
-  sala.tipo=t;
-  document.getElementById('tipo-solo').classList.toggle('active',t==='solo');
-  document.getElementById('tipo-grupo').classList.toggle('active',t==='grupo');
-  document.getElementById('grupo-config').style.display=t==='grupo'?'block':'none';
+// ── CONFIG POR LIVRO ──
+function renderBooksConfig(){
+  var el=document.getElementById('books-config');
+  el.innerHTML=sala.livros.map(function(book,bi){
+    if(!book.tipo) book.tipo='solo';
+    if(!book.facilitador) book.facilitador=null;
+    if(!book.membros) book.membros=[];
+
+    // Facilitadores disponíveis pra este livro
+    var specIds=[];
+    FACILITADORES_SPEC.forEach(function(f){
+      if(f.books.indexOf(book.id)>=0) specIds.push(f);
+    });
+    var hasSpec=specIds.length>0;
+
+    var facHtml=FACILITADORES_GEN.map(function(f){
+      var sel=book.facilitador===f.id;
+      return '<div class="fac-card'+(sel?' selected':'')+'" onclick="setBookFac('+bi+',\''+f.id+'\')">'+
+        '<span class="fac-emoji">'+f.emoji+'</span><div class="fac-name">'+f.name+'</div><div class="fac-type">'+f.estilo+'</div></div>';
+    }).join('');
+
+    var specHtml='';
+    if(hasSpec){
+      specHtml='<p class="field-label" style="margin-top:10px;color:#9B7DC4">Especialista Recomendado</p><div class="fac-grid">'+
+        specIds.map(function(f){
+          var sel=book.facilitador===f.id;
+          return '<div class="fac-card specialist'+(sel?' selected':'')+'" onclick="setBookFac('+bi+',\''+f.id+'\')">'+
+            '<span class="fac-emoji">'+f.emoji+'</span><div class="fac-name">'+f.name+'</div><div class="fac-type">'+f.estilo+'</div></div>';
+        }).join('')+'</div>';
+    }
+
+    var grupoHtml='';
+    if(book.tipo==='grupo'){
+      grupoHtml='<div style="margin-top:12px"><p class="field-label">Convidar Membros</p>'+
+        '<div style="display:flex;gap:8px;margin-bottom:8px">'+
+        '<input class="field-input" id="invite-'+bi+'" type="text" placeholder="email@exemplo.com" style="margin-bottom:0;flex:1">'+
+        '<button onclick="addBookMember('+bi+')" style="background:#6BAF7C;border:none;border-radius:12px;padding:10px 14px;cursor:pointer;color:#fff;font-size:12px">Convidar</button></div>'+
+        book.membros.map(function(m,mi){
+          return '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--card-border)">'+
+            '<span style="font-size:14px;flex:1;color:var(--text)">'+m+'</span>'+
+            '<button onclick="removeBookMember('+bi+','+mi+')" style="background:none;border:none;cursor:pointer;color:#C75050;font-size:14px">✕</button></div>';
+        }).join('')+
+        '<p style="font-size:12px;color:#8A7D6B;font-style:italic;margin-top:6px">Máximo 10 membros</p></div>';
+    }
+
+    return '<div style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:18px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.04)">'+
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">'+
+      '<span style="font-size:24px">'+book.icon+'</span>'+
+      '<div><p style="font-family:Cinzel,serif;font-size:14px;color:var(--text);font-weight:600">'+book.name+'</p>'+
+      '<p style="font-size:13px;font-style:italic;color:#8A7D6B">'+book.author+'</p></div></div>'+
+      '<p class="field-label">Tipo de Estudo</p>'+
+      '<div class="freq-row">'+
+      '<div class="freq-opt'+(book.tipo==='solo'?' active':'')+'" onclick="setBookTipo('+bi+',\'solo\')" style="flex:1">🧘 Solo</div>'+
+      '<div class="freq-opt'+(book.tipo==='grupo'?' active':'')+'" onclick="setBookTipo('+bi+',\'grupo\')" style="flex:1">👥 Grupo</div></div>'+
+      grupoHtml+
+      '<p class="field-label" style="margin-top:12px">Facilitador</p>'+
+      '<div class="fac-grid">'+facHtml+'</div>'+
+      specHtml+
+      '</div>';
+  }).join('');
 }
 
-function addMember(){
-  var inp=document.getElementById('invite-input');
+function setBookTipo(bi,tipo){
+  sala.livros[bi].tipo=tipo;
+  renderBooksConfig();
+}
+
+function setBookFac(bi,facId){
+  sala.livros[bi].facilitador=facId;
+  renderBooksConfig();
+}
+
+function addBookMember(bi){
+  var inp=document.getElementById('invite-'+bi);
   var v=inp.value.trim();
   if(!v) return;
-  if(sala.membros.length>=10){alert('Máximo 10 membros.');return;}
-  sala.membros.push(v);
+  if(!sala.livros[bi].membros) sala.livros[bi].membros=[];
+  if(sala.livros[bi].membros.length>=10){alert('Máximo 10 membros.');return;}
+  sala.livros[bi].membros.push(v);
   inp.value='';
-  renderMembers();
+  renderBooksConfig();
 }
 
-function removeMember(idx){
-  sala.membros.splice(idx,1);
-  renderMembers();
-}
-
-function renderMembers(){
-  var el=document.getElementById('members-list');
-  el.innerHTML=sala.membros.map(function(m,i){
-    return '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05)">'+
-      '<span style="font-size:13px;flex:1;color:rgba(240,234,214,.7)">'+m+'</span>'+
-      '<button onclick="removeMember('+i+')" style="background:none;border:none;cursor:pointer;color:rgba(232,122,122,.5);font-size:12px">✕</button></div>';
-  }).join('');
+function removeBookMember(bi,mi){
+  sala.livros[bi].membros.splice(mi,1);
+  renderBooksConfig();
 }
 
 // ── FACILITADORES ──
-function renderFacilitators(){
-  // Generalistas
-  var genGrid=document.getElementById('fac-gen-grid');
-  genGrid.innerHTML=FACILITADORES_GEN.map(function(f){
-    var sel=sala.facilitador===f.id;
-    return '<div class="fac-card'+(sel?' selected':'')+'" onclick="selectFac(\''+f.id+'\')">'+
-      '<span class="fac-emoji">'+f.emoji+'</span>'+
-      '<div class="fac-name">'+f.name+'</div>'+
-      '<div class="fac-type">'+f.estilo+'</div></div>';
-  }).join('');
-
-  // Especialistas (mostrar só se livro correspondente foi selecionado)
-  var specSection=document.getElementById('fac-spec-section');
-  var specGrid=document.getElementById('fac-spec-grid');
-  var bookIds=sala.livros.map(function(b){return b.id;});
-  var relevantSpecs=FACILITADORES_SPEC.filter(function(f){
-    return f.books.some(function(bid){return bookIds.indexOf(bid)>=0;});
-  });
-
-  if(relevantSpecs.length>0){
-    specSection.style.display='block';
-    specGrid.innerHTML=relevantSpecs.map(function(f){
-      var sel=sala.facilitador===f.id;
-      return '<div class="fac-card specialist'+(sel?' selected':'')+'" onclick="selectFac(\''+f.id+'\')">'+
-        '<span class="fac-emoji">'+f.emoji+'</span>'+
-        '<div class="fac-name">'+f.name+'</div>'+
-        '<div class="fac-type">'+f.estilo+'</div></div>';
-    }).join('');
-  } else {
-    specSection.style.display='none';
-  }
-}
-
-function selectFac(id){
-  sala.facilitador=id;
-  renderFacilitators();
-}
-
 // ── FREQUÊNCIA ──
 function toggleDay(el,day){
   el.classList.toggle('active');
@@ -447,13 +438,18 @@ function updateResumo(){
   sala.horario=document.getElementById('sala-horario').value;
   sala.nome=document.getElementById('sala-nome').value;
   sala.objetivo=document.getElementById('sala-objetivo').value;
-  var fac=FACILITADORES_GEN.concat(FACILITADORES_SPEC).find(function(f){return f.id===sala.facilitador;});
-  var html='<p style="font-size:14px;color:var(--text);margin-bottom:6px"><strong style="color:var(--gold)">Sala:</strong> '+(sala.nome||'Sem nome')+'</p>'+
-    '<p style="font-size:13px;color:rgba(240,234,214,.6);margin-bottom:4px"><strong style="color:var(--gold)">Livros:</strong> '+(sala.livros.map(function(b){return b.name;}).join(', ')||'Nenhum')+'</p>'+
-    '<p style="font-size:13px;color:rgba(240,234,214,.6);margin-bottom:4px"><strong style="color:var(--gold)">Tipo:</strong> '+(sala.tipo==='solo'?'Estudo Solo':'Grupo ('+sala.membros.length+' membros)')+'</p>'+
-    '<p style="font-size:13px;color:rgba(240,234,214,.6);margin-bottom:4px"><strong style="color:var(--gold)">Facilitador:</strong> '+(fac?fac.name+' — '+fac.estilo:'Não selecionado')+'</p>'+
-    '<p style="font-size:13px;color:rgba(240,234,214,.6);margin-bottom:4px"><strong style="color:var(--gold)">Frequência:</strong> '+(sala.dias.length>0?sala.dias.join(', ')+' às '+sala.horario:'Livre')+'</p>'+
-    '<p style="font-size:13px;color:rgba(240,234,214,.6)"><strong style="color:var(--gold)">Duração:</strong> '+sala.duracao+' minutos por sessão</p>';
+  var allFacs=FACILITADORES_GEN.concat(FACILITADORES_SPEC);
+  var html='<p style="font-size:15px;color:var(--text);margin-bottom:8px"><strong style="color:var(--gold)">Sala:</strong> '+(sala.nome||'Sem nome')+'</p>'+
+    '<p style="font-size:14px;color:#5A4E3C;margin-bottom:4px"><strong style="color:var(--gold)">Objetivo:</strong> '+(sala.objetivo||'-')+'</p>'+
+    '<p style="font-size:14px;color:#5A4E3C;margin-bottom:8px"><strong style="color:var(--gold)">Frequência:</strong> '+(sala.dias.length>0?sala.dias.join(', ')+' às '+sala.horario:'Livre')+' · '+sala.duracao+' min</p>';
+  sala.livros.forEach(function(b){
+    var fac=allFacs.find(function(f){return f.id===b.facilitador;});
+    html+='<div style="background:var(--soft);border-radius:10px;padding:10px 12px;margin-bottom:6px">'+
+      '<p style="font-size:14px;color:var(--text)"><strong>'+b.icon+' '+b.name+'</strong></p>'+
+      '<p style="font-size:13px;color:#8A7D6B">'+
+      (b.tipo==='grupo'?'👥 Grupo ('+((b.membros||[]).length)+' membros)':'🧘 Solo')+
+      ' · Facilitador: '+(fac?fac.name:'—')+'</p></div>';
+  });
   document.getElementById('resumo').innerHTML=html;
 }
 
