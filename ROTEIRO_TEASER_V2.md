@@ -79,7 +79,7 @@ NARRADOR: "Uma sessão de passe espiritual guiada... na palma da sua mão. Seis 
 VISUAL: Tudo converge em espiral. Logo MASTER SPIRIT. Tagline. Mil velas acesas (vs. vela apagada do início).
 MÚSICA: Clímax orquestral. Coro fortíssimo. Piano solo última nota.
 SFX: Impacto. Vela sendo acesa.
-NARRADOR (66s-70s): "Seis mestres. Centenas de livros. O Evangelho no Lar. O passe espiritual. Tudo... num único app."
+NARRADOR (66s-70s): "Seis mestres. Dezenas de obras disponíveis para estudo. O Evangelho no Lar. O passe espiritual. Tudo... num único app."
 NARRADOR (70s-73s): "MASTER SPIRIT. A revolução espiritual... começou."
 NARRADOR (73s-75s): "Entre agora. Sua jornada espera por você."
 
