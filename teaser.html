@@ -461,25 +461,9 @@ function unlockAndStart(){
 
 // ── START ──
 window.addEventListener('load',function(){
-  // Tentar autoplay (funciona no desktop)
-  audio=new Audio('teaser-music.mp3');
-  audio.volume=0.85;
-  audio.loop=true;
-  var p=audio.play();
-  if(p!==undefined){
-    p.then(function(){
-      // Desktop: autoplay funcionou
-      document.getElementById('audio-unlock').style.display='none';
-      document.getElementById('mute-btn').textContent='🔊';
-      _firstInteraction=false;
-      goToScene(0);
-    }).catch(function(){
-      // Mobile/iOS: autoplay bloqueado — mostrar overlay
-      audio.pause();
-      audio=null;
-      document.getElementById('mute-btn').textContent='🔇';
-    });
-  }
+  // Sempre mostrar botão ASSISTIR (desktop e mobile)
+  // Garante som em todos os dispositivos
+  document.getElementById('mute-btn').textContent='🔇';
 });
 </script>
 </body>
