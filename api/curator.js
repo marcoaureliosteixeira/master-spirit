@@ -1,4 +1,4 @@
-// api/curator.js — Mestra Sophia: Curadora da Biblioteca Espiritual
+// api/curator.js — Mestre Emmanuel: Curadora da Biblioteca Espiritual
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
 
@@ -9,7 +9,7 @@ export default async function handler(req, res) {
 
   try {
     if (action === 'suggest_books') {
-      const prompt = `Você é a Mestra Sophia, curadora da Biblioteca Espiritual do Master Spirit. Você é uma especialista profunda em toda a literatura espírita, espiritualista e das tradições sagradas.
+      const prompt = `Você é a Mestre Emmanuel, curadora da Biblioteca Espiritual do Master Spirit. Você é uma especialista profunda em toda a literatura espírita, espiritualista e das tradições sagradas.
 
 Seu acervo inclui:
 - Codificação Kardecista (O Livro dos Espíritos, Livro dos Médiuns, Evangelho Segundo o Espiritismo, O Céu e o Inferno, A Gênese)
@@ -31,7 +31,7 @@ Sugira de 3 a 5 livros que melhor atendam esse objetivo. Para cada livro:
 - Autor
 - 1 frase explicando POR QUE este livro é relevante para o objetivo
 
-Responda como Sophia — acolhedora, sábia, fazendo conexões entre as obras.
+Responda como Emmanuel — acolhedora, sábia, fazendo conexões entre as obras.
 Formato: texto natural, não lista técnica. Máximo 200 palavras.
 Português brasileiro. NUNCA use markdown com asteriscos.`;
 

@@ -47,10 +47,10 @@ JESUS (28s-34s, vídeo): "Eu estive com você em cada noite de dúvida. Em cada 
 
 ## CENA 5 — AS SALAS DE ESTUDO (36s-46s)
 
-VISUAL: Páginas voando. Estante luminosa. Sala de estudo virtual. Mestra Sophia. Capítulos como mapa estelar.
+VISUAL: Páginas voando. Estante luminosa. Sala de estudo virtual. Mestre Emmanuel. Capítulos como mapa estelar.
 MÚSICA: Flauta e harpa. Descoberta.
 SFX: Páginas mágicas. Vozes estudando.
-NARRADOR: "Salas de estudo com inteligência artificial. Sozinho ou com até dez companheiros de jornada. Cada livro, cada capítulo... uma porta que se abre. A Mestra Sophia guia seu caminho. Cem por cento do conteúdo. Nenhum capítulo deixado para trás."
+NARRADOR: "Salas de estudo com inteligência artificial. Sozinho ou com até dez companheiros de jornada. Cada livro, cada capítulo... uma porta que se abre. Mestre Emmanuel guia seu caminho. Cem por cento do conteúdo. Nenhum capítulo deixado para trás."
 
 ---
 
