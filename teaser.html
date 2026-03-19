@@ -46,6 +46,13 @@ body{font-family:'Cormorant Garamond',Georgia,serif;-webkit-tap-highlight-color:
 /* Typewriter cursor */
 .cursor{display:inline-block;width:2px;height:1em;background:#C9A84C;margin-left:2px;animation:blink 1s step-end infinite}
 @keyframes blink{50%{opacity:0}}
+/* Video circle */
+.video-circle{width:min(55vw,280px);height:min(55vw,280px);border-radius:50%;overflow:hidden;border:2px solid rgba(201,168,76,.4);box-shadow:0 0 40px rgba(201,168,76,.25),0 0 80px rgba(100,60,200,.15);margin-bottom:16px;position:relative}
+.video-circle video{width:100%;height:100%;object-fit:cover;display:block}
+.video-ring-wrap{position:relative;display:inline-block}
+.video-ring{position:absolute;left:50%;top:50%;width:min(55vw,280px);height:min(55vw,280px);margin:min(-27.5vw,-140px) 0 0 min(-27.5vw,-140px);border-radius:50%;border:1px solid rgba(201,168,76,.4);opacity:0;z-index:-1}
+.video-ring:nth-child(1){animation:ringOut 2.5s ease-out 1s infinite}
+.video-ring:nth-child(2){animation:ringOut 2.5s ease-out 1.7s infinite;border-color:rgba(150,100,255,.3)}
 /* Skip hint */
 #skip-hint{position:fixed;bottom:44px;left:50%;transform:translateX(-50%);z-index:100;font-size:11px;color:rgba(240,234,214,.2);font-style:italic;letter-spacing:1px;transition:opacity 1s}
 /* Spirit logo animation (Hollywood style) */
@@ -97,18 +104,32 @@ body{font-family:'Cormorant Garamond',Georgia,serif;-webkit-tap-highlight-color:
 </div>
 
 <div class="scene" id="scene-1">
-  <p class="headline" id="headline-1"></p>
-  <div class="divider"></div>
-  <p class="sub" id="sub-1"></p>
+  <div class="video-ring-wrap">
+    <div class="video-ring"></div>
+    <div class="video-ring"></div>
+    <div class="video-circle">
+      <video id="jesus-video" playsinline muted preload="auto">
+        <source src="cena-jesus.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
+  <p class="headline" style="font-size:clamp(20px,4vw,32px)">JESUS</p>
+  <p class="sub">O Mestre da Galileia</p>
 </div>
 
 <div class="scene" id="scene-2">
+  <p class="headline" id="headline-2"></p>
+  <div class="divider"></div>
+  <p class="sub" id="sub-2"></p>
+</div>
+
+<div class="scene" id="scene-3">
   <p class="eyebrow">Mestres Espirituais</p>
   <p class="headline" style="font-size:clamp(22px,4vw,34px)">Cada Mestre, com sua Sabedoria e Personalidade.<br>Falando com você, na primeira pessoa.</p>
   <div class="masters-row" id="masters-row"></div>
 </div>
 
-<div class="scene" id="scene-3">
+<div class="scene" id="scene-4">
   <p class="eyebrow">O Consolador</p>
   <p class="headline" style="font-size:clamp(22px,4vw,34px)">Uma conversa que transforma.</p>
   <div class="divider"></div>
@@ -118,20 +139,20 @@ body{font-family:'Cormorant Garamond',Georgia,serif;-webkit-tap-highlight-color:
   </div>
 </div>
 
-<div class="scene" id="scene-4">
+<div class="scene" id="scene-5">
   <p class="eyebrow">Evangelho no Lar</p>
   <p class="headline" style="font-size:clamp(22px,4vw,34px)">Reúna sua família<br>e transforme seu lar.</p>
   <div class="divider"></div>
   <p class="sub">Uma sessão guiada com mestres facilitadores.<br>Semanal. Simples. Profunda.</p>
 </div>
 
-<div class="scene" id="scene-5">
-  <p class="headline" id="headline-5"></p>
+<div class="scene" id="scene-6">
+  <p class="headline" id="headline-6"></p>
   <div class="divider" style="margin-top:20px"></div>
-  <p class="sub" id="sub-5" style="margin-top:12px"></p>
+  <p class="sub" id="sub-6" style="margin-top:12px"></p>
 </div>
 
-<div class="scene" id="scene-6">
+<div class="scene" id="scene-7">
   <div class="spirit-logo-sm">
     <div class="spirit-ring-sm"></div>
     <div class="spirit-ring-sm"></div>
@@ -155,12 +176,14 @@ body{font-family:'Cormorant Garamond',Georgia,serif;-webkit-tap-highlight-color:
 // 1 voz = 1 cena (teaser-voice-00.mp3 a teaser-voice-06.mp3)
 var _voiceAudio=null;
 
-// Durações reais de cada voz em segundos
-var VOICE_DURATIONS=[28,16,11,15,13,9,12];
+// Durações: cena 0=abertura, 1=vídeo Jesus (duração do vídeo), 2-7=vozes
+var VOICE_DURATIONS=[28,0,16,11,15,13,9,12];
 
 function playSceneVoice(sceneIdx){
   stopSceneVoice();
   if(muted) return;
+  // Cena 1 (vídeo Jesus) e cena 7 (CTA) não têm voz separada
+  if(sceneIdx===1||sceneIdx===7) return;
   // Usar voz pré-carregada do pool (iOS compatível)
   _voiceAudio=_voicePool[sceneIdx];
   if(!_voiceAudio){
@@ -176,7 +199,7 @@ function playSceneVoice(sceneIdx){
   _voiceAudio.play().catch(function(){});
   // Timer baseado na duração da voz
   if(autoTimer){clearTimeout(autoTimer);autoTimer=null;}
-  if(sceneIdx<6){
+  if(sceneIdx<7){
     autoTimer=setTimeout(function(){
       stopSceneVoice();
       goToScene(currentScene+1);
@@ -191,12 +214,13 @@ function stopSceneVoice(){
 
 var SCENES=[
   {id:'scene-0',duration:23000,onEnter:enterScene0},
-  {id:'scene-1',duration:12000,onEnter:enterScene1},
-  {id:'scene-2',duration:7000,onEnter:enterScene2},
-  {id:'scene-3',duration:11000,onEnter:enterScene3},
-  {id:'scene-4',duration:9000,onEnter:null},
-  {id:'scene-5',duration:5000,onEnter:enterScene5},
-  {id:'scene-6',duration:999999,onEnter:null}
+  {id:'scene-1',duration:60000,onEnter:enterSceneJesus},
+  {id:'scene-2',duration:12000,onEnter:enterScene2},
+  {id:'scene-3',duration:7000,onEnter:enterScene3},
+  {id:'scene-4',duration:11000,onEnter:enterScene4},
+  {id:'scene-5',duration:9000,onEnter:null},
+  {id:'scene-6',duration:5000,onEnter:enterScene6},
+  {id:'scene-7',duration:999999,onEnter:null}
 ];
 var currentScene=0;
 var autoTimer=null;
@@ -274,7 +298,7 @@ function goToScene(n){
   var fill=document.getElementById('progress-fill');
   var voiceDur=(VOICE_DURATIONS[n]||10)+1;
   fill.style.transition='none';fill.style.width='0%';
-  if(n<6){
+  if(n<7){
     setTimeout(function(){fill.style.transition='width '+(voiceDur*1000)+'ms linear';fill.style.width='100%';},50);
   }
   // Hide skip hint after first interaction
@@ -305,14 +329,32 @@ function enterScene0(){
   if(logo){var clone=logo.cloneNode(true);logo.parentNode.replaceChild(clone,logo);}
 }
 
-function enterScene1(){
-  wordByWord('headline-1','Imagine poder conversar\ncomigo, o Mestre da Galileia.',400);
-  setTimeout(function(){
-    wordByWord('sub-1','Com Kardec,\nChico Xavier e outros Mestres\nConhecer a Verdade.\nDescobrir a sua Jornada.',350);
-  },3500);
+function enterSceneJesus(){
+  var v=document.getElementById('jesus-video');
+  if(v){
+    v.currentTime=0;
+    v.muted=false;
+    v.play().catch(function(){});
+    // Baixar música durante vídeo
+    if(audio) audio.volume=0.15;
+    // Avançar quando vídeo terminar
+    v.onended=function(){
+      if(audio&&!muted) audio.volume=0.85;
+      setTimeout(function(){goToScene(currentScene+1);},1000);
+    };
+    // Cancelar timer fixo — vídeo controla
+    if(autoTimer){clearTimeout(autoTimer);autoTimer=null;}
+  }
 }
 
 function enterScene2(){
+  wordByWord('headline-2','Imagine poder conversar\ncomigo, o Mestre da Galileia.',400);
+  setTimeout(function(){
+    wordByWord('sub-2','Com Kardec,\nChico Xavier e outros Mestres\nConhecer a Verdade.\nDescobrir a sua Jornada.',350);
+  },3500);
+}
+
+function enterScene3(){
   var row=document.getElementById('masters-row');
   row.innerHTML='';
   var masters=['avatar-jesus.png','avatar-kardec.png','avatar-chico-xavier.png','avatar-bezerra.png','avatar-divaldo.png','avatar-krishna.png'];
@@ -326,7 +368,7 @@ function enterScene2(){
   });
 }
 
-function enterScene3(){
+function enterScene4(){
   var el=document.getElementById('typewriter-text');
   el.innerHTML='';
   var text='Filho, eu estou aqui.\nNão importa a dor que carregas\n— eu já a conheci antes de ti.\nFala comigo...';
@@ -347,9 +389,9 @@ function enterScene3(){
   type();
 }
 
-function enterScene5(){
+function enterScene6(){
   var words=['Você','encontrou','o','Caminho.'];
-  var el=document.getElementById('headline-5');
+  var el=document.getElementById('headline-6');
   el.innerHTML='';
   words.forEach(function(w,i){
     var span=document.createElement('span');
@@ -359,7 +401,7 @@ function enterScene5(){
     el.appendChild(span);
   });
   setTimeout(function(){
-    var sub=document.getElementById('sub-5');
+    var sub=document.getElementById('sub-6');
     sub.style.opacity='0';
     sub.innerHTML='O Caminho da Luz e do Amor.';
     sub.style.transition='opacity 2s ease';
@@ -406,7 +448,7 @@ function initAudio(){
 
 function preloadVoices(){
   // Pré-carregar todas as vozes DENTRO do handler de toque (obrigatório iOS)
-  for(var i=0;i<=6;i++){
+  for(var i=0;i<=7;i++){
     var a=new Audio('teaser-voice-'+String(i).padStart(2,'0')+'.mp3');
     a.load();
     _voicePool[i]=a;
