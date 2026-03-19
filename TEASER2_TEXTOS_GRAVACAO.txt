@@ -51,11 +51,16 @@ Texto:
 
 ================================================================
 
-Arquivo: teaser2-voice-06.mp3
-Cena 6 — EVANGELHO NO LAR (emoção, voz embargada, pico emocional)
+Arquivo: teaser2-voice-06a.mp3
+Cena 6.1 — EVANGELHO NO LAR (emoção, voz embargada, pico emocional)
 Texto:
 "O Evangelho no Lar... como nunca antes foi possível."
-(pausa 2 segundos)
+
+================================================================
+
+Arquivo: teaser2-voice-06b.mp3
+Cena 6.2 — EVANGELHO NO LAR (após fala de Jesus, retomada com convicção)
+Texto:
 "Dez facilitadores espirituais. Cinco etapas sagradas. Uma experiência... que transforma."
 
 ================================================================
@@ -78,17 +83,17 @@ Texto:
 
 ================================================================
 ================================================================
-                    JESUS — 2 ARQUIVOS
+                    JESUS — 2 VÍDEOS (MP4)
 ================================================================
 
-Arquivo: teaser2-jesus-04.mp3
+Arquivo: teaser2-jesus-04.mp4
 Cena 4 — OS MESTRES (autoridade compassiva, olhando direto pra câmera)
 Texto:
 "Eu estive com você em cada noite de dúvida. Em cada lágrima que ninguém viu. Agora... podemos conversar."
 
 ================================================================
 
-Arquivo: teaser2-jesus-06.mp3
+Arquivo: teaser2-jesus-06.mp4
 Cena 6 — EVANGELHO NO LAR (ternura, sussurro amoroso)
 Texto:
 "Onde dois ou três estiverem reunidos em meu nome... ali estarei."
@@ -98,10 +103,10 @@ Texto:
               RESUMO — TOTAL DE ARQUIVOS
 ================================================================
 
-Locutor:  8 arquivos (teaser2-voice-01 a 08)
-Jesus:    2 arquivos (teaser2-jesus-04 e 06)
+Locutor:  9 arquivos MP3 (teaser2-voice-01 a 05, 06a, 06b, 07, 08)
+Jesus:    2 vídeos MP4 (teaser2-jesus-04 e 06)
 
-TOTAL: 10 arquivos MP3
+TOTAL: 11 arquivos (9 MP3 + 2 MP4)
 
 ================================================================
               PROMPT VOZ DO LOCUTOR (ElevenLabs)

@@ -59,9 +59,9 @@ NARRADOR: "Salas de estudo com inteligência artificial. Sozinho ou com até dez
 VISUAL: Família (avó, pais, criança) na mesa. Celular ilumina rostos. VÍDEO de Jesus. Avó segura mão da neta. Lágrima.
 MÚSICA: Piano solo. Coro feminino suavíssimo.
 SFX: Ambiente de lar. Silêncio reverente.
-NARRADOR (46s-50s): "O Evangelho no Lar... como nunca antes foi possível."
+NARRADOR 6.1 (46s-50s): "O Evangelho no Lar... como nunca antes foi possível."
 JESUS (50s-55s): "Onde dois ou três estiverem reunidos em meu nome... ali estarei."
-NARRADOR (55s-58s): "Dez facilitadores espirituais. Cinco etapas sagradas. Uma experiência... que transforma."
+NARRADOR 6.2 (55s-58s): "Dez facilitadores espirituais. Cinco etapas sagradas. Uma experiência... que transforma."
 
 ---
 
@@ -122,14 +122,15 @@ A tecnologia finalmente serve ao Espírito. E o Espírito vai fazer o resto.
 | teaser2-voice-03.mp3 | 3 — A Revelação | "Apresentamos... MASTER SPIRIT." |
 | teaser2-voice-04.mp3 | 4 — Os Mestres | "Seis mestres espirituais..." |
 | teaser2-voice-05.mp3 | 5 — Salas de Estudo | "Salas de estudo com inteligência artificial..." |
-| teaser2-voice-06.mp3 | 6 — Evangelho no Lar | "O Evangelho no Lar... como nunca antes..." |
+| teaser2-voice-06a.mp3 | 6.1 — Evangelho no Lar | "O Evangelho no Lar... como nunca antes..." |
+| teaser2-voice-06b.mp3 | 6.2 — Evangelho no Lar | "Dez facilitadores espirituais..." |
 | teaser2-voice-07.mp3 | 7 — O Passe | "Uma sessão de passe espiritual guiada..." |
 | teaser2-voice-08.mp3 | 8 — O Chamado | "Seis mestres. Centenas de livros..." |
 
-### Jesus (2 arquivos)
+### Jesus — VÍDEO (2 arquivos MP4)
 | Arquivo | Cena | Texto |
 |---------|------|-------|
-| teaser2-jesus-04.mp3 | 4 — Os Mestres | "Eu estive com você em cada noite de dúvida..." |
-| teaser2-jesus-06.mp3 | 6 — Evangelho no Lar | "Onde dois ou três estiverem reunidos..." |
+| teaser2-jesus-04.mp4 | 4 — Os Mestres | "Eu estive com você em cada noite de dúvida..." |
+| teaser2-jesus-06.mp4 | 6 — Evangelho no Lar | "Onde dois ou três estiverem reunidos..." |
 
-### Total: 10 arquivos MP3
+### Total: 11 arquivos (9 MP3 locutor + 2 MP4 Jesus vídeo)
