@@ -1356,8 +1356,15 @@ window.addEventListener('load',()=>{
   initStars();
   initSettings();
   loadRooms();
+  // Verificar parâmetro ?tab= na URL
+  var urlParams=new URLSearchParams(window.location.search);
+  var requestedTab=urlParams.get('tab');
+  if(requestedTab){
+    skipSplash();
+    tab=requestedTab;
+  }
   // Skip splash se já viu nesta sessão
-  if(sessionStorage.getItem('spirit_splash_seen')){
+  else if(sessionStorage.getItem('spirit_splash_seen')){
     skipSplash();
   } else {
     // Splash visível — iniciar música (precisa de interação no iOS)
