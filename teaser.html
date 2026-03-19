@@ -448,31 +448,35 @@ document.addEventListener('keydown',function(e){
 function unlockAndStart(){
   var overlay=document.getElementById('audio-unlock');
   if(overlay) overlay.style.display='none';
-  // Usar o audio já criado no load (não criar novo)
-  if(!audio) initAudio();
+  // CRIAR o Audio aqui dentro do handler de toque (obrigatório no iOS)
+  audio=new Audio('teaser-music.mp3');
+  audio.volume=0.85;
+  audio.loop=true;
+  audio.play();
   muted=false;
   _firstInteraction=false;
-  // Play música — interação do usuário garante desbloqueio no iOS
-  audio.play().then(function(){
-    document.getElementById('mute-btn').textContent='🔊';
-  }).catch(function(e){console.warn('audio play failed:',e);});
+  document.getElementById('mute-btn').textContent='🔊';
   goToScene(0);
 }
 
 // ── START ──
 window.addEventListener('load',function(){
-  initAudio();
-  // Tentar autoplay
+  // Tentar autoplay (funciona no desktop)
+  audio=new Audio('teaser-music.mp3');
+  audio.volume=0.85;
+  audio.loop=true;
   var p=audio.play();
   if(p!==undefined){
     p.then(function(){
-      // Desktop: autoplay funcionou — esconder overlay e começar
+      // Desktop: autoplay funcionou
       document.getElementById('audio-unlock').style.display='none';
       document.getElementById('mute-btn').textContent='🔊';
       _firstInteraction=false;
       goToScene(0);
     }).catch(function(){
-      // Mobile/iOS: autoplay bloqueado — overlay fica visível
+      // Mobile/iOS: autoplay bloqueado — mostrar overlay
+      audio.pause();
+      audio=null;
       document.getElementById('mute-btn').textContent='🔇';
     });
   }
