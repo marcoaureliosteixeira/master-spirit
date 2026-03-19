@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="theme-color" content="#F7F4EE">
+<title>MASTER SPIRIT — Completar Cadastro</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#8B7535;--accent:#C9A84C;--bg:#F7F4EE;--text:#2C2416;--card-bg:#FFFFFF;--card-border:#E8E0D0;--soft:#F0EBE1;--font:'Cormorant Garamond',Georgia,serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:auto}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:18px}
+#page{max-width:600px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;padding:20px 18px}
+/* Header */
+.header{text-align:center;margin-bottom:24px}
+.header img{width:60px;height:60px;border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.3);margin-bottom:10px}
+.header h1{font-family:'Cinzel Decorative',serif;font-size:20px;color:var(--gold);letter-spacing:3px;margin-bottom:4px}
+.header p{font-size:15px;font-style:italic;color:#8A7D6B}
+/* Progress */
+.progress{display:flex;gap:6px;margin-bottom:24px}
+.prog-dot{flex:1;height:4px;border-radius:4px;background:var(--card-border)}
+.prog-dot.done{background:#6BAF7C}
+.prog-dot.current{background:var(--accent)}
+/* Steps */
+.step{display:none;animation:fadeup .4s ease}
+.step.active{display:block}
+@keyframes fadeup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.step-title{font-family:'Cinzel',serif;font-size:14px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:6px}
+.step-sub{font-size:15px;color:#8A7D6B;font-style:italic;margin-bottom:18px}
+/* Fields */
+.field{margin-bottom:16px}
+.field-label{font-family:'Cinzel',serif;font-size:11px;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:4px}
+.field-label .req{color:#C75050;font-size:14px}
+.field-input{width:100%;background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:14px 16px;color:var(--text);font-family:var(--font);font-size:17px;outline:none;transition:border-color .2s;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.field-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(201,168,76,.12)}
+.field-input::placeholder{color:#B8AFA0}
+select.field-input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238B7535' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center}
+/* Radio/Toggle */
+.toggle-row{display:flex;gap:10px;margin-bottom:16px}
+.toggle-opt{flex:1;padding:14px;border-radius:12px;border:1px solid var(--card-border);background:var(--card-bg);cursor:pointer;text-align:center;font-size:16px;color:#5A4E3C;transition:all .2s;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.toggle-opt:hover{border-color:var(--accent)}
+.toggle-opt.active{background:#FDF6E8;border-color:var(--accent);color:var(--gold);font-weight:600}
+/* Chips */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.chip{padding:10px 16px;border-radius:20px;border:1px solid var(--card-border);background:var(--card-bg);cursor:pointer;font-size:14px;color:#5A4E3C;transition:all .2s}
+.chip:hover{border-color:var(--accent)}
+.chip.active{background:#FDF6E8;border-color:var(--accent);color:var(--gold)}
+/* Buttons */
+.btn-next{width:100%;padding:16px;background:var(--accent);border:none;border-radius:14px;color:#fff;font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;cursor:pointer;text-transform:uppercase;margin-top:12px;box-shadow:0 2px 8px rgba(201,168,76,.25)}
+.btn-next:hover{background:#B8942F}
+.btn-back{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:14px;color:#8A7D6B;font-family:'Cinzel',serif;font-size:11px;letter-spacing:1.5px;cursor:pointer;width:100%;margin-top:10px}
+.status{font-size:14px;color:#C75050;text-align:center;margin-top:8px;min-height:20px}
+</style>
+</head>
+<body>
+<div id="page">
+  <div class="header">
+    <img src="master-spirit-avatar.png" alt="Master Spirit" onerror="this.src='logo.png'">
+    <h1>MASTER SPIRIT</h1>
+    <p>Conte-nos sobre você para personalizar sua experiência</p>
+  </div>
+
+  <div class="progress" id="progress"></div>
+
+  <!-- STEP 1: Dados Pessoais -->
+  <div class="step active" id="step-1">
+    <p class="step-title">Dados Pessoais</p>
+    <p class="step-sub">Para que os mestres possam te chamar pelo nome</p>
+    <div class="field">
+      <p class="field-label">Nome Completo <span class="req">*</span></p>
+      <input class="field-input" id="f-nome" type="text" placeholder="Seu nome completo">
+    </div>
+    <div class="field">
+      <p class="field-label">Data de Nascimento <span class="req">*</span></p>
+      <input class="field-input" id="f-nasc" type="date">
+    </div>
+    <div class="field">
+      <p class="field-label">Cidade / Estado <span class="req">*</span></p>
+      <input class="field-input" id="f-cidade" type="text" placeholder="Ex: São Paulo / SP">
+    </div>
+    <div class="field">
+      <p class="field-label">Celular / WhatsApp</p>
+      <input class="field-input" id="f-celular" type="tel" placeholder="(11) 99999-9999">
+    </div>
+    <button class="btn-next" onclick="goStep(2)">Próximo →</button>
+  </div>
+
+  <!-- STEP 2: Experiência Espírita -->
+  <div class="step" id="step-2">
+    <p class="step-title">Sua Jornada Espiritual</p>
+    <p class="step-sub">Isso ajuda os mestres a adaptar a linguagem ao seu nível</p>
+    <div class="field">
+      <p class="field-label">Há quanto tempo estuda espiritismo? <span class="req">*</span></p>
+      <div class="toggle-row">
+        <div class="toggle-opt" onclick="setField('experiencia','iniciante',this)">Iniciante</div>
+        <div class="toggle-opt" onclick="setField('experiencia','1-5',this)">1-5 anos</div>
+        <div class="toggle-opt" onclick="setField('experiencia','5-15',this)">5-15 anos</div>
+        <div class="toggle-opt" onclick="setField('experiencia','15+',this)">15+ anos</div>
+      </div>
+    </div>
+    <div class="field">
+      <p class="field-label">Frequenta centro espírita? <span class="req">*</span></p>
+      <div class="toggle-row">
+        <div class="toggle-opt" onclick="setField('frequenta','sim',this);document.getElementById('centro-field').style.display='block'">Sim</div>
+        <div class="toggle-opt" onclick="setField('frequenta','nao',this);document.getElementById('centro-field').style.display='none'">Não</div>
+        <div class="toggle-opt" onclick="setField('frequenta','esporadico',this);document.getElementById('centro-field').style.display='block'">Às vezes</div>
+      </div>
+    </div>
+    <div class="field" id="centro-field" style="display:none">
+      <p class="field-label">Nome do Centro Espírita</p>
+      <input class="field-input" id="f-centro" type="text" placeholder="Ex: Centro Espírita Lar de Jesus">
+    </div>
+    <button class="btn-next" onclick="goStep(3)">Próximo →</button>
+    <button class="btn-back" onclick="goStep(1)">← Voltar</button>
+  </div>
+
+  <!-- STEP 3: Interesses -->
+  <div class="step" id="step-3">
+    <p class="step-title">Áreas de Interesse</p>
+    <p class="step-sub">Selecione os temas que mais te atraem (pode marcar vários)</p>
+    <div class="chips" id="chips-interesses">
+      <div class="chip" onclick="toggleChip(this,'Consolo e amparo')">🕊️ Consolo e amparo</div>
+      <div class="chip" onclick="toggleChip(this,'Estudo doutrinário')">📖 Estudo doutrinário</div>
+      <div class="chip" onclick="toggleChip(this,'Mediunidade')">🌀 Mediunidade</div>
+      <div class="chip" onclick="toggleChip(this,'Vida após a morte')">🌟 Vida após a morte</div>
+      <div class="chip" onclick="toggleChip(this,'Reencarnação')">🔄 Reencarnação</div>
+      <div class="chip" onclick="toggleChip(this,'Evangelho no Lar')">🕯️ Evangelho no Lar</div>
+      <div class="chip" onclick="toggleChip(this,'Passe e cura espiritual')">🙌 Passe e cura espiritual</div>
+      <div class="chip" onclick="toggleChip(this,'Cosmologia (Urantia)')">◎ Cosmologia (Urantia)</div>
+      <div class="chip" onclick="toggleChip(this,'Tradições orientais')">⊕ Tradições orientais</div>
+      <div class="chip" onclick="toggleChip(this,'Contato extraterrestre')">🛸 Contato extraterrestre</div>
+      <div class="chip" onclick="toggleChip(this,'Reforma íntima')">💛 Reforma íntima</div>
+      <div class="chip" onclick="toggleChip(this,'Família e educação')">👨‍👩‍👧 Família e educação</div>
+    </div>
+    <div class="field">
+      <p class="field-label">Como conheceu o Master Spirit?</p>
+      <select class="field-input" id="f-como">
+        <option value="">Selecione...</option>
+        <option value="indicacao">Indicação de amigo</option>
+        <option value="centro">Centro espírita</option>
+        <option value="rede-social">Rede social</option>
+        <option value="busca">Busca no Google</option>
+        <option value="whatsapp">WhatsApp</option>
+        <option value="outro">Outro</option>
+      </select>
+    </div>
+    <button class="btn-next" onclick="salvarCadastro()">✦ Concluir Cadastro</button>
+    <button class="btn-back" onclick="goStep(2)">← Voltar</button>
+    <p class="status" id="cadastro-status"></p>
+  </div>
+</div>
+
+<script>
+var perfil={nome:'',nascimento:'',cidade:'',celular:'',experiencia:'',frequenta:'',centro:'',interesses:[],como:''};
+var totalSteps=3;
+
+function updateProgress(n){
+  var el=document.getElementById('progress');
+  var html='';
+  for(var i=1;i<=totalSteps;i++){
+    html+='<div class="prog-dot'+(i<n?' done':'')+(i===n?' current':'')+'"></div>';
+  }
+  el.innerHTML=html;
+}
+
+function goStep(n){
+  // Validações
+  if(n===2){
+    perfil.nome=document.getElementById('f-nome').value.trim();
+    perfil.nascimento=document.getElementById('f-nasc').value;
+    perfil.cidade=document.getElementById('f-cidade').value.trim();
+    perfil.celular=document.getElementById('f-celular').value.trim();
+    if(!perfil.nome){alert('Digite seu nome completo.');return;}
+    if(!perfil.nascimento){alert('Informe sua data de nascimento.');return;}
+    if(!perfil.cidade){alert('Informe sua cidade e estado.');return;}
+  }
+  if(n===3){
+    if(!perfil.experiencia){alert('Selecione há quanto tempo estuda espiritismo.');return;}
+    if(!perfil.frequenta){alert('Informe se frequenta centro espírita.');return;}
+    perfil.centro=document.getElementById('f-centro')?.value.trim()||'';
+  }
+  document.querySelectorAll('.step').forEach(function(s){s.classList.remove('active');});
+  document.getElementById('step-'+n).classList.add('active');
+  updateProgress(n);
+  window.scrollTo(0,0);
+}
+
+function setField(field,value,el){
+  perfil[field]=value;
+  el.parentElement.querySelectorAll('.toggle-opt').forEach(function(o){o.classList.remove('active');});
+  el.classList.add('active');
+}
+
+function toggleChip(el,value){
+  el.classList.toggle('active');
+  var idx=perfil.interesses.indexOf(value);
+  if(idx>=0) perfil.interesses.splice(idx,1);
+  else perfil.interesses.push(value);
+}
+
+async function salvarCadastro(){
+  perfil.como=document.getElementById('f-como').value;
+  var status=document.getElementById('cadastro-status');
+  if(perfil.interesses.length===0){status.textContent='Selecione pelo menos uma área de interesse.';return;}
+  status.style.color='var(--gold)';
+  status.textContent='Salvando...';
+
+  // Salvar no localStorage
+  localStorage.setItem('spirit_profile',JSON.stringify(perfil));
+  localStorage.setItem('spirit_cadastro_done','true');
+
+  // Salvar no Supabase
+  try{
+    if(window._sb){
+      var session=await window._sb.auth.getSession();
+      var user=session?.data?.session?.user;
+      if(user){
+        await window._sb.from('user_profiles').upsert({
+          id:user.id,
+          nome:perfil.nome,
+          nascimento:perfil.nascimento,
+          cidade:perfil.cidade,
+          celular:perfil.celular,
+          experiencia:perfil.experiencia,
+          frequenta_centro:perfil.frequenta,
+          centro_nome:perfil.centro,
+          interesses:perfil.interesses,
+          como_conheceu:perfil.como,
+          updated_at:new Date().toISOString()
+        },{onConflict:'id'});
+      }
+    }
+  }catch(e){console.warn('Profile save error:',e);}
+
+  status.style.color='#6BAF7C';
+  status.textContent='Cadastro salvo com sucesso!';
+  setTimeout(function(){window.location.href='app.html';},1500);
+}
+
+// Init
+updateProgress(1);
+// Check if already done
+if(localStorage.getItem('spirit_cadastro_done')==='true'){
+  window.location.href='app.html';
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" onload="initSupa()"></script>
+<script>
+function initSupa(){
+  try{
+    window._sb=window.supabase.createClient('https://jwdvbtujzvqvktzxycwj.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp3ZHZidHVqenZxdmt0enh5Y3dqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1Mjc2NDksImV4cCI6MjA4OTEwMzY0OX0.ZfkRgdYcTjYF_E4qr1_1CZMtSiCvKLeUsoRSLoO16Mw');
+    window._sb.auth.getSession().then(function(r){
+      if(!r.data||!r.data.session) window.location.href='index.html';
+      else{
+        // Pré-preencher nome do Google OAuth se disponível
+        var user=r.data.session.user;
+        var meta=user?.user_metadata;
+        if(meta?.full_name&&!document.getElementById('f-nome').value){
+          document.getElementById('f-nome').value=meta.full_name;
+        }
+      }
+    });
+  }catch(e){}
+}
+</script>
+</body>
+</html>

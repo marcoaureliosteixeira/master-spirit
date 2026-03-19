@@ -81,5 +81,31 @@ CREATE POLICY "Users can view invites for their email" ON study_group_invites
 CREATE POLICY "Users can view their room access" ON room_access
   FOR SELECT USING (user_id = auth.uid());
 
+-- 7. Perfil do Usuário (cadastro completo)
+CREATE TABLE IF NOT EXISTS user_profiles (
+  id UUID PRIMARY KEY REFERENCES auth.users(id),
+  nome TEXT,
+  nascimento DATE,
+  cidade TEXT,
+  celular TEXT,
+  experiencia TEXT CHECK (experiencia IN ('iniciante', '1-5', '5-15', '15+')),
+  frequenta_centro TEXT CHECK (frequenta_centro IN ('sim', 'nao', 'esporadico')),
+  centro_nome TEXT,
+  interesses TEXT[],
+  como_conheceu TEXT,
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE user_profiles ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view own profile" ON user_profiles
+  FOR SELECT USING (id = auth.uid());
+
+CREATE POLICY "Users can upsert own profile" ON user_profiles
+  FOR INSERT WITH CHECK (id = auth.uid());
+
+CREATE POLICY "Users can update own profile" ON user_profiles
+  FOR UPDATE USING (id = auth.uid());
+
 -- Service role pode tudo (usado pela API server-side)
 -- Não precisa de policy adicional pois a API usa SUPABASE_SERVICE_KEY
