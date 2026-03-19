@@ -186,6 +186,7 @@ var SCENES=[
 ];
 var currentScene=0;
 var autoTimer=null;
+var _voiceTimer=null;
 var audio=null;
 var muted=false;
 
@@ -239,7 +240,13 @@ SCENES.forEach(function(_,i){
 // ── SCENE MANAGEMENT ──
 function goToScene(n){
   if(n<0||n>=SCENES.length) return;
+  // Cancelar auto-advance pendente
   if(autoTimer){clearTimeout(autoTimer);autoTimer=null;}
+  // FIX 1: Cancelar o setTimeout de 300ms que dispara playSceneVoice
+  // Sem isso, voz da cena anterior disparava na cena seguinte
+  if(_voiceTimer){clearTimeout(_voiceTimer);_voiceTimer=null;}
+  // FIX 2: Limpar voz pendente (desbloqueio de autoplay) para não tocar na cena errada
+  window._pendingVoice=null;
   // Hide current
   var cur=document.getElementById(SCENES[currentScene].id);
   if(cur) cur.classList.remove('active');
@@ -262,11 +269,17 @@ function goToScene(n){
   stopSceneVoice();
   // onEnter callback
   if(SCENES[n].onEnter) SCENES[n].onEnter();
-  // Narração da cena (delay curto só pra transição visual)
-  setTimeout(function(){playSceneVoice(n);},300);
-  // Auto advance controlado pela voz (playSceneVoice define o timer)
-  // Fallback: se voz não tocar, avança pelo timer fixo
-  if(dur<999999&&muted){
+  // FIX 3: Guard de cena — só dispara voz se ainda estivermos nessa cena
+  var capturedScene=n;
+  _voiceTimer=setTimeout(function(){
+    _voiceTimer=null;
+    if(currentScene===capturedScene){
+      playSceneVoice(capturedScene);
+    }
+  },300);
+  // FIX 4: 'dur' não estava definido neste escopo — corrigido para SCENES[n].duration
+  if(n<6&&muted){
+    var dur=SCENES[n].duration;
     autoTimer=setTimeout(function(){goToScene(n+1);},dur);
   }
 }
