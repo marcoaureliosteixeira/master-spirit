@@ -7,8 +7,8 @@
 <title>Master Spirit — Entre nessa jornada</title>
 <meta property="og:title" content="Master Spirit — Entre nessa jornada">
 <meta property="og:description" content="Converse com Jesus. Estude o Evangelho. Transforme seu lar.">
-<meta property="og:url" content="https://masterspirit.spyritsystems.com/landing.html">
-<meta property="og:image" content="https://masterspirit.spyritsystems.com/logo.png">
+<meta property="og:url" content="https://masterspirit.com.br/landing.html">
+<meta property="og:image" content="https://masterspirit.com.br/logo.png">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -18,101 +18,137 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{background:#060a16;color:#F5EFE0;font-family:'Cormorant Garamond',Georgia,serif;min-height:100vh}
-
-/* Stars */
 #stars{position:fixed;inset:0;pointer-events:none;z-index:0}
 .star{position:absolute;background:white;border-radius:50%;animation:tw var(--d,3s) ease-in-out infinite var(--dl,0s)}
 @keyframes tw{0%,100%{opacity:.05}50%{opacity:.65}}
 
-/* Hero */
-.hero{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;text-align:center}
-.hero-logo{width:80px;height:80px;object-fit:contain;mix-blend-mode:screen;margin-bottom:16px;filter:drop-shadow(0 0 20px rgba(201,168,76,.4))}
-.hero h1{font-family:'Cinzel Decorative',serif;font-size:clamp(28px,5vw,48px);color:#E8C97A;letter-spacing:clamp(4px,.8vw,8px);text-shadow:0 0 40px rgba(232,201,122,.4);margin-bottom:8px}
-.hero .tagline{font-style:italic;font-size:clamp(13px,2vw,18px);color:rgba(240,234,214,.45);letter-spacing:2px;margin-bottom:32px}
-.divider{width:60px;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.5),transparent);margin:0 auto 32px}
+.page{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:40px 20px 30px}
+.header{text-align:center;margin-bottom:32px}
+.header img{width:80px;height:80px;object-fit:contain;mix-blend-mode:screen;filter:drop-shadow(0 0 20px rgba(201,168,76,.4));margin-bottom:14px}
+.header h1{font-family:'Cinzel Decorative',serif;font-size:clamp(28px,5vw,44px);color:#E8C97A;letter-spacing:clamp(4px,.8vw,8px);text-shadow:0 0 40px rgba(232,201,122,.4);margin-bottom:6px}
+.header .tagline{font-style:italic;font-size:clamp(13px,2vw,17px);color:rgba(240,234,214,.4);letter-spacing:2px}
+.divider{width:60px;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.5),transparent);margin:16px auto}
 
 /* Video */
-.video-wrap{max-width:800px;width:100%;border-radius:16px;overflow:hidden;border:1px solid rgba(201,168,76,.25);box-shadow:0 8px 40px rgba(0,0,0,.5),0 0 60px rgba(201,168,76,.1);margin-bottom:40px}
-.video-wrap video{width:100%;display:block;background:#000}
+.video-section{text-align:center;margin-bottom:32px}
+.video-thumb{position:relative;max-width:600px;margin:0 auto;border-radius:16px;overflow:hidden;border:1px solid rgba(201,168,76,.2);cursor:pointer;transition:all .3s}
+.video-thumb:hover{border-color:rgba(201,168,76,.5);box-shadow:0 4px 30px rgba(201,168,76,.15)}
+.video-thumb video{width:100%;display:block;background:#000}
+.play-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(6,10,22,.5);transition:opacity .3s}
+.play-overlay.hidden{opacity:0;pointer-events:none}
+.play-btn{width:70px;height:70px;border-radius:50%;background:rgba(201,168,76,.2);border:2px solid rgba(201,168,76,.6);display:flex;align-items:center;justify-content:center;transition:all .3s}
+.play-btn:hover{background:rgba(201,168,76,.35);transform:scale(1.1)}
+.play-btn span{font-size:28px;color:#E8C97A;margin-left:4px}
+.video-label{font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:rgba(201,168,76,.5);margin-top:10px;text-transform:uppercase}
 
 /* CTA */
-.cta-section{margin-bottom:40px}
-.cta-btn{display:inline-block;background:linear-gradient(135deg,rgba(201,168,76,.25),rgba(232,201,122,.15));border:1px solid rgba(201,168,76,.6);border-radius:50px;padding:18px 52px;cursor:pointer;font-family:'Cinzel',serif;font-size:clamp(12px,2vw,16px);letter-spacing:clamp(3px,.5vw,5px);color:#E8C97A;text-transform:uppercase;text-decoration:none;transition:all .3s;box-shadow:0 0 30px rgba(201,168,76,.15)}
-.cta-btn:hover{background:linear-gradient(135deg,rgba(201,168,76,.4),rgba(232,201,122,.25));box-shadow:0 0 60px rgba(201,168,76,.3);transform:translateY(-3px)}
+.cta-section{text-align:center;margin-bottom:36px}
+.cta-btn{display:inline-block;background:linear-gradient(135deg,rgba(201,168,76,.25),rgba(232,201,122,.15));border:1px solid rgba(201,168,76,.6);border-radius:50px;padding:16px 48px;font-family:'Cinzel',serif;font-size:clamp(11px,1.8vw,14px);letter-spacing:clamp(3px,.5vw,5px);color:#E8C97A;text-transform:uppercase;text-decoration:none;transition:all .3s;box-shadow:0 0 30px rgba(201,168,76,.12)}
+.cta-btn:hover{background:linear-gradient(135deg,rgba(201,168,76,.4),rgba(232,201,122,.25));box-shadow:0 0 60px rgba(201,168,76,.25);transform:translateY(-2px)}
 
-/* Features */
-.features{max-width:700px;width:100%;margin:0 auto 40px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:0 16px}
-.feat{background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.15);border-radius:14px;padding:20px 14px;text-align:center}
-.feat-ico{font-size:28px;margin-bottom:8px;display:block}
-.feat-title{font-family:'Cinzel',serif;font-size:10px;letter-spacing:1.5px;color:#C9A84C;text-transform:uppercase;margin-bottom:4px}
-.feat-desc{font-size:13px;color:rgba(240,234,214,.45);line-height:1.4;font-style:italic}
+/* Cards */
+.cards-title{font-family:'Cinzel',serif;font-size:10px;letter-spacing:3px;color:rgba(201,168,76,.4);text-transform:uppercase;text-align:center;margin-bottom:16px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:36px}
+.card{background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.18);border-radius:16px;overflow:hidden;cursor:pointer;transition:all .3s;text-align:center;text-decoration:none;color:inherit}
+.card:hover{background:rgba(201,168,76,.08);border-color:rgba(201,168,76,.5);transform:translateY(-3px);box-shadow:0 8px 30px rgba(201,168,76,.12)}
+.card-img{width:100%;aspect-ratio:1;object-fit:cover;display:block;border-bottom:1px solid rgba(201,168,76,.12)}
+.card-body{padding:14px 10px 16px}
+.card-title{font-family:'Cinzel',serif;font-size:clamp(10px,1.5vw,12px);letter-spacing:1.5px;color:#C9A84C;text-transform:uppercase;margin-bottom:4px}
+.card-desc{font-size:clamp(11px,1.3vw,13px);font-style:italic;color:rgba(240,234,214,.4);line-height:1.4}
 
 /* Footer */
-.footer{padding:20px;text-align:center;border-top:1px solid rgba(201,168,76,.1)}
+.footer{text-align:center;padding:20px 0;border-top:1px solid rgba(201,168,76,.08)}
 .footer-inner{display:flex;align-items:center;justify-content:center;gap:8px}
 .footer span{font-family:'Cinzel',serif;font-size:8px;letter-spacing:2px;color:rgba(240,234,214,.3);text-transform:uppercase}
-.footer img{height:26px;opacity:.7}
+.footer img{height:28px;opacity:.7}
+.footer p{font-size:9px;color:rgba(240,234,214,.2);margin-top:6px}
 
-@media(max-width:500px){
-  .features{grid-template-columns:1fr;max-width:320px}
-  .hero{padding:30px 16px}
+@media(max-width:550px){
+  .cards{grid-template-columns:1fr;max-width:300px;margin-left:auto;margin-right:auto}
+  .page{padding:30px 16px 20px}
 }
 </style>
 </head>
 <body>
 <div id="stars"></div>
 
-<div class="hero">
-  <img class="hero-logo" src="master-spirit-avatar.png" alt="Master Spirit" onerror="this.src='logo.png'">
-  <h1>MASTER<br>SPIRIT</h1>
-  <p class="tagline">Sabedoria espiritual para a evolução da alma</p>
-  <div class="divider"></div>
+<div class="page">
+  <div class="header">
+    <img src="master-spirit-avatar.png" alt="Master Spirit" onerror="this.src='logo.png'">
+    <h1>MASTER<br>SPIRIT</h1>
+    <p class="tagline">Sabedoria espiritual para a evolução da alma</p>
+    <div class="divider"></div>
+  </div>
 
-  <div class="video-wrap">
-    <video controls playsinline poster="logo.png">
-      <source src="teaser-video.mp4" type="video/mp4">
-      Seu navegador não suporta vídeo.
-    </video>
+  <div class="video-section">
+    <div class="video-thumb" onclick="playVideo()">
+      <video id="teaser-video" playsinline preload="metadata" poster="logo.png">
+        <source src="teaser-video.mp4" type="video/mp4">
+      </video>
+      <div class="play-overlay" id="play-overlay">
+        <div class="play-btn"><span>▶</span></div>
+      </div>
+    </div>
+    <p class="video-label">✦ Assista o teaser</p>
   </div>
 
   <div class="cta-section">
-    <a class="cta-btn" href="https://masterspirit.spyritsystems.com">✦ &nbsp;Entrar nessa jornada&nbsp; ✦</a>
+    <a class="cta-btn" href="https://masterspirit.com.br">✦ &nbsp;Entrar nessa jornada&nbsp; ✦</a>
   </div>
 
-  <div class="features">
-    <div class="feat">
-      <span class="feat-ico">🕊️</span>
-      <div class="feat-title">Mestres Espirituais</div>
-      <div class="feat-desc">Converse com Jesus, Kardec, Chico Xavier e outros</div>
-    </div>
-    <div class="feat">
-      <span class="feat-ico">📚</span>
-      <div class="feat-title">Salas de Estudo</div>
-      <div class="feat-desc">Estude obras espirituais com tutor IA</div>
-    </div>
-    <div class="feat">
-      <span class="feat-ico">🕯️</span>
-      <div class="feat-title">Evangelho no Lar</div>
-      <div class="feat-desc">Sessão guiada com mestres facilitadores</div>
-    </div>
+  <p class="cards-title">O que você encontra aqui</p>
+  <div class="cards">
+    <a class="card" href="https://masterspirit.com.br">
+      <img class="card-img" src="avatar-jesus.png" onerror="this.style.background='rgba(201,168,76,.08)'" alt="Mestres">
+      <div class="card-body">
+        <div class="card-title">Mestres</div>
+        <div class="card-desc">Converse com Jesus, Kardec, Chico Xavier, Krishna e outros mestres espirituais</div>
+      </div>
+    </a>
+    <a class="card" href="https://masterspirit.com.br/estudos.html">
+      <img class="card-img" src="shelf-books.png" onerror="this.style.background='rgba(201,168,76,.08)'" alt="Salas de Estudo">
+      <div class="card-body">
+        <div class="card-title">Salas de Estudo</div>
+        <div class="card-desc">Estude as grandes obras espirituais com tutor IA e grupos de estudo</div>
+      </div>
+    </a>
+    <a class="card" href="https://masterspirit.com.br/evangelho.html">
+      <img class="card-img" src="evangelho-lar.png?v=2" onerror="this.style.background='rgba(201,168,76,.08)'" alt="Evangelho no Lar">
+      <div class="card-body">
+        <div class="card-title">Evangelho no Lar</div>
+        <div class="card-desc">Sessão guiada com mestres facilitadores. Semanal, simples e profunda.</div>
+      </div>
+    </a>
   </div>
 
   <div class="footer">
     <div class="footer-inner">
       <span>Powered by</span>
-      <img src="logo-spyrit-systems.png" alt="Spyrit Systems" onerror="this.outerHTML='<span style=font-family:Cinzel,serif;font-size:10px;color:rgba(201,168,76,.5)>SPYRIT SYSTEMS</span>'">
+      <img src="logo-spyrit-systems.png" alt="Spyrit Systems">
     </div>
-    <p style="font-size:9px;color:rgba(240,234,214,.25);margin-top:6px">© 2025 Spyrit Systems</p>
+    <p>© 2025 Spyrit Systems</p>
   </div>
 </div>
 
 <script>
+// Stars
 var sf=document.getElementById('stars');
 for(var i=0;i<80;i++){
   var d=document.createElement('div');d.className='star';
   var sz=(Math.random()*2.5+.5).toFixed(1);
   d.style.cssText='left:'+(Math.random()*100).toFixed(1)+'%;top:'+(Math.random()*100).toFixed(1)+'%;width:'+sz+'px;height:'+sz+'px;--d:'+(Math.random()*4+2).toFixed(1)+'s;--dl:'+(Math.random()*5).toFixed(1)+'s';
   sf.appendChild(d);
+}
+
+// Video play
+function playVideo(){
+  var v=document.getElementById('teaser-video');
+  var o=document.getElementById('play-overlay');
+  if(v.paused){
+    v.play().catch(function(){});
+    v.controls=true;
+    o.classList.add('hidden');
+  }
 }
 </script>
 </body>
