@@ -1295,8 +1295,8 @@ function splashGoMestres(){
 }
 
 function splashGoStudy(){
-  enterApp();
-  setTimeout(()=>goTab('study'),600);
+  sessionStorage.setItem('spirit_splash_seen','1');
+  window.location.href='salas.html';
 }
 
 function splashGoEstudos(){
