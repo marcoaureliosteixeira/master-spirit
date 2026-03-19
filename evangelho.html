@@ -145,7 +145,7 @@ window.addEventListener('load',function(){
 });
 
 function goBack(){
-  if(fase==='config') window.location.href='estudos.html';
+  if(fase==='config') window.location.href='app.html';
   else{fase='config';renderFase();}
 }
 
@@ -198,7 +198,7 @@ function renderFase(){
   else if(fase==='fim'){
     badge.textContent='Concluído';
     m.innerHTML=renderFim();
-    c.innerHTML='<button class="btn-s" onclick="window.location.href=\'estudos.html\'">Voltar</button><button class="btn-g" onclick="fase=\'config\';renderFase()">Nova sessão</button>';
+    c.innerHTML='<button class="btn-s" onclick="window.location.href=\'app.html\'">Voltar</button><button class="btn-g" onclick="fase=\'config\';renderFase()">Nova sessão</button>';
     salvarProgresso();
   }
 }
