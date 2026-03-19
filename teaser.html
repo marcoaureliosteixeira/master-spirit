@@ -108,7 +108,7 @@ body{font-family:'Cormorant Garamond',Georgia,serif;-webkit-tap-highlight-color:
     <div class="video-ring"></div>
     <div class="video-ring"></div>
     <div class="video-circle">
-      <video id="jesus-video" playsinline muted preload="auto">
+      <video id="jesus-video" playsinline webkit-playsinline muted preload="auto" style="background:#000">
         <source src="cena-jesus.mp4" type="video/mp4">
       </video>
     </div>
@@ -510,6 +510,9 @@ function unlockAndStart(){
   audio.play();
   // Pré-carregar TODAS as vozes agora (dentro do toque)
   preloadVoices();
+  // Pré-carregar vídeo do Jesus (iOS precisa de load dentro de interação)
+  var v=document.getElementById('jesus-video');
+  if(v){v.load();v.play().then(function(){v.pause();v.currentTime=0;}).catch(function(){});}
   muted=false;
   _firstInteraction=false;
   document.getElementById('mute-btn').textContent='🔊';
