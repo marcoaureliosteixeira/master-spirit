@@ -81,7 +81,8 @@ MÚSICA: Clímax orquestral. Coro fortíssimo. Piano solo última nota.
 SFX: Impacto. Vela sendo acesa.
 NARRADOR (66s-70s): "Seis mestres. Centenas de livros. O Evangelho no Lar. O passe espiritual. Tudo... num único app."
 NARRADOR (70s-73s): "MASTER SPIRIT. A revolução espiritual... começou."
-NARRADOR (73s-75s): "Baixe agora. Sua jornada espera por você."
+NARRADOR (73s-75s): "Entre agora. Sua jornada espera por você."
+
 
 ---
 

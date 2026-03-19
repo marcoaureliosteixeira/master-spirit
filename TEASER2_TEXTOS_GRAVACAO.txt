@@ -79,7 +79,7 @@ Texto:
 (pausa dramática 2 segundos)
 "MASTER SPIRIT. A revolução espiritual... começou."
 (tom íntimo, direto, como falando ao ouvido)
-"Baixe agora. Sua jornada espera por você."
+"Entre agora. Sua jornada espera por você."
 
 ================================================================
 ================================================================
