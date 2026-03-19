@@ -109,3 +109,27 @@ Master Spirit não é um app com IA que fala sobre espiritismo. É o primeiro ce
 A tecnologia finalmente serve ao Espírito. E o Espírito vai fazer o resto.
 
 — Wagner de Assis
+
+---
+
+## ARQUIVOS DE GRAVAÇÃO
+
+### Locutor (8 arquivos)
+| Arquivo | Cena | Texto |
+|---------|------|-------|
+| teaser2-voice-01.mp3 | 1 — O Vazio | "Você já sentou no silêncio da noite..." |
+| teaser2-voice-02.mp3 | 2 — A Busca | "Milhões buscam respostas..." |
+| teaser2-voice-03.mp3 | 3 — A Revelação | "Apresentamos... MASTER SPIRIT." |
+| teaser2-voice-04.mp3 | 4 — Os Mestres | "Seis mestres espirituais..." |
+| teaser2-voice-05.mp3 | 5 — Salas de Estudo | "Salas de estudo com inteligência artificial..." |
+| teaser2-voice-06.mp3 | 6 — Evangelho no Lar | "O Evangelho no Lar... como nunca antes..." |
+| teaser2-voice-07.mp3 | 7 — O Passe | "Uma sessão de passe espiritual guiada..." |
+| teaser2-voice-08.mp3 | 8 — O Chamado | "Seis mestres. Centenas de livros..." |
+
+### Jesus (2 arquivos)
+| Arquivo | Cena | Texto |
+|---------|------|-------|
+| teaser2-jesus-04.mp3 | 4 — Os Mestres | "Eu estive com você em cada noite de dúvida..." |
+| teaser2-jesus-06.mp3 | 6 — Evangelho no Lar | "Onde dois ou três estiverem reunidos..." |
+
+### Total: 10 arquivos MP3

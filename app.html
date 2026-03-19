@@ -381,6 +381,10 @@ if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
         <img src="evangelho-lar.png?v=2" onerror="this.style.background='rgba(201,168,76,.1)'" alt="Evangelho no Lar">
         <span>Evangelho no Lar</span>
       </div>
+      <div class="splash-entry-card" onclick="splashGoPasse()">
+        <img src="master-spirit-avatar.png" style="object-fit:contain;mix-blend-mode:screen;padding:4px" alt="Auto Passe">
+        <span>Auto Passe</span>
+      </div>
     </div>
   </div>
 </div>
@@ -1332,6 +1336,11 @@ function splashGoEstudos(){
 function splashGoEvangelho(){
   sessionStorage.setItem('spirit_splash_seen','1');
   window.location.href='evangelho.html';
+}
+
+function splashGoPasse(){
+  sessionStorage.setItem('spirit_splash_seen','1');
+  window.location.href='passe.html';
 }
 
 function splashEnterMaster(id){

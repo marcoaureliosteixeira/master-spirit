@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="theme-color" content="#F7F4EE">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>MASTER SPIRIT — Sessão de Passe</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#8B7535;--gold2:#A68D42;--bg:#F7F4EE;--text:#2C2416;--fs:18px;--font:'Cormorant Garamond',Georgia,serif;--card-bg:#FFFFFF;--card-border:#E8E0D0;--accent:#C9A84C;--soft:#F0EBE1}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:auto}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:var(--fs)}
+#page{max-width:900px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+/* Header */
+#hdr{background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--card-border);padding:16px 18px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:50}
+.back{background:none;border:none;cursor:pointer;color:var(--gold);font-size:26px;padding:0}
+#hdr h1{font-family:'Cinzel',serif;font-size:16px;color:var(--gold);letter-spacing:2px}
+#hdr p{font-size:12px;font-style:italic;color:#8A7D6B;margin-top:2px}
+/* Main */
+#main{flex:1;padding:20px 18px}
+/* Views */
+.view{display:none;animation:fadeup .4s ease}
+.view.active{display:block}
+@keyframes fadeup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+/* Hero */
+.hero{text-align:center;margin-bottom:24px}
+.hero-ico{font-size:48px;margin-bottom:8px;display:block}
+.hero-title{font-family:'Cinzel Decorative',serif;font-size:22px;color:var(--gold);letter-spacing:2px;margin-bottom:4px}
+.hero-sub{font-size:16px;font-style:italic;color:#8A7D6B}
+/* Mode cards */
+.mode-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;margin-bottom:12px;overflow:hidden;cursor:pointer;transition:all .3s;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.mode-card:hover{border-color:var(--accent);box-shadow:0 4px 16px rgba(0,0,0,.08)}
+.mode-card.active{border-color:var(--accent);box-shadow:0 0 0 3px rgba(201,168,76,.15)}
+.mode-head{padding:16px 18px;display:flex;align-items:center;gap:14px}
+.mode-ico{font-size:32px;flex-shrink:0}
+.mode-info{flex:1}
+.mode-title{font-family:'Cinzel',serif;font-size:14px;color:var(--text);font-weight:600}
+.mode-meta{font-size:13px;color:#8A7D6B;margin-top:2px}
+.mode-badge{font-family:'Cinzel',serif;font-size:9px;letter-spacing:1.5px;color:var(--gold);background:#FDF6E8;border:1px solid rgba(201,168,76,.3);border-radius:20px;padding:4px 10px;white-space:nowrap}
+.mode-body{display:none;padding:0 18px 18px;border-top:1px solid var(--card-border)}
+.mode-card.active .mode-body{display:block}
+.mode-desc{font-size:15px;color:#5A4E3C;line-height:1.6;margin:14px 0}
+.mode-steps{margin-bottom:14px}
+.mode-step{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:14px;color:#5A4E3C}
+.mode-step span{font-size:16px}
+.btn-start{width:100%;padding:14px;background:var(--accent);border:none;border-radius:14px;color:#fff;font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;cursor:pointer;text-transform:uppercase;box-shadow:0 2px 8px rgba(201,168,76,.25)}
+.btn-start:hover{background:#B8942F}
+/* Prepare box */
+.prepare{background:#FDF6E8;border:1px solid rgba(201,168,76,.2);border-radius:14px;padding:16px;margin-top:20px}
+.prepare-title{font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--gold);margin-bottom:10px}
+.prepare-item{display:flex;align-items:flex-start;gap:8px;padding:4px 0;font-size:14px;color:#5A4E3C;line-height:1.5}
+.prepare-item span{font-size:16px;flex-shrink:0}
+.disclaimer{font-size:13px;font-style:italic;color:#A89880;text-align:center;margin-top:16px;line-height:1.5}
+/* Session view */
+.session-hdr{text-align:center;margin-bottom:16px}
+.session-mode{font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--gold)}
+.progress-dots{display:flex;gap:6px;justify-content:center;margin:12px 0}
+.pdot{width:10px;height:10px;border-radius:50%;background:var(--card-border);transition:all .3s}
+.pdot.done{background:#6BAF7C}
+.pdot.current{background:var(--accent);width:28px;border-radius:10px}
+.step-icon{font-size:40px;display:block;text-align:center;margin:16px 0 8px}
+.step-title{font-family:'Cinzel',serif;font-size:16px;color:var(--gold);text-align:center;letter-spacing:1px}
+.step-num{font-size:12px;color:#A89880;text-align:center;margin-top:4px}
+/* Timer */
+.timer-bar{background:var(--card-border);border-radius:10px;height:4px;margin:16px 0;overflow:hidden}
+.timer-fill{background:linear-gradient(90deg,var(--accent),#E8C97A);height:100%;border-radius:10px;transition:width 1s linear}
+.timer-text{font-family:'Cinzel',serif;font-size:14px;color:#A89880;text-align:center}
+/* Instruction card */
+.instr-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:18px;margin:16px 0;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.instr-label{font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:var(--gold);margin-bottom:8px}
+.instr-text{font-size:17px;line-height:1.8;color:var(--text)}
+/* Guidance expandable */
+.guidance-btn{background:var(--soft);border:1px solid var(--card-border);border-radius:12px;padding:12px 16px;cursor:pointer;font-size:14px;color:var(--gold);font-family:'Cinzel',serif;letter-spacing:1px;width:100%;text-align:left;margin-bottom:12px}
+.guidance-content{display:none;background:#FDF6E8;border:1px solid rgba(201,168,76,.2);border-radius:12px;padding:16px;margin-bottom:12px;font-size:16px;line-height:1.8;color:#5A4E3C;font-style:italic}
+.guidance-content.open{display:block}
+/* Breathing circle */
+.breath-wrap{text-align:center;margin:20px 0}
+.breath-circle{width:120px;height:120px;border-radius:50%;border:3px solid var(--accent);margin:0 auto 10px;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:transform 4s ease-in-out}
+.breath-circle.inhale{transform:scale(1.3)}
+.breath-circle.hold{transform:scale(1.3)}
+.breath-circle.exhale{transform:scale(1);transition-duration:6s}
+.breath-label{font-family:'Cinzel',serif;font-size:14px;color:var(--gold);letter-spacing:1px}
+.breath-count{font-family:'Cinzel Decorative',serif;font-size:28px;color:var(--text)}
+/* Nav buttons */
+.nav-btns{display:flex;gap:10px;margin-top:16px}
+.nav-btn{flex:1;padding:14px;border-radius:14px;font-family:'Cinzel',serif;font-size:12px;letter-spacing:1.5px;cursor:pointer;text-align:center}
+.nav-prev{background:var(--card-bg);border:1px solid var(--card-border);color:#8A7D6B}
+.nav-next{background:var(--accent);border:none;color:#fff;box-shadow:0 2px 8px rgba(201,168,76,.25)}
+/* Done view */
+.done-wrap{text-align:center;padding:20px 0}
+.done-ico{font-size:52px;margin-bottom:12px}
+.done-title{font-family:'Cinzel',serif;font-size:18px;color:var(--gold);margin-bottom:6px}
+.done-msg{font-size:16px;color:#5A4E3C;font-style:italic;line-height:1.6;margin-bottom:20px}
+.post-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;text-align:left}
+.post-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:12px;display:flex;align-items:center;gap:8px;font-size:14px;color:#5A4E3C}
+.post-card span{font-size:20px;flex-shrink:0}
+.done-freq{font-size:13px;color:var(--gold);font-style:italic;margin-bottom:16px}
+/* Footer */
+#ft{text-align:center;padding:16px;border-top:1px solid var(--card-border);background:rgba(255,255,255,.5)}
+/* Menu nav */
+#nav-menu{display:none;background:var(--card-bg);border-bottom:1px solid var(--card-border);padding:10px 18px;box-shadow:0 4px 12px rgba(0,0,0,.08)}
+#nav-menu a{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--soft);text-decoration:none;color:var(--text);font-size:15px}
+#nav-menu a:last-child{border-bottom:none}
+@media(max-width:400px){.post-cards{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="page">
+  <div id="hdr">
+    <button class="back" onclick="goBack()">‹</button>
+    <div style="flex:1">
+      <h1>🙌 SESSÃO DE PASSE</h1>
+      <p>higiene e cura do espírito</p>
+    </div>
+    <button onclick="toggleNav()" style="background:none;border:1px solid var(--card-border);border-radius:10px;padding:8px 10px;cursor:pointer;font-size:14px;color:var(--gold)">☰</button>
+  </div>
+  <div id="nav-menu">
+    <a href="app.html"><span>🕊️</span> Mestres Espirituais</a>
+    <a href="salas.html"><span>📚</span> Salas de Estudo</a>
+    <a href="evangelho.html"><span>🕯️</span> Evangelho no Lar</a>
+    <a href="passe.html" style="color:var(--gold);font-weight:600"><span>🙌</span> Sessão de Passe</a>
+    <a href="app.html" style="color:#8A7D6B"><span>🏠</span> Início</a>
+  </div>
+  <div id="main">
+    <!-- HOME VIEW -->
+    <div class="view active" id="view-home">
+      <div class="hero">
+        <span class="hero-ico">🙌</span>
+        <p class="hero-title">Sessão de Passe</p>
+        <p class="hero-sub">Autopasse guiado — higiene e cura do espírito</p>
+      </div>
+      <div id="mode-cards"></div>
+      <div class="prepare">
+        <p class="prepare-title">Antes de Começar</p>
+        <div class="prepare-item"><span>🤫</span> Encontre um ambiente silencioso e tranquilo</div>
+        <div class="prepare-item"><span>🪑</span> Sente-se confortavelmente com a coluna ereta</div>
+        <div class="prepare-item"><span>💧</span> Beba um copo d'água antes e depois da sessão</div>
+        <div class="prepare-item"><span>📵</span> Desligue notificações — este é seu momento</div>
+      </div>
+      <p class="disclaimer">O passe complementa, nunca substitui, tratamentos médicos.</p>
+    </div>
+    <!-- SESSION VIEW -->
+    <div class="view" id="view-session">
+      <div class="session-hdr">
+        <p class="session-mode" id="sess-mode"></p>
+        <div class="progress-dots" id="sess-dots"></div>
+      </div>
+      <div id="sess-step-ico" class="step-icon"></div>
+      <p id="sess-step-title" class="step-title"></p>
+      <p id="sess-step-num" class="step-num"></p>
+      <div class="timer-bar"><div class="timer-fill" id="timer-fill"></div></div>
+      <p class="timer-text" id="timer-text">0:00</p>
+      <div class="instr-card">
+        <p class="instr-label">IA Passista</p>
+        <p class="instr-text" id="instr-text"></p>
+      </div>
+      <button class="guidance-btn" id="guid-btn" onclick="toggleGuidance()">▼ Orientação Detalhada</button>
+      <div class="guidance-content" id="guid-content"></div>
+      <div id="breath-area"></div>
+      <div class="nav-btns">
+        <button class="nav-btn nav-prev" onclick="prevStep()">← Anterior</button>
+        <button class="nav-btn nav-next" id="btn-next-step" onclick="nextStepSession()">Próxima →</button>
+      </div>
+    </div>
+    <!-- DONE VIEW -->
+    <div class="view" id="view-done">
+      <div class="done-wrap">
+        <p class="done-ico">🕊️</p>
+        <p class="done-title">Sessão Concluída</p>
+        <p class="done-msg" id="done-msg"></p>
+        <div class="post-cards">
+          <div class="post-card"><span>💧</span> Beba água para auxiliar a fluidificação</div>
+          <div class="post-card"><span>📖</span> Leia uma página do Evangelho</div>
+          <div class="post-card"><span>🙏</span> Mantenha pensamentos elevados</div>
+          <div class="post-card"><span>😴</span> Se possível, descanse alguns minutos</div>
+        </div>
+        <p class="done-freq" id="done-freq"></p>
+        <button class="btn-start" onclick="showHome()">Nova Sessão</button>
+        <button class="nav-btn nav-prev" style="margin-top:10px" onclick="window.location.href='app.html'">Voltar ao Início</button>
+      </div>
+    </div>
+  </div>
+  <div id="ft">
+    <div style="display:flex;align-items:center;justify-content:center;gap:8px">
+      <span style="font-family:'Cinzel',serif;font-size:8px;letter-spacing:2px;color:rgba(0,0,0,.3);text-transform:uppercase">Powered by</span>
+      <img src="logo-spyrit-systems.png" alt="Spyrit Systems" style="height:28px;opacity:.7">
+    </div>
+  </div>
+</div>
+<script>
+// ── STEPS DATA ──
+var SESSAO_COMPLETA=[
+  {id:'abertura',title:'Prece de Abertura',icon:'🕊️',duration:45,instruction:'Feche os olhos suavemente. Vamos iniciar com uma prece ao Pai, pedindo permissão e amparo dos bons espíritos para esta sessão de passe.',guidance:'Pai nosso que estais nos céus... Pedimos a presença dos espíritos de luz que nos assistam nesta sessão de cura espiritual. Que os fluidos benéficos envolvam este ambiente e purifiquem nossos corações. Que possamos ser instrumentos dignos da vossa misericórdia.',breathe:false,energy:false},
+  {id:'concentracao',title:'Concentração & Elevação',icon:'✨',duration:60,instruction:'Concentre-se no alto da sua cabeça — o chakra coronário. Sinta uma luz dourada descendo do plano espiritual em sua direção.',guidance:'Imagine uma coluna de luz dourada conectando você ao plano superior. Sinta essa energia entrando pelo topo da sua cabeça, suave como um raio de sol ao amanhecer. Permita-se receber. Você é digno desta cura.',breathe:true,energy:true},
+  {id:'dispersao',title:'Passes de Dispersão',icon:'🌊',duration:50,instruction:'Agora vamos dispersar as energias densas. Mova as mãos abertas do topo da cabeça para baixo, em movimentos longos e suaves, sem tocar o corpo.',guidance:'Com as palmas das mãos voltadas para o corpo, a cerca de 10 centímetros de distância, deslize as mãos da cabeça até abaixo da cintura. Movimentos lentos, firmes, contínuos. Ao descer, mentalize que está removendo toda energia pesada. Sacuda levemente as mãos ao final de cada movimento.',breathe:false,energy:true},
+  {id:'cura',title:'Passes de Cura',icon:'🔆',duration:60,instruction:'Posicione as mãos sobre as regiões que precisam de cura — cabeça, peito, ou plexo solar — e concentre energia vital nestes pontos.',guidance:'Posicione as mãos a poucos centímetros da cabeça. Sinta o calor, o formigamento sutil. Mantenha a concentração. Mentalize luz azul e dourada preenchendo cada célula. Desça até o peito — envie amor e compaixão. Por fim, o plexo solar — paz, equilíbrio, harmonia.',breathe:true,energy:true},
+  {id:'respiracao',title:'Respiração Fluídica',icon:'🌬️',duration:50,instruction:'Inspire profundamente, absorvendo os fluidos curativos. Expire lentamente, liberando toda tensão residual.',guidance:'Inspire... conte até 4... segure por 4 segundos... expire lentamente em 6 segundos. A cada inspiração, você absorve luz e cura. A cada expiração, libera dor e peso.',breathe:true,energy:false},
+  {id:'encerramento',title:'Prece de Encerramento',icon:'🙏',duration:40,instruction:'Vamos encerrar com gratidão. Mantenha os olhos fechados e agradeça aos espíritos protetores.',guidance:'Agradecemos, Senhor, pela oportunidade desta cura. Agradecemos aos espíritos benfeitores. Que os benefícios deste passe se manifestem em nosso corpo e alma. Assim seja.',breathe:false,energy:false}
+];
+var PASSE_LIMPEZA=[
+  {id:'abertura_rapida',title:'Prece Breve',icon:'🕊️',duration:30,instruction:'Feche os olhos e faça uma prece breve, pedindo aos bons espíritos que auxiliem na limpeza fluídica.',guidance:'Senhor, peço aos bons espíritos que me auxiliem a remover as energias densas. Que meu perispírito seja purificado. Assim seja.',breathe:false,energy:false},
+  {id:'dispersao_cabeca',title:'Dispersão — Cabeça e Ombros',icon:'🌊',duration:40,instruction:'Passe as mãos abertas sobre a cabeça e ombros, em movimentos descendentes. Mentalize os pensamentos pesados sendo removidos.',guidance:'Posicione as mãos acima da cabeça. Desça lentamente até os ombros. Repita 5 vezes. Visualize uma camada cinzenta se desprendendo e sendo dissolvida pela luz. Sacuda as mãos ao final.',breathe:false,energy:true},
+  {id:'dispersao_tronco',title:'Dispersão — Tronco e Plexo',icon:'🌀',duration:40,instruction:'Desça as mãos do peito até abaixo da cintura. Movimentos firmes. Removendo emoções densas do dia.',guidance:'Do peito — mágoas e ressentimentos — ao plexo solar — medos e ansiedades. Desça as mãos 5 vezes. As emoções pesadas escorrem como água suja. Você está mais leve.',breathe:false,energy:true},
+  {id:'selamento',title:'Selamento & Gratidão',icon:'✨',duration:30,instruction:'Posicione as mãos sobre o peito. Mentalize uma luz dourada selando sua aura limpa. Agradeça.',guidance:'Mãos sobre o peito. Sinta seu campo energético limpo e renovado. Mentalize uma esfera de luz dourada envolvendo todo o corpo — armadura espiritual de proteção. Gratidão. Paz.',breathe:true,energy:false}
+];
+var PASSE_CURA=[
+  {id:'abertura_cura',title:'Prece — Pedido de Cura',icon:'🕊️',duration:40,instruction:'Feche os olhos. Vamos pedir especialmente aos espíritos curadores que nos envolvam com fluidos de cura e restauração.',guidance:'Senhor, me coloco diante da Tua misericórdia e dos espíritos curadores. Peço que os fluidos de cura penetrem meu corpo e alma. A cura começa pela transformação interior. Abro meu coração para receber.',breathe:false,energy:false},
+  {id:'dispersao_prep',title:'Dispersão Preparatória',icon:'🌊',duration:40,instruction:'Antes de receber fluidos de cura, limpamos o campo. Mãos de cima para baixo, removendo bloqueios.',guidance:'Desça as mãos da cabeça à cintura, 5 vezes. Removendo fluidos densos que impedem a penetração dos curativos. Como preparar o solo antes de plantar.',breathe:false,energy:true},
+  {id:'cura_coronario',title:'Imposição — Coronário & Frontal',icon:'👑',duration:70,instruction:'Mãos a poucos centímetros da cabeça. O chakra coronário é o portal de entrada dos fluidos espirituais.',guidance:'Mãos acima do topo da cabeça. Sinta os fluidos curativos penetrando pelo coronário. Mentalize luz violeta e dourada descendo pela coluna, iluminando cada célula. Mova para a testa — equilíbrio dos pensamentos, paz mental, clareza.',breathe:true,energy:true},
+  {id:'cura_cardiaco',title:'Imposição — Centro Cardíaco',icon:'💚',duration:70,instruction:'Mãos sobre o peito — o chakra cardíaco. Centro do amor, da compaixão e da cura emocional.',guidance:'Mãos sobre o peito. Sinta o coração batendo. Cada batida é uma oração. Luz verde-esmeralda preenchendo todo o peito. Mágoas, ressentimentos, perdas — tudo banhado por amor incondicional. Permita-se curar.',breathe:true,energy:true},
+  {id:'cura_plexo',title:'Imposição — Plexo Solar',icon:'🔆',duration:60,instruction:'Mãos sobre o estômago — o plexo solar. Aqui se acumulam medos, ansiedades e tensões.',guidance:'Mãos sobre o plexo. Luz dourada quente como um sol interior dissolvendo cada nó de tensão. O estômago relaxa. O diafragma se solta. Desça ao umbilical — energia e vitalidade renovadas.',breathe:true,energy:true},
+  {id:'encerramento_cura',title:'Selamento & Gratidão',icon:'🙏',duration:40,instruction:'Mãos sobre o peito. Os fluidos continuarão agindo nas próximas horas e dias. A cura é um processo — confie.',guidance:'Agradecemos aos espíritos curadores. Que os fluidos continuem agindo. A cura verdadeira é um processo, não um evento. Comprometo-me com minha transformação interior. Assim seja.',breathe:false,energy:false}
+];
+var PRECE_IRRADIACAO=[
+  {id:'centralizacao',title:'Centralização',icon:'🧘',duration:40,instruction:'Feche os olhos e traga sua atenção para dentro. Não precisa fazer nada com as mãos. Apenas respire e conecte-se.',guidance:'Inspire devagar... expire pela boca... Deixe o mundo lá fora. Neste momento, existe apenas você e Deus. Sinta a presença sutil dos bons espíritos ao seu redor.',breathe:true,energy:false},
+  {id:'prece_pessoal',title:'Prece Pessoal',icon:'💫',duration:60,instruction:'Converse com Deus em pensamento. Não há fórmula. Fale do que está no seu coração.',guidance:'A oração mais poderosa é a sincera. Fale com Deus como fala com o melhor amigo. Agradeça. Peça força. Se as lágrimas vierem, deixe — são a prece mais pura.',breathe:false,energy:false},
+  {id:'irradiacao',title:'Irradiação de Luz',icon:'☀️',duration:60,instruction:'Mentalize luz sendo enviada — primeiro para você, depois para quem ama, depois para o mundo.',guidance:'Visualize uma esfera de luz dourada no peito. Com cada respiração, ela cresce. Envolve seu corpo. Agora pense em alguém que precisa. A luz chega até essa pessoa. Expanda para família, amigos, mundo. O pensamento dirigido com amor é o passe a distância mais poderoso.',breathe:true,energy:true},
+  {id:'gratidao',title:'Gratidão em Silêncio',icon:'🤍',duration:30,instruction:'Permaneça em silêncio. Sinta a paz. Quando pronto, abra os olhos lentamente.',guidance:'Silêncio. Apenas presença. Nada a fazer. Nada a pensar. Apenas ser. Os espíritos completam o trabalho que as palavras não alcançam. Gratidão. Paz. Amor.',breathe:false,energy:false}
+];
+
+var MODES={
+  completa:{id:'completa',title:'Sessão Completa',icon:'✦',badge:'Renovação Integral',duration:'~6 min',frequency:'1-2x por semana',desc:'A sessão integral de autopasse — prece, concentração, dispersão, cura e respiração fluídica. Equivalente a uma sessão no centro espírita.',steps:SESSAO_COMPLETA},
+  limpeza:{id:'limpeza',title:'Passe de Limpeza',icon:'🌊',badge:'Higiene Fluídica',duration:'~3 min',frequency:'Sempre que precisar',desc:'Sessão rápida focada na dispersão de energias densas — a assepsia espiritual do dia a dia. Como um banho para o perispírito.',steps:PASSE_LIMPEZA},
+  cura:{id:'cura',title:'Passe de Cura',icon:'💛',badge:'Cura & Restauração',duration:'~7 min',frequency:'1-2x por semana',desc:'Sessão terapêutica focada na concentração de fluidos curativos nos centros vitais. Complementar ao tratamento médico.',steps:PASSE_CURA},
+  irradiacao:{id:'irradiacao',title:'Prece & Irradiação',icon:'🙏',badge:'Conexão Diária',duration:'~4 min',frequency:'Diariamente',desc:'Passe pelo pensamento e pela prece dirigida. Sem movimentos — ideal para qualquer momento e lugar.',steps:PRECE_IRRADIACAO}
+};
+
+// ── STATE ──
+var currentMode=null;
+var currentStep=0;
+var timerInterval=null;
+var breathInterval=null;
+
+// ── INIT ──
+window.addEventListener('load',function(){renderModes();});
+
+function toggleNav(){var m=document.getElementById('nav-menu');m.style.display=m.style.display==='none'?'block':'none';}
+function goBack(){if(document.getElementById('view-session').classList.contains('active')){showHome();}else{toggleNav();}}
+
+// ── MODES ──
+function renderModes(){
+  var el=document.getElementById('mode-cards');
+  var html='';
+  ['completa','limpeza','cura','irradiacao'].forEach(function(k){
+    var m=MODES[k];
+    html+='<div class="mode-card" id="mc-'+k+'" onclick="toggleMode(\''+k+'\')">'+
+      '<div class="mode-head"><span class="mode-ico">'+m.icon+'</span><div class="mode-info"><p class="mode-title">'+m.title+'</p><p class="mode-meta">'+m.duration+' · '+m.frequency+'</p></div><span class="mode-badge">'+m.badge+'</span></div>'+
+      '<div class="mode-body"><p class="mode-desc">'+m.desc+'</p><div class="mode-steps">'+
+      m.steps.map(function(s){return '<div class="mode-step"><span>'+s.icon+'</span> '+s.title+' ('+s.duration+'s)</div>';}).join('')+
+      '</div><button class="btn-start" onclick="event.stopPropagation();startSession(\''+k+'\')">✦ Iniciar Sessão</button></div></div>';
+  });
+  el.innerHTML=html;
+}
+
+function toggleMode(k){
+  document.querySelectorAll('.mode-card').forEach(function(c){if(c.id!=='mc-'+k) c.classList.remove('active');});
+  document.getElementById('mc-'+k).classList.toggle('active');
+}
+
+// ── SESSION ──
+function startSession(modeId){
+  currentMode=MODES[modeId];
+  currentStep=0;
+  showView('session');
+  renderStep();
+}
+
+function renderStep(){
+  var step=currentMode.steps[currentStep];
+  document.getElementById('sess-mode').textContent=currentMode.icon+' '+currentMode.title;
+  // Dots
+  var dots='';
+  currentMode.steps.forEach(function(_,i){
+    dots+='<div class="pdot'+(i<currentStep?' done':'')+(i===currentStep?' current':'')+'"></div>';
+  });
+  document.getElementById('sess-dots').innerHTML=dots;
+  document.getElementById('sess-step-ico').textContent=step.icon;
+  document.getElementById('sess-step-title').textContent=step.title;
+  document.getElementById('sess-step-num').textContent='Etapa '+(currentStep+1)+' de '+currentMode.steps.length;
+  // Typewriter instruction
+  typewriter(document.getElementById('instr-text'),step.instruction);
+  // Guidance
+  document.getElementById('guid-content').textContent=step.guidance;
+  document.getElementById('guid-content').classList.remove('open');
+  document.getElementById('guid-btn').textContent='▼ Orientação Detalhada';
+  // Breathing
+  var breathArea=document.getElementById('breath-area');
+  if(step.breathe){
+    breathArea.innerHTML='<div class="breath-wrap"><div class="breath-circle" id="breath-circle"><p class="breath-label" id="breath-label">Inspire</p><p class="breath-count" id="breath-count">4</p></div></div>';
+    startBreathing();
+  } else {breathArea.innerHTML='';stopBreathing();}
+  // Timer
+  startTimer(step.duration);
+  // Next button text
+  document.getElementById('btn-next-step').textContent=currentStep<currentMode.steps.length-1?'Próxima →':'Concluir ✦';
+  window.scrollTo(0,0);
+}
+
+function typewriter(el,text){
+  el.textContent='';var i=0;
+  function type(){if(i<text.length){el.textContent+=text.charAt(i);i++;setTimeout(type,35);}};type();
+}
+
+function toggleGuidance(){
+  var c=document.getElementById('guid-content');
+  c.classList.toggle('open');
+  document.getElementById('guid-btn').textContent=c.classList.contains('open')?'▲ Fechar':'▼ Orientação Detalhada';
+}
+
+function startTimer(secs){
+  if(timerInterval) clearInterval(timerInterval);
+  var remaining=secs;
+  var fill=document.getElementById('timer-fill');
+  var txt=document.getElementById('timer-text');
+  fill.style.transition='none';fill.style.width='0%';
+  setTimeout(function(){fill.style.transition='width '+secs+'s linear';fill.style.width='100%';},50);
+  function update(){
+    var m=Math.floor(remaining/60);var s=remaining%60;
+    txt.textContent=m+':'+String(s).padStart(2,'0');
+    if(remaining<=0){clearInterval(timerInterval);timerInterval=null;}
+    remaining--;
+  }
+  update();
+  timerInterval=setInterval(update,1000);
+}
+
+function startBreathing(){
+  stopBreathing();
+  var circle=document.getElementById('breath-circle');
+  var label=document.getElementById('breath-label');
+  var count=document.getElementById('breath-count');
+  if(!circle) return;
+  var phase='inhale';var counter=4;
+  function tick(){
+    if(phase==='inhale'){
+      label.textContent='Inspire';circle.className='breath-circle inhale';
+      counter--;count.textContent=counter;
+      if(counter<=0){phase='hold';counter=4;}
+    } else if(phase==='hold'){
+      label.textContent='Segure';
+      counter--;count.textContent=counter;
+      if(counter<=0){phase='exhale';counter=6;}
+    } else {
+      label.textContent='Expire';circle.className='breath-circle exhale';
+      counter--;count.textContent=counter;
+      if(counter<=0){phase='inhale';counter=4;}
+    }
+  }
+  tick();
+  breathInterval=setInterval(tick,1000);
+}
+
+function stopBreathing(){if(breathInterval){clearInterval(breathInterval);breathInterval=null;}}
+
+function prevStep(){
+  if(currentStep>0){currentStep--;renderStep();}
+}
+
+function nextStepSession(){
+  if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
+  stopBreathing();
+  if(currentStep<currentMode.steps.length-1){currentStep++;renderStep();}
+  else{showDone();}
+}
+
+function showDone(){
+  var msgs={completa:'Sua sessão completa de renovação integral foi concluída. Os fluidos continuam agindo.',limpeza:'Limpeza fluídica concluída. Você está mais leve e protegido.',cura:'Os fluidos curativos foram concentrados nos seus centros vitais. A cura é um processo — confie.',irradiacao:'Sua prece e irradiação alcançaram quem precisava. O amor que você enviou volta multiplicado.'};
+  document.getElementById('done-msg').textContent=msgs[currentMode.id]||'Sessão concluída com paz.';
+  document.getElementById('done-freq').textContent='Próxima sessão recomendada: '+currentMode.frequency;
+  showView('done');
+}
+
+function showHome(){
+  if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
+  stopBreathing();
+  currentMode=null;currentStep=0;
+  showView('home');
+}
+
+function showView(v){
+  document.querySelectorAll('.view').forEach(function(el){el.classList.remove('active');});
+  document.getElementById('view-'+v).classList.add('active');
+  window.scrollTo(0,0);
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" onload="checkAuth()"></script>
+<script>
+function checkAuth(){
+  try{var sb=window.supabase.createClient('https://jwdvbtujzvqvktzxycwj.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp3ZHZidHVqenZxdmt0enh5Y3dqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1Mjc2NDksImV4cCI6MjA4OTEwMzY0OX0.ZfkRgdYcTjYF_E4qr1_1CZMtSiCvKLeUsoRSLoO16Mw');
+  sb.auth.getSession().then(function(r){if(!r.data||!r.data.session) window.location.href='index.html';});}catch(e){}
+}
+</script>
+</body>
+</html>
