@@ -72,6 +72,18 @@ body{font-family:'Cormorant Garamond',Georgia,serif;-webkit-tap-highlight-color:
 <canvas id="canvas-bg"></canvas>
 <div id="progress"><div id="progress-fill"></div></div>
 
+<!-- Overlay para desbloquear áudio no iOS -->
+<div id="audio-unlock" style="position:fixed;inset:0;z-index:9999;background:rgba(6,10,22,.95);display:flex;align-items:center;justify-content:center;cursor:pointer" onclick="unlockAndStart()">
+  <div style="text-align:center;animation:fadeup 1s ease .3s both">
+    <img src="master-spirit-avatar.png" style="width:60px;height:60px;object-fit:contain;mix-blend-mode:screen;opacity:.5;margin-bottom:12px" alt="" onerror="this.style.display='none'">
+    <p style="font-family:'Cinzel',serif;font-size:clamp(10px,2vw,14px);color:rgba(201,168,76,.6);letter-spacing:3px;margin-bottom:16px">MASTER SPIRIT</p>
+    <div style="display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(201,168,76,.3);border-radius:30px;padding:14px 32px">
+      <span style="font-size:18px;color:rgba(201,168,76,.7)">▶</span>
+      <span style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:#E8C97A">ASSISTIR</span>
+    </div>
+  </div>
+</div>
+
 <div class="scene" id="scene-0">
   <div class="spirit-logo" id="spirit-logo-0">
     <div class="spirit-spark"></div>
@@ -417,7 +429,7 @@ function toggleSound(){
 // ── CONTROLS ──
 var _firstInteraction=true;
 document.addEventListener('click',function(e){
-  if(e.target.closest('#mute-btn')||e.target.closest('#dots')||e.target.closest('.cta-btn')) return;
+  if(e.target.closest('#mute-btn')||e.target.closest('#dots')||e.target.closest('.cta-btn')||e.target.closest('#audio-unlock')) return;
   ensureAudioPlaying();
   // Primeiro clique só inicia áudio, não avança
   if(_firstInteraction){_firstInteraction=false;return;}
@@ -432,18 +444,37 @@ document.addEventListener('keydown',function(e){
   if(e.key==='ArrowLeft'){e.preventDefault();goToScene(currentScene-1);}
 });
 
+// ── UNLOCK (iOS/mobile) ──
+function unlockAndStart(){
+  var overlay=document.getElementById('audio-unlock');
+  if(overlay) overlay.style.display='none';
+  // Iniciar música (agora desbloqueado pela interação)
+  initAudio();
+  audio.play().then(function(){
+    document.getElementById('mute-btn').textContent='🔊';
+  }).catch(function(){});
+  muted=false;
+  _firstInteraction=false;
+  goToScene(0);
+}
+
 // ── START ──
 window.addEventListener('load',function(){
   initAudio();
   // Tentar autoplay
-  if(audio){
-    audio.play().then(function(){
+  var p=audio.play();
+  if(p!==undefined){
+    p.then(function(){
+      // Desktop: autoplay funcionou — esconder overlay e começar
+      document.getElementById('audio-unlock').style.display='none';
       document.getElementById('mute-btn').textContent='🔊';
+      _firstInteraction=false;
+      goToScene(0);
     }).catch(function(){
+      // Mobile/iOS: autoplay bloqueado — overlay fica visível
       document.getElementById('mute-btn').textContent='🔇';
     });
   }
-  goToScene(0);
 });
 </script>
 </body>
