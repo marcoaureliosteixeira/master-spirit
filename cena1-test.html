@@ -44,7 +44,7 @@ body{font-family:'Cormorant Garamond',Georgia,serif}
     <div class="ring"></div>
     <div class="ring"></div>
     <div class="video-circle">
-      <video id="jesus-video" playsinline>
+      <video id="jesus-video" playsinline autoplay muted>
         <source src="cena1.mp4" type="video/mp4">
       </video>
     </div>
@@ -94,23 +94,24 @@ music.loop=true;
 
 var video=document.getElementById('jesus-video');
 
-// Start on click/touch (iOS requires interaction)
-function startAll(){
+// Video autoplay muted — unmute + music on first interaction
+function unmute(){
+  video.muted=false;
   music.play().catch(function(){});
-  video.play().catch(function(){});
-  document.removeEventListener('click',startAll);
-  document.removeEventListener('touchstart',startAll);
+  document.removeEventListener('click',unmute);
+  document.removeEventListener('touchstart',unmute);
 }
-document.addEventListener('click',startAll);
-document.addEventListener('touchstart',startAll,{passive:true});
+document.addEventListener('click',unmute);
+document.addEventListener('touchstart',unmute,{passive:true});
 
-// Try autoplay
 window.addEventListener('load',function(){
+  // Video já inicia autoplay muted
+  // Tentar unmute + music no desktop
   music.play().then(function(){
-    video.play().catch(function(){});
-  }).catch(function(){
-    // Wait for interaction
-  });
+    video.muted=false;
+    document.removeEventListener('click',unmute);
+    document.removeEventListener('touchstart',unmute);
+  }).catch(function(){});
 });
 </script>
 </body>
