@@ -27,7 +27,7 @@ export default async function handler(req, res) {
           transaction_amount: prices[plan],
           currency_id: 'BRL',
         },
-        back_url: 'https://masterspirit.spyritsystems.com/app.html',
+        back_url: 'https://masterspirit.com.br/app.html',
         payer_email: user_email,
         external_reference: user_id,
         status: 'pending',

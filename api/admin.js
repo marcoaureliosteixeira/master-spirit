@@ -35,7 +35,7 @@ module.exports = async (req, res) => {
       });
 
       // MRR estimado
-      const mrr = (plans.basic * 19.99) + (plans.premium * 39.99);
+      const mrr = (plans.basic * 19.90) + (plans.premium * 39.90);
 
       // Total de usuários cadastrados
       const { data: allUsers } = await sb.auth.admin.listUsers();

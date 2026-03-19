@@ -454,6 +454,8 @@ if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
       <p style="margin-bottom:18px">O aplicativo integra e procura harmonizar múltiplas fontes espirituais e filosóficas — como Evangelhos Canônicos, Livro de Urântia, <em>Operação Cavalo de Tróia</em>, Cartas de Cristo, obras de Allan Kardec, Chico Xavier, Divaldo Franco e o Bhagavad Gita — tendo a doutrina espírita como eixo central de coerência temática. Eventuais divergências entre tradições, escolas, autores ou interpretações são apresentadas com respeito, clareza e espírito de diálogo, sem intenção de proselitismo, polêmica ou desqualificação de crenças distintas.</p>
       <p style="margin-bottom:18px;font-size:12px;color:rgba(240,234,214,.5);line-height:1.7;border-left:2px solid rgba(201,168,76,.25);padding-left:14px">A coleção <em>Operação Cavalo de Tróia</em>, de J.J. Benítez, não é uma obra espírita, embora descreva com impressionante realismo a vida de Jesus Cristo na Terra. Geraldo Lemos, em <a href="https://youtu.be/mvT8OeveJcQ" target="_blank" style="color:#C9A84C;text-decoration:underline">entrevista no YouTube</a>, menciona o que Chico Xavier lhe disse ao presenteá-lo com o Livro 1: "Geraldinho, não me pergunte como ele voltou ao passado, a questão científica eu não posso lhe dizer como e nem sei lhe dizer como, mas só vou lhe dizer uma coisa: aquilo aconteceu, existe possibilidade de viagem no tempo. O que o Jasão (protagonista) viu, ele como mente humana, não teria condições de inventar, de criar os diálogos sublimes que ele presenciou de Jesus com seus discípulos, circunstantes e sua mãe."</p>
 
+      <p style="margin-bottom:18px;font-size:12px;color:rgba(240,234,214,.5);line-height:1.7;border-left:2px solid rgba(201,168,76,.25);padding-left:14px"><strong style="color:rgba(201,168,76,.7)">Nota sobre Direitos Autorais:</strong> O MASTER SPIRIT não distribui, reproduz ou disponibiliza livros ou obras protegidas por direito autoral. As referências a títulos de obras espirituais, filosóficas e religiosas servem exclusivamente como base temática para o conteúdo gerado por inteligência artificial. O aplicativo processa, sintetiza e apresenta conhecimento espiritual de forma original, sem copiar ou reproduzir textos integrais das obras citadas. Os direitos autorais de todas as obras mencionadas pertencem a seus respectivos autores, editores e detentores legais.</p>
+
       <p style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:#C9A84C;text-transform:uppercase;margin-bottom:14px">5. Isenção de Responsabilidade</p>
       <p style="margin-bottom:18px">As respostas geradas pela inteligência artificial têm caráter exclusivamente orientativo, educacional e de inspiração espiritual, não constituindo aconselhamento médico, psicológico, jurídico, financeiro ou religioso formal. O MASTER SPIRIT, seus desenvolvedores e a Spyrit Systems não se responsabilizam por quaisquer decisões, ações, omissões, consequências ou danos de qualquer natureza decorrentes do uso das informações disponibilizadas no aplicativo.</p>
       <p style="margin-bottom:18px">Em situações de crise emocional, risco de autoextermínio, sofrimento psíquico intenso, emergência de saúde física ou mental, violência ou qualquer outra situação crítica, procure imediatamente ajuda profissional qualificada (médicos, psicólogos, serviços de emergência, autoridades competentes ou líderes religiosos de sua confiança).</p>
@@ -599,7 +601,7 @@ if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
             <p style="font-size:12px;color:rgba(240,234,214,.4);margin-top:2px">Presença e Palavra</p>
           </div>
           <div style="text-align:right">
-            <p id="price-basic" style="font-family:'Cinzel',serif;font-size:22px;color:var(--text)">R$19,99<span style="font-size:12px;color:rgba(240,234,214,.4)">/mês</span></p>
+            <p id="price-basic" style="font-family:'Cinzel',serif;font-size:22px;color:var(--text)">R$19,90<span style="font-size:12px;color:rgba(240,234,214,.4)">/mês</span></p>
             <p id="price-basic-anual" style="display:none;font-size:10px;color:rgba(240,234,214,.35)">R$203,90/ano</p>
           </div>
         </div>
@@ -623,7 +625,7 @@ if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
             <p style="font-size:12px;color:rgba(240,234,214,.4);margin-top:2px">Experiência completa</p>
           </div>
           <div style="text-align:right">
-            <p id="price-premium" style="font-family:'Cinzel',serif;font-size:22px;color:var(--text)">R$39,99<span style="font-size:12px;color:rgba(240,234,214,.4)">/mês</span></p>
+            <p id="price-premium" style="font-family:'Cinzel',serif;font-size:22px;color:var(--text)">R$39,90<span style="font-size:12px;color:rgba(240,234,214,.4)">/mês</span></p>
             <p id="price-premium-anual" style="display:none;font-size:10px;color:rgba(240,234,214,.35)">R$407,90/ano</p>
           </div>
         </div>
@@ -3336,8 +3338,8 @@ function setBilling(mode) {
   var pp = document.getElementById('price-premium');
   var pba = document.getElementById('price-basic-anual');
   var ppa = document.getElementById('price-premium-anual');
-  if (pb) pb.innerHTML = mode === 'mensal' ? 'R$19,99<span style="font-size:12px;color:rgba(240,234,214,.4)">/mês</span>' : 'R$16,99<span style="font-size:12px;color:rgba(240,234,214,.4)">/mês</span>';
-  if (pp) pp.innerHTML = mode === 'mensal' ? 'R$39,99<span style="font-size:12px;color:rgba(240,234,214,.4)">/mês</span>' : 'R$33,99<span style="font-size:12px;color:rgba(240,234,214,.4)">/mês</span>';
+  if (pb) pb.innerHTML = mode === 'mensal' ? 'R$19,90<span style="font-size:12px;color:rgba(240,234,214,.4)">/mês</span>' : 'R$15,83<span style="font-size:12px;color:rgba(240,234,214,.4)">/mês</span>';
+  if (pp) pp.innerHTML = mode === 'mensal' ? 'R$39,90<span style="font-size:12px;color:rgba(240,234,214,.4)">/mês</span>' : 'R$31,99<span style="font-size:12px;color:rgba(240,234,214,.4)">/mês</span>';
   if (pba) pba.style.display = mode === 'anual' ? 'block' : 'none';
   if (ppa) ppa.style.display = mode === 'anual' ? 'block' : 'none';
 
