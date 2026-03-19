@@ -222,6 +222,12 @@ function renderConfig(){
     '<div class="cfg-opt'+(config.participantes==='2-4'?' active':'')+'" onclick="setConfig(\'participantes\',\'2-4\')">2-4</div>'+
     '<div class="cfg-opt'+(config.participantes==='5+'?' active':'')+'" onclick="setConfig(\'participantes\',\'5+\')">5+</div>'+
     '</div></div>'+
+    '<div class="cfg-section"><p class="cfg-label">Música de Fundo</p><div class="cfg-row">'+
+    '<div class="cfg-opt'+(config.musica==='splash-music.mp3'||!config.musica?' active':'')+'" onclick="setConfig(\'musica\',\'splash-music.mp3\')" style="flex:1">🎵 Espiritual</div>'+
+    '<div class="cfg-opt'+(config.musica==='teaser-music.mp3'?' active':'')+'" onclick="setConfig(\'musica\',\'teaser-music.mp3\')" style="flex:1">🎶 Cinematográfica</div>'+
+    '</div>'+
+    '<button onclick="previewMusic()" style="margin-top:8px;background:none;border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:6px 14px;cursor:pointer;font-size:11px;color:rgba(201,168,76,.5);transition:all .2s" id="preview-btn">▶ Ouvir prévia</button>'+
+    '</div>'+
     '<div class="cfg-section"><p class="cfg-label">Contexto Familiar (opcional)</p>'+
     '<input type="text" value="'+(config.contexto||'')+'" maxlength="200" placeholder="Ex: família com crianças pequenas..." onchange="setConfig(\'contexto\',this.value)" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.22);border-radius:12px;padding:11px 16px;color:var(--text);font-family:var(--font);font-size:15px;font-style:italic;outline:none">'+
     '</div></div>';
@@ -293,12 +299,26 @@ function renderLeitura(){
     '</div></div>';
 }
 
+// ── PRÉVIA DE MÚSICA ──
+var _previewAudio=null;
+function previewMusic(){
+  if(_previewAudio){_previewAudio.pause();_previewAudio=null;document.getElementById('preview-btn').textContent='▶ Ouvir prévia';return;}
+  var file=config.musica||'splash-music.mp3';
+  _previewAudio=new Audio(file);
+  _previewAudio.volume=0.5;
+  _previewAudio.play().catch(function(){});
+  document.getElementById('preview-btn').textContent='⏹ Parar';
+  setTimeout(function(){if(_previewAudio){_previewAudio.pause();_previewAudio=null;try{document.getElementById('preview-btn').textContent='▶ Ouvir prévia';}catch(e){}}},8000);
+}
+
 // ── PRECE (IA) ──
 // ── MÚSICA DE PRECE ──
 var _preceAudio=null;
 function startPreceMusic(){
   stopPreceMusic();
-  _preceAudio=new Audio('splash-music.mp3');
+  if(_previewAudio){_previewAudio.pause();_previewAudio=null;}
+  var file=config.musica||'splash-music.mp3';
+  _preceAudio=new Audio(file);
   _preceAudio.volume=0;
   _preceAudio.loop=true;
   _preceAudio.play().catch(function(){});
