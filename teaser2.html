@@ -77,9 +77,13 @@ body{font-family:'Cinzel',Georgia,serif}
   </div>
 </div>
 
-<!-- PART 1: JOURNEY (video background + Jesus overlay) -->
+<!-- PART 1: JOURNEY (video background + overlays) -->
 <div class="view" id="journey-view">
   <video id="journey-video" playsinline muted preload="auto"></video>
+  <!-- Logo Master Spirit overlay -->
+  <div id="logo-overlay" style="position:absolute;z-index:8;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;display:none">
+    <img src="logo-master-spirit.png" style="max-width:min(60vw,280px);height:auto;animation:floatBig 4s ease-in-out infinite" alt="">
+  </div>
   <div id="jesus-overlay">
     <div class="jesus-circle">
       <video id="jesus-vid" playsinline muted preload="none"><source src="teaser2-jesus-04.mp4" type="video/mp4"></video>
@@ -148,8 +152,10 @@ var PILLAR_VOICES=['teaser2-voice-04.mp3','teaser2-voice-05.mp3','teaser2-voice-
 var PILLAR_DURATIONS=[14,14,12,12,10,999];
 
 // Jesus overlay timing (seconds into journey video)
-var JESUS_START=24; // appear after narrator voice-02 finishes
-var JESUS_END=38;   // ~14s for Jesus to speak
+var LOGO_START=22;  // logo Master Spirit appears
+var LOGO_END=28;    // logo disappears
+var JESUS_START=30; // Jesus enters AFTER narrator voice-03 finishes
+var JESUS_END=44;   // ~14s for Jesus to speak
 
 var music=null;
 var voicePool={};
@@ -234,6 +240,13 @@ function startJourney(){
     if(vid.duration){
       var total=vid.duration+60; // journey + ~60s pillars
       document.getElementById('progress-fill').style.width=(vid.currentTime/total*100)+'%';
+    }
+    // Logo Master Spirit overlay
+    var logoOl=document.getElementById('logo-overlay');
+    if(vid.currentTime>=LOGO_START&&vid.currentTime<LOGO_END){
+      logoOl.style.display='block';
+    } else {
+      logoOl.style.display='none';
     }
     // Jesus overlay timing
     var ol=document.getElementById('jesus-overlay');
