@@ -61,6 +61,7 @@ body{font-family:'Cinzel',Georgia,serif}
 </head>
 <body>
 <div id="progress"><div id="progress-fill"></div></div>
+<button id="pause-btn" onclick="togglePause()" style="position:fixed;top:14px;right:14px;z-index:9998;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.4);border-radius:50%;width:40px;height:40px;cursor:pointer;font-size:16px;color:#E8C97A;display:none;align-items:center;justify-content:center">⏸</button>
 
 <!-- START -->
 <div id="start-overlay" onclick="startTeaser()">
@@ -141,8 +142,8 @@ body{font-family:'Cinzel',Georgia,serif}
 <script>
 // ── CONFIG ──
 var PILLAR_SCENES=['sc-mestres','sc-salas','sc-evangelho','sc-passe','sc-climax','sc-cta'];
-var PILLAR_VOICES=['teaser2-voice-03.mp3','teaser2-voice-05.mp3','teaser2-voice-6.1.mp3','teaser2-voice-6.2.mp3','teaser2-voice-07.mp3','teaser2-voice-08.mp3'];
-var PILLAR_DURATIONS=[12,12,10,10,10,999];
+var PILLAR_VOICES=['teaser2-voice-04.mp3','teaser2-voice-05.mp3','teaser2-voice-6.1.mp3','teaser2-voice-07.mp3',null,'teaser2-voice-08.mp3'];
+var PILLAR_DURATIONS=[14,14,12,12,10,999];
 
 // Jesus overlay timing (seconds into journey video)
 var JESUS_START=15; // appear at 15s
@@ -180,12 +181,13 @@ function initParticles(){
 // ── START ──
 function startTeaser(){
   document.getElementById('start-overlay').style.display='none';
+  document.getElementById('pause-btn').style.display='flex';
   // Music
   music=new Audio('teaser-music.mp3');music.volume=.7;music.loop=true;music.play();
   // Preload voices
   PILLAR_VOICES.forEach(function(v){var a=new Audio(v);a.load();voicePool[v]=a;});
   // Preload journey narration
-  ['teaser2-voice-01.mp3','teaser2-voice-02.mp3'].forEach(function(v){var a=new Audio(v);a.load();voicePool[v]=a;});
+  ['teaser2-voice-01.mp3','teaser2-voice-02.mp3','teaser2-voice-03.mp3'].forEach(function(v){var a=new Audio(v);a.load();voicePool[v]=a;});
   // Preload Jesus
   var jv=document.getElementById('jesus-vid');
   if(jv){jv.load();jv.play().then(function(){jv.pause();jv.currentTime=0;}).catch(function(){});}
@@ -226,10 +228,10 @@ function startJourney(){
     }
   });
 
-  // Play narration voice-01 at start
-  setTimeout(function(){playVoice('teaser2-voice-01.mp3');},1000);
-  // Play voice-02 after voice-01 (~8s)
-  setTimeout(function(){playVoice('teaser2-voice-02.mp3');},12000);
+  // Narração durante a jornada
+  setTimeout(function(){playVoice('teaser2-voice-01.mp3');},1000);    // "Você já sentou..."
+  setTimeout(function(){playVoice('teaser2-voice-02.mp3');},12000);   // "Milhões buscam..."
+  setTimeout(function(){playVoice('teaser2-voice-03.mp3');},28000);   // "Apresentamos MASTER SPIRIT"
 
   // When journey ends → switch to pillars
   vid.onended=function(){
@@ -310,12 +312,34 @@ function enterClimax(){
 
 function enterCTA(){
   var grid=document.getElementById('pillar-grid');
-  [{ico:'🕊️',txt:'Mestres'},{ico:'📚',txt:'Salas de Estudo'},{ico:'🕯️',txt:'Evangelho no Lar'},{ico:'🙌',txt:'Auto Passe'}].forEach(function(p,i){
+  grid.innerHTML='';
+  [{img:'avatar-jesus.png',txt:'Mestres'},{img:'shelf-books.png',txt:'Salas de Estudo'},{img:'evangelho-lar.png?v=2',txt:'Evangelho no Lar'},{img:'passe-card.png',txt:'Auto Passe'}].forEach(function(p,i){
     var div=document.createElement('div');div.className='pillar-card';
     div.style.animation='floatIn .6s ease '+(i*.2)+'s forwards';
-    div.innerHTML='<span>'+p.ico+'</span><p>'+p.txt+'</p>';
+    div.innerHTML='<img src="'+p.img+'" style="width:100%;height:50px;object-fit:contain;border-radius:8px;margin-bottom:4px;background:rgba(255,255,255,.05)"><p>'+p.txt+'</p>';
     grid.appendChild(div);
   });
+}
+
+// ── PAUSE ──
+var paused=false;
+function togglePause(){
+  paused=!paused;
+  document.getElementById('pause-btn').textContent=paused?'▶':'⏸';
+  if(paused){
+    if(music) music.pause();
+    if(voiceAudio) voiceAudio.pause();
+    var jv=document.getElementById('journey-video');if(jv&&!jv.paused) jv.pause();
+    if(pillarTimer){clearTimeout(pillarTimer);pillarTimer=null;}
+  } else {
+    if(music) music.play();
+    if(voiceAudio) voiceAudio.play();
+    var jv2=document.getElementById('journey-video');if(jv2&&jv2.paused&&document.getElementById('journey-view').classList.contains('active')) jv2.play();
+    // Re-arm pillar timer if in pillars view
+    if(document.getElementById('pillars-view').classList.contains('active')&&currentPillar<PILLAR_SCENES.length-1){
+      pillarTimer=setTimeout(function(){goToPillar(currentPillar+1);},(PILLAR_DURATIONS[currentPillar]||10)*1000);
+    }
+  }
 }
 
 // ── CONTROLS ──
