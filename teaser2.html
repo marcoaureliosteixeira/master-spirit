@@ -125,15 +125,29 @@ var music=null;
 var voiceAudio=null;
 var sceneTimer=null;
 
+// ── VOICE POOL ──
+var voicePool={};
+
 // ── START ──
 function startTeaser(){
   document.getElementById('start-overlay').style.display='none';
-  // Música
+  // Música (criada dentro do toque — obrigatório iOS)
   music=new Audio('teaser-music.mp3');
   music.volume=0.7;
   music.loop=true;
   music.play();
-  // Preload first 2 videos, rest load on demand
+  // Pré-carregar TODAS as vozes dentro do toque (obrigatório iOS)
+  SCENES.forEach(function(s){
+    if(s.voice){
+      var a=new Audio(s.voice);
+      a.load();
+      voicePool[s.voice]=a;
+    }
+  });
+  // Desmutar vídeos do Jesus (precisa de interação)
+  var vj4=document.getElementById('vid-3');if(vj4){vj4.load();vj4.play().then(function(){vj4.pause();vj4.currentTime=0;vj4.muted=false;}).catch(function(){});}
+  var vj6=document.getElementById('vid-5');if(vj6){vj6.load();vj6.play().then(function(){vj6.pause();vj6.currentTime=0;vj6.muted=false;}).catch(function(){});}
+  // Preload first 2 videos
   var v0=document.getElementById('vid-0');if(v0) v0.load();
   var v1=document.getElementById('vid-1');if(v1) v1.load();
   goToScene(0);
@@ -174,14 +188,15 @@ function goToScene(n){
       };
     }
   }
-  // Play narrator voice (with delay)
-  if(scene.voice&&n!==3&&n!==5){ // Skip voice on Jesus video scenes (they have own audio)
+  // Play narrator voice (from pre-loaded pool)
+  if(scene.voice&&n!==3&&n!==5){
     setTimeout(function(){
-      voiceAudio=new Audio(scene.voice);
+      voiceAudio=voicePool[scene.voice]||new Audio(scene.voice);
+      voiceAudio.currentTime=0;
       voiceAudio.volume=1.0;
       if(music) music.volume=0.2;
       voiceAudio.onended=function(){voiceAudio=null;if(music) music.volume=0.7;};
-      voiceAudio.play().catch(function(){});
+      voiceAudio.play().catch(function(e){console.warn('Voice play failed:',e);});
     },500);
   }
   // Lower music for Jesus scenes
