@@ -81,7 +81,7 @@ Cinematic style: volumetric god rays, lens flares, particle systems, nebula clou
 
 ---
 
-### Segmento 1 — A Partida (5-8s)
+### Segmento 1 — A Partida (4s)
 
 Cinematic 4K shot of planet Earth seen from low orbit, terminator line between day and night, blue oceans and white clouds, golden sunlight glowing on the atmosphere edge. Camera slowly pulls back into space. A delicate trail of golden luminous particles streams outward from Earth into the cosmos. Deep blue and black space background with distant stars. Anamorphic lens, film grain, volumetric atmospheric glow. Mood: serene, contemplative, majestic. Inspired by Interstellar Earth departure scene. Smooth continuous backward tracking shot. No human figures.
 

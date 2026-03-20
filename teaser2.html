@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="theme-color" content="#060a16">
+<title>Master Spirit — A Jornada</title>
+<meta property="og:title" content="Master Spirit — A Revolução Espiritual Começou">
+<meta property="og:description" content="Seis mestres. Dezenas de títulos. Evangelho no Lar. Passe espiritual. Tudo num único app.">
+<meta property="og:url" content="https://masterspirit.com.br/teaser2.html">
+<meta property="og:image" content="https://masterspirit.com.br/logo.png">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:#000;color:#F5EFE0}
+body{font-family:'Cormorant Garamond',Georgia,serif}
+/* Scenes */
+.scene{position:fixed;inset:0;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 1.2s ease;background:#000}
+.scene.active{opacity:1;pointer-events:auto}
+.scene video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+/* Overlay text */
+.overlay{position:relative;z-index:2;text-align:center;padding:20px;width:100%}
+.overlay-bottom{position:absolute;bottom:10%;left:0;right:0;z-index:2;text-align:center;padding:20px}
+/* Text styles */
+.headline{font-family:'Cinzel Decorative',serif;font-size:clamp(24px,5vw,42px);color:#E8C97A;letter-spacing:clamp(3px,.5vw,6px);text-shadow:0 0 40px rgba(0,0,0,.8),0 0 80px rgba(232,201,122,.3);line-height:1.3}
+.sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(15px,2.5vw,22px);color:rgba(240,234,214,.7);text-shadow:0 0 20px rgba(0,0,0,.9);line-height:1.6;max-width:600px;margin:0 auto}
+.eyebrow{font-family:'Cinzel',serif;font-size:clamp(10px,1.8vw,14px);letter-spacing:clamp(3px,.5vw,6px);color:rgba(201,168,76,.6);text-transform:uppercase;text-shadow:0 0 20px rgba(0,0,0,.9)}
+/* CTA scene */
+.cta-btn{display:inline-block;background:linear-gradient(135deg,rgba(201,168,76,.3),rgba(232,201,122,.15));border:1px solid rgba(201,168,76,.6);border-radius:50px;padding:16px 48px;font-family:'Cinzel',serif;font-size:clamp(11px,1.8vw,14px);letter-spacing:clamp(3px,.4vw,5px);color:#E8C97A;text-transform:uppercase;text-decoration:none;transition:all .3s;box-shadow:0 0 30px rgba(201,168,76,.15)}
+.cta-btn:hover{background:linear-gradient(135deg,rgba(201,168,76,.5),rgba(232,201,122,.25));box-shadow:0 0 60px rgba(201,168,76,.3);transform:translateY(-2px)}
+/* Progress */
+#progress{position:fixed;top:0;left:0;right:0;height:2px;z-index:100}
+#progress-fill{height:100%;background:linear-gradient(90deg,#C9A84C,#E8C97A);width:0%;transition:width linear}
+/* Start overlay */
+#start-overlay{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.95);display:flex;align-items:center;justify-content:center;cursor:pointer}
+@keyframes fadeup{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+<div id="progress"><div id="progress-fill"></div></div>
+
+<!-- START -->
+<div id="start-overlay" onclick="startTeaser()">
+  <div style="text-align:center;animation:fadeup 1s ease .3s both">
+    <img src="master-spirit-avatar.png" style="width:60px;height:60px;object-fit:contain;mix-blend-mode:screen;opacity:.5;margin-bottom:12px" alt="">
+    <p style="font-family:'Cinzel',serif;font-size:clamp(10px,2vw,14px);color:rgba(201,168,76,.6);letter-spacing:3px;margin-bottom:16px">MASTER SPIRIT</p>
+    <div style="display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(201,168,76,.3);border-radius:30px;padding:14px 32px">
+      <span style="font-size:18px;color:rgba(201,168,76,.7)">▶</span>
+      <span style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:#E8C97A">ASSISTIR</span>
+    </div>
+  </div>
+</div>
+
+<!-- CENA 1: Partida (vídeo jornada + voz locutor) -->
+<div class="scene" id="scene-0">
+  <video id="vid-0" playsinline muted preload="auto"><source src="jornada-01-partida.mp4" type="video/mp4"></video>
+</div>
+
+<!-- CENA 2: Busca (vídeo jornada + voz locutor) -->
+<div class="scene" id="scene-1">
+  <video id="vid-1" playsinline muted preload="auto"><source src="jornada-02-sistema-solar.mp4" type="video/mp4"></video>
+</div>
+
+<!-- CENA 3: Revelação (vídeo jornada + voz locutor) -->
+<div class="scene" id="scene-2">
+  <video id="vid-2" playsinline muted preload="auto"><source src="jornada-03-esferas.mp4" type="video/mp4"></video>
+  <div class="overlay" style="animation:fadeup 1s ease .5s both">
+    <p class="headline">MASTER SPIRIT</p>
+  </div>
+</div>
+
+<!-- CENA 4: Mestres (vídeo Jesus) -->
+<div class="scene" id="scene-3">
+  <video id="vid-3" playsinline muted preload="auto"><source src="teaser2-jesus-04.mp4" type="video/mp4"></video>
+</div>
+
+<!-- CENA 5: Salas de Estudo (vídeo jornada) -->
+<div class="scene" id="scene-4">
+  <video id="vid-4" playsinline muted preload="auto"><source src="jornada-04-travessia.mp4" type="video/mp4"></video>
+</div>
+
+<!-- CENA 6.1: Evangelho (vídeo jornada) -->
+<div class="scene" id="scene-5">
+  <video id="vid-5" playsinline muted preload="auto"><source src="teaser2-jesus-06.mp4" type="video/mp4"></video>
+</div>
+
+<!-- CENA 7: Passe (vídeo jornada presença) -->
+<div class="scene" id="scene-6">
+  <video id="vid-6" playsinline muted preload="auto"><source src="jornada-05-presenca.mp4" type="video/mp4"></video>
+</div>
+
+<!-- CENA 8: CTA Final -->
+<div class="scene" id="scene-7">
+  <video id="vid-7" playsinline muted preload="auto" loop><source src="jornada-06-logo.mp4" type="video/mp4"></video>
+  <div class="overlay">
+    <img src="master-spirit-avatar.png" style="width:min(30vw,140px);height:min(30vw,140px);object-fit:contain;mix-blend-mode:screen;margin-bottom:12px;filter:drop-shadow(0 0 20px rgba(201,168,76,.4))">
+    <p class="headline" style="margin-bottom:8px">MASTER<br>SPIRIT</p>
+    <p style="margin:8px 0 24px"><a href="https://masterspirit.com.br" target="_blank" style="font-size:14px;color:rgba(240,234,214,.5);letter-spacing:2px;text-decoration:none">masterspirit.com.br</a></p>
+    <a class="cta-btn" href="https://masterspirit.com.br" target="_blank">✦ Entre nessa jornada ✦</a>
+    <div style="margin-top:24px;display:flex;align-items:center;gap:8px;justify-content:center">
+      <span style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:2px;color:rgba(240,234,214,.3);text-transform:uppercase">Produced by</span>
+      <img src="logo-spyrit-systems.png" alt="Spyrit Systems" style="height:36px;opacity:.7">
+    </div>
+  </div>
+</div>
+
+<script>
+// ── CONFIG ──
+var SCENES=[
+  {id:'scene-0',vid:'vid-0',voice:'teaser2-voice-01.mp3'},
+  {id:'scene-1',vid:'vid-1',voice:'teaser2-voice-02.mp3'},
+  {id:'scene-2',vid:'vid-2',voice:'teaser2-voice-03.mp3'},
+  {id:'scene-3',vid:'vid-3',voice:'teaser2-voice-04.mp3'},
+  {id:'scene-4',vid:'vid-4',voice:'teaser2-voice-05.mp3'},
+  {id:'scene-5',vid:'vid-5',voice:'teaser2-voice-6.1.mp3'},
+  {id:'scene-6',vid:'vid-6',voice:'teaser2-voice-07.mp3'},
+  {id:'scene-7',vid:'vid-7',voice:'teaser2-voice-08.mp3'}
+];
+
+var currentScene=-1;
+var music=null;
+var voiceAudio=null;
+var sceneTimer=null;
+
+// ── START ──
+function startTeaser(){
+  document.getElementById('start-overlay').style.display='none';
+  // Música
+  music=new Audio('teaser-music.mp3');
+  music.volume=0.7;
+  music.loop=true;
+  music.play();
+  // Preload all videos
+  SCENES.forEach(function(s){
+    var v=document.getElementById(s.vid);
+    if(v){v.load();v.play().then(function(){v.pause();v.currentTime=0;}).catch(function(){});}
+  });
+  goToScene(0);
+}
+
+// ── SCENE MANAGEMENT ──
+function goToScene(n){
+  if(n>=SCENES.length) return;
+  // Stop previous
+  if(sceneTimer){clearTimeout(sceneTimer);sceneTimer=null;}
+  if(voiceAudio){voiceAudio.pause();voiceAudio=null;}
+  if(currentScene>=0){
+    var prevEl=document.getElementById(SCENES[currentScene].id);
+    if(prevEl) prevEl.classList.remove('active');
+    var prevVid=document.getElementById(SCENES[currentScene].vid);
+    if(prevVid){prevVid.pause();prevVid.currentTime=0;}
+  }
+  currentScene=n;
+  var scene=SCENES[n];
+  // Show scene
+  var el=document.getElementById(scene.id);
+  if(el) el.classList.add('active');
+  // Play video
+  var vid=document.getElementById(scene.vid);
+  if(vid){
+    vid.currentTime=0;
+    vid.muted=(n===3||n===5)?false:true; // Jesus videos have audio
+    vid.play().catch(function(){});
+    // Advance when video ends (except last scene)
+    if(n<SCENES.length-1){
+      vid.onended=function(){
+        setTimeout(function(){goToScene(currentScene+1);},500);
+      };
+    }
+  }
+  // Play narrator voice (with delay)
+  if(scene.voice&&n!==3&&n!==5){ // Skip voice on Jesus video scenes (they have own audio)
+    setTimeout(function(){
+      voiceAudio=new Audio(scene.voice);
+      voiceAudio.volume=1.0;
+      if(music) music.volume=0.2;
+      voiceAudio.onended=function(){voiceAudio=null;if(music) music.volume=0.7;};
+      voiceAudio.play().catch(function(){});
+    },500);
+  }
+  // Lower music for Jesus scenes
+  if((n===3||n===5)&&music) music.volume=0.15;
+  // Progress bar
+  var fill=document.getElementById('progress-fill');
+  fill.style.transition='none';fill.style.width=(n/SCENES.length*100)+'%';
+  setTimeout(function(){
+    if(vid&&vid.duration){
+      fill.style.transition='width '+vid.duration+'s linear';
+    } else {
+      fill.style.transition='width 8s linear';
+    }
+    fill.style.width=((n+1)/SCENES.length*100)+'%';
+  },100);
+}
+
+// ── CONTROLS ──
+document.addEventListener('click',function(e){
+  if(e.target.closest('#start-overlay')||e.target.closest('.cta-btn')) return;
+  if(currentScene>=0&&currentScene<SCENES.length-1) goToScene(currentScene+1);
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();if(currentScene<SCENES.length-1) goToScene(currentScene+1);}
+  if(e.key==='ArrowLeft'){e.preventDefault();if(currentScene>0) goToScene(currentScene-1);}
+});
+</script>
+</body>
+</html>
