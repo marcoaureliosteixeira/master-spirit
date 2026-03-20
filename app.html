@@ -23,7 +23,7 @@ body.ff-pal{--font:'Palatino Linotype',Palatino,serif}
 body.ff-sys{--font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
 #app{display:flex;flex-direction:column;height:100%;max-width:900px;margin:0 auto;position:relative}
 #header{flex-shrink:0;background:rgba(12,18,38,.88);backdrop-filter:blur(16px);border-bottom:1px solid rgba(201,168,76,.12);padding:14px 16px;display:flex;align-items:center;gap:14px;position:relative;z-index:50}
-#logo{width:54px;height:54px;border-radius:50%;object-fit:cover;animation:float 5s ease-in-out infinite,halo 4s ease-in-out infinite;flex-shrink:0}
+#logo{height:36px;width:auto;object-fit:contain;animation:float 5s ease-in-out infinite;flex-shrink:0}
 #header-text h1{font-family:'Cinzel Decorative',serif;font-size:20px;color:var(--gold);letter-spacing:5px;text-shadow:0 0 25px rgba(201,168,76,.4)}
 #header-text p{font-style:italic;font-size:10px;color:rgba(240,234,214,.35);letter-spacing:2px;margin-top:2px}
 #cfg-btn{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:50%;width:34px;height:34px;cursor:pointer;font-size:15px;color:rgba(201,168,76,.8);display:flex;align-items:center;justify-content:center;transition:all .2s}
@@ -391,9 +391,8 @@ if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
 
 <div id="app" style="display:none">
   <div id="header">
-    <img id="logo" src="" alt="MASTER SPIRIT">
+    <img id="logo" src="logo-master-spirit.png" alt="Master Spirit" style="width:auto;height:40px;border-radius:0;object-fit:contain">
     <div id="header-text">
-      <img src="logo-master-spirit.png" alt="Master Spirit" style="height:32px">
       <p>sabedoria espiritual para a evolução da alma</p>
     </div>
     <button id="admin-btn" onclick="window.location.href='admin.html'" style="display:none;position:absolute;right:56px;top:50%;transform:translateY(-50%);background:rgba(91,175,124,.1);border:1px solid rgba(91,175,124,.3);border-radius:50%;width:34px;height:34px;cursor:pointer;font-size:15px;color:rgba(91,175,124,.8);align-items:center;justify-content:center;transition:all .2s" title="Admin">⚡</button>
@@ -1403,7 +1402,7 @@ window.addEventListener('load',()=>{
     return;
   }
   // Init normal
-  document.getElementById('logo').src=LOGO_SRC;
+  // Logo já definida no HTML
   initSplashLogo();
   initStars();
   initSettings();
@@ -2690,7 +2689,7 @@ async function acceptDisclaimer(){
   if(!document.getElementById('app').style.display||document.getElementById('app').style.display==='none'){
     document.getElementById('splash').style.display='block';
     // Inicializar logo, stars, settings que o load teria feito
-    document.getElementById('logo').src=LOGO_SRC;
+    // Logo já definida no HTML
     initSplashLogo();
     initStars();
     initSettings();
