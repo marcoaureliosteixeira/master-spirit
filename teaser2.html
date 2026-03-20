@@ -93,8 +93,7 @@ body{font-family:'Cormorant Garamond',Georgia,serif}
 </div>
 
 <!-- CENA 8: CTA Final -->
-<div class="scene" id="scene-7">
-  <video id="vid-7" playsinline muted preload="none" loop><source src="jornada-06-logo.mp4" type="video/mp4"></video>
+<div class="scene" id="scene-7" style="background:#060a16">
   <div class="overlay">
     <img src="master-spirit-avatar.png" style="width:min(30vw,140px);height:min(30vw,140px);object-fit:contain;mix-blend-mode:screen;margin-bottom:12px;filter:drop-shadow(0 0 20px rgba(201,168,76,.4))">
     <p class="headline" style="margin-bottom:8px">MASTER<br>SPIRIT</p>
@@ -117,7 +116,7 @@ var SCENES=[
   {id:'scene-4',vid:'vid-4',voice:'teaser2-voice-05.mp3'},
   {id:'scene-5',vid:'vid-5',voice:'teaser2-voice-6.1.mp3'},
   {id:'scene-6',vid:'vid-6',voice:'teaser2-voice-07.mp3'},
-  {id:'scene-7',vid:'vid-7',voice:'teaser2-voice-08.mp3'}
+  {id:'scene-7',vid:null,voice:'teaser2-voice-08.mp3'}
 ];
 
 var currentScene=-1;
@@ -176,7 +175,7 @@ function goToScene(n){
     if(nextVid) nextVid.load();
   }
   // Play video
-  var vid=document.getElementById(scene.vid);
+  var vid=scene.vid?document.getElementById(scene.vid):null;
   if(vid){
     vid.currentTime=0;
     vid.muted=(n===3||n===5)?false:true;
