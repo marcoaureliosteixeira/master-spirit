@@ -54,25 +54,25 @@ body{font-family:'Cormorant Garamond',Georgia,serif}
   </div>
 </div>
 
-<!-- CENA 1: Partida (vídeo jornada + voz locutor) -->
+<!-- CENA 1: Partida de Urantia -->
 <div class="scene" id="scene-0">
   <video id="vid-0" playsinline muted preload="auto"><source src="jornada-01-partida.mp4" type="video/mp4"></video>
 </div>
 
-<!-- CENA 2: Busca (vídeo jornada + voz locutor) -->
+<!-- CENA 2: Mundos das Mansões -->
 <div class="scene" id="scene-1">
-  <video id="vid-1" playsinline muted preload="auto"><source src="jornada-02-sistema-solar.mp4" type="video/mp4"></video>
+  <video id="vid-1" playsinline muted preload="auto"><source src="jornada-02-mansoes.mp4" type="video/mp4"></video>
 </div>
 
-<!-- CENA 3: Revelação (vídeo jornada + voz locutor) -->
+<!-- CENA 3: Nebadon + MASTER SPIRIT -->
 <div class="scene" id="scene-2">
-  <video id="vid-2" playsinline muted preload="none"><source src="jornada-03-esferas.mp4" type="video/mp4"></video>
+  <video id="vid-2" playsinline muted preload="none"><source src="jornada-03-nebadon.mp4" type="video/mp4"></video>
   <div class="overlay" style="animation:fadeup 1s ease .5s both">
     <p class="headline">MASTER SPIRIT</p>
   </div>
 </div>
 
-<!-- CENA 4: Mestres (vídeo Jesus em círculo) -->
+<!-- CENA 4: Jesus (vídeo em círculo) -->
 <div class="scene" id="scene-3" style="background:#060a16">
   <div style="width:min(55vw,280px);height:min(55vw,280px);border-radius:50%;overflow:hidden;border:2px solid rgba(201,168,76,.4);box-shadow:0 0 40px rgba(201,168,76,.25),0 0 80px rgba(100,60,200,.15);margin-bottom:16px">
     <video id="vid-3" playsinline muted preload="none" style="width:100%;height:100%;object-fit:cover"><source src="teaser2-jesus-04.mp4" type="video/mp4"></video>
@@ -81,12 +81,12 @@ body{font-family:'Cormorant Garamond',Georgia,serif}
   <p class="sub" style="font-size:clamp(13px,2vw,16px)">O Mestre da Galileia</p>
 </div>
 
-<!-- CENA 5: Salas de Estudo (vídeo jornada) -->
+<!-- CENA 5: Orvonton (Superuniverso) -->
 <div class="scene" id="scene-4">
-  <video id="vid-4" playsinline muted preload="none"><source src="jornada-04-travessia.mp4" type="video/mp4"></video>
+  <video id="vid-4" playsinline muted preload="none"><source src="jornada-04-orvonton.mp4" type="video/mp4"></video>
 </div>
 
-<!-- CENA 6: Evangelho (vídeo Jesus em círculo) -->
+<!-- CENA 6: Jesus Evangelho (vídeo em círculo) -->
 <div class="scene" id="scene-5" style="background:#060a16">
   <div style="width:min(45vw,220px);height:min(45vw,220px);border-radius:50%;overflow:hidden;border:2px solid rgba(201,168,76,.4);box-shadow:0 0 30px rgba(201,168,76,.2);margin-bottom:14px">
     <video id="vid-5" playsinline muted preload="none" style="width:100%;height:100%;object-fit:cover"><source src="teaser2-jesus-06.mp4" type="video/mp4"></video>
@@ -95,9 +95,14 @@ body{font-family:'Cormorant Garamond',Georgia,serif}
   <p class="sub" style="font-size:clamp(14px,2vw,18px)">"Onde dois ou três estiverem reunidos<br>em meu nome... ali estarei."</p>
 </div>
 
-<!-- CENA 7: Passe (vídeo jornada presença) -->
+<!-- CENA 7: Havona + Ilha do Paraíso -->
 <div class="scene" id="scene-6">
-  <video id="vid-6" playsinline muted preload="none"><source src="jornada-05-presenca.mp4" type="video/mp4"></video>
+  <video id="vid-6a" playsinline muted preload="none"><source src="jornada-05a-paraiso.mp4" type="video/mp4"></video>
+</div>
+
+<!-- CENA 7b: Presença de Deus -->
+<div class="scene" id="scene-6b">
+  <video id="vid-6b" playsinline muted preload="none"><source src="jornada-05b-paraiso.mp4" type="video/mp4"></video>
 </div>
 
 <!-- CENA 8: CTA Final -->
@@ -117,14 +122,15 @@ body{font-family:'Cormorant Garamond',Georgia,serif}
 <script>
 // ── CONFIG ──
 var SCENES=[
-  {id:'scene-0',vid:'vid-0',voice:'teaser2-voice-01.mp3'},
-  {id:'scene-1',vid:'vid-1',voice:'teaser2-voice-02.mp3'},
-  {id:'scene-2',vid:'vid-2',voice:'teaser2-voice-03.mp3'},
-  {id:'scene-3',vid:'vid-3',voice:'teaser2-voice-04.mp3'},
-  {id:'scene-4',vid:'vid-4',voice:'teaser2-voice-05.mp3'},
-  {id:'scene-5',vid:'vid-5',voice:'teaser2-voice-6.1.mp3'},
-  {id:'scene-6',vid:'vid-6',voice:'teaser2-voice-07.mp3'},
-  {id:'scene-7',vid:null,voice:'teaser2-voice-08.mp3'}
+  {id:'scene-0',vid:'vid-0',voice:'teaser2-voice-01.mp3',jesus:false},
+  {id:'scene-1',vid:'vid-1',voice:'teaser2-voice-02.mp3',jesus:false},
+  {id:'scene-2',vid:'vid-2',voice:'teaser2-voice-03.mp3',jesus:false},
+  {id:'scene-3',vid:'vid-3',voice:'teaser2-voice-04.mp3',jesus:true},
+  {id:'scene-4',vid:'vid-4',voice:'teaser2-voice-05.mp3',jesus:false},
+  {id:'scene-5',vid:'vid-5',voice:'teaser2-voice-6.1.mp3',jesus:true},
+  {id:'scene-6',vid:'vid-6a',voice:'teaser2-voice-6.2.mp3',jesus:false},
+  {id:'scene-6b',vid:'vid-6b',voice:'teaser2-voice-07.mp3',jesus:false},
+  {id:'scene-7',vid:null,voice:'teaser2-voice-08.mp3',jesus:false}
 ];
 
 var currentScene=-1;
@@ -186,7 +192,7 @@ function goToScene(n){
   var vid=scene.vid?document.getElementById(scene.vid):null;
   if(vid){
     vid.currentTime=0;
-    vid.muted=(n===3||n===5)?false:true;
+    vid.muted=scene.jesus?false:true;
     vid.play().catch(function(){});
     // Advance when video ends (except last scene)
     if(n<SCENES.length-1){
@@ -196,7 +202,7 @@ function goToScene(n){
     }
   }
   // Play narrator voice (from pre-loaded pool)
-  if(scene.voice&&n!==3&&n!==5){
+  if(scene.voice&&!scene.jesus){
     setTimeout(function(){
       voiceAudio=voicePool[scene.voice]||new Audio(scene.voice);
       voiceAudio.currentTime=0;
@@ -207,7 +213,7 @@ function goToScene(n){
     },500);
   }
   // Lower music for Jesus scenes
-  if((n===3||n===5)&&music) music.volume=0.15;
+  if(scene.jesus&&music) music.volume=0.15;
   // Progress bar
   var fill=document.getElementById('progress-fill');
   fill.style.transition='none';fill.style.width=(n/SCENES.length*100)+'%';
