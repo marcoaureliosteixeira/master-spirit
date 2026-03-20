@@ -66,7 +66,7 @@ body{font-family:'Cormorant Garamond',Georgia,serif}
 
 <!-- CENA 3: Revelação (vídeo jornada + voz locutor) -->
 <div class="scene" id="scene-2">
-  <video id="vid-2" playsinline muted preload="auto"><source src="jornada-03-esferas.mp4" type="video/mp4"></video>
+  <video id="vid-2" playsinline muted preload="none"><source src="jornada-03-esferas.mp4" type="video/mp4"></video>
   <div class="overlay" style="animation:fadeup 1s ease .5s both">
     <p class="headline">MASTER SPIRIT</p>
   </div>
@@ -74,27 +74,27 @@ body{font-family:'Cormorant Garamond',Georgia,serif}
 
 <!-- CENA 4: Mestres (vídeo Jesus) -->
 <div class="scene" id="scene-3">
-  <video id="vid-3" playsinline muted preload="auto"><source src="teaser2-jesus-04.mp4" type="video/mp4"></video>
+  <video id="vid-3" playsinline muted preload="none"><source src="teaser2-jesus-04.mp4" type="video/mp4"></video>
 </div>
 
 <!-- CENA 5: Salas de Estudo (vídeo jornada) -->
 <div class="scene" id="scene-4">
-  <video id="vid-4" playsinline muted preload="auto"><source src="jornada-04-travessia.mp4" type="video/mp4"></video>
+  <video id="vid-4" playsinline muted preload="none"><source src="jornada-04-travessia.mp4" type="video/mp4"></video>
 </div>
 
 <!-- CENA 6.1: Evangelho (vídeo jornada) -->
 <div class="scene" id="scene-5">
-  <video id="vid-5" playsinline muted preload="auto"><source src="teaser2-jesus-06.mp4" type="video/mp4"></video>
+  <video id="vid-5" playsinline muted preload="none"><source src="teaser2-jesus-06.mp4" type="video/mp4"></video>
 </div>
 
 <!-- CENA 7: Passe (vídeo jornada presença) -->
 <div class="scene" id="scene-6">
-  <video id="vid-6" playsinline muted preload="auto"><source src="jornada-05-presenca.mp4" type="video/mp4"></video>
+  <video id="vid-6" playsinline muted preload="none"><source src="jornada-05-presenca.mp4" type="video/mp4"></video>
 </div>
 
 <!-- CENA 8: CTA Final -->
 <div class="scene" id="scene-7">
-  <video id="vid-7" playsinline muted preload="auto" loop><source src="jornada-06-logo.mp4" type="video/mp4"></video>
+  <video id="vid-7" playsinline muted preload="none" loop><source src="jornada-06-logo.mp4" type="video/mp4"></video>
   <div class="overlay">
     <img src="master-spirit-avatar.png" style="width:min(30vw,140px);height:min(30vw,140px);object-fit:contain;mix-blend-mode:screen;margin-bottom:12px;filter:drop-shadow(0 0 20px rgba(201,168,76,.4))">
     <p class="headline" style="margin-bottom:8px">MASTER<br>SPIRIT</p>
@@ -133,11 +133,9 @@ function startTeaser(){
   music.volume=0.7;
   music.loop=true;
   music.play();
-  // Preload all videos
-  SCENES.forEach(function(s){
-    var v=document.getElementById(s.vid);
-    if(v){v.load();v.play().then(function(){v.pause();v.currentTime=0;}).catch(function(){});}
-  });
+  // Preload first 2 videos, rest load on demand
+  var v0=document.getElementById('vid-0');if(v0) v0.load();
+  var v1=document.getElementById('vid-1');if(v1) v1.load();
   goToScene(0);
 }
 
@@ -158,11 +156,16 @@ function goToScene(n){
   // Show scene
   var el=document.getElementById(scene.id);
   if(el) el.classList.add('active');
+  // Preload next video
+  if(n+1<SCENES.length){
+    var nextVid=document.getElementById(SCENES[n+1].vid);
+    if(nextVid) nextVid.load();
+  }
   // Play video
   var vid=document.getElementById(scene.vid);
   if(vid){
     vid.currentTime=0;
-    vid.muted=(n===3||n===5)?false:true; // Jesus videos have audio
+    vid.muted=(n===3||n===5)?false:true;
     vid.play().catch(function(){});
     // Advance when video ends (except last scene)
     if(n<SCENES.length-1){
