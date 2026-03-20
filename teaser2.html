@@ -14,69 +14,58 @@
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;overflow:hidden;background:#060a16;color:#F5EFE0}
-body{font-family:'Cormorant Garamond',Georgia,serif}
-#canvas-bg{position:fixed;inset:0;z-index:0}
-.scene{position:fixed;inset:0;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity 1.2s ease}
-.scene.active{opacity:1;pointer-events:auto}
-.eyebrow{font-family:'Cinzel',serif;font-size:clamp(12px,2vw,16px);letter-spacing:clamp(3px,.5vw,6px);color:rgba(201,168,76,.5);text-transform:uppercase;margin-bottom:12px}
-.headline{font-family:'Cinzel Decorative',serif;font-size:clamp(22px,4.5vw,38px);color:#E8C97A;letter-spacing:clamp(2px,.4vw,4px);text-shadow:0 0 40px rgba(232,201,122,.4);text-align:center;line-height:1.4;margin-bottom:16px}
-.sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(16px,2.5vw,22px);color:rgba(240,234,214,.55);line-height:1.7;text-align:center;max-width:500px}
-.divider{width:60px;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.5),transparent);margin:14px auto}
-/* Spirit text animations */
-@keyframes spiritReveal{0%{opacity:0;filter:blur(12px) brightness(3);transform:scale(1.1)}40%{opacity:1;filter:blur(3px) brightness(1.5)}100%{opacity:1;filter:blur(0) brightness(1);transform:scale(1)}}
-@keyframes spiritGlow{0%{text-shadow:0 0 20px rgba(232,201,122,.2)}50%{text-shadow:0 0 40px rgba(232,201,122,.6),0 0 80px rgba(100,60,200,.2)}100%{text-shadow:0 0 20px rgba(232,201,122,.2)}}
-@keyframes fadeup{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
-@keyframes floatIn{from{opacity:0;transform:translateY(30px) scale(.9);filter:blur(8px)}to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
-.spirit-text{animation:spiritReveal 1.5s ease forwards}
-.glow-text{animation:spiritGlow 3s ease-in-out infinite}
-.float-in{animation:floatIn .8s ease forwards}
-/* Word animation */
-.word{display:inline-block;opacity:0;transform:translateY(15px);animation:fadeup .5s ease forwards;margin-right:.3em}
+html,body{height:100%;overflow:hidden;background:#000;color:#F5EFE0}
+body{font-family:'Cinzel',Georgia,serif}
+/* Views */
+.view{position:fixed;inset:0;display:none;z-index:1}
+.view.active{display:flex;flex-direction:column}
+/* Journey view */
+#journey-view video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000;z-index:1}
+/* Jesus overlay */
+#jesus-overlay{position:absolute;z-index:10;left:50%;top:50%;transform:translate(-50%,-50%);display:none;text-align:center;animation:fadeIn .8s ease}
+#jesus-overlay.show{display:block}
+.jesus-circle{width:min(50vw,240px);height:min(50vw,240px);border-radius:50%;overflow:hidden;border:2px solid rgba(201,168,76,.5);box-shadow:0 0 40px rgba(201,168,76,.3),0 0 80px rgba(100,60,200,.15);margin:0 auto 10px}
+.jesus-circle video{width:100%;height:100%;object-fit:cover}
+.jesus-label{font-family:'Cinzel',serif;font-size:clamp(14px,3vw,20px);color:#E8C97A;text-shadow:0 0 30px rgba(0,0,0,.8);letter-spacing:2px}
+/* Pillars view */
+#pillars-view{align-items:center;justify-content:center;background:#060a16;padding:24px}
+#pillars-view canvas{position:absolute;inset:0;z-index:0}
+.pillars-content{position:relative;z-index:1;text-align:center;width:100%}
+.scene{display:none;animation:fadeIn .6s ease}
+.scene.active{display:block}
+.headline{font-family:'Cinzel Decorative',serif;font-size:clamp(20px,4vw,34px);color:#E8C97A;letter-spacing:clamp(2px,.4vw,4px);text-shadow:0 0 30px rgba(232,201,122,.3);text-align:center;line-height:1.4;margin-bottom:14px}
+.sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(15px,2.5vw,20px);color:rgba(240,234,214,.55);line-height:1.7;text-align:center;max-width:500px;margin:0 auto}
+.eyebrow{font-family:'Cinzel',serif;font-size:clamp(11px,1.8vw,14px);letter-spacing:clamp(3px,.5vw,5px);color:rgba(201,168,76,.5);text-transform:uppercase;margin-bottom:10px}
+.divider{width:50px;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.5),transparent);margin:12px auto}
+.masters-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:16px 0}
+.master-circle{width:clamp(45px,9vw,65px);height:clamp(45px,9vw,65px);border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.3);box-shadow:0 0 15px rgba(201,168,76,.2);background:#d0d0d0;opacity:0}
+@keyframes masterIn{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
+.pillar-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:420px;margin:14px auto}
+.pillar-card{background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.2);border-radius:12px;padding:12px 8px;text-align:center;opacity:0}
+.pillar-card span{font-size:24px;display:block;margin-bottom:4px}
+.pillar-card p{font-family:'Cinzel',serif;font-size:8px;letter-spacing:1.2px;color:#E8C97A}
+/* CTA */
+.cta-btn{display:inline-block;background:linear-gradient(135deg,rgba(201,168,76,.3),rgba(232,201,122,.15));border:1px solid rgba(201,168,76,.6);border-radius:50px;padding:14px 40px;font-family:'Cinzel',serif;font-size:clamp(10px,1.6vw,13px);letter-spacing:clamp(3px,.4vw,5px);color:#E8C97A;text-transform:uppercase;text-decoration:none;transition:all .3s;box-shadow:0 0 25px rgba(201,168,76,.12);margin-top:18px}
+.cta-btn:hover{background:linear-gradient(135deg,rgba(201,168,76,.5),rgba(232,201,122,.25));box-shadow:0 0 50px rgba(201,168,76,.3);transform:translateY(-2px)}
 /* Progress */
 #progress{position:fixed;top:0;left:0;right:0;height:2px;z-index:100}
-#progress-fill{height:100%;background:linear-gradient(90deg,#C9A84C,#E8C97A);width:0%;transition:width linear}
-/* Masters */
-.masters-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin:20px 0}
-.master-circle{width:clamp(50px,10vw,70px);height:clamp(50px,10vw,70px);border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.3);box-shadow:0 0 20px rgba(201,168,76,.2);opacity:0;animation:floatIn .6s ease forwards}
-/* Jesus video circle */
-.jesus-circle{width:min(55vw,280px);height:min(55vw,280px);border-radius:50%;overflow:hidden;border:2px solid rgba(201,168,76,.4);box-shadow:0 0 40px rgba(201,168,76,.25),0 0 80px rgba(100,60,200,.15);margin-bottom:16px}
-.jesus-circle video{width:100%;height:100%;object-fit:cover}
-/* CTA */
-.cta-btn{display:inline-block;background:linear-gradient(135deg,rgba(201,168,76,.3),rgba(232,201,122,.15));border:1px solid rgba(201,168,76,.6);border-radius:50px;padding:16px 48px;font-family:'Cinzel',serif;font-size:clamp(11px,1.8vw,14px);letter-spacing:clamp(3px,.4vw,5px);color:#E8C97A;text-transform:uppercase;text-decoration:none;transition:all .3s;box-shadow:0 0 30px rgba(201,168,76,.15);margin-top:24px}
-.cta-btn:hover{background:linear-gradient(135deg,rgba(201,168,76,.5),rgba(232,201,122,.25));box-shadow:0 0 60px rgba(201,168,76,.3);transform:translateY(-2px)}
-/* Spirit logo */
-.spirit-logo{position:relative;width:min(70vw,380px);height:min(70vw,380px);margin:0 auto 10px}
-.spirit-logo img{width:min(70vw,380px);height:min(70vw,380px);object-fit:contain;display:block;position:relative;z-index:2;mix-blend-mode:screen;animation:spiritReveal 3s cubic-bezier(.22,1,.36,1) .8s forwards;opacity:0}
-.spirit-spark{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:8px;height:8px;border-radius:50%;background:#fff;z-index:3;box-shadow:0 0 12px 6px rgba(255,240,180,.9),0 0 40px 20px rgba(201,168,76,.5);animation:sparkFlash 1.2s ease forwards}
-@keyframes sparkFlash{0%{transform:translate(-50%,-50%) scale(0);opacity:0}20%{opacity:1;transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(3);opacity:.8}100%{transform:translate(-50%,-50%) scale(6);opacity:0}}
-.spirit-ring{position:absolute;left:50%;top:50%;width:280px;height:280px;margin:-140px 0 0 -140px;border-radius:50%;border:2px solid rgba(201,168,76,.5);opacity:0;z-index:1}
-.spirit-ring:nth-child(2){animation:ringBirth .8s ease-out 3.8s forwards,ringPulse 2.5s ease-out 4.8s infinite}
-.spirit-ring:nth-child(3){animation:ringBirth .8s ease-out 4.2s forwards,ringPulse 2.5s ease-out 5.2s infinite;border-color:rgba(150,100,255,.35)}
-@keyframes ringBirth{0%{opacity:0;transform:scale(.3)}100%{opacity:.8;transform:scale(1)}}
-@keyframes ringPulse{0%{transform:scale(.8);opacity:.7}100%{transform:scale(1.8);opacity:0}}
-/* Pillar icons */
-.pillar-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;max-width:400px;margin:16px auto}
-.pillar-card{background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.2);border-radius:14px;padding:14px;text-align:center;opacity:0}
-.pillar-card span{font-size:28px;display:block;margin-bottom:6px}
-.pillar-card p{font-family:'Cinzel',serif;font-size:10px;letter-spacing:1.5px;color:#E8C97A}
-/* Start overlay */
+#progress-fill{height:100%;background:linear-gradient(90deg,#C9A84C,#E8C97A);width:0%;transition:width 1s linear}
+/* Start */
 #start-overlay{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.95);display:flex;align-items:center;justify-content:center;cursor:pointer}
-/* Dots */
-#dots{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:100;display:flex;gap:8px}
-.dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.15);cursor:pointer;transition:all .3s}
-.dot.active{background:#C9A84C;box-shadow:0 0 8px rgba(201,168,76,.5)}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+@keyframes floatIn{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+.word{display:inline-block;opacity:0;animation:fadeUp .5s ease forwards;margin-right:.3em}
+@media(max-width:500px){.pillar-grid{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
-<canvas id="canvas-bg"></canvas>
 <div id="progress"><div id="progress-fill"></div></div>
 
 <!-- START -->
 <div id="start-overlay" onclick="startTeaser()">
-  <div style="text-align:center;animation:fadeup 1s ease .3s both">
-    <img src="master-spirit-avatar.png" style="width:60px;height:60px;object-fit:contain;mix-blend-mode:screen;opacity:.5;margin-bottom:12px" alt="">
-    <p style="font-family:'Cinzel',serif;font-size:clamp(10px,2vw,14px);color:rgba(201,168,76,.6);letter-spacing:3px;margin-bottom:16px">MASTER SPIRIT</p>
+  <div style="text-align:center;animation:fadeUp 1s ease .3s both">
+    <img src="logo-master-spirit.png" style="max-width:min(50vw,200px);height:auto;opacity:.6;margin-bottom:16px" alt="">
     <div style="display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(201,168,76,.3);border-radius:30px;padding:14px 32px">
       <span style="font-size:18px;color:rgba(201,168,76,.7)">▶</span>
       <span style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:#E8C97A">ASSISTIR</span>
@@ -84,217 +73,262 @@ body{font-family:'Cormorant Garamond',Georgia,serif}
   </div>
 </div>
 
-<!-- CENA 0: Abertura (spark + avatar + MASTER SPIRIT) -->
-<div class="scene" id="scene-0">
-  <div class="spirit-logo" id="spirit-logo-0">
-    <div class="spirit-spark"></div>
-    <div class="spirit-ring"></div>
-    <div class="spirit-ring"></div>
-    <img src="master-spirit-avatar.png" alt="Master Spirit">
+<!-- PART 1: JOURNEY (video background + Jesus overlay) -->
+<div class="view" id="journey-view">
+  <video id="journey-video" playsinline muted preload="auto"></video>
+  <div id="jesus-overlay">
+    <div class="jesus-circle">
+      <video id="jesus-vid" playsinline muted preload="none"><source src="teaser2-jesus-04.mp4" type="video/mp4"></video>
+    </div>
+    <p class="jesus-label">Jesus</p>
   </div>
-  <p class="headline spirit-text" style="animation-delay:2s"><img src="logo-master-spirit.png" alt="Master Spirit" style="max-width:min(50vw,240px);height:auto"></p>
-  <p class="eyebrow spirit-text" style="animation-delay:3s">Spyrit Systems apresenta</p>
-  <p class="sub spirit-text" style="animation-delay:4s">Sua Jornada Começa aqui</p>
 </div>
 
-<!-- CENA 1: Gancho emocional -->
-<div class="scene" id="scene-1">
-  <p class="headline" id="headline-1"></p>
-  <div class="divider"></div>
-  <p class="sub" id="sub-1"></p>
-</div>
-
-<!-- CENA 2: Mestres (6 avatares) -->
-<div class="scene" id="scene-2">
-  <p class="eyebrow spirit-text">Mestres Espirituais</p>
-  <p class="headline spirit-text" style="font-size:clamp(18px,3.5vw,30px)">Cada Mestre, com sua Sabedoria<br>e Personalidade.</p>
-  <div class="divider"></div>
-  <p class="sub spirit-text">Falando com você, na primeira pessoa.</p>
-  <div class="masters-row" id="masters-row"></div>
-</div>
-
-<!-- CENA 3: Jesus (vídeo em círculo) -->
-<div class="scene" id="scene-3">
-  <div class="jesus-circle">
-    <video id="vid-jesus-1" playsinline muted preload="none"><source src="teaser2-jesus-04.mp4" type="video/mp4"></video>
-  </div>
-  <p class="headline spirit-text" style="font-size:clamp(18px,3.5vw,28px)">JESUS</p>
-  <p class="sub">O Mestre da Galileia</p>
-</div>
-
-<!-- CENA 4: Salas de Estudo -->
-<div class="scene" id="scene-4">
-  <p class="eyebrow spirit-text">Salas de Estudo</p>
-  <p class="headline spirit-text" style="font-size:clamp(18px,3.5vw,30px)">Dezenas de títulos<br>ao seu alcance.</p>
-  <div class="divider"></div>
-  <p class="sub spirit-text">Mestre Emmanuel guia seu caminho.<br>Cem por cento do conteúdo.<br>Nenhum capítulo deixado para trás.</p>
-</div>
-
-<!-- CENA 5: Evangelho no Lar + Jesus -->
-<div class="scene" id="scene-5">
-  <div class="jesus-circle" style="width:min(40vw,200px);height:min(40vw,200px)">
-    <video id="vid-jesus-2" playsinline muted preload="none"><source src="teaser2-jesus-06.mp4" type="video/mp4"></video>
-  </div>
-  <p class="eyebrow spirit-text">Evangelho no Lar</p>
-  <p class="headline spirit-text" style="font-size:clamp(18px,3.5vw,28px)">Reúna sua família<br>e transforme seu lar.</p>
-</div>
-
-<!-- CENA 6: Passe Espiritual -->
-<div class="scene" id="scene-6">
-  <p class="eyebrow spirit-text">Sessão de Passe</p>
-  <p class="headline spirit-text" style="font-size:clamp(18px,3.5vw,30px)">Higiene e cura<br>do espírito.</p>
-  <div class="divider"></div>
-  <p class="sub spirit-text">Autopasse guiado na palma da sua mão.<br>Corpo. Mente. Espírito.</p>
-</div>
-
-<!-- CENA 7: Clímax -->
-<div class="scene" id="scene-7">
-  <p class="headline glow-text" id="headline-7"></p>
-  <div class="divider" style="margin-top:20px"></div>
-  <p class="sub" id="sub-7" style="margin-top:12px"></p>
-</div>
-
-<!-- CENA 8: Jornada completa + CTA -->
-<div class="scene" id="scene-8" style="padding:0">
-  <video id="vid-jornada" playsinline muted preload="none" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.6"><source src="jornada-completa.mp4" type="video/mp4"></video>
-  <div style="position:relative;z-index:2;text-align:center;padding:24px">
-    <img src="master-spirit-avatar.png" style="width:min(25vw,100px);height:min(25vw,100px);object-fit:contain;mix-blend-mode:screen;filter:drop-shadow(0 0 20px rgba(201,168,76,.4));margin-bottom:10px">
-    <p class="headline" style="font-size:clamp(22px,4vw,36px);margin-bottom:8px"><img src="logo-master-spirit.png" alt="Master Spirit" style="max-width:min(50vw,240px);height:auto"></p>
-    <div class="pillar-grid" id="pillar-grid"></div>
-    <p style="margin:12px 0 0"><a href="https://masterspirit.com.br" target="_blank" style="font-size:14px;color:rgba(240,234,214,.5);letter-spacing:2px;text-decoration:none">masterspirit.com.br</a></p>
-    <a class="cta-btn" href="https://masterspirit.com.br" target="_blank">✦ Entre nessa jornada ✦</a>
-    <div style="margin-top:20px;display:flex;align-items:center;gap:8px;justify-content:center">
-      <span style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:2px;color:rgba(240,234,214,.3);text-transform:uppercase">Produced by</span>
-      <img src="logo-spyrit-systems.png" alt="Spyrit Systems" style="height:40px;opacity:.8;animation:spiritGlow 3s ease-in-out infinite">
+<!-- PART 2: PILLARS (text scenes) -->
+<div class="view" id="pillars-view">
+  <canvas id="particles"></canvas>
+  <div class="pillars-content">
+    <!-- Scene: Mestres -->
+    <div class="scene" id="sc-mestres">
+      <p class="eyebrow">Mestres Espirituais</p>
+      <p class="headline" style="font-size:clamp(18px,3.5vw,28px)">Cada Mestre, com sua Sabedoria<br>e Personalidade.</p>
+      <div class="divider"></div>
+      <p class="sub">Falando com você, na primeira pessoa.</p>
+      <div class="masters-row" id="masters-row"></div>
+    </div>
+    <!-- Scene: Salas -->
+    <div class="scene" id="sc-salas">
+      <p class="eyebrow">Salas de Estudo</p>
+      <p class="headline" style="font-size:clamp(18px,3.5vw,28px)">Dezenas de títulos<br>ao seu alcance.</p>
+      <div class="divider"></div>
+      <p class="sub">Mestre Emmanuel guia seu caminho.<br>Cem por cento do conteúdo.</p>
+    </div>
+    <!-- Scene: Evangelho -->
+    <div class="scene" id="sc-evangelho">
+      <p class="eyebrow">Evangelho no Lar</p>
+      <p class="headline" style="font-size:clamp(18px,3.5vw,28px)">Reúna sua família<br>e transforme seu lar.</p>
+      <div class="divider"></div>
+      <p class="sub">Sessão guiada com mestres facilitadores.</p>
+    </div>
+    <!-- Scene: Passe -->
+    <div class="scene" id="sc-passe">
+      <p class="eyebrow">Sessão de Passe</p>
+      <p class="headline" style="font-size:clamp(18px,3.5vw,28px)">Higiene e cura<br>do espírito.</p>
+      <div class="divider"></div>
+      <p class="sub">Autopasse guiado na palma da sua mão.</p>
+    </div>
+    <!-- Scene: Climax -->
+    <div class="scene" id="sc-climax">
+      <p class="headline" id="climax-headline"></p>
+      <div class="divider" style="margin-top:16px"></div>
+      <p class="sub" id="climax-sub" style="margin-top:10px"></p>
+    </div>
+    <!-- Scene: CTA -->
+    <div class="scene" id="sc-cta">
+      <img src="logo-master-spirit.png" style="max-width:min(45vw,200px);height:auto;margin-bottom:14px;animation:floatIn 1s ease both">
+      <div class="pillar-grid" id="pillar-grid"></div>
+      <p style="margin:10px 0"><a href="https://masterspirit.com.br" target="_blank" style="font-size:13px;color:rgba(240,234,214,.45);letter-spacing:2px;text-decoration:none">masterspirit.com.br</a></p>
+      <a class="cta-btn" href="https://masterspirit.com.br" target="_blank">✦ Entre nessa jornada ✦</a>
+      <div style="margin-top:18px;display:flex;align-items:center;gap:8px;justify-content:center">
+        <span style="font-size:9px;letter-spacing:2px;color:rgba(240,234,214,.3);text-transform:uppercase">Produced by</span>
+        <img src="logo-spyrit-systems.png" alt="Spyrit Systems" style="height:36px;opacity:.7">
+      </div>
     </div>
   </div>
 </div>
 
-<div id="dots"></div>
-
 <script>
 // ── CONFIG ──
-var SCENES=[
-  {id:'scene-0',voice:'teaser2-voice-01.mp3',jesus:false},
-  {id:'scene-1',voice:'teaser2-voice-02.mp3',jesus:false,onEnter:enterScene1},
-  {id:'scene-2',voice:'teaser2-voice-03.mp3',jesus:false,onEnter:enterScene2},
-  {id:'scene-3',voice:'teaser2-voice-04.mp3',jesus:true,onEnter:enterScene3},
-  {id:'scene-4',voice:'teaser2-voice-05.mp3',jesus:false},
-  {id:'scene-5',voice:'teaser2-voice-6.1.mp3',jesus:true,onEnter:enterScene5},
-  {id:'scene-6',voice:'teaser2-voice-6.2.mp3',jesus:false},
-  {id:'scene-7',voice:'teaser2-voice-07.mp3',jesus:false,onEnter:enterScene7},
-  {id:'scene-8',voice:'teaser2-voice-08.mp3',jesus:false,onEnter:enterScene8}
-];
-var VOICE_DURATIONS=[28,16,11,15,13,9,9,12,15];
-var currentScene=-1;
+var PILLAR_SCENES=['sc-mestres','sc-salas','sc-evangelho','sc-passe','sc-climax','sc-cta'];
+var PILLAR_VOICES=['teaser2-voice-03.mp3','teaser2-voice-05.mp3','teaser2-voice-6.1.mp3','teaser2-voice-6.2.mp3','teaser2-voice-07.mp3','teaser2-voice-08.mp3'];
+var PILLAR_DURATIONS=[12,12,10,10,10,999];
+
+// Jesus overlay timing (seconds into journey video)
+var JESUS_START=15; // appear at 15s
+var JESUS_END=25;   // disappear at 25s
+
 var music=null;
-var voiceAudio=null;
 var voicePool={};
-var autoTimer=null;
+var voiceAudio=null;
+var currentPillar=-1;
+var pillarTimer=null;
 
 // ── PARTICLES ──
-var canvas=document.getElementById('canvas-bg');
-var ctx=canvas.getContext('2d');
-var particles=[];
-function resizeCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
-window.addEventListener('resize',resizeCanvas);resizeCanvas();
-for(var i=0;i<100;i++){particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2+.5,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,alpha:Math.random()*.5+.2,pulse:Math.random()*Math.PI*2});}
-function drawParticles(){ctx.clearRect(0,0,canvas.width,canvas.height);var t=Date.now()*.001;particles.forEach(function(p){p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=canvas.width;if(p.x>canvas.width)p.x=0;if(p.y<0)p.y=canvas.height;if(p.y>canvas.height)p.y=0;var a=p.alpha*(.5+.5*Math.sin(t*1.5+p.pulse));ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba(201,168,76,'+a+')';ctx.fill();});requestAnimationFrame(drawParticles);}
-drawParticles();
-
-// ── DOTS ──
-var dotsEl=document.getElementById('dots');
-SCENES.forEach(function(_,i){var d=document.createElement('div');d.className='dot';d.onclick=function(){goToScene(i);};dotsEl.appendChild(d);});
+function initParticles(){
+  var c=document.getElementById('particles');
+  if(!c) return;
+  var ctx=c.getContext('2d');
+  c.width=window.innerWidth;c.height=window.innerHeight;
+  var ps=[];
+  for(var i=0;i<80;i++) ps.push({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*2+.5,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,a:Math.random()*.5+.2,p:Math.random()*Math.PI*2});
+  function draw(){
+    ctx.clearRect(0,0,c.width,c.height);
+    var t=Date.now()*.001;
+    ps.forEach(function(p){
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0)p.x=c.width;if(p.x>c.width)p.x=0;
+      if(p.y<0)p.y=c.height;if(p.y>c.height)p.y=0;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle='rgba(201,168,76,'+(p.a*(.5+.5*Math.sin(t*1.5+p.p)))+')';ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
 
 // ── START ──
 function startTeaser(){
   document.getElementById('start-overlay').style.display='none';
+  // Music
   music=new Audio('teaser-music.mp3');music.volume=.7;music.loop=true;music.play();
-  SCENES.forEach(function(s){if(s.voice){var a=new Audio(s.voice);a.load();voicePool[s.voice]=a;}});
-  var vj1=document.getElementById('vid-jesus-1');if(vj1){vj1.load();vj1.play().then(function(){vj1.pause();vj1.currentTime=0;}).catch(function(){});}
-  var vj2=document.getElementById('vid-jesus-2');if(vj2){vj2.load();vj2.play().then(function(){vj2.pause();vj2.currentTime=0;}).catch(function(){});}
-  goToScene(0);
+  // Preload voices
+  PILLAR_VOICES.forEach(function(v){var a=new Audio(v);a.load();voicePool[v]=a;});
+  // Preload journey narration
+  ['teaser2-voice-01.mp3','teaser2-voice-02.mp3'].forEach(function(v){var a=new Audio(v);a.load();voicePool[v]=a;});
+  // Preload Jesus
+  var jv=document.getElementById('jesus-vid');
+  if(jv){jv.load();jv.play().then(function(){jv.pause();jv.currentTime=0;}).catch(function(){});}
+  // Start journey
+  startJourney();
 }
 
-// ── SCENE MANAGEMENT ──
-function goToScene(n){
-  if(n<0||n>=SCENES.length) return;
-  if(autoTimer){clearTimeout(autoTimer);autoTimer=null;}
-  if(voiceAudio){voiceAudio.pause();voiceAudio=null;}
-  if(currentScene>=0) document.getElementById(SCENES[currentScene].id).classList.remove('active');
-  currentScene=n;
-  var scene=SCENES[n];
-  document.getElementById(scene.id).classList.add('active');
-  dotsEl.querySelectorAll('.dot').forEach(function(d,i){d.classList.toggle('active',i===n);});
+// ── JOURNEY ──
+function startJourney(){
+  document.getElementById('journey-view').classList.add('active');
+  var vid=document.getElementById('journey-video');
+  vid.src='jornada-v3.mp4';
+  vid.load();
+  vid.play().catch(function(){});
+
   // Progress
-  var fill=document.getElementById('progress-fill');
-  var dur=VOICE_DURATIONS[n]||10;
-  fill.style.transition='none';fill.style.width=(n/SCENES.length*100)+'%';
-  setTimeout(function(){fill.style.transition='width '+(dur*1000)+'ms linear';fill.style.width=((n+1)/SCENES.length*100)+'%';},50);
-  // onEnter
-  if(scene.onEnter) scene.onEnter();
+  vid.addEventListener('timeupdate',function(){
+    if(vid.duration){
+      var total=vid.duration+60; // journey + ~60s pillars
+      document.getElementById('progress-fill').style.width=(vid.currentTime/total*100)+'%';
+    }
+    // Jesus overlay timing
+    var ol=document.getElementById('jesus-overlay');
+    if(vid.currentTime>=JESUS_START&&vid.currentTime<JESUS_END){
+      if(!ol.classList.contains('show')){
+        ol.classList.add('show');
+        var jv=document.getElementById('jesus-vid');
+        jv.currentTime=0;jv.muted=false;jv.play().catch(function(){});
+        if(music) music.volume=.15;
+      }
+    } else {
+      if(ol.classList.contains('show')){
+        ol.classList.remove('show');
+        var jv2=document.getElementById('jesus-vid');
+        jv2.pause();jv2.muted=true;
+        if(music) music.volume=.7;
+      }
+    }
+  });
+
+  // Play narration voice-01 at start
+  setTimeout(function(){playVoice('teaser2-voice-01.mp3');},1000);
+  // Play voice-02 after voice-01 (~8s)
+  setTimeout(function(){playVoice('teaser2-voice-02.mp3');},12000);
+
+  // When journey ends → switch to pillars
+  vid.onended=function(){
+    document.getElementById('journey-view').classList.remove('active');
+    startPillars();
+  };
+}
+
+function playVoice(file){
+  if(voiceAudio){voiceAudio.pause();voiceAudio=null;}
+  voiceAudio=voicePool[file]||new Audio(file);
+  voiceAudio.currentTime=0;voiceAudio.volume=1;
+  if(music) music.volume=.2;
+  voiceAudio.onended=function(){voiceAudio=null;if(music) music.volume=.7;};
+  voiceAudio.play().catch(function(){});
+}
+
+// ── PILLARS ──
+function startPillars(){
+  document.getElementById('pillars-view').classList.add('active');
+  initParticles();
+  if(music) music.volume=.7;
+  goToPillar(0);
+}
+
+function goToPillar(n){
+  if(n>=PILLAR_SCENES.length) return;
+  if(pillarTimer){clearTimeout(pillarTimer);pillarTimer=null;}
+  // Hide current
+  if(currentPillar>=0) document.getElementById(PILLAR_SCENES[currentPillar]).classList.remove('active');
+  currentPillar=n;
+  var sceneId=PILLAR_SCENES[n];
+  document.getElementById(sceneId).classList.add('active');
+
+  // onEnter callbacks
+  if(sceneId==='sc-mestres') enterMestres();
+  if(sceneId==='sc-climax') enterClimax();
+  if(sceneId==='sc-cta') enterCTA();
+
   // Voice
-  if(scene.voice&&!scene.jesus){
-    setTimeout(function(){
-      voiceAudio=voicePool[scene.voice]||new Audio(scene.voice);
-      voiceAudio.currentTime=0;voiceAudio.volume=1;
-      if(music) music.volume=.2;
-      voiceAudio.onended=function(){voiceAudio=null;if(music) music.volume=.7;};
-      voiceAudio.play().catch(function(){});
-    },400);
+  if(PILLAR_VOICES[n]&&n<PILLAR_SCENES.length-1){
+    setTimeout(function(){playVoice(PILLAR_VOICES[n]);},400);
   }
-  if(scene.jesus&&music) music.volume=.15;
+  if(n===PILLAR_SCENES.length-1&&PILLAR_VOICES[n]){
+    setTimeout(function(){playVoice(PILLAR_VOICES[n]);},400);
+  }
+
+  // Progress
+  var journeyDur=87;
+  var elapsed=journeyDur+(n*10);
+  var total=journeyDur+60;
+  document.getElementById('progress-fill').style.width=Math.min(100,elapsed/total*100)+'%';
+
   // Auto advance
-  if(n<SCENES.length-1){
-    autoTimer=setTimeout(function(){goToScene(currentScene+1);},(dur+1)*1000);
+  if(PILLAR_DURATIONS[n]<999){
+    pillarTimer=setTimeout(function(){goToPillar(currentPillar+1);},(PILLAR_DURATIONS[n]+1)*1000);
   }
 }
 
-// ── SCENE CALLBACKS ──
-function enterScene1(){
-  wordByWord('headline-1','Imagine poder conversar\ncomigo, o Mestre da Galileia.',400);
-  setTimeout(function(){wordByWord('sub-1','Com Kardec.\nCom Chico Xavier.\nCom Krishna.\nConhecer a Verdade.\nDescobrir a sua Jornada.',350);},3500);
-}
-function enterScene2(){
+function enterMestres(){
   var row=document.getElementById('masters-row');row.innerHTML='';
-  ['avatar-jesus.png','avatar-kardec.png','avatar-chico-xavier.png','avatar-bezerra.png','avatar-divaldo.png','avatar-krishna.png'].forEach(function(src,i){
-    var img=document.createElement('img');img.className='master-circle';img.src=src;img.alt='Mestre';img.onerror=function(){this.style.display='none';};img.style.animationDelay=(i*.3)+'s';row.appendChild(img);
+  ['avatar-jesus.png','avatar-kardec.png','avatar-chico-xavier.png?v=2','avatar-bezerra.png','avatar-divaldo.png?v=2','avatar-krishna.png'].forEach(function(src,i){
+    var img=document.createElement('img');img.className='master-circle';img.src=src;img.alt='Mestre';
+    img.style.animation='masterIn .6s ease '+(i*.25)+'s forwards';row.appendChild(img);
   });
 }
-function enterScene3(){
-  var v=document.getElementById('vid-jesus-1');
-  if(v){v.currentTime=0;v.muted=false;v.play().catch(function(){});if(music) music.volume=.15;}
-}
-function enterScene5(){
-  var v=document.getElementById('vid-jesus-2');
-  if(v){v.currentTime=0;v.muted=false;v.play().catch(function(){});if(music) music.volume=.15;}
-}
-function enterScene7(){
+
+function enterClimax(){
   var words=['Você','encontrou','o','Caminho.'];
-  var el=document.getElementById('headline-7');el.innerHTML='';
+  var el=document.getElementById('climax-headline');el.innerHTML='';
   words.forEach(function(w,i){var span=document.createElement('span');span.className='word';span.textContent=w;span.style.animationDelay=(i*1)+'s';el.appendChild(span);});
-  setTimeout(function(){var sub=document.getElementById('sub-7');sub.style.opacity='0';sub.innerHTML='O Caminho da Luz e do Amor.';sub.style.transition='opacity 2s ease';setTimeout(function(){sub.style.opacity='1';},100);},4500);
+  setTimeout(function(){
+    var sub=document.getElementById('climax-sub');sub.style.opacity='0';
+    sub.innerHTML='O Caminho da Luz e do Amor.';sub.style.transition='opacity 2s ease';
+    setTimeout(function(){sub.style.opacity='1';},100);
+  },4500);
 }
-function enterScene8(){
-  // 4 pilares com animação
+
+function enterCTA(){
   var grid=document.getElementById('pillar-grid');
-  var pillars=[{ico:'🕊️',txt:'Mestres'},{ico:'📚',txt:'Salas de Estudo'},{ico:'🕯️',txt:'Evangelho no Lar'},{ico:'🙌',txt:'Auto Passe'}];
-  grid.innerHTML=pillars.map(function(p,i){return '<div class="pillar-card" style="animation:floatIn .8s ease '+(i*.3)+'s forwards"><span>'+p.ico+'</span><p>'+p.txt+'</p></div>';}).join('');
-  // Iniciar vídeo da jornada como fundo
-  var v=document.getElementById('vid-jornada');
-  if(v){v.currentTime=0;v.muted=true;v.loop=true;v.play().catch(function(){});}
-}
-function wordByWord(elId,text,delay){
-  var el=document.getElementById(elId);if(!el)return;el.innerHTML='';
-  var lines=text.split('\n');var allWords=[];
-  lines.forEach(function(line,li){line.trim().split(/\s+/).forEach(function(w){if(w) allWords.push(w);});if(li<lines.length-1) allWords.push('__BR__');});
-  var i=0;function next(){if(i<allWords.length){if(allWords[i]==='__BR__'){el.appendChild(document.createElement('br'));}else{var span=document.createElement('span');span.className='word';span.textContent=allWords[i];span.style.animationDelay='0s';el.appendChild(span);}i++;setTimeout(next,delay);}}next();
+  [{ico:'🕊️',txt:'Mestres'},{ico:'📚',txt:'Salas de Estudo'},{ico:'🕯️',txt:'Evangelho no Lar'},{ico:'🙌',txt:'Auto Passe'}].forEach(function(p,i){
+    var div=document.createElement('div');div.className='pillar-card';
+    div.style.animation='floatIn .6s ease '+(i*.2)+'s forwards';
+    div.innerHTML='<span>'+p.ico+'</span><p>'+p.txt+'</p>';
+    grid.appendChild(div);
+  });
 }
 
 // ── CONTROLS ──
-var _first=true;
-document.addEventListener('click',function(e){if(e.target.closest('#start-overlay')||e.target.closest('#dots')||e.target.closest('.cta-btn')) return;if(_first){_first=false;return;}goToScene(currentScene+1);});
-document.addEventListener('keydown',function(e){if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();goToScene(currentScene+1);}if(e.key==='ArrowLeft'){e.preventDefault();goToScene(currentScene-1);}});
+document.addEventListener('click',function(e){
+  if(e.target.closest('#start-overlay')||e.target.closest('.cta-btn')) return;
+  if(document.getElementById('pillars-view').classList.contains('active')&&currentPillar<PILLAR_SCENES.length-1){
+    goToPillar(currentPillar+1);
+  }
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();
+    if(document.getElementById('pillars-view').classList.contains('active')&&currentPillar<PILLAR_SCENES.length-1) goToPillar(currentPillar+1);
+  }
+});
 </script>
 </body>
 </html>
