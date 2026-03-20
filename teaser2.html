@@ -146,8 +146,8 @@ var PILLAR_VOICES=['teaser2-voice-04.mp3','teaser2-voice-05.mp3','teaser2-voice-
 var PILLAR_DURATIONS=[14,14,12,12,10,999];
 
 // Jesus overlay timing (seconds into journey video)
-var JESUS_START=15; // appear at 15s
-var JESUS_END=25;   // disappear at 25s
+var JESUS_START=24; // appear after narrator voice-02 finishes
+var JESUS_END=38;   // ~14s for Jesus to speak
 
 var music=null;
 var voicePool={};
@@ -231,7 +231,7 @@ function startJourney(){
   // Narração durante a jornada
   setTimeout(function(){playVoice('teaser2-voice-01.mp3');},1000);    // "Você já sentou..."
   setTimeout(function(){playVoice('teaser2-voice-02.mp3');},12000);   // "Milhões buscam..."
-  setTimeout(function(){playVoice('teaser2-voice-03.mp3');},28000);   // "Apresentamos MASTER SPIRIT"
+  setTimeout(function(){playVoice('teaser2-voice-03.mp3');},22000);   // "Apresentamos MASTER SPIRIT" (antes de Jesus)
 
   // When journey ends → switch to pillars
   vid.onended=function(){
