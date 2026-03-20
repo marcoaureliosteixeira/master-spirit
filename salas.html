@@ -11,19 +11,21 @@
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="shared.css">
 <style>
-:root{--gold:#8B7535;--gold2:#A68D42;--bg:#F7F4EE;--text:#2C2416;--fs:18px;--font:'Cinzel',Georgia,serif;--card-bg:#FFFFFF;--card-border:#E8E0D0;--accent:#C9A84C;--soft:#F0EBE1}
+:root{--gold:#C9A84C;--gold2:#E8C97A;--bg:#060a16;--text:#F5EFE0;--fs:18px;--font:'Cinzel',Georgia,serif;--card-bg:rgba(255,255,255,.06);--card-border:rgba(201,168,76,.2);--accent:#C9A84C;--soft:rgba(255,255,255,.04)}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;overflow:auto}
 body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:var(--fs)}
 #page{max-width:900px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
-#hdr{background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--card-border);padding:16px 18px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:50}
+#hdr{background:rgba(12,18,38,.88);backdrop-filter:blur(16px);border-bottom:1px solid rgba(201,168,76,.12);padding:16px 18px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:50}
 .back{background:none;border:none;cursor:pointer;color:var(--gold);font-size:26px;padding:0}
 #hdr h1{font-family:'Cinzel',serif;font-size:16px;color:var(--gold);letter-spacing:2px}
-#hdr p{font-size:12px;font-style:italic;color:#8A7D6B;margin-top:2px}
+#hdr p{font-size:12px;font-style:italic;color:rgba(240,234,214,.35);margin-top:2px}
 #main{flex:1;padding:20px 18px}
-#ft{text-align:center;padding:16px;border-top:1px solid var(--card-border);background:rgba(255,255,255,.5)}
-/* Stars (sutil no fundo claro) */
-#stars{display:none}
+#ft{text-align:center;padding:16px;border-top:1px solid rgba(201,168,76,.1)}
+/* Stars */
+#stars{position:fixed;inset:0;pointer-events:none;z-index:0;max-width:900px;margin:0 auto}
+.star{position:absolute;background:white;border-radius:50%;animation:tw var(--d,3s) ease-in-out infinite var(--dl,0s)}
+@keyframes tw{0%,100%{opacity:.05}50%{opacity:.65}}
 @keyframes fadeup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 /* Wizard */
 .step{display:none;animation:fadeup .4s ease}
@@ -31,18 +33,18 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:va
 .step-title{font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:16px}
 .step-num{font-family:'Cinzel',serif;font-size:10px;letter-spacing:1.5px;color:#A89880;margin-bottom:8px}
 .field-label{font-family:'Cinzel',serif;font-size:10px;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase;margin-bottom:8px}
-.field-input{width:100%;background:#FFFFFF;border:1px solid var(--card-border);border-radius:12px;padding:14px 18px;color:var(--text);font-family:var(--font);font-size:17px;outline:none;transition:border-color .2s;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
-.field-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(201,168,76,.12)}
-.field-input::placeholder{color:#B8AFA0}
+.field-input{width:100%;background:rgba(255,255,255,.1);border:1px solid rgba(201,168,76,.25);border-radius:12px;padding:14px 18px;color:var(--text);font-family:var(--font);font-size:17px;outline:none;transition:border-color .2s;margin-bottom:16px}
+.field-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(201,168,76,.15)}
+.field-input::placeholder{color:rgba(240,234,214,.3)}
 .field-textarea{min-height:100px;resize:vertical}
 /* Book cards */
 .book-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px}
-.book-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:16px;cursor:pointer;transition:all .2s;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.04)}
-.book-card:hover{background:#FBF8F2;border-color:var(--accent);transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.08)}
-.book-card.selected{background:#FDF6E8;border-color:var(--accent);box-shadow:0 0 0 3px rgba(201,168,76,.15)}
+.book-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:16px;cursor:pointer;transition:all .2s;text-align:center}
+.book-card:hover{background:rgba(201,168,76,.08);border-color:var(--accent);transform:translateY(-1px);box-shadow:0 4px 12px rgba(201,168,76,.1)}
+.book-card.selected{background:rgba(201,168,76,.15);border-color:var(--accent);box-shadow:0 0 0 3px rgba(201,168,76,.15)}
 .book-card .book-ico{font-size:28px;margin-bottom:8px;display:block}
-.book-card .book-name{font-family:'Cinzel',serif;font-size:12px;letter-spacing:.5px;color:var(--text);font-weight:600}
-.book-card .book-author{font-size:13px;font-style:italic;color:#8A7D6B;margin-top:4px}
+.book-card .book-name{font-family:'Cinzel',serif;font-size:12px;letter-spacing:.5px;color:var(--gold2);font-weight:600}
+.book-card .book-author{font-size:13px;font-style:italic;color:rgba(240,234,214,.45);margin-top:4px}
 /* Facilitator cards */
 .fac-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
 .fac-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:16px 10px;cursor:pointer;transition:all .2s;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.04)}
@@ -63,11 +65,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:va
 .day-btn{width:42px;height:42px;border-radius:50%;border:1px solid var(--card-border);background:var(--card-bg);cursor:pointer;font-family:'Cinzel',serif;font-size:11px;color:#5A4E3C;display:flex;align-items:center;justify-content:center;transition:all .2s;box-shadow:0 1px 3px rgba(0,0,0,.04)}
 .day-btn.active{background:#FDF6E8;border-color:var(--accent);color:var(--gold);font-weight:600}
 /* Buttons */
-.btn-next{width:100%;padding:16px;background:var(--accent);border:none;border-radius:14px;color:#FFFFFF;font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;cursor:pointer;transition:all .2s;text-transform:uppercase;margin-top:12px;box-shadow:0 2px 8px rgba(201,168,76,.25)}
-.btn-next:hover{background:#B8942F;box-shadow:0 4px 16px rgba(201,168,76,.3)}
+.btn-next{width:100%;padding:16px;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.4);border-radius:14px;color:var(--gold2);font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;cursor:pointer;transition:all .2s;text-transform:uppercase;margin-top:12px}
+.btn-next:hover{background:rgba(201,168,76,.3);border-color:rgba(201,168,76,.6)}
 .btn-next:disabled{opacity:.4;cursor:not-allowed}
-.btn-back{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:14px;color:#8A7D6B;font-family:'Cinzel',serif;font-size:11px;letter-spacing:1.5px;cursor:pointer;width:100%;margin-top:10px}
-.btn-back:hover{background:var(--soft)}
+.btn-back{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:14px;color:rgba(240,234,214,.5);font-family:'Cinzel',serif;font-size:11px;letter-spacing:1.5px;cursor:pointer;width:100%;margin-top:10px}
+.btn-back:hover{background:rgba(255,255,255,.08)}
 .status{font-size:14px;font-style:italic;color:var(--gold);text-align:center;margin-top:10px;min-height:20px}
 /* Selected books list */
 .selected-books{margin-bottom:16px}
@@ -93,7 +95,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:va
     <button onclick="toggleNav()" style="background:none;border:1px solid var(--card-border);border-radius:10px;padding:8px 10px;cursor:pointer;font-size:14px;color:var(--gold)" title="Menu">☰</button>
   </div>
   <!-- Nav dropdown -->
-  <div id="nav-menu" style="display:none;position:sticky;top:60px;z-index:49;background:var(--card-bg);border-bottom:1px solid var(--card-border);padding:10px 18px;box-shadow:0 4px 12px rgba(0,0,0,.08)">
+  <div id="nav-menu" style="display:none;position:sticky;top:60px;z-index:49;background:rgba(12,18,38,.95);border-bottom:1px solid rgba(201,168,76,.15);padding:10px 18px;box-shadow:0 4px 12px rgba(0,0,0,.3)">
     <a href="app.html" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--soft);text-decoration:none;color:var(--text)">
       <span style="font-size:18px">🕊️</span><span style="font-size:15px">Mestres Espirituais</span></a>
     <a href="salas.html" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--soft);text-decoration:none;color:var(--gold);font-weight:600">

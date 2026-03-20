@@ -10,16 +10,16 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
 <style>
-:root{--gold:#8B7535;--gold2:#A68D42;--bg:#F7F4EE;--text:#2C2416;--fs:18px;--font:'Cinzel',Georgia,serif;--card-bg:#FFFFFF;--card-border:#E8E0D0;--accent:#C9A84C;--soft:#F0EBE1}
+:root{--gold:#C9A84C;--gold2:#E8C97A;--bg:#060a16;--text:#F5EFE0;--fs:18px;--font:'Cinzel',Georgia,serif;--card-bg:rgba(255,255,255,.06);--card-border:rgba(201,168,76,.2);--accent:#C9A84C;--soft:rgba(255,255,255,.04)}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;overflow:auto}
 body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:var(--fs)}
 #page{max-width:900px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
 /* Header */
-#hdr{background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--card-border);padding:16px 18px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:50}
+#hdr{background:rgba(12,18,38,.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--card-border);padding:16px 18px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:50}
 .back{background:none;border:none;cursor:pointer;color:var(--gold);font-size:26px;padding:0}
 #hdr h1{font-family:'Cinzel',serif;font-size:16px;color:var(--gold);letter-spacing:2px}
-#hdr p{font-size:12px;font-style:italic;color:#8A7D6B;margin-top:2px}
+#hdr p{font-size:12px;font-style:italic;color:rgba(240,234,214,.35);margin-top:2px}
 /* Main */
 #main{flex:1;padding:20px 18px}
 /* Views */
@@ -30,7 +30,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:va
 .hero{text-align:center;margin-bottom:24px}
 .hero-ico{font-size:48px;margin-bottom:8px;display:block}
 .hero-title{font-family:'Cinzel Decorative',serif;font-size:22px;color:var(--gold);letter-spacing:2px;margin-bottom:4px}
-.hero-sub{font-size:16px;font-style:italic;color:#8A7D6B}
+.hero-sub{font-size:16px;font-style:italic;color:rgba(240,234,214,.35)}
 /* Mode cards */
 .mode-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;margin-bottom:12px;overflow:hidden;cursor:pointer;transition:all .3s;box-shadow:0 1px 4px rgba(0,0,0,.04)}
 .mode-card:hover{border-color:var(--accent);box-shadow:0 4px 16px rgba(0,0,0,.08)}
@@ -39,7 +39,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:va
 .mode-ico{font-size:32px;flex-shrink:0}
 .mode-info{flex:1}
 .mode-title{font-family:'Cinzel',serif;font-size:14px;color:var(--text);font-weight:600}
-.mode-meta{font-size:13px;color:#8A7D6B;margin-top:2px}
+.mode-meta{font-size:13px;color:rgba(240,234,214,.35);margin-top:2px}
 .mode-badge{font-family:'Cinzel',serif;font-size:9px;letter-spacing:1.5px;color:var(--gold);background:#FDF6E8;border:1px solid rgba(201,168,76,.3);border-radius:20px;padding:4px 10px;white-space:nowrap}
 .mode-body{display:none;padding:0 18px 18px;border-top:1px solid var(--card-border)}
 .mode-card.active .mode-body{display:block}
@@ -88,7 +88,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:va
 /* Nav buttons */
 .nav-btns{display:flex;gap:10px;margin-top:16px}
 .nav-btn{flex:1;padding:14px;border-radius:14px;font-family:'Cinzel',serif;font-size:12px;letter-spacing:1.5px;cursor:pointer;text-align:center}
-.nav-prev{background:var(--card-bg);border:1px solid var(--card-border);color:#8A7D6B}
+.nav-prev{background:var(--card-bg);border:1px solid var(--card-border);color:rgba(240,234,214,.35)}
 .nav-next{background:var(--accent);border:none;color:#fff;box-shadow:0 2px 8px rgba(201,168,76,.25)}
 /* Done view */
 .done-wrap{text-align:center;padding:20px 0}
@@ -100,7 +100,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:va
 .post-card span{font-size:20px;flex-shrink:0}
 .done-freq{font-size:13px;color:var(--gold);font-style:italic;margin-bottom:16px}
 /* Footer */
-#ft{text-align:center;padding:16px;border-top:1px solid var(--card-border);background:rgba(255,255,255,.5)}
+#ft{text-align:center;padding:16px;border-top:1px solid var(--card-border);background:rgba(12,18,38,.5)}
 /* Menu nav */
 #nav-menu{display:none;background:var(--card-bg);border-bottom:1px solid var(--card-border);padding:10px 18px;box-shadow:0 4px 12px rgba(0,0,0,.08)}
 #nav-menu a{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--soft);text-decoration:none;color:var(--text);font-size:15px}
@@ -124,7 +124,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:va
     <a href="salas.html"><span>📚</span> Salas de Estudo</a>
     <a href="evangelho.html"><span>🕯️</span> Evangelho no Lar</a>
     <a href="passe.html" style="color:var(--gold);font-weight:600"><span>🙌</span> Sessão de Passe</a>
-    <a href="app.html" style="color:#8A7D6B"><span>🏠</span> Início</a>
+    <a href="app.html" style="color:rgba(240,234,214,.35)"><span>🏠</span> Início</a>
   </div>
   <div id="main">
     <!-- HOME VIEW -->
