@@ -48,7 +48,7 @@ body{background:#060a16;color:#F5EFE0;font-family:'Cormorant Garamond',Georgia,s
 
 /* Cards */
 .cards-title{font-family:'Cinzel',serif;font-size:10px;letter-spacing:3px;color:rgba(201,168,76,.4);text-transform:uppercase;text-align:center;margin-bottom:16px}
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:36px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:36px}
 .card{background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.18);border-radius:16px;overflow:hidden;cursor:pointer;transition:all .3s;text-align:center;text-decoration:none;color:inherit}
 .card:hover{background:rgba(201,168,76,.08);border-color:rgba(201,168,76,.5);transform:translateY(-3px);box-shadow:0 8px 30px rgba(201,168,76,.12)}
 .card-img{width:100%;aspect-ratio:1;object-fit:cover;display:block;border-bottom:1px solid rgba(201,168,76,.12)}
@@ -63,8 +63,8 @@ body{background:#060a16;color:#F5EFE0;font-family:'Cormorant Garamond',Georgia,s
 .footer img{height:28px;opacity:.7}
 .footer p{font-size:9px;color:rgba(240,234,214,.2);margin-top:6px}
 
-@media(max-width:550px){
-  .cards{grid-template-columns:1fr;max-width:300px;margin-left:auto;margin-right:auto}
+@media(max-width:650px){
+  .cards{grid-template-columns:repeat(2,1fr);max-width:400px;margin-left:auto;margin-right:auto}
   .page{padding:30px 16px 20px}
 }
 </style>
@@ -117,6 +117,13 @@ body{background:#060a16;color:#F5EFE0;font-family:'Cormorant Garamond',Georgia,s
       <div class="card-body">
         <div class="card-title">Evangelho no Lar</div>
         <div class="card-desc">Sessão guiada com mestres facilitadores. Semanal, simples e profunda.</div>
+      </div>
+    </a>
+    <a class="card" href="https://masterspirit.com.br/passe.html">
+      <img class="card-img" src="passe-card.png" onerror="this.style.background='rgba(201,168,76,.08)'" alt="Auto Passe">
+      <div class="card-body">
+        <div class="card-title">Auto Passe</div>
+        <div class="card-desc">Sessão de passe espiritual guiada. Higiene e cura do espírito.</div>
       </div>
     </a>
   </div>
