@@ -46,10 +46,26 @@ body{font-family:'Cinzel',Georgia,serif}
 .pillars-content{position:relative;z-index:1;text-align:center;width:100%}
 .scene{display:none;animation:fadeIn .6s ease}
 .scene.active{display:block}
-.headline{font-family:'Cinzel Decorative',serif;font-size:clamp(20px,4vw,34px);color:#E8C97A;letter-spacing:clamp(2px,.4vw,4px);text-shadow:0 0 30px rgba(232,201,122,.3);text-align:center;line-height:1.4;margin-bottom:14px}
-.sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(15px,2.5vw,20px);color:rgba(240,234,214,.55);line-height:1.7;text-align:center;max-width:500px;margin:0 auto}
-.eyebrow{font-family:'Cinzel',serif;font-size:clamp(11px,1.8vw,14px);letter-spacing:clamp(3px,.5vw,5px);color:rgba(201,168,76,.5);text-transform:uppercase;margin-bottom:10px}
-.divider{width:50px;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.5),transparent);margin:12px auto}
+/* Título: aparece grande em destaque, depois recua para segundo plano */
+.headline{font-family:'Cinzel Decorative',serif;font-size:clamp(20px,4vw,34px);color:#E8C97A;letter-spacing:clamp(2px,.4vw,4px);text-shadow:0 0 30px rgba(232,201,122,.3);text-align:center;line-height:1.4;margin-bottom:14px;
+  animation:headlineShow 1s ease both}
+@keyframes headlineShow{0%{opacity:0;transform:scale(.85) translateY(15px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+/* Após 3s o título recua: menor, menos opaco */
+.scene.active .headline{animation:headlineShow 1s ease both,headlineRecede .8s ease 3s forwards}
+@keyframes headlineRecede{
+  0%{font-size:clamp(20px,4vw,34px);opacity:1;transform:scale(1)}
+  100%{font-size:clamp(13px,2.5vw,20px);opacity:.4;transform:scale(.85) translateY(-8px)}
+}
+/* Sub: aparece quando título recua */
+.sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(15px,2.5vw,20px);color:rgba(240,234,214,.55);line-height:1.7;text-align:center;max-width:500px;margin:0 auto;
+  opacity:0;animation:subReveal .8s ease 3.2s forwards}
+@keyframes subReveal{0%{opacity:0;transform:translateY(15px)}100%{opacity:1;transform:translateY(0)}}
+.scene.no-recede.active .headline{animation:headlineShow 1s ease both}
+.scene.no-recede .sub{animation:subReveal .8s ease .5s forwards}
+.eyebrow{font-family:'Cinzel',serif;font-size:clamp(11px,1.8vw,14px);letter-spacing:clamp(3px,.5vw,5px);color:rgba(201,168,76,.5);text-transform:uppercase;margin-bottom:10px;
+  opacity:0;animation:fadeIn .6s ease .2s forwards}
+.divider{width:50px;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.5),transparent);margin:12px auto;
+  opacity:0;animation:fadeIn .4s ease 2.8s forwards}
 .masters-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:16px 0}
 .master-circle{width:clamp(45px,9vw,65px);height:clamp(45px,9vw,65px);border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.3);box-shadow:0 0 15px rgba(201,168,76,.2);background:#d0d0d0;opacity:0}
 @keyframes masterIn{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
@@ -138,14 +154,14 @@ body{font-family:'Cinzel',Georgia,serif}
       <div class="divider"></div>
       <p class="sub">Autopasse guiado na palma da sua mão.</p>
     </div>
-    <!-- Scene: Climax -->
-    <div class="scene" id="sc-climax">
+    <!-- Scene: Climax (sem recuo do título) -->
+    <div class="scene no-recede" id="sc-climax">
       <p class="headline" id="climax-headline"></p>
       <div class="divider" style="margin-top:16px"></div>
       <p class="sub" id="climax-sub" style="margin-top:10px"></p>
     </div>
-    <!-- Scene: CTA -->
-    <div class="scene" id="sc-cta">
+    <!-- Scene: CTA (sem recuo do título) -->
+    <div class="scene no-recede" id="sc-cta">
       <img src="logo-master-spirit.png" style="max-width:min(60vw,280px);height:auto;margin-bottom:14px;animation:floatIn 1s ease both,float 5s ease-in-out infinite 1s">
       <div class="pillar-grid" id="pillar-grid"></div>
       <p style="margin:10px 0"><a href="https://masterspirit.com.br" target="_blank" style="font-size:13px;color:rgba(240,234,214,.45);letter-spacing:2px;text-decoration:none">masterspirit.com.br</a></p>
