@@ -21,9 +21,22 @@ body{font-family:'Cinzel',Georgia,serif}
 .view.active{display:flex;flex-direction:column}
 /* Journey view */
 #journey-view video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000;z-index:1}
-/* Jesus overlay */
-#jesus-overlay{position:absolute;z-index:10;left:50%;top:50%;transform:translate(-50%,-50%);display:none;text-align:center;animation:fadeIn .8s ease}
-#jesus-overlay.show{display:block}
+/* Jesus overlay — granular dissolve effect */
+#jesus-overlay{position:absolute;z-index:10;left:50%;top:50%;transform:translate(-50%,-50%);display:none;text-align:center}
+#jesus-overlay.show{display:block;animation:jesusAppear 2s ease forwards}
+#jesus-overlay.hiding{animation:jesusDisappear 1.5s ease forwards}
+@keyframes jesusAppear{
+  0%{opacity:0;filter:blur(20px) brightness(3) contrast(.5);transform:translate(-50%,-50%) scale(.7)}
+  30%{opacity:.5;filter:blur(10px) brightness(2) contrast(.7)}
+  60%{opacity:.8;filter:blur(4px) brightness(1.3)}
+  100%{opacity:1;filter:blur(0) brightness(1) contrast(1);transform:translate(-50%,-50%) scale(1)}
+}
+@keyframes jesusDisappear{
+  0%{opacity:1;filter:blur(0) brightness(1)}
+  40%{opacity:.7;filter:blur(4px) brightness(1.5)}
+  70%{opacity:.3;filter:blur(12px) brightness(2) contrast(.5)}
+  100%{opacity:0;filter:blur(25px) brightness(3) contrast(.3);transform:translate(-50%,-50%) scale(.8)}
+}
 .jesus-circle{width:min(50vw,240px);height:min(50vw,240px);border-radius:50%;overflow:hidden;border:2px solid rgba(201,168,76,.5);box-shadow:0 0 40px rgba(201,168,76,.3),0 0 80px rgba(100,60,200,.15);margin:0 auto 10px}
 .jesus-circle video{width:100%;height:100%;object-fit:cover}
 .jesus-label{font-family:'Cinzel',serif;font-size:clamp(14px,3vw,20px);color:#E8C97A;text-shadow:0 0 30px rgba(0,0,0,.8);letter-spacing:2px}
@@ -250,18 +263,29 @@ function startJourney(){
     }
     // Jesus overlay timing
     var ol=document.getElementById('jesus-overlay');
-    if(vid.currentTime>=JESUS_START&&vid.currentTime<JESUS_END){
-      if(!ol.classList.contains('show')){
-        ol.classList.add('show');
-        var jv=document.getElementById('jesus-vid');
-        jv.currentTime=0;jv.muted=false;jv.play().catch(function(){});
-        if(music) music.volume=.15;
-      }
-    } else {
-      if(ol.classList.contains('show')){
+    if(vid.currentTime>=JESUS_START&&!ol.classList.contains('show')&&!ol.classList.contains('hiding')&&!ol._done){
+      ol.classList.add('show');
+      ol.classList.remove('hiding');
+      var jv=document.getElementById('jesus-vid');
+      jv.currentTime=0;jv.muted=false;jv.play().catch(function(){});
+      if(music) music.volume=.15;
+      // When Jesus video ends → dissolve out immediately
+      jv.onended=function(){
         ol.classList.remove('show');
-        var jv2=document.getElementById('jesus-vid');
-        jv2.pause();jv2.muted=true;
+        ol.classList.add('hiding');
+        ol._done=true;
+        jv.muted=true;
+        if(music) music.volume=.7;
+        setTimeout(function(){ol.classList.remove('hiding');ol.style.display='none';},1500);
+      };
+    }
+    if(vid.currentTime>=JESUS_END&&ol.classList.contains('show')){
+      // Fallback: force hide if video didn't trigger onended
+      ol.classList.remove('show');
+      ol.classList.add('hiding');
+      ol._done=true;
+      var jv2=document.getElementById('jesus-vid');
+      jv2.pause();jv2.muted=true;
         if(music) music.volume=.7;
       }
     }

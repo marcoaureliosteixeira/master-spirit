@@ -1396,11 +1396,7 @@ window.addEventListener('load',()=>{
     document.getElementById('disclaimer-overlay').style.display='block';
     return;
   }
-  // Verificar cadastro completo
-  if(localStorage.getItem('spirit_cadastro_done')!=='true'){
-    window.location.href='cadastro.html';
-    return;
-  }
+  // Cadastro completo agora é exigido apenas na assinatura de plano
   // Init normal
   // Logo já definida no HTML
   initSplashLogo();
@@ -2680,12 +2676,7 @@ async function acceptDisclaimer(){
     }
   }catch(e){}
   document.getElementById('disclaimer-overlay').style.display='none';
-  // Redirecionar pro cadastro se ainda não foi feito
-  if(localStorage.getItem('spirit_cadastro_done')!=='true'){
-    window.location.href='cadastro.html';
-    return;
-  }
-  // Após aceitar, iniciar o app (splash ou direto)
+  // Após aceitar disclaimer, iniciar o app (splash ou direto)
   if(!document.getElementById('app').style.display||document.getElementById('app').style.display==='none'){
     document.getElementById('splash').style.display='block';
     // Inicializar logo, stars, settings que o load teria feito
