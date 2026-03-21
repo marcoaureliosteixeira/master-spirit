@@ -149,10 +149,10 @@ body{font-family:'Cinzel',Georgia,serif}
     </div>
     <!-- Scene: Passe -->
     <div class="scene" id="sc-passe">
-      <p class="eyebrow">Sessão de Passe</p>
+      <p class="eyebrow">Passe Espiritual</p>
       <p class="headline" style="font-size:clamp(18px,3.5vw,28px)">Higiene e cura<br>do espírito.</p>
       <div class="divider"></div>
-      <p class="sub">Autopasse guiado na palma da sua mão.</p>
+      <p class="sub">Passe espiritual guiado na palma da sua mão.</p>
     </div>
     <!-- Scene: Climax (sem recuo do título) -->
     <div class="scene no-recede" id="sc-climax">
@@ -391,7 +391,7 @@ function enterClimax(){
 function enterCTA(){
   var grid=document.getElementById('pillar-grid');
   grid.innerHTML='';
-  [{img:'avatar-jesus.png',txt:'Mestres'},{img:'shelf-books.png',txt:'Salas de Estudo'},{img:'evangelho-lar.png?v=2',txt:'Evangelho no Lar'},{img:'passe-card.png',txt:'Auto Passe'}].forEach(function(p,i){
+  [{img:'avatar-jesus.png',txt:'Mestres'},{img:'shelf-books.png',txt:'Salas de Estudo'},{img:'evangelho-lar.png?v=2',txt:'Evangelho no Lar'},{img:'passe-card.png',txt:'Passe Espiritual'}].forEach(function(p,i){
     var div=document.createElement('div');div.className='pillar-card';
     div.style.animation='floatIn .6s ease '+(i*.2)+'s forwards';
     div.innerHTML='<img src="'+p.img+'" style="width:100%;height:50px;object-fit:contain;border-radius:8px;margin-bottom:4px;background:rgba(255,255,255,.05)"><p>'+p.txt+'</p>';
