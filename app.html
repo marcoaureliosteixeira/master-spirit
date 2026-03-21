@@ -319,13 +319,24 @@ if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
 
 /* ── ORB TARGET — portal que recebe o espírito ── */
 #orb-target{position:absolute;left:50%;top:calc(34% + 155px);transform:translate(-50%,-50%);z-index:5;pointer-events:none}
-#orb-img{width:min(38vw,170px);height:min(38vw,170px);border-radius:50%;opacity:0;display:block;
+/* Anel vazio — visível antes do dive para o espírito entrar */
+#orb-empty{width:min(42vw,190px);height:auto;opacity:0;display:block;
+  animation:orb-empty-show .8s ease 2.8s forwards}
+@keyframes orb-empty-show{
+  0%{opacity:0;transform:scale(.6);filter:brightness(2)}
+  100%{opacity:.7;transform:scale(1);filter:brightness(1)}
+}
+/* Anel com espírito — aparece após impacto */
+#orb-full{width:min(42vw,190px);height:auto;opacity:0;display:block;position:absolute;left:0;top:0;
   animation:orb-reveal .8s ease 4.7s forwards}
 @keyframes orb-reveal{
   0%{opacity:0;transform:scale(.8);filter:brightness(3)}
-  50%{opacity:.8;transform:scale(1.05);filter:brightness(1.5)}
+  50%{opacity:.9;transform:scale(1.05);filter:brightness(1.5)}
   100%{opacity:1;transform:scale(1);filter:brightness(1)}
 }
+/* Esconder anel vazio após impacto */
+#orb-empty{animation:orb-empty-show .8s ease 2.8s forwards,orb-empty-hide .3s ease 4.7s forwards}
+@keyframes orb-empty-hide{0%{opacity:.7}100%{opacity:0}}
 /* Flash de impacto */
 #orb-flash{position:absolute;left:50%;top:50%;width:min(55vw,250px);height:min(55vw,250px);
   transform:translate(-50%,-50%) scale(.5);border-radius:50%;pointer-events:none;opacity:0;
@@ -382,7 +393,8 @@ if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
     <div id="orb-flash"></div>
     <div id="orb-ring-1"></div>
     <div id="orb-ring-2"></div>
-    <img id="orb-img" src="logo.png" alt="Master Spirit">
+    <img id="orb-empty" src="logo-sem-master-spirit-fundo_preto.png" alt="">
+    <img id="orb-full" src="logo-master-spirit-fundo_preto.png" alt="Master Spirit">
   </div>
   <div id="splash-content">
     <h1 id="splash-title">Master Spirit</h1>
@@ -1329,9 +1341,11 @@ function backToSplash(){
   // Esconder spark
   var sp=document.getElementById('spark');
   if(sp) sp.style.display='none';
-  // Mostrar orb já revelado
-  var oi=document.getElementById('orb-img');
-  if(oi){oi.style.animation='none';oi.style.opacity='1';oi.style.filter='brightness(1)';}
+  // Mostrar orb com espírito (esconder anel vazio)
+  var oe=document.getElementById('orb-empty');
+  if(oe){oe.style.animation='none';oe.style.opacity='0';}
+  var ofull=document.getElementById('orb-full');
+  if(ofull){ofull.style.animation='none';ofull.style.opacity='1';ofull.style.filter='brightness(1)';}
   var of=document.getElementById('orb-flash');
   if(of){of.style.animation='none';of.style.opacity='0';}
   var r1=document.getElementById('orb-ring-1');
