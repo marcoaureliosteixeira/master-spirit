@@ -4,86 +4,85 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <meta name="theme-color" content="#060a16">
-<title>Master Spirit — Entre nessa jornada</title>
-<meta property="og:title" content="Master Spirit — Entre nessa jornada">
-<meta property="og:description" content="Converse com Jesus. Estude o Evangelho. Transforme seu lar.">
-<meta property="og:url" content="https://masterspirit.com.br/teaser.html">
+<title>Master Spirit — A Revolução Espiritual</title>
+<meta property="og:title" content="Master Spirit — A Revolução Espiritual Começou">
+<meta property="og:description" content="Seis mestres. Dezenas de títulos. Evangelho no Lar. Passe espiritual. Tudo num único app.">
+<meta property="og:url" content="https://masterspirit.com.br/teaser2.html">
 <meta property="og:image" content="https://masterspirit.com.br/logo.png">
-<meta property="og:type" content="website">
-<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;overflow:hidden;background:#060a16;color:#F5EFE0}
-body{font-family:'Cormorant Garamond',Georgia,serif;-webkit-tap-highlight-color:transparent}
-#canvas-bg{position:fixed;inset:0;z-index:0}
-.scene{position:fixed;inset:0;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity 1.2s ease}
-.scene.active{opacity:1;pointer-events:auto}
-.eyebrow{font-family:'Cinzel',serif;font-size:clamp(12px,2vw,16px);letter-spacing:clamp(3px,0.5vw,5px);color:rgba(201,168,76,.5);text-transform:uppercase;margin-bottom:12px}
-.headline{font-family:'Cinzel Decorative',serif;font-size:clamp(22px,4.5vw,38px);color:#E8C97A;letter-spacing:clamp(2px,0.4vw,4px);text-shadow:0 0 40px rgba(232,201,122,.4);text-align:center;line-height:1.4;margin-bottom:16px}
-.sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(16px,2.5vw,22px);color:rgba(240,234,214,.55);line-height:1.7;text-align:center;max-width:500px}
-.divider{width:60px;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.5),transparent);margin:14px auto}
-/* Progress bar */
-#progress{position:fixed;top:0;left:0;right:0;height:2px;z-index:100}
-#progress-fill{height:100%;background:linear-gradient(90deg,#C9A84C,#E8C97A);width:0%;transition:width linear}
-/* Dots */
-#dots{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:100;display:flex;gap:8px}
-.dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.15);cursor:pointer;transition:all .3s}
-.dot.active{background:#C9A84C;box-shadow:0 0 8px rgba(201,168,76,.5)}
-/* (botão mute removido — som automático) */
-/* Masters row */
-.masters-row{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin:20px 0}
-.master-circle{width:clamp(50px,10vw,70px);height:clamp(50px,10vw,70px);border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.3);box-shadow:0 0 20px rgba(201,168,76,.2);opacity:0;animation:masterIn .6s ease forwards}
+html,body{height:100%;overflow:hidden;background:#000;color:#F5EFE0}
+body{font-family:'Cinzel',Georgia,serif}
+/* Views */
+.view{position:fixed;inset:0;display:none;z-index:1}
+.view.active{display:flex;flex-direction:column}
+/* Journey view */
+#journey-view video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000;z-index:1}
+/* Jesus overlay — granular dissolve effect */
+#jesus-overlay{position:absolute;z-index:10;left:50%;top:50%;transform:translate(-50%,-50%);display:none;text-align:center}
+#jesus-overlay.show{display:block;animation:jesusAppear 2s ease forwards}
+#jesus-overlay.hiding{animation:jesusDisappear 1.5s ease forwards}
+@keyframes jesusAppear{
+  0%{opacity:0;filter:blur(20px) brightness(3) contrast(.5);transform:translate(-50%,-50%) scale(.7)}
+  30%{opacity:.5;filter:blur(10px) brightness(2) contrast(.7)}
+  60%{opacity:.8;filter:blur(4px) brightness(1.3)}
+  100%{opacity:1;filter:blur(0) brightness(1) contrast(1);transform:translate(-50%,-50%) scale(1)}
+}
+@keyframes jesusDisappear{
+  0%{opacity:1;filter:blur(0) brightness(1)}
+  40%{opacity:.7;filter:blur(4px) brightness(1.5)}
+  70%{opacity:.3;filter:blur(12px) brightness(2) contrast(.5)}
+  100%{opacity:0;filter:blur(25px) brightness(3) contrast(.3);transform:translate(-50%,-50%) scale(.8)}
+}
+.jesus-circle{width:min(50vw,240px);height:min(50vw,240px);border-radius:50%;overflow:hidden;border:2px solid rgba(201,168,76,.5);box-shadow:0 0 40px rgba(201,168,76,.3),0 0 80px rgba(100,60,200,.15);margin:0 auto 10px}
+.jesus-circle video{width:100%;height:100%;object-fit:cover}
+.jesus-label{font-family:'Cinzel',serif;font-size:clamp(14px,3vw,20px);color:#E8C97A;text-shadow:0 0 30px rgba(0,0,0,.8);letter-spacing:2px}
+/* Pillars view */
+#pillars-view{align-items:center;justify-content:center;background:#060a16;padding:24px}
+#pillars-view canvas{position:absolute;inset:0;z-index:0}
+.pillars-content{position:relative;z-index:1;text-align:center;width:100%}
+.scene{display:none;animation:fadeIn .6s ease}
+.scene.active{display:block}
+.headline{font-family:'Cinzel Decorative',serif;font-size:clamp(20px,4vw,34px);color:#E8C97A;letter-spacing:clamp(2px,.4vw,4px);text-shadow:0 0 30px rgba(232,201,122,.3);text-align:center;line-height:1.4;margin-bottom:14px}
+.sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(15px,2.5vw,20px);color:rgba(240,234,214,.55);line-height:1.7;text-align:center;max-width:500px;margin:0 auto}
+.eyebrow{font-family:'Cinzel',serif;font-size:clamp(11px,1.8vw,14px);letter-spacing:clamp(3px,.5vw,5px);color:rgba(201,168,76,.5);text-transform:uppercase;margin-bottom:10px}
+.divider{width:50px;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.5),transparent);margin:12px auto}
+.masters-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:16px 0}
+.master-circle{width:clamp(45px,9vw,65px);height:clamp(45px,9vw,65px);border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.3);box-shadow:0 0 15px rgba(201,168,76,.2);background:#d0d0d0;opacity:0}
 @keyframes masterIn{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
+.pillar-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:420px;margin:14px auto}
+.pillar-card{background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.2);border-radius:12px;padding:12px 8px;text-align:center;opacity:0}
+.pillar-card span{font-size:24px;display:block;margin-bottom:4px}
+.pillar-card p{font-family:'Cinzel',serif;font-size:8px;letter-spacing:1.2px;color:#E8C97A}
 /* CTA */
-.cta-btn{display:inline-block;background:linear-gradient(135deg,rgba(201,168,76,.25),rgba(232,201,122,.15));border:1px solid rgba(201,168,76,.6);border-radius:50px;padding:16px 48px;cursor:pointer;font-family:'Cinzel',serif;font-size:clamp(11px,1.8vw,14px);letter-spacing:clamp(3px,0.4vw,5px);color:#E8C97A;text-transform:uppercase;text-decoration:none;transition:all .3s;box-shadow:0 0 30px rgba(201,168,76,.15);margin-top:24px}
-.cta-btn:hover{background:linear-gradient(135deg,rgba(201,168,76,.4),rgba(232,201,122,.25));box-shadow:0 0 60px rgba(201,168,76,.3);transform:translateY(-2px)}
-/* Word by word animation */
-.word{display:inline-block;opacity:0;transform:translateY(15px);animation:wordIn .5s ease forwards;margin-right:.3em}
-@keyframes wordIn{to{opacity:1;transform:translateY(0)}}
-/* Typewriter cursor */
-.cursor{display:inline-block;width:2px;height:1em;background:#C9A84C;margin-left:2px;animation:blink 1s step-end infinite}
-@keyframes blink{50%{opacity:0}}
-/* Video circle */
-.video-circle{width:min(55vw,280px);height:min(55vw,280px);border-radius:50%;overflow:hidden;border:2px solid rgba(201,168,76,.4);box-shadow:0 0 40px rgba(201,168,76,.25),0 0 80px rgba(100,60,200,.15);margin-bottom:16px;position:relative}
-.video-circle video{width:100%;height:100%;object-fit:cover;display:block}
-.video-ring-wrap{position:relative;display:inline-block}
-.video-ring{position:absolute;left:50%;top:50%;width:min(55vw,280px);height:min(55vw,280px);margin:min(-27.5vw,-140px) 0 0 min(-27.5vw,-140px);border-radius:50%;border:1px solid rgba(201,168,76,.4);opacity:0;z-index:-1}
-.video-ring:nth-child(1){animation:ringOut 2.5s ease-out 1s infinite}
-.video-ring:nth-child(2){animation:ringOut 2.5s ease-out 1.7s infinite;border-color:rgba(150,100,255,.3)}
-/* Skip hint */
-#skip-hint{position:fixed;bottom:44px;left:50%;transform:translateX(-50%);z-index:100;font-size:11px;color:rgba(240,234,214,.2);font-style:italic;letter-spacing:1px;transition:opacity 1s}
-/* Spirit logo animation (Hollywood style) */
-.spirit-logo{position:relative;width:min(70vw,380px);height:min(70vw,380px);margin:0 auto 10px}
-.spirit-logo img{width:min(70vw,380px);height:min(70vw,380px);object-fit:contain;display:block;position:relative;z-index:2;opacity:0;mix-blend-mode:screen;-webkit-mix-blend-mode:screen;animation:spiritReveal 3s cubic-bezier(.22,1,.36,1) .8s forwards}
-.spirit-spark{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:8px;height:8px;border-radius:50%;background:#fff;z-index:3;box-shadow:0 0 12px 6px rgba(255,240,180,.9),0 0 40px 20px rgba(201,168,76,.5),0 0 80px 40px rgba(100,60,200,.3);animation:sparkFlash 1.2s cubic-bezier(.22,1,.36,1) forwards}
-.spirit-ring{position:absolute;left:50%;top:50%;width:280px;height:280px;margin:-140px 0 0 -140px;border-radius:50%;border:2px solid rgba(201,168,76,.5);opacity:0;z-index:1}
-.spirit-ring:nth-child(2){animation:ringBirth .8s ease-out 3.8s forwards,ringOut 2.5s ease-out 4.8s infinite}
-.spirit-ring:nth-child(3){animation:ringBirth .8s ease-out 4.2s forwards,ringOut 2.5s ease-out 5.2s infinite;border-color:rgba(150,100,255,.35)}
-@keyframes sparkFlash{0%{transform:translate(-50%,-50%) scale(0);opacity:0}20%{opacity:1;transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(3);opacity:.8}100%{transform:translate(-50%,-50%) scale(6);opacity:0}}
-@keyframes spiritReveal{0%{opacity:0;filter:brightness(10) blur(12px);transform:scale(.5)}30%{opacity:1;filter:brightness(3) blur(4px);transform:scale(1.05)}60%{filter:brightness(1.5) blur(1px);transform:scale(1)}100%{opacity:1;filter:brightness(1) drop-shadow(0 0 20px rgba(201,168,76,.5));transform:scale(1)}}
-@keyframes ringBirth{0%{opacity:0;transform:scale(.3)}100%{opacity:.8;transform:scale(1)}}
-@keyframes ringOut{0%{transform:scale(.8);opacity:.7}100%{transform:scale(1.8);opacity:0}}
-/* Spirit logo small (CTA scene) */
-.spirit-logo-sm{position:relative;width:min(35vw,160px);height:min(35vw,160px);margin:0 auto 10px}
-.spirit-logo-sm img{width:min(35vw,160px);height:min(35vw,160px);object-fit:contain;display:block;position:relative;z-index:2;mix-blend-mode:screen;-webkit-mix-blend-mode:screen;animation:gentleHalo 3s ease-in-out infinite;filter:drop-shadow(0 0 20px rgba(201,168,76,.4))}
-.spirit-ring-sm{position:absolute;left:50%;top:50%;width:140px;height:140px;margin:-70px 0 0 -70px;border-radius:50%;border:1px solid rgba(201,168,76,.4);opacity:0;z-index:1}
-.spirit-ring-sm:nth-child(1){animation:ringOut 2.5s ease-out .5s infinite}
-.spirit-ring-sm:nth-child(2){animation:ringOut 2.5s ease-out 1.2s infinite;border-color:rgba(150,100,255,.3)}
-@keyframes gentleHalo{0%,100%{filter:drop-shadow(0 0 12px rgba(201,168,76,.3))}50%{filter:drop-shadow(0 0 25px rgba(201,168,76,.6))}}
+.cta-btn{display:inline-block;background:linear-gradient(135deg,rgba(201,168,76,.3),rgba(232,201,122,.15));border:1px solid rgba(201,168,76,.6);border-radius:50px;padding:14px 40px;font-family:'Cinzel',serif;font-size:clamp(10px,1.6vw,13px);letter-spacing:clamp(3px,.4vw,5px);color:#E8C97A;text-transform:uppercase;text-decoration:none;transition:all .3s;box-shadow:0 0 25px rgba(201,168,76,.12);margin-top:18px}
+.cta-btn:hover{background:linear-gradient(135deg,rgba(201,168,76,.5),rgba(232,201,122,.25));box-shadow:0 0 50px rgba(201,168,76,.3);transform:translateY(-2px)}
+/* Progress */
+#progress{position:fixed;top:0;left:0;right:0;height:2px;z-index:100}
+#progress-fill{height:100%;background:linear-gradient(90deg,#C9A84C,#E8C97A);width:0%;transition:width 1s linear}
+/* Start */
+#start-overlay{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.95);display:flex;align-items:center;justify-content:center;cursor:pointer}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+@keyframes floatIn{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+.word{display:inline-block;opacity:0;animation:fadeUp .5s ease forwards;margin-right:.3em}
+@media(max-width:500px){.pillar-grid{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
-<canvas id="canvas-bg"></canvas>
 <div id="progress"><div id="progress-fill"></div></div>
+<button id="pause-btn" onclick="togglePause()" style="position:fixed;top:14px;right:14px;z-index:9998;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.4);border-radius:50%;width:40px;height:40px;cursor:pointer;font-size:16px;color:#E8C97A;display:none;align-items:center;justify-content:center">⏸</button>
 
-<!-- Overlay para desbloquear áudio no iOS -->
-<div id="audio-unlock" style="position:fixed;inset:0;z-index:9999;background:rgba(6,10,22,.95);display:flex;align-items:center;justify-content:center;cursor:pointer" onclick="unlockAndStart()">
-  <div style="text-align:center;animation:fadeup 1s ease .3s both">
-    <img src="master-spirit-avatar.png" style="width:60px;height:60px;object-fit:contain;mix-blend-mode:screen;opacity:.5;margin-bottom:12px" alt="" onerror="this.style.display='none'">
-    <p style="font-family:'Cinzel',serif;font-size:clamp(10px,2vw,14px);color:rgba(201,168,76,.6);letter-spacing:3px;margin-bottom:16px">MASTER SPIRIT</p>
+<!-- START -->
+<div id="start-overlay" onclick="startTeaser()">
+  <canvas id="start-particles" style="position:absolute;inset:0;z-index:0"></canvas>
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;animation:fadeUp 1s ease .3s both;position:relative;z-index:1">
+    <img src="logo-spyrit-systems.png" alt="Spyrit Systems" style="height:min(12vw,80px);opacity:.9;margin-bottom:24px;animation:floatBig 4s ease-in-out infinite">
+    <style>@keyframes floatBig{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}</style>
+    <p style="font-family:'Cinzel',serif;font-size:clamp(12px,2vw,16px);letter-spacing:clamp(3px,.5vw,6px);color:rgba(201,168,76,.5);text-transform:uppercase;margin-bottom:28px">Apresenta</p>
     <div style="display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(201,168,76,.3);border-radius:30px;padding:14px 32px">
       <span style="font-size:18px;color:rgba(201,168,76,.7)">▶</span>
       <span style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:#E8C97A">ASSISTIR</span>
@@ -91,439 +90,331 @@ body{font-family:'Cormorant Garamond',Georgia,serif;-webkit-tap-highlight-color:
   </div>
 </div>
 
-<div class="scene" id="scene-0">
-  <div class="spirit-logo" id="spirit-logo-0">
-    <div class="spirit-spark"></div>
-    <div class="spirit-ring"></div>
-    <div class="spirit-ring"></div>
-    <img src="master-spirit-avatar.png" alt="Master Spirit" onerror="this.src='logo.png'">
+<!-- PART 1: JOURNEY (video background + overlays) -->
+<div class="view" id="journey-view">
+  <video id="journey-video" playsinline muted preload="auto"></video>
+  <!-- Logo Master Spirit overlay -->
+  <div id="logo-overlay" style="position:absolute;z-index:8;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;display:none">
+    <img src="logo-master-spirit.png" style="max-width:min(60vw,280px);height:auto;animation:floatBig 4s ease-in-out infinite" alt="">
   </div>
-  <p class="headline" style="font-size:clamp(22px,4.5vw,38px);animation:fadeup 1.2s ease 2s both;margin-bottom:6px"><img src="logo-master-spirit.png" alt="Master Spirit" style="max-width:min(50vw,240px);height:auto"></p>
-  <p class="eyebrow" style="animation:fadeup 1s ease 3s both">Spyrit Systems apresenta</p>
-  <p class="sub" style="animation:fadeup 1s ease 4s both;margin-top:8px">Sua Jornada Começa aqui</p>
+  <div id="jesus-overlay">
+    <div class="jesus-circle">
+      <video id="jesus-vid" playsinline muted preload="none"><source src="teaser2-jesus-04.mp4" type="video/mp4"></video>
+    </div>
+    <p class="jesus-label">Jesus</p>
+  </div>
 </div>
 
-<div class="scene" id="scene-1">
-  <div class="video-ring-wrap">
-    <div class="video-ring"></div>
-    <div class="video-ring"></div>
-    <div class="video-circle">
-      <video id="jesus-video" playsinline webkit-playsinline muted preload="auto" style="background:#000">
-        <source src="cena-jesus.mp4" type="video/mp4">
-      </video>
+<!-- PART 2: PILLARS (text scenes) -->
+<div class="view" id="pillars-view">
+  <canvas id="particles"></canvas>
+  <div class="pillars-content">
+    <!-- Scene: Mestres -->
+    <div class="scene" id="sc-mestres">
+      <p class="eyebrow">Mestres Espirituais</p>
+      <p class="headline" style="font-size:clamp(18px,3.5vw,28px)">Cada Mestre, com sua Sabedoria<br>e Personalidade.</p>
+      <div class="divider"></div>
+      <p class="sub">Falando com você, na primeira pessoa.</p>
+      <div class="masters-row" id="masters-row"></div>
+    </div>
+    <!-- Scene: Salas -->
+    <div class="scene" id="sc-salas">
+      <p class="eyebrow">Salas de Estudo</p>
+      <p class="headline" style="font-size:clamp(18px,3.5vw,28px)">Dezenas de títulos<br>ao seu alcance.</p>
+      <div class="divider"></div>
+      <p class="sub">Mestre Emmanuel guia seu caminho.<br>Cem por cento do conteúdo.</p>
+    </div>
+    <!-- Scene: Evangelho -->
+    <div class="scene" id="sc-evangelho">
+      <p class="eyebrow">Evangelho no Lar</p>
+      <p class="headline" style="font-size:clamp(18px,3.5vw,28px)">Reúna sua família<br>e transforme seu lar.</p>
+      <div class="divider"></div>
+      <p class="sub">Sessão guiada com mestres facilitadores.</p>
+    </div>
+    <!-- Scene: Passe -->
+    <div class="scene" id="sc-passe">
+      <p class="eyebrow">Sessão de Passe</p>
+      <p class="headline" style="font-size:clamp(18px,3.5vw,28px)">Higiene e cura<br>do espírito.</p>
+      <div class="divider"></div>
+      <p class="sub">Autopasse guiado na palma da sua mão.</p>
+    </div>
+    <!-- Scene: Climax -->
+    <div class="scene" id="sc-climax">
+      <p class="headline" id="climax-headline"></p>
+      <div class="divider" style="margin-top:16px"></div>
+      <p class="sub" id="climax-sub" style="margin-top:10px"></p>
+    </div>
+    <!-- Scene: CTA -->
+    <div class="scene" id="sc-cta">
+      <img src="logo-master-spirit.png" style="max-width:min(60vw,280px);height:auto;margin-bottom:14px;animation:floatIn 1s ease both,float 5s ease-in-out infinite 1s">
+      <div class="pillar-grid" id="pillar-grid"></div>
+      <p style="margin:10px 0"><a href="https://masterspirit.com.br" target="_blank" style="font-size:13px;color:rgba(240,234,214,.45);letter-spacing:2px;text-decoration:none">masterspirit.com.br</a></p>
+      <a class="cta-btn" href="https://masterspirit.com.br" target="_blank">✦ Entre nessa jornada ✦</a>
+      <div style="margin-top:18px;display:flex;align-items:center;gap:8px;justify-content:center">
+        <span style="font-size:9px;letter-spacing:2px;color:rgba(240,234,214,.3);text-transform:uppercase">Produzido por</span>
+        <img src="logo-spyrit-systems.png" alt="Spyrit Systems" style="height:36px;opacity:.7">
+      </div>
     </div>
   </div>
-  <p class="headline" style="font-size:clamp(20px,4vw,32px)">JESUS</p>
-  <p class="sub">O Mestre da Galileia</p>
 </div>
-
-<div class="scene" id="scene-2">
-  <p class="headline" id="headline-2"></p>
-  <div class="divider"></div>
-  <p class="sub" id="sub-2"></p>
-</div>
-
-<div class="scene" id="scene-3">
-  <p class="eyebrow">Mestres Espirituais</p>
-  <p class="headline" style="font-size:clamp(22px,4vw,34px)">Cada Mestre, com sua Sabedoria e Personalidade.<br>Falando com você, na primeira pessoa.</p>
-  <div class="masters-row" id="masters-row"></div>
-</div>
-
-<div class="scene" id="scene-4">
-  <p class="eyebrow">O Consolador</p>
-  <p class="headline" style="font-size:clamp(22px,4vw,34px)">Uma conversa que transforma.</p>
-  <div class="divider"></div>
-  <div style="background:rgba(255,255,255,.06);border:1px solid rgba(201,168,76,.2);border-radius:14px;padding:16px 20px;max-width:400px;margin-top:16px">
-    <p style="font-family:'Cinzel',serif;font-size:8px;letter-spacing:2px;color:rgba(201,168,76,.5);margin-bottom:8px">JESUS · O CONSOLADOR</p>
-    <p id="typewriter-text" style="font-size:20px;font-style:italic;line-height:1.7;color:rgba(240,234,214,.8)"></p>
-  </div>
-</div>
-
-<div class="scene" id="scene-5">
-  <p class="eyebrow">Evangelho no Lar</p>
-  <p class="headline" style="font-size:clamp(22px,4vw,34px)">Reúna sua família<br>e transforme seu lar.</p>
-  <div class="divider"></div>
-  <p class="sub">Uma sessão guiada com mestres facilitadores.<br>Semanal. Simples. Profunda.</p>
-</div>
-
-<div class="scene" id="scene-6">
-  <p class="headline" id="headline-6"></p>
-  <div class="divider" style="margin-top:20px"></div>
-  <p class="sub" id="sub-6" style="margin-top:12px"></p>
-</div>
-
-<div class="scene" id="scene-7">
-  <div class="spirit-logo-sm">
-    <div class="spirit-ring-sm"></div>
-    <div class="spirit-ring-sm"></div>
-    <img src="master-spirit-avatar.png" alt="Master Spirit" onerror="this.src='logo.png'">
-  </div>
-  <p class="headline" style="font-size:clamp(22px,4vw,36px)"><img src="logo-master-spirit.png" alt="Master Spirit" style="max-width:min(50vw,240px);height:auto"></p>
-  <p style="margin:8px 0 20px"><a href="https://masterspirit.com.br" target="_blank" style="font-size:13px;color:rgba(240,234,214,.45);letter-spacing:2px;text-decoration:none;transition:color .2s" onmouseover="this.style.color='#E8C97A'" onmouseout="this.style.color='rgba(240,234,214,.45)'">masterspirit.com.br</a></p>
-  <a class="cta-btn" href="https://masterspirit.com.br" target="_blank">Entrar nessa jornada</a>
-  <div style="margin-top:30px;display:flex;align-items:center;gap:8px;justify-content:center">
-    <span style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:2px;color:rgba(240,234,214,.3);text-transform:uppercase">Produced by</span>
-    <img src="logo-spyrit-systems.png" alt="Spyrit Systems" style="height:40px;opacity:.8">
-  </div>
-</div>
-
-<div id="dots"></div>
-<div id="skip-hint">toque para avançar</div>
-<button id="mute-btn" onclick="toggleSound()" style="position:fixed;top:16px;right:16px;z-index:100;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:50%;width:40px;height:40px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:rgba(201,168,76,.7);transition:all .2s">🔊</button>
 
 <script>
 // ── CONFIG ──
-// 1 voz = 1 cena (teaser-voice-00.mp3 a teaser-voice-06.mp3)
-var _voiceAudio=null;
+var PILLAR_SCENES=['sc-mestres','sc-salas','sc-evangelho','sc-passe','sc-climax','sc-cta'];
+var PILLAR_VOICES=['teaser2-voice-04.mp3','teaser2-voice-05.mp3','teaser2-voice-6.1.mp3','teaser2-voice-07.mp3',null,'teaser2-voice-08.mp3'];
+var PILLAR_DURATIONS=[14,14,12,12,10,999];
 
-// Durações: cena 0=abertura, 1=vídeo Jesus (duração do vídeo), 2-7=vozes
-var VOICE_DURATIONS=[28,0,16,11,15,13,9,12];
+// Jesus overlay timing (seconds into journey video)
+var LOGO_START=22;  // logo Master Spirit appears
+var LOGO_END=28;    // logo disappears
+var JESUS_START=30; // Jesus enters AFTER narrator voice-03 finishes
+var JESUS_END=44;   // ~14s for Jesus to speak
 
-function playSceneVoice(sceneIdx){
-  stopSceneVoice();
-  if(muted) return;
-  // Cena 1 (vídeo Jesus) e cena 7 (CTA) não têm voz separada
-  if(sceneIdx===1||sceneIdx===7) return;
-  // Usar voz pré-carregada do pool (iOS compatível)
-  _voiceAudio=_voicePool[sceneIdx];
-  if(!_voiceAudio){
-    // Fallback: criar novo (funciona no desktop)
-    _voiceAudio=new Audio('teaser-voice-'+String(sceneIdx).padStart(2,'0')+'.mp3');
-  }
-  _voiceAudio.currentTime=0;
-  _voiceAudio.volume=1.0;
-  if(audio) audio.volume=0.25;
-  var dur=VOICE_DURATIONS[sceneIdx]||10;
-  _voiceAudio.onended=function(){_voiceAudio=null;if(audio&&!muted) audio.volume=0.85;};
-  _voiceAudio.onerror=function(){_voiceAudio=null;if(audio&&!muted) audio.volume=0.85;};
-  _voiceAudio.play().catch(function(){});
-  // Timer baseado na duração da voz
-  if(autoTimer){clearTimeout(autoTimer);autoTimer=null;}
-  if(sceneIdx<7){
-    autoTimer=setTimeout(function(){
-      stopSceneVoice();
-      goToScene(currentScene+1);
-    },(dur+1)*1000);
-  }
-}
-
-function stopSceneVoice(){
-  if(_voiceAudio){try{_voiceAudio.pause();_voiceAudio=null;}catch(e){}}
-  if(audio&&!muted) audio.volume=0.85;
-}
-
-var SCENES=[
-  {id:'scene-0',duration:23000,onEnter:enterScene0},
-  {id:'scene-1',duration:60000,onEnter:enterSceneJesus},
-  {id:'scene-2',duration:12000,onEnter:enterScene2},
-  {id:'scene-3',duration:7000,onEnter:enterScene3},
-  {id:'scene-4',duration:11000,onEnter:enterScene4},
-  {id:'scene-5',duration:9000,onEnter:null},
-  {id:'scene-6',duration:5000,onEnter:enterScene6},
-  {id:'scene-7',duration:999999,onEnter:null}
-];
-var currentScene=0;
-var autoTimer=null;
-var _voiceTimer=null;
-var audio=null;
-var muted=false;
+var music=null;
+var voicePool={};
+var voiceAudio=null;
+var currentPillar=-1;
+var pillarTimer=null;
 
 // ── PARTICLES ──
-var canvas=document.getElementById('canvas-bg');
-var ctx=canvas.getContext('2d');
-var particles=[];
-function resizeCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
-window.addEventListener('resize',resizeCanvas);
-resizeCanvas();
-for(var i=0;i<100;i++){
-  particles.push({
-    x:Math.random()*canvas.width,
-    y:Math.random()*canvas.height,
-    r:Math.random()*2+0.5,
-    vx:(Math.random()-0.5)*0.3,
-    vy:(Math.random()-0.5)*0.3,
-    alpha:Math.random()*0.5+0.2,
-    pulse:Math.random()*Math.PI*2
-  });
+function initParticles(){
+  var c=document.getElementById('particles');
+  if(!c) return;
+  var ctx=c.getContext('2d');
+  c.width=window.innerWidth;c.height=window.innerHeight;
+  var ps=[];
+  for(var i=0;i<80;i++) ps.push({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*2+.5,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,a:Math.random()*.5+.2,p:Math.random()*Math.PI*2});
+  function draw(){
+    ctx.clearRect(0,0,c.width,c.height);
+    var t=Date.now()*.001;
+    ps.forEach(function(p){
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0)p.x=c.width;if(p.x>c.width)p.x=0;
+      if(p.y<0)p.y=c.height;if(p.y>c.height)p.y=0;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle='rgba(201,168,76,'+(p.a*(.5+.5*Math.sin(t*1.5+p.p)))+')';ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
 }
-function drawParticles(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  var t=Date.now()*0.001;
-  particles.forEach(function(p){
-    p.x+=p.vx;p.y+=p.vy;
-    if(p.x<0)p.x=canvas.width;if(p.x>canvas.width)p.x=0;
-    if(p.y<0)p.y=canvas.height;if(p.y>canvas.height)p.y=0;
-    var a=p.alpha*(0.5+0.5*Math.sin(t*1.5+p.pulse));
-    ctx.beginPath();
-    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-    ctx.fillStyle='rgba(201,168,76,'+a+')';
-    ctx.fill();
-    if(p.r>1.5){
-      ctx.beginPath();ctx.arc(p.x,p.y,p.r*3,0,Math.PI*2);
-      ctx.fillStyle='rgba(201,168,76,'+(a*0.15)+')';ctx.fill();
+
+// ── START ──
+// Init start screen particles
+(function(){
+  var c=document.getElementById('start-particles');if(!c) return;
+  var ctx=c.getContext('2d');
+  c.width=window.innerWidth;c.height=window.innerHeight;
+  window.addEventListener('resize',function(){c.width=window.innerWidth;c.height=window.innerHeight;});
+  var ps=[];
+  for(var i=0;i<100;i++) ps.push({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*2+.4,vx:(Math.random()-.5)*.2,vy:(Math.random()-.5)*.2,a:Math.random()*.5+.15,p:Math.random()*Math.PI*2});
+  function draw(){
+    ctx.clearRect(0,0,c.width,c.height);
+    var t=Date.now()*.001;
+    ps.forEach(function(p){
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0)p.x=c.width;if(p.x>c.width)p.x=0;
+      if(p.y<0)p.y=c.height;if(p.y>c.height)p.y=0;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle='rgba(201,168,76,'+(p.a*(.5+.5*Math.sin(t*1.5+p.p)))+')';ctx.fill();
+      if(p.r>1.2){ctx.beginPath();ctx.arc(p.x,p.y,p.r*2.5,0,Math.PI*2);ctx.fillStyle='rgba(201,168,76,'+(p.a*.1)+')';ctx.fill();}
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+function startTeaser(){
+  document.getElementById('start-overlay').style.display='none';
+  document.getElementById('pause-btn').style.display='flex';
+  // Music
+  music=new Audio('teaser-music.mp3');music.volume=.7;music.loop=true;music.play();
+  // Preload voices
+  PILLAR_VOICES.forEach(function(v){var a=new Audio(v);a.load();voicePool[v]=a;});
+  // Preload journey narration
+  ['teaser2-voice-01.mp3','teaser2-voice-02.mp3','teaser2-voice-03.mp3'].forEach(function(v){var a=new Audio(v);a.load();voicePool[v]=a;});
+  // Preload Jesus
+  var jv=document.getElementById('jesus-vid');
+  if(jv){jv.load();jv.play().then(function(){jv.pause();jv.currentTime=0;}).catch(function(){});}
+  // Start journey
+  startJourney();
+}
+
+// ── JOURNEY ──
+function startJourney(){
+  document.getElementById('journey-view').classList.add('active');
+  var vid=document.getElementById('journey-video');
+  vid.src='jornada-v3.mp4';
+  vid.load();
+  vid.play().catch(function(){});
+
+  // Progress
+  vid.addEventListener('timeupdate',function(){
+    if(vid.duration){
+      var total=vid.duration+60; // journey + ~60s pillars
+      document.getElementById('progress-fill').style.width=(vid.currentTime/total*100)+'%';
     }
-  });
-  requestAnimationFrame(drawParticles);
-}
-drawParticles();
-
-// ── DOTS ──
-var dotsEl=document.getElementById('dots');
-SCENES.forEach(function(_,i){
-  var d=document.createElement('div');d.className='dot';
-  d.onclick=function(){goToScene(i);};
-  dotsEl.appendChild(d);
-});
-
-// ── SCENE MANAGEMENT ──
-function goToScene(n){
-  if(n<0||n>=SCENES.length) return;
-  // Cancelar auto-advance pendente
-  if(autoTimer){clearTimeout(autoTimer);autoTimer=null;}
-  // FIX 1: Cancelar o setTimeout de 300ms que dispara playSceneVoice
-  // Sem isso, voz da cena anterior disparava na cena seguinte
-  if(_voiceTimer){clearTimeout(_voiceTimer);_voiceTimer=null;}
-  // FIX 2: Limpar voz pendente (desbloqueio de autoplay) para não tocar na cena errada
-  window._pendingVoice=null;
-  // Hide current
-  var cur=document.getElementById(SCENES[currentScene].id);
-  if(cur) cur.classList.remove('active');
-  currentScene=n;
-  // Show new
-  var el=document.getElementById(SCENES[n].id);
-  if(el) el.classList.add('active');
-  // Update dots
-  dotsEl.querySelectorAll('.dot').forEach(function(d,i){d.classList.toggle('active',i===n);});
-  // Progress bar (baseada na duração da voz)
-  var fill=document.getElementById('progress-fill');
-  var voiceDur=(VOICE_DURATIONS[n]||10)+1;
-  fill.style.transition='none';fill.style.width='0%';
-  if(n<7){
-    setTimeout(function(){fill.style.transition='width '+(voiceDur*1000)+'ms linear';fill.style.width='100%';},50);
-  }
-  // Hide skip hint after first interaction
-  document.getElementById('skip-hint').style.opacity='0';
-  // Parar voz da cena anterior imediatamente
-  stopSceneVoice();
-  // onEnter callback
-  if(SCENES[n].onEnter) SCENES[n].onEnter();
-  // FIX 3: Guard de cena — só dispara voz se ainda estivermos nessa cena
-  var capturedScene=n;
-  _voiceTimer=setTimeout(function(){
-    _voiceTimer=null;
-    if(currentScene===capturedScene){
-      playSceneVoice(capturedScene);
-    }
-  },300);
-  // FIX 4: 'dur' não estava definido neste escopo — corrigido para SCENES[n].duration
-  if(n<6&&muted){
-    var dur=SCENES[n].duration;
-    autoTimer=setTimeout(function(){goToScene(n+1);},dur);
-  }
-}
-
-// ── SCENE CALLBACKS ──
-function enterScene0(){
-  // Reiniciar animação do spirit logo
-  var logo=document.getElementById('spirit-logo-0');
-  if(logo){var clone=logo.cloneNode(true);logo.parentNode.replaceChild(clone,logo);}
-}
-
-function enterSceneJesus(){
-  var v=document.getElementById('jesus-video');
-  if(v){
-    v.currentTime=0;
-    v.muted=false;
-    v.play().catch(function(){});
-    // Baixar música durante vídeo
-    if(audio) audio.volume=0.15;
-    // Avançar quando vídeo terminar
-    v.onended=function(){
-      if(audio&&!muted) audio.volume=0.85;
-      setTimeout(function(){goToScene(currentScene+1);},1000);
-    };
-    // Cancelar timer fixo — vídeo controla
-    if(autoTimer){clearTimeout(autoTimer);autoTimer=null;}
-  }
-}
-
-function enterScene2(){
-  wordByWord('headline-2','Imagine poder conversar\ncomigo, o Mestre da Galileia.',400);
-  setTimeout(function(){
-    wordByWord('sub-2','Com Kardec,\nChico Xavier e outros Mestres\nConhecer a Verdade.\nDescobrir a sua Jornada.',350);
-  },3500);
-}
-
-function enterScene3(){
-  var row=document.getElementById('masters-row');
-  row.innerHTML='';
-  var masters=['avatar-jesus.png','avatar-kardec.png','avatar-chico-xavier.png','avatar-bezerra.png','avatar-divaldo.png','avatar-krishna.png'];
-  masters.forEach(function(src,i){
-    var img=document.createElement('img');
-    img.className='master-circle';
-    img.src=src;img.alt='Mestre';
-    img.onerror=function(){this.style.display='none';};
-    img.style.animationDelay=(i*0.3)+'s';
-    row.appendChild(img);
-  });
-}
-
-function enterScene4(){
-  var el=document.getElementById('typewriter-text');
-  el.innerHTML='';
-  var text='Filho, eu estou aqui.\nNão importa a dor que carregas\n— eu já a conheci antes de ti.\nFala comigo...';
-  var i=0;
-  var html='';
-  function type(){
-    if(i<text.length){
-      var ch=text.charAt(i);
-      if(ch==='\n') html+='<br>';
-      else html+=ch;
-      el.innerHTML=html+'<span class="cursor"></span>';
-      i++;
-      setTimeout(type,55);
+    // Logo Master Spirit overlay
+    var logoOl=document.getElementById('logo-overlay');
+    if(vid.currentTime>=LOGO_START&&vid.currentTime<LOGO_END){
+      logoOl.style.display='block';
     } else {
-      el.innerHTML=html;
+      logoOl.style.display='none';
     }
-  }
-  type();
+    // Jesus overlay timing
+    var ol=document.getElementById('jesus-overlay');
+    if(vid.currentTime>=JESUS_START&&!ol.classList.contains('show')&&!ol.classList.contains('hiding')&&!ol._done){
+      ol.classList.add('show');
+      ol.classList.remove('hiding');
+      var jv=document.getElementById('jesus-vid');
+      jv.currentTime=0;jv.muted=false;jv.play().catch(function(){});
+      if(music) music.volume=.15;
+      // When Jesus video ends → dissolve out immediately
+      jv.onended=function(){
+        ol.classList.remove('show');
+        ol.classList.add('hiding');
+        ol._done=true;
+        jv.muted=true;
+        if(music) music.volume=.7;
+        setTimeout(function(){ol.classList.remove('hiding');ol.style.display='none';},1500);
+      };
+    }
+    if(vid.currentTime>=JESUS_END&&ol.classList.contains('show')){
+      // Fallback: force hide if video didn't trigger onended
+      ol.classList.remove('show');
+      ol.classList.add('hiding');
+      ol._done=true;
+      var jv2=document.getElementById('jesus-vid');
+      jv2.pause();jv2.muted=true;
+      if(music) music.volume=.7;
+    }
+  });
+
+  // Narração durante a jornada
+  setTimeout(function(){playVoice('teaser2-voice-01.mp3');},1000);    // "Você já sentou..."
+  setTimeout(function(){playVoice('teaser2-voice-02.mp3');},12000);   // "Milhões buscam..."
+  setTimeout(function(){playVoice('teaser2-voice-03.mp3');},22000);   // "Apresentamos MASTER SPIRIT" (antes de Jesus)
+
+  // When journey ends → switch to pillars
+  vid.onended=function(){
+    document.getElementById('journey-view').classList.remove('active');
+    startPillars();
+  };
 }
 
-function enterScene6(){
-  var words=['Você','encontrou','o','Caminho.'];
-  var el=document.getElementById('headline-6');
-  el.innerHTML='';
-  words.forEach(function(w,i){
-    var span=document.createElement('span');
-    span.className='word';
-    span.textContent=w;
-    span.style.animationDelay=(i*1.0)+'s';
-    el.appendChild(span);
+function playVoice(file){
+  if(voiceAudio){voiceAudio.pause();voiceAudio=null;}
+  voiceAudio=voicePool[file]||new Audio(file);
+  voiceAudio.currentTime=0;voiceAudio.volume=1;
+  if(music) music.volume=.2;
+  voiceAudio.onended=function(){voiceAudio=null;if(music) music.volume=.7;};
+  voiceAudio.play().catch(function(){});
+}
+
+// ── PILLARS ──
+function startPillars(){
+  document.getElementById('pillars-view').classList.add('active');
+  initParticles();
+  if(music) music.volume=.7;
+  goToPillar(0);
+}
+
+function goToPillar(n){
+  if(n>=PILLAR_SCENES.length) return;
+  if(pillarTimer){clearTimeout(pillarTimer);pillarTimer=null;}
+  // Hide current
+  if(currentPillar>=0) document.getElementById(PILLAR_SCENES[currentPillar]).classList.remove('active');
+  currentPillar=n;
+  var sceneId=PILLAR_SCENES[n];
+  document.getElementById(sceneId).classList.add('active');
+
+  // onEnter callbacks
+  if(sceneId==='sc-mestres') enterMestres();
+  if(sceneId==='sc-climax') enterClimax();
+  if(sceneId==='sc-cta') enterCTA();
+
+  // Voice
+  if(PILLAR_VOICES[n]&&n<PILLAR_SCENES.length-1){
+    setTimeout(function(){playVoice(PILLAR_VOICES[n]);},400);
+  }
+  if(n===PILLAR_SCENES.length-1&&PILLAR_VOICES[n]){
+    setTimeout(function(){playVoice(PILLAR_VOICES[n]);},400);
+  }
+
+  // Progress
+  var journeyDur=87;
+  var elapsed=journeyDur+(n*10);
+  var total=journeyDur+60;
+  document.getElementById('progress-fill').style.width=Math.min(100,elapsed/total*100)+'%';
+
+  // Auto advance
+  if(PILLAR_DURATIONS[n]<999){
+    pillarTimer=setTimeout(function(){goToPillar(currentPillar+1);},(PILLAR_DURATIONS[n]+1)*1000);
+  }
+}
+
+function enterMestres(){
+  var row=document.getElementById('masters-row');row.innerHTML='';
+  ['avatar-jesus.png','avatar-kardec.png','avatar-chico-xavier.png?v=2','avatar-bezerra.png','avatar-divaldo.png?v=2','avatar-krishna.png'].forEach(function(src,i){
+    var img=document.createElement('img');img.className='master-circle';img.src=src;img.alt='Mestre';
+    img.style.animation='masterIn .6s ease '+(i*.25)+'s forwards';row.appendChild(img);
   });
+}
+
+function enterClimax(){
+  var words=['Você','encontrou','o','Caminho.'];
+  var el=document.getElementById('climax-headline');el.innerHTML='';
+  words.forEach(function(w,i){var span=document.createElement('span');span.className='word';span.textContent=w;span.style.animationDelay=(i*1)+'s';el.appendChild(span);});
   setTimeout(function(){
-    var sub=document.getElementById('sub-6');
-    sub.style.opacity='0';
-    sub.innerHTML='O Caminho da Luz e do Amor.';
-    sub.style.transition='opacity 2s ease';
+    var sub=document.getElementById('climax-sub');sub.style.opacity='0';
+    sub.innerHTML='O Caminho da Luz e do Amor.';sub.style.transition='opacity 2s ease';
     setTimeout(function(){sub.style.opacity='1';},100);
   },4500);
 }
 
-function wordByWord(elId,text,delay){
-  var el=document.getElementById(elId);
-  if(!el)return;
-  el.innerHTML='';
-  var lines=text.split('\n');
-  var allWords=[];
-  lines.forEach(function(line,li){
-    var words=line.trim().split(/\s+/);
-    words.forEach(function(w){if(w) allWords.push(w);});
-    if(li<lines.length-1) allWords.push('__BR__');
+function enterCTA(){
+  var grid=document.getElementById('pillar-grid');
+  grid.innerHTML='';
+  [{img:'avatar-jesus.png',txt:'Mestres'},{img:'shelf-books.png',txt:'Salas de Estudo'},{img:'evangelho-lar.png?v=2',txt:'Evangelho no Lar'},{img:'passe-card.png',txt:'Auto Passe'}].forEach(function(p,i){
+    var div=document.createElement('div');div.className='pillar-card';
+    div.style.animation='floatIn .6s ease '+(i*.2)+'s forwards';
+    div.innerHTML='<img src="'+p.img+'" style="width:100%;height:50px;object-fit:contain;border-radius:8px;margin-bottom:4px;background:rgba(255,255,255,.05)"><p>'+p.txt+'</p>';
+    grid.appendChild(div);
   });
-  var i=0;
-  function next(){
-    if(i<allWords.length){
-      if(allWords[i]==='__BR__'){el.appendChild(document.createElement('br'));}
-      else{
-        var span=document.createElement('span');
-        span.className='word';
-        span.textContent=allWords[i];
-        span.style.animationDelay='0s';
-        el.appendChild(span);
-      }
-      i++;setTimeout(next,delay);
-    }
-  }
-  next();
 }
 
-// ── AUDIO ──
-var _voicePool=[];
-
-function initAudio(){
-  audio=new Audio('teaser-music.mp3');
-  audio.volume=0.85;
-  audio.loop=true;
-}
-
-function preloadVoices(){
-  // Pré-carregar todas as vozes DENTRO do handler de toque (obrigatório iOS)
-  for(var i=0;i<=7;i++){
-    var a=new Audio('teaser-voice-'+String(i).padStart(2,'0')+'.mp3');
-    a.load();
-    _voicePool[i]=a;
-  }
-}
-
-function ensureAudioPlaying(){
-  if(!audio) return;
-  if(audio.paused&&!muted){
-    audio.play().catch(function(){});
-  }
-  // Tocar voz pendente que foi bloqueada
-  if(window._pendingVoice){
-    window._pendingVoice.play().catch(function(){});
-    window._pendingVoice=null;
-  }
-}
-
-function toggleSound(){
-  if(!audio) return;
-  if(audio.paused){
-    muted=false;
-    audio.play().then(function(){
-      document.getElementById('mute-btn').textContent='🔊';
-    }).catch(function(){});
+// ── PAUSE ──
+var paused=false;
+function togglePause(){
+  paused=!paused;
+  document.getElementById('pause-btn').textContent=paused?'▶':'⏸';
+  if(paused){
+    if(music) music.pause();
+    if(voiceAudio) voiceAudio.pause();
+    var jv=document.getElementById('journey-video');if(jv&&!jv.paused) jv.pause();
+    if(pillarTimer){clearTimeout(pillarTimer);pillarTimer=null;}
   } else {
-    muted=true;
-    audio.pause();
-    document.getElementById('mute-btn').textContent='🔇';
+    if(music) music.play();
+    if(voiceAudio) voiceAudio.play();
+    var jv2=document.getElementById('journey-video');if(jv2&&jv2.paused&&document.getElementById('journey-view').classList.contains('active')) jv2.play();
+    // Re-arm pillar timer if in pillars view
+    if(document.getElementById('pillars-view').classList.contains('active')&&currentPillar<PILLAR_SCENES.length-1){
+      pillarTimer=setTimeout(function(){goToPillar(currentPillar+1);},(PILLAR_DURATIONS[currentPillar]||10)*1000);
+    }
   }
 }
 
 // ── CONTROLS ──
-var _firstInteraction=true;
 document.addEventListener('click',function(e){
-  if(e.target.closest('#mute-btn')||e.target.closest('#dots')||e.target.closest('.cta-btn')||e.target.closest('#audio-unlock')) return;
-  ensureAudioPlaying();
-  // Primeiro clique só inicia áudio, não avança
-  if(_firstInteraction){_firstInteraction=false;return;}
-  goToScene(currentScene+1);
+  if(e.target.closest('#start-overlay')||e.target.closest('.cta-btn')) return;
+  if(document.getElementById('pillars-view').classList.contains('active')&&currentPillar<PILLAR_SCENES.length-1){
+    goToPillar(currentPillar+1);
+  }
 });
-document.addEventListener('touchstart',function(){
-  ensureAudioPlaying();
-  _firstInteraction=false;
-},{passive:true,once:true});
 document.addEventListener('keydown',function(e){
-  if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();goToScene(currentScene+1);}
-  if(e.key==='ArrowLeft'){e.preventDefault();goToScene(currentScene-1);}
-});
-
-// ── UNLOCK (iOS/mobile) ──
-function unlockAndStart(){
-  var overlay=document.getElementById('audio-unlock');
-  if(overlay) overlay.style.display='none';
-  // CRIAR tudo dentro do handler de toque (obrigatório iOS)
-  audio=new Audio('teaser-music.mp3');
-  audio.volume=0.85;
-  audio.loop=true;
-  audio.play();
-  // Pré-carregar TODAS as vozes agora (dentro do toque)
-  preloadVoices();
-  // Pré-carregar vídeo do Jesus (iOS precisa de load dentro de interação)
-  var v=document.getElementById('jesus-video');
-  if(v){v.load();v.play().then(function(){v.pause();v.currentTime=0;}).catch(function(){});}
-  muted=false;
-  _firstInteraction=false;
-  document.getElementById('mute-btn').textContent='🔊';
-  goToScene(0);
-}
-
-// ── START ──
-window.addEventListener('load',function(){
-  // Sempre mostrar botão ASSISTIR (desktop e mobile)
-  // Garante som em todos os dispositivos
-  document.getElementById('mute-btn').textContent='🔇';
+  if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();
+    if(document.getElementById('pillars-view').classList.contains('active')&&currentPillar<PILLAR_SCENES.length-1) goToPillar(currentPillar+1);
+  }
 });
 </script>
 </body>
