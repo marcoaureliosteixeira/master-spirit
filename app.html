@@ -407,8 +407,10 @@ if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
       <span style="font-size:18px">📚</span><span style="font-size:15px;font-family:'Cinzel',serif">Salas de Estudo</span></a>
     <a href="evangelho.html" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(201,168,76,.08);text-decoration:none;color:#F5EFE0">
       <span style="font-size:18px">🕯️</span><span style="font-size:15px;font-family:'Cinzel',serif">Evangelho no Lar</span></a>
-    <a href="passe.html" style="display:flex;align-items:center;gap:10px;padding:10px 0;text-decoration:none;color:#F5EFE0">
+    <a href="passe.html" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(201,168,76,.08);text-decoration:none;color:#F5EFE0">
       <span style="font-size:18px">🙌</span><span style="font-size:15px;font-family:'Cinzel',serif">Sessão de Passe</span></a>
+    <a href="app.html" onclick="sessionStorage.removeItem('spirit_splash_seen')" style="display:flex;align-items:center;gap:10px;padding:10px 0;text-decoration:none;color:rgba(240,234,214,.5)">
+      <span style="font-size:18px">🏠</span><span style="font-size:15px;font-family:'Cinzel',serif">Início</span></a>
   </div>
   <div id="nav"></div>
 
@@ -1401,12 +1403,19 @@ window.addEventListener('load',()=>{
   initStars();
   initSettings();
   loadRooms();
-  // Sempre ir direto para o app (sem splash) — navegação livre pelo menu ☰
+  // Verificar parâmetro ?tab= na URL
   var urlParams=new URLSearchParams(window.location.search);
   var requestedTab=urlParams.get('tab');
-  skipSplash();
   if(requestedTab){
+    skipSplash();
     tab=requestedTab;
+  }
+  // Skip splash se já viu nesta sessão
+  else if(sessionStorage.getItem('spirit_splash_seen')){
+    skipSplash();
+  } else {
+    // Splash visível — iniciar música
+    setTimeout(startSplashMusic, 1500);
   }
   render();
   if(typeof buildSuggestions==='function') buildSuggestions();
@@ -2667,13 +2676,13 @@ async function acceptDisclaimer(){
     }
   }catch(e){}
   document.getElementById('disclaimer-overlay').style.display='none';
-  // Após aceitar disclaimer, ir direto para o app (sem splash)
+  // Após aceitar disclaimer, mostrar o splash (menu principal)
   if(!document.getElementById('app').style.display||document.getElementById('app').style.display==='none'){
+    document.getElementById('splash').style.display='block';
     initSplashLogo();
     initStars();
     initSettings();
     loadRooms();
-    skipSplash();
     render();
     if(typeof buildSuggestions==='function') buildSuggestions();
   }
