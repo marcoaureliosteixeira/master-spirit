@@ -231,8 +231,8 @@ body{font-family:'Cinzel',Georgia,serif}
 // ══════════════════════════════════════════
 var PILLAR_SCENES=['sc-mestres','sc-salas','sc-evangelho','sc-passe','sc-climax'];
 var PILLAR_VOICES=['teaser2-voice-04.mp3','teaser2-voice-05.mp3','teaser2-voice-6.1.mp3','teaser2-voice-07.mp3',null];
-// Duração = voz + 1s de respiro (mestres:9, salas:17, evangelho:5, passe:12, climax:10)
-var PILLAR_DURATIONS=[9,17,5,12,10];
+// Duração = voz + 1s de respiro (mestres:9, salas:17, evangelho:5, passe:12, climax:7)
+var PILLAR_DURATIONS=[9,17,5,12,7];
 var music=null,voicePool={},voiceAudio=null,currentPillar=-1,pillarTimer=null;
 
 // ══════════════════════════════════════════
@@ -491,12 +491,12 @@ function enterMestres(){
 function enterClimax(){
   var words=['Você','encontrou','o','Caminho.'];
   var el=document.getElementById('climax-headline');el.innerHTML='';
-  words.forEach(function(w,i){var span=document.createElement('span');span.className='word';span.textContent=w;span.style.animationDelay=(i*1)+'s';el.appendChild(span);});
+  words.forEach(function(w,i){var span=document.createElement('span');span.className='word';span.textContent=w;span.style.animationDelay=(i*.7)+'s';el.appendChild(span);});
   setTimeout(function(){
     var sub=document.getElementById('climax-sub');sub.style.opacity='0';
-    sub.innerHTML='O Caminho da Luz e do Amor.';sub.style.transition='opacity 2s ease';
+    sub.innerHTML='O Caminho da Luz e do Amor.';sub.style.transition='opacity 1.5s ease';
     setTimeout(function(){sub.style.opacity='1';},100);
-  },4500);
+  },3000);
 }
 
 function enterCTA(){
