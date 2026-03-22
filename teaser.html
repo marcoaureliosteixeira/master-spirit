@@ -31,9 +31,9 @@ body{font-family:'Cinzel',Georgia,serif}
   align-items:center;justify-content:center}
 
 /* ── BRAND: Logo flutuante (mesmo estilo da cena final) ── */
-#brand-logo{position:absolute;left:50%;top:28%;transform:translateX(-50%);z-index:10;
+#brand-logo{position:absolute;left:50%;top:42%;transform:translateX(-50%);z-index:10;
   display:none;pointer-events:none;text-align:center}
-#brand-logo img{max-width:min(55vw,260px);height:auto}
+#brand-logo img{max-width:min(50vw,240px);height:auto}
 @keyframes brandLogoIn{0%{opacity:0;transform:scale(.7);filter:brightness(3)}
   60%{opacity:1;transform:scale(1.05);filter:brightness(1.2)}
   100%{opacity:1;transform:scale(1);filter:brightness(1)}}
@@ -56,7 +56,7 @@ body{font-family:'Cinzel',Georgia,serif}
   transform:translate(-50%,-50%);border:2px solid rgba(201,168,76,.9);border-radius:50%;opacity:0;z-index:6;pointer-events:none}
 
 /* ── BRAND: Jesus ── */
-#brand-jesus{position:absolute;left:50%;top:68%;transform:translate(-50%,-50%);z-index:7;
+#brand-jesus{position:absolute;left:50%;top:65%;transform:translate(-50%,-50%);z-index:7;
   text-align:center;opacity:0;display:none}
 #brand-jesus.visible{display:block}
 .jesus-circle{width:min(45vw,220px);height:min(45vw,220px);border-radius:50%;overflow:hidden;
@@ -385,7 +385,9 @@ function startBrand(){
   // Logo sobe para posição final — fica flutuando
   setTimeout(function(){
     logo.style.transition='top 1.2s cubic-bezier(.22,1,.36,1)';
-    logo.style.top='28%';
+    // Posicionar logo ~30px acima da cabeça do Jesus (Jesus center=65%, raio=22vw)
+    logo.style.top='calc(65% - 22.5vw - 30px)';
+    logo.style.transform='translateX(-50%) translateY(-100%)';
     // Fixar opacity ANTES de trocar animation (senão reseta para 0)
     logoImg.style.opacity='1';
     logoImg.style.filter='brightness(1)';
