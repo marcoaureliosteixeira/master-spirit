@@ -110,6 +110,7 @@ body{font-family:'Cinzel',Georgia,serif}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
 @keyframes floatIn{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
 .word{display:inline-block;opacity:0;animation:fadeUp .5s ease forwards;margin-right:.3em}
 @media(max-width:500px){.pillar-grid{grid-template-columns:repeat(2,1fr)}}
 </style>
@@ -211,7 +212,7 @@ body{font-family:'Cinzel',Georgia,serif}
       <a class="cta-btn" href="https://masterspirit.com.br" target="_blank">✦ Entre nessa jornada ✦</a>
       <div style="margin-top:18px;display:flex;align-items:center;gap:8px;justify-content:center">
         <span style="font-size:9px;letter-spacing:2px;color:rgba(240,234,214,.3);text-transform:uppercase">Produzido por</span>
-        <img src="logo-spyrit-systems.png" alt="Spyrit Systems" style="height:36px;opacity:.7">
+        <img src="logo-spyrit-systems.png" alt="Spyrit Systems" style="height:36px;opacity:.7;animation:floatBig 4s ease-in-out infinite">
       </div>
     </div>
   </div>
