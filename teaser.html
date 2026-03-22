@@ -385,9 +385,9 @@ function startBrand(){
   // Logo sobe para posição final — fica flutuando
   setTimeout(function(){
     logo.style.transition='top 1.2s cubic-bezier(.22,1,.36,1)';
-    // Posicionar logo ~30px acima da cabeça do Jesus (Jesus center=65%, raio=22vw)
-    logo.style.top='calc(65% - 22.5vw - 30px)';
-    logo.style.transform='translateX(-50%) translateY(-100%)';
+    // Logo fica 3cm (~45px) acima da cabeça de Jesus
+    logo.style.top='18%';
+    logo.style.transform='translateX(-50%)';
     // Fixar opacity ANTES de trocar animation (senão reseta para 0)
     logoImg.style.opacity='1';
     logoImg.style.filter='brightness(1)';
