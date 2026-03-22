@@ -599,7 +599,9 @@ async function criarSala(){
   var status=document.getElementById('criar-status');
   if(!sala.nome){status.textContent='Digite o nome da sala.';return;}
   if(sala.livros.length===0){status.textContent='Selecione pelo menos um livro.';return;}
-  if(!sala.facilitador){status.textContent='Selecione um facilitador.';return;}
+  // Facilitador é por livro (definido no passo 3), não no nível da sala
+  var semFac=sala.livros.find(function(b){return !b.facilitador;});
+  if(semFac){status.textContent='Selecione um facilitador para: '+semFac.name;return;}
   status.textContent='Criando sala...';
   document.getElementById('btn-criar').disabled=true;
 
