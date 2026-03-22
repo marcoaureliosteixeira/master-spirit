@@ -188,8 +188,10 @@ p,span,input,textarea,.field-input{font-family:Georgia,'Times New Roman',serif}
         <div class="day-btn" onclick="toggleDay(this,'dom')">Dom</div>
       </div>
 
-      <p class="field-label">Horário</p>
-      <input class="field-input" id="sala-horario" type="time" value="19:30" style="max-width:200px">
+      <p class="field-label">Horários</p>
+      <div id="horarios-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">
+        <p style="font-size:13px;color:rgba(240,234,214,.3);font-style:italic;font-family:Georgia,serif">Selecione os dias acima para definir os horários</p>
+      </div>
 
       <p class="field-label">Duração da Sessão</p>
       <div class="freq-row">
@@ -260,7 +262,7 @@ var FACILITADORES_SPEC=[
 ];
 
 // ── STATE ──
-var sala={nome:'',objetivo:'',livros:[],dias:[],horario:'19:30',duracao:60};
+var sala={nome:'',objetivo:'',livros:[],dias:[],horarios:{},duracao:60};
 // Cada livro terá: {id, name, author, icon, tipo:'solo'|'grupo', facilitador:null, membros:[]}
 var personalLibrary=[];
 try{personalLibrary=JSON.parse(localStorage.getItem('spirit_personal_library')||'[]');}catch(e){}
@@ -530,11 +532,33 @@ function removeBookMember(bi,mi){
 
 // ── FACILITADORES ──
 // ── FREQUÊNCIA ──
+var DAY_NAMES={seg:'Segunda',ter:'Terça',qua:'Quarta',qui:'Quinta',sex:'Sexta',sab:'Sábado',dom:'Domingo'};
 function toggleDay(el,day){
   el.classList.toggle('active');
   var idx=sala.dias.indexOf(day);
-  if(idx>=0) sala.dias.splice(idx,1);
-  else sala.dias.push(day);
+  if(idx>=0){
+    sala.dias.splice(idx,1);
+    delete sala.horarios[day];
+  } else {
+    sala.dias.push(day);
+    sala.horarios[day]='19:30';
+  }
+  renderHorarios();
+}
+function renderHorarios(){
+  var el=document.getElementById('horarios-list');
+  if(sala.dias.length===0){
+    el.innerHTML='<p style="font-size:13px;color:rgba(240,234,214,.3);font-style:italic;font-family:Georgia,serif">Selecione os dias acima para definir os horários</p>';
+    return;
+  }
+  var order=['seg','ter','qua','qui','sex','sab','dom'];
+  var sorted=order.filter(function(d){return sala.dias.indexOf(d)>=0;});
+  el.innerHTML=sorted.map(function(d){
+    return '<div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.15);border-radius:10px;padding:8px 12px">'+
+      '<span style="font-family:Cinzel,serif;font-size:11px;color:var(--gold);width:70px;letter-spacing:1px">'+DAY_NAMES[d]+'</span>'+
+      '<input type="time" value="'+(sala.horarios[d]||'19:30')+'" onchange="sala.horarios[\''+d+'\']=this.value" style="background:rgba(255,255,255,.06);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:6px 10px;color:var(--text);font-family:Georgia,serif;font-size:14px;outline:none">'+
+      '</div>';
+  }).join('');
 }
 
 function setDuracao(d){
@@ -545,13 +569,18 @@ function setDuracao(d){
 
 // ── RESUMO ──
 function updateResumo(){
-  sala.horario=document.getElementById('sala-horario').value;
   sala.nome=document.getElementById('sala-nome').value;
   sala.objetivo=document.getElementById('sala-objetivo').value;
   var allFacs=FACILITADORES_GEN.concat(FACILITADORES_SPEC);
+  var freqText='Livre';
+  if(sala.dias.length>0){
+    var order=['seg','ter','qua','qui','sex','sab','dom'];
+    var sorted=order.filter(function(d){return sala.dias.indexOf(d)>=0;});
+    freqText=sorted.map(function(d){return DAY_NAMES[d]+' '+sala.horarios[d];}).join(' · ');
+  }
   var html='<p style="font-size:15px;color:var(--text);margin-bottom:8px"><strong style="color:var(--gold)">Sala:</strong> '+(sala.nome||'Sem nome')+'</p>'+
     '<p style="font-size:14px;color:rgba(240,234,214,.7);margin-bottom:4px"><strong style="color:var(--gold)">Objetivo:</strong> '+(sala.objetivo||'-')+'</p>'+
-    '<p style="font-size:14px;color:rgba(240,234,214,.7);margin-bottom:8px"><strong style="color:var(--gold)">Frequência:</strong> '+(sala.dias.length>0?sala.dias.join(', ')+' às '+sala.horario:'Livre')+' · '+sala.duracao+' min</p>';
+    '<p style="font-size:14px;color:rgba(240,234,214,.7);margin-bottom:8px"><strong style="color:var(--gold)">Frequência:</strong> '+freqText+' · '+sala.duracao+' min</p>';
   sala.livros.forEach(function(b){
     var fac=allFacs.find(function(f){return f.id===b.facilitador;});
     html+='<div style="background:var(--soft);border-radius:10px;padding:10px 12px;margin-bottom:6px">'+
@@ -567,7 +596,6 @@ function updateResumo(){
 async function criarSala(){
   sala.nome=document.getElementById('sala-nome').value.trim();
   sala.objetivo=document.getElementById('sala-objetivo').value.trim();
-  sala.horario=document.getElementById('sala-horario').value;
   var status=document.getElementById('criar-status');
   if(!sala.nome){status.textContent='Digite o nome da sala.';return;}
   if(sala.livros.length===0){status.textContent='Selecione pelo menos um livro.';return;}
