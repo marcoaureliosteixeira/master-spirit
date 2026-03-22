@@ -429,13 +429,13 @@ function startBrand(){
 // ══════════════════════════════════════════
 //  VOICE
 // ══════════════════════════════════════════
-function playVoice(file){
+function playVoice(file,onDone){
   if(voiceAudio){voiceAudio.pause();voiceAudio=null;}
   voiceAudio=voicePool[file]||new Audio(file);
   voiceAudio.currentTime=0;voiceAudio.volume=1;
   if(music)music.volume=.2;
-  voiceAudio.onended=function(){voiceAudio=null;if(music)music.volume=.7;};
-  voiceAudio.play().catch(function(){});
+  voiceAudio.onended=function(){voiceAudio=null;if(music)music.volume=.7;if(onDone)onDone();};
+  voiceAudio.play().catch(function(){if(onDone)onDone();});
 }
 
 // ══════════════════════════════════════════
@@ -462,12 +462,18 @@ function goToPillar(n){
   document.getElementById(sceneId).classList.add('active');
   if(sceneId==='sc-mestres')enterMestres();
   if(sceneId==='sc-climax')enterClimax();
-  // Voice
-  if(PILLAR_VOICES[n]){setTimeout(function(){playVoice(PILLAR_VOICES[n]);},400);}
   // Progress
   document.getElementById('progress-fill').style.width=Math.min(100,(70+n*10)/(70+60)*100)+'%';
-  // Auto advance
-  if(PILLAR_DURATIONS[n]<999){
+  // Voice → quando terminar + 1s → próxima cena
+  if(PILLAR_VOICES[n]){
+    setTimeout(function(){
+      playVoice(PILLAR_VOICES[n],function(){
+        // Voz terminou → espera 1s → avança
+        pillarTimer=setTimeout(function(){goToPillar(currentPillar+1);},1000);
+      });
+    },400);
+  } else {
+    // Sem voz (climax) → usa duração fixa
     pillarTimer=setTimeout(function(){goToPillar(currentPillar+1);},(PILLAR_DURATIONS[n]+1)*1000);
   }
 }
