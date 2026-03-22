@@ -394,7 +394,7 @@ async function askEmmanuel(){
     var r=await fetch('/api/curator',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({action:'suggest_books',objetivo:objetivo})});
     var d=await r.json();
-    document.getElementById('emmanuel-response').innerHTML='<p>'+((d.suggestion||'').replace(/\n/g,'<br>'))+'</p>';
+    document.getElementById('emmanuel-response').innerHTML='<div style="display:flex;gap:10px;align-items:flex-start"><img src="avatar-mestre-emmanuel.png" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,168,76,.3);flex-shrink:0" alt=""><div style="flex:1"><p style="font-size:14px;line-height:1.6;color:rgba(240,234,214,.7);font-family:Georgia,serif">'+((d.suggestion||'').replace(/\n/g,'<br>'))+'</p></div></div>';
   }catch(e){
     document.getElementById('emmanuel-response').innerHTML='<p style="color:rgba(232,122,122,.8)">Erro de conexão. Tente novamente.</p>';
   }
@@ -407,14 +407,14 @@ async function chatEmmanuel(){
   if(!pergunta) return;
   inp.value='';
   var el=document.getElementById('emmanuel-response');
-  el.innerHTML+='<div style="background:rgba(201,168,76,.08);border-radius:10px;padding:10px 12px;margin-top:8px;border:1px solid rgba(201,168,76,.15)"><p style="font-size:12px;color:var(--gold);font-weight:600;margin-bottom:3px;font-family:Cinzel,serif">Você</p><p style="font-size:14px;color:rgba(240,234,214,.7);font-family:Georgia,serif">'+pergunta+'</p></div>';
+  el.innerHTML+='<div style="display:flex;gap:10px;align-items:flex-start;margin-top:8px"><div style="width:28px;height:28px;border-radius:50%;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;color:var(--gold)">👤</div><div style="flex:1;background:rgba(201,168,76,.08);border-radius:10px;padding:10px 12px;border:1px solid rgba(201,168,76,.15)"><p style="font-size:14px;color:rgba(240,234,214,.7);font-family:Georgia,serif">'+pergunta+'</p></div></div>';
   el.innerHTML+='<p style="color:var(--gold);font-style:italic;margin-top:6px" id="emmanuel-loading">Emmanuel está pensando...</p>';
   try{
     var r=await fetch('/api/curator',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({action:'suggest_books',objetivo:pergunta})});
     var d=await r.json();
     var loading=document.getElementById('emmanuel-loading');
-    if(loading) loading.outerHTML='<div style="background:rgba(255,255,255,.04);border-radius:10px;padding:10px 12px;margin-top:6px;border-left:3px solid var(--accent);border:1px solid rgba(201,168,76,.15)"><p style="font-size:12px;color:var(--gold);font-weight:600;margin-bottom:3px;font-family:Cinzel,serif">Mestre Emmanuel</p><p style="font-size:14px;line-height:1.6;color:rgba(240,234,214,.7);font-family:Georgia,serif">'+((d.suggestion||'').replace(/\n/g,'<br>'))+'</p></div>';
+    if(loading) loading.outerHTML='<div style="display:flex;gap:10px;align-items:flex-start;margin-top:6px"><img src="avatar-mestre-emmanuel.png" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,168,76,.3);flex-shrink:0" alt=""><div style="flex:1;background:rgba(255,255,255,.04);border-radius:10px;padding:10px 12px;border:1px solid rgba(201,168,76,.15)"><p style="font-size:14px;line-height:1.6;color:rgba(240,234,214,.7);font-family:Georgia,serif">'+((d.suggestion||'').replace(/\n/g,'<br>'))+'</p></div></div>';
   }catch(e){
     var loading2=document.getElementById('emmanuel-loading');
     if(loading2) loading2.outerHTML='<p style="color:rgba(232,122,122,.8);margin-top:6px">Erro de conexão.</p>';
