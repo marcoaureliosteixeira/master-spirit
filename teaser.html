@@ -56,9 +56,8 @@ body{font-family:'Cinzel',Georgia,serif}
   transform:translate(-50%,-50%);border:2px solid rgba(201,168,76,.9);border-radius:50%;opacity:0;z-index:6;pointer-events:none}
 
 /* ── BRAND: Jesus ── */
-#brand-jesus{position:absolute;left:50%;top:65%;transform:translate(-50%,-50%);z-index:7;
-  text-align:center;opacity:0;display:none}
-#brand-jesus.visible{display:block}
+/* Jesus na cena dos mestres */
+#mestres-jesus{text-align:center}
 .jesus-circle{width:min(45vw,220px);height:min(45vw,220px);border-radius:50%;overflow:hidden;
   border:2px solid rgba(201,168,76,.5);box-shadow:0 0 40px rgba(201,168,76,.3),0 0 80px rgba(100,60,200,.15);
   margin:0 auto 10px;-webkit-mask-image:-webkit-radial-gradient(white,black)}
@@ -159,13 +158,7 @@ body{font-family:'Cinzel',Georgia,serif}
   <div id="brand-logo">
     <img src="logo-master-spirit.png" alt="Master Spirit" style="animation:none">
   </div>
-  <!-- Jesus: separado, abaixo da logo -->
-  <div id="brand-jesus">
-    <div class="jesus-circle">
-      <video id="jesus-vid" playsinline muted preload="none"><source src="teaser2-jesus-04.mp4" type="video/mp4"></video>
-    </div>
-    <p class="jesus-label">Jesus</p>
-  </div>
+
 </div>
 
 <!-- PILLARS -->
@@ -173,10 +166,18 @@ body{font-family:'Cinzel',Georgia,serif}
   <canvas id="particles"></canvas>
   <div class="pillars-content">
     <div class="scene" id="sc-mestres">
-      <p class="eyebrow">Mestres Espirituais</p>
-      <p class="headline" style="font-size:clamp(18px,3.5vw,28px)">Cada Mestre, com sua Sabedoria<br>e Personalidade.</p>
-      <div class="divider"></div>
-      <p class="sub">Falando com você, na primeira pessoa.</p>
+      <!-- Jesus fala primeiro -->
+      <div id="mestres-jesus" style="margin-bottom:16px;opacity:0">
+        <div class="jesus-circle" style="width:min(40vw,180px);height:min(40vw,180px)">
+          <video id="jesus-vid" playsinline muted preload="none"><source src="teaser2-jesus-04.mp4" type="video/mp4"></video>
+        </div>
+        <p class="jesus-label" style="font-size:clamp(12px,2.5vw,16px)">Jesus</p>
+      </div>
+      <!-- Depois o narrador e os mestres -->
+      <p class="eyebrow" id="mestres-eyebrow" style="animation:none;opacity:0">Mestres Espirituais</p>
+      <p class="headline" id="mestres-headline" style="font-size:clamp(18px,3.5vw,28px);animation:none;opacity:0">Cada Mestre, com sua Sabedoria<br>e Personalidade.</p>
+      <div class="divider" id="mestres-divider" style="animation:none;opacity:0"></div>
+      <p class="sub" id="mestres-sub" style="animation:none;opacity:0">Falando com você, na primeira pessoa.</p>
       <div class="masters-row" id="masters-row"></div>
     </div>
     <div class="scene" id="sc-salas">
@@ -230,7 +231,7 @@ body{font-family:'Cinzel',Georgia,serif}
 //  CONFIG
 // ══════════════════════════════════════════
 var PILLAR_SCENES=['sc-mestres','sc-salas','sc-evangelho','sc-passe','sc-climax'];
-var PILLAR_VOICES=['teaser2-voice-04.mp3','teaser2-voice-05.mp3','teaser2-voice-6.1.mp3','teaser2-voice-07.mp3',null];
+var PILLAR_VOICES=[null,'teaser2-voice-05.mp3','teaser2-voice-6.1.mp3','teaser2-voice-07.mp3',null];
 // Duração = voz + 1s de respiro (mestres:9, salas:17, evangelho:5, passe:12, climax:7)
 var PILLAR_DURATIONS=[9,17,5,12,7];
 var music=null,voicePool={},voiceAudio=null,currentPillar=-1,pillarTimer=null;
@@ -330,8 +331,6 @@ function startBrand(){
   var sw2=document.getElementById('brand-sw2');
   var logo=document.getElementById('brand-logo');
   var logoImg=logo.querySelector('img');
-  var jesus=document.getElementById('brand-jesus');
-  var jesusVid=document.getElementById('jesus-vid');
 
   /*
     TIMELINE:
@@ -394,37 +393,10 @@ function startBrand(){
     logoImg.style.animation='brandFloat 4s ease-in-out infinite';
   },7500);
 
-  // Jesus aparece ABAIXO (9s) — logo continua acima
+  // Após logo apresentada → transição para pilares (9s)
   setTimeout(function(){
-    jesus.classList.add('visible');
-    jesus.style.animation='jesusIn 2s ease forwards';
-    jesusVid.currentTime=0;jesusVid.muted=false;
-    jesusVid.play().catch(function(){});
-    if(music)music.volume=.15;
-
-    // Quando Jesus termina → dissolve → pillars
-    jesusVid.onended=function(){
-      jesus.style.animation='jesusOut 1.5s ease forwards';
-      jesusVid.muted=true;
-      if(music)music.volume=.7;
-      setTimeout(function(){
-        view.classList.remove('active');
-        startPillars();
-      },1800);
-    };
-
-    // Fallback 20s
-    setTimeout(function(){
-      if(!jesusVid.ended&&!jesusVid.paused){
-        jesus.style.animation='jesusOut 1.5s ease forwards';
-        jesusVid.pause();jesusVid.muted=true;
-        if(music)music.volume=.7;
-        setTimeout(function(){
-          view.classList.remove('active');
-          startPillars();
-        },1800);
-      }
-    },20000);
+    view.classList.remove('active');
+    startPillars();
   },9000);
 }
 
@@ -466,11 +438,12 @@ function goToPillar(n){
   if(sceneId==='sc-climax')enterClimax();
   // Progress
   document.getElementById('progress-fill').style.width=Math.min(100,(70+n*10)/(70+60)*100)+'%';
+  // Mestres: enterMestres controla Jesus+voz+timing (não usar fluxo padrão)
+  if(sceneId==='sc-mestres') return;
   // Voice → quando terminar + 1s → próxima cena
   if(PILLAR_VOICES[n]){
     setTimeout(function(){
       playVoice(PILLAR_VOICES[n],function(){
-        // Voz terminou → espera 1s → avança
         pillarTimer=setTimeout(function(){goToPillar(currentPillar+1);},1000);
       });
     },400);
@@ -481,11 +454,51 @@ function goToPillar(n){
 }
 
 function enterMestres(){
-  var row=document.getElementById('masters-row');row.innerHTML='';
-  ['avatar-jesus.png','avatar-kardec.png','avatar-chico-xavier.png?v=2','avatar-bezerra.png','avatar-divaldo.png?v=2','avatar-krishna.png'].forEach(function(src,i){
-    var img=document.createElement('img');img.className='master-circle';img.src=src;img.alt='Mestre';
-    img.style.animation='masterIn .6s ease '+(i*.25)+'s forwards';row.appendChild(img);
-  });
+  var jesusEl=document.getElementById('mestres-jesus');
+  var jesusVid=document.getElementById('jesus-vid');
+
+  // Jesus aparece e fala primeiro
+  jesusEl.style.animation='jesusIn 2s ease forwards';
+  jesusVid.currentTime=0;jesusVid.muted=false;
+  jesusVid.play().catch(function(){});
+  if(music)music.volume=.15;
+
+  function afterJesusSpeaks(){
+    jesusVid.muted=true;
+    if(music)music.volume=.7;
+    // Jesus some suavemente
+    jesusEl.style.animation='jesusOut 1.5s ease forwards';
+
+    // Depois o narrador + textos + avatares
+    setTimeout(function(){
+      // Mostrar textos
+      var ey=document.getElementById('mestres-eyebrow');
+      ey.style.animation='eyebrowShow .8s ease forwards';
+      var hl=document.getElementById('mestres-headline');
+      hl.style.animation='contentReveal .8s ease .5s forwards';
+      var dv=document.getElementById('mestres-divider');
+      dv.style.animation='fadeIn .4s ease .3s forwards';
+      var sb=document.getElementById('mestres-sub');
+      sb.style.animation='contentReveal .8s ease .8s forwards';
+
+      // Narrador voice-04
+      playVoice('teaser2-voice-04.mp3',function(){
+        // Voz terminou → avatares aparecem → +1s → próxima cena
+        var row=document.getElementById('masters-row');row.innerHTML='';
+        ['avatar-jesus.png','avatar-kardec.png','avatar-chico-xavier.png?v=2','avatar-bezerra.png','avatar-divaldo.png?v=2','avatar-krishna.png'].forEach(function(src,i){
+          var img=document.createElement('img');img.className='master-circle';img.src=src;img.alt='Mestre';
+          img.style.animation='masterIn .6s ease '+(i*.25)+'s forwards';row.appendChild(img);
+        });
+        // Espera avatares + 2s → próxima cena
+        pillarTimer=setTimeout(function(){goToPillar(currentPillar+1);},3000);
+      });
+    },1500);
+  }
+
+  // Quando Jesus termina de falar
+  jesusVid.onended=function(){afterJesusSpeaks();};
+  // Fallback 20s
+  setTimeout(function(){if(!jesusVid.ended&&!jesusVid.paused)afterJesusSpeaks();},20000);
 }
 
 function enterClimax(){
