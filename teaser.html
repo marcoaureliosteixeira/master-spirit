@@ -39,7 +39,7 @@ body{font-family:'Cinzel',Georgia,serif}
 /* Journey view */
 #journey-view video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000;z-index:1}
 /* Jesus overlay — granular dissolve effect */
-#jesus-overlay{position:absolute;z-index:10;left:50%;top:50%;transform:translate(-50%,-50%);display:none;text-align:center}
+#jesus-overlay{position:absolute;z-index:10;left:50%;top:58%;transform:translate(-50%,-50%);display:none;text-align:center}
 #jesus-overlay.show{display:block;animation:jesusAppear 2s ease forwards}
 #jesus-overlay.hiding{animation:jesusDisappear 1.5s ease forwards}
 @keyframes jesusAppear{
@@ -82,7 +82,7 @@ body{font-family:'Cinzel',Georgia,serif}
 .headline{font-family:'Cinzel Decorative',serif;font-size:clamp(20px,4vw,34px);font-weight:700;color:#E8C97A;letter-spacing:clamp(2px,.4vw,4px);text-shadow:0 0 30px rgba(232,201,122,.3);text-align:center;line-height:1.4;margin-bottom:14px;
   opacity:0;animation:contentReveal .8s ease 3.2s forwards}
 /* Sub: aparece logo após headline */
-.sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(15px,2.5vw,20px);color:rgba(240,234,214,.6);line-height:1.7;text-align:center;max-width:500px;margin:0 auto;
+.sub{font-family:'Cinzel',serif;font-style:italic;font-size:clamp(15px,2.5vw,20px);color:rgba(240,234,214,.6);line-height:1.7;text-align:center;max-width:500px;margin:0 auto;
   opacity:0;animation:contentReveal .8s ease 3.5s forwards}
 @keyframes contentReveal{0%{opacity:0;transform:translateY(15px)}100%{opacity:1;transform:translateY(0)}}
 /* Divider: aparece com o conteúdo */
@@ -139,15 +139,15 @@ body{font-family:'Cinzel',Georgia,serif}
   <div id="brand-spark" style="position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);width:6px;height:6px;border-radius:50%;background:#fff;box-shadow:0 0 12px 6px rgba(255,240,180,.9),0 0 40px 20px rgba(201,168,76,.5),0 0 80px 40px rgba(100,60,200,.3);opacity:0;z-index:2"></div>
   <!-- Spirit figure -->
   <div id="brand-spirit" style="position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);z-index:3">
-    <img src="master-spirit-avatar.png" id="brand-spirit-img" style="width:min(65vw,380px);height:min(65vw,380px);object-fit:contain;display:block;mix-blend-mode:screen;-webkit-mix-blend-mode:screen;opacity:0" alt="">
+    <img src="master-spirit-avatar.png" id="brand-spirit-img" style="width:min(80vw,460px);height:min(80vw,460px);object-fit:contain;display:block;mix-blend-mode:screen;-webkit-mix-blend-mode:screen;opacity:0" alt="">
   </div>
   <!-- Orb (empty ring → full logo) -->
   <div id="brand-orb" style="position:absolute;left:50%;top:calc(34% + 140px);transform:translate(-50%,-50%);z-index:4;text-align:center">
     <div id="brand-flash" style="position:absolute;left:50%;top:50%;width:min(55vw,250px);height:min(55vw,250px);transform:translate(-50%,-50%) scale(.5);border-radius:50%;pointer-events:none;opacity:0;background:radial-gradient(circle,rgba(255,255,255,.9) 0%,rgba(201,168,76,.6) 40%,transparent 70%)"></div>
     <div id="brand-ring1" style="position:absolute;left:50%;top:50%;width:min(30vw,130px);height:min(30vw,130px);transform:translate(-50%,-50%);border:2px solid rgba(201,168,76,.9);border-radius:50%;opacity:0"></div>
     <div id="brand-ring2" style="position:absolute;left:50%;top:50%;width:min(30vw,130px);height:min(30vw,130px);transform:translate(-50%,-50%);border:2px solid rgba(201,168,76,.9);border-radius:50%;opacity:0"></div>
-    <img id="brand-orb-empty" src="logo-sem-master-spirit-fundo_preto.png" style="width:min(48vw,210px);height:auto;opacity:0;display:block" alt="">
-    <img id="brand-orb-full" src="logo.png" style="width:min(48vw,210px);height:auto;opacity:0;display:block;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)" alt="">
+    <img id="brand-orb-empty" src="logo-sem-master-spirit-fundo_preto.png" style="width:min(55vw,250px);height:auto;opacity:0;display:block" alt="">
+    <img id="brand-orb-full" src="logo.png" style="width:min(55vw,250px);height:auto;opacity:0;display:block;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)" alt="">
     <p id="brand-title" style="font-family:'Cinzel',serif;font-size:clamp(18px,4vw,28px);font-weight:600;color:#E8C97A;letter-spacing:clamp(4px,.6vw,8px);text-shadow:0 0 30px rgba(232,201,122,.4);margin-top:12px;opacity:0">Master Spirit</p>
   </div>
   <!-- Jesus overlay (on brand screen) -->
@@ -289,15 +289,40 @@ function startTeaser(){
   // Preload Jesus
   var jv=document.getElementById('jesus-vid');
   if(jv){jv.load();jv.play().then(function(){jv.pause();jv.currentTime=0;}).catch(function(){});}
-  // Preload journey video
-  var jvid=document.getElementById('journey-video');
-  jvid.src='jornada-v3.mp4';jvid.load();
-  // Start brand presentation
-  startBrand();
+  // Start with journey (video first, brand comes at ~20s)
+  startJourney();
 }
 
-// ── BRAND: universo + splash effect + Jesus ──
-function startBrand(){
+// ── JOURNEY FIRST (plays ~20s, then cuts to brand) ──
+var brandTriggered=false;
+function startJourney(){
+  document.getElementById('journey-view').classList.add('active');
+  var vid=document.getElementById('journey-video');
+  vid.src='jornada-v3.mp4';vid.load();
+  vid.play().catch(function(){});
+
+  // Narração durante a jornada
+  setTimeout(function(){playVoice('teaser2-voice-01.mp3');},1000);    // "Você já sentou..."
+  setTimeout(function(){playVoice('teaser2-voice-02.mp3');},12000);   // "Milhões buscam..."
+
+  // Progress
+  vid.addEventListener('timeupdate',function(){
+    if(vid.duration){
+      var total=vid.duration+80;
+      document.getElementById('progress-fill').style.width=(vid.currentTime/total*100)+'%';
+    }
+    // Aos ~20s: corta para tela de marca
+    if(vid.currentTime>=20&&!brandTriggered){
+      brandTriggered=true;
+      vid.pause();
+      document.getElementById('journey-view').classList.remove('active');
+      startBrand(vid);
+    }
+  });
+}
+
+// ── BRAND: universo + splash + logo fica + Jesus ──
+function startBrand(journeyVid){
   document.getElementById('brand-view').classList.add('active');
   // Init stars
   var c=document.getElementById('brand-stars');if(c){
@@ -307,50 +332,54 @@ function startBrand(){
     drawStars();
   }
 
-  // Timeline da tela de marca:
-  // 0-1s:   Só universo
-  // 1-3.5s: Chispa + espírito forma
-  // 1s:     Narrador voice-01 "Você já sentou..."
-  // 3.5-4.5s: Anel vazio surge
-  // 4.5-5.5s: Espírito dive + impacto
-  // 5.5-7s: Logo revela + sobe + "Master Spirit"
-  // 7s:     Narrador voice-03 "Apresentamos Master Spirit"
-  // 8s:     Jesus aparece e fala
-  // Jesus ends → fade out brand → start journey
+  /*
+    TIMELINE (tela de marca):
+    0s:      Universo aparece
+    0.5s:    Narrador voice-03 "Apresentamos Master Spirit"
+    1-3.5s:  Spark + espírito forma (grande, alinhado com logo)
+    3.5-4.5s: Anel vazio surge
+    4.5-5.5s: Espírito dive + impacto
+    5.5-7s:  Logo revela + sobe para cima + "Master Spirit" + flutuante
+    8s:      Jesus aparece ABAIXO (logo continua flutuando acima)
+    Jesus ends → resume journey → pillars
+  */
 
-  // Narrador 01 durante universo
-  setTimeout(function(){playVoice('teaser2-voice-01.mp3');},1000);
+  // Narrador 03 "Apresentamos Master Spirit"
+  setTimeout(function(){playVoice('teaser2-voice-03.mp3');},500);
 
-  // Cena 2: Spark + espírito (1s)
   var spark=document.getElementById('brand-spark');
   var spirit=document.getElementById('brand-spirit');
   var spiritImg=document.getElementById('brand-spirit-img');
-  setTimeout(function(){
-    spark.style.animation='spark-burst 1.2s cubic-bezier(.22,1,.36,1) forwards';
-  },1000);
-  setTimeout(function(){
-    spirit.style.animation='spirit-rise 2.5s cubic-bezier(.22,1,.36,1) forwards';
-    spiritImg.style.animation='spirit-filter 2.5s cubic-bezier(.22,1,.36,1) forwards';
-  },1500);
-
-  // Cena 3: Anel vazio (3.5s)
   var orbEmpty=document.getElementById('brand-orb-empty');
-  setTimeout(function(){
-    orbEmpty.style.animation='orb-float-in 1s ease forwards';
-  },3500);
-
-  // Cena 4: Spirit dive (4.5s)
-  setTimeout(function(){
-    spirit.style.animation='spirit-dive 1.2s cubic-bezier(.55,0,1,.45) forwards';
-  },4500);
-
-  // Impacto (5.5s)
   var flash=document.getElementById('brand-flash');
   var ring1=document.getElementById('brand-ring1');
   var ring2=document.getElementById('brand-ring2');
   var orbFull=document.getElementById('brand-orb-full');
   var orbTarget=document.getElementById('brand-orb');
   var title=document.getElementById('brand-title');
+
+  // Spark (1s)
+  setTimeout(function(){
+    spark.style.animation='spark-burst 1.2s cubic-bezier(.22,1,.36,1) forwards';
+  },1000);
+
+  // Espírito forma (1.5s) — grande e alinhado
+  setTimeout(function(){
+    spirit.style.animation='spirit-rise 2.5s cubic-bezier(.22,1,.36,1) forwards';
+    spiritImg.style.animation='spirit-filter 2.5s cubic-bezier(.22,1,.36,1) forwards';
+  },1500);
+
+  // Anel vazio (3.5s)
+  setTimeout(function(){
+    orbEmpty.style.animation='orb-float-in 1s ease forwards';
+  },3500);
+
+  // Spirit dive (4.5s)
+  setTimeout(function(){
+    spirit.style.animation='spirit-dive 1.2s cubic-bezier(.55,0,1,.45) forwards';
+  },4500);
+
+  // Impacto (5.5s)
   setTimeout(function(){
     orbEmpty.style.animation='orb-empty-hide .3s ease forwards';
     flash.style.animation='flash-burst .5s ease both';
@@ -359,25 +388,23 @@ function startBrand(){
     orbFull.style.animation='orb-reveal .8s ease forwards';
   },5500);
 
-  // Logo sobe + título (6s)
+  // Logo sobe para top:18% + título + flutuante (6.2s)
   setTimeout(function(){
     orbTarget.style.transition='top 1.2s cubic-bezier(.22,1,.36,1)';
-    orbTarget.style.top='22%';
+    orbTarget.style.top='18%';
     orbFull.style.animation='orb-float 4s ease-in-out infinite';
     title.style.animation='content-rise .8s ease forwards';
   },6200);
 
-  // Narrador 03 "Apresentamos Master Spirit"
-  setTimeout(function(){playVoice('teaser2-voice-03.mp3');},7000);
-
-  // Jesus aparece (8s)
+  // Jesus aparece ABAIXO da logo (8s) — logo continua flutuando acima
   setTimeout(function(){
     var ol=document.getElementById('jesus-overlay');
     ol.classList.add('show');
     var jv=document.getElementById('jesus-vid');
     jv.currentTime=0;jv.muted=false;jv.play().catch(function(){});
     if(music) music.volume=.15;
-    // Quando Jesus termina → fade out → journey
+
+    // Quando Jesus termina → dissolve → resume journey → pillars
     jv.onended=function(){
       ol.classList.remove('show');
       ol.classList.add('hiding');
@@ -385,9 +412,16 @@ function startBrand(){
       if(music) music.volume=.7;
       setTimeout(function(){
         document.getElementById('brand-view').classList.remove('active');
-        startJourney();
+        // Resume journey video
+        document.getElementById('journey-view').classList.add('active');
+        journeyVid.play().catch(function(){});
+        journeyVid.onended=function(){
+          document.getElementById('journey-view').classList.remove('active');
+          startPillars();
+        };
       },1500);
     };
+
     // Fallback 20s
     setTimeout(function(){
       if(!jv.ended){
@@ -395,35 +429,16 @@ function startBrand(){
         jv.pause();jv.muted=true;if(music) music.volume=.7;
         setTimeout(function(){
           document.getElementById('brand-view').classList.remove('active');
-          startJourney();
+          document.getElementById('journey-view').classList.add('active');
+          journeyVid.play().catch(function(){});
+          journeyVid.onended=function(){
+            document.getElementById('journey-view').classList.remove('active');
+            startPillars();
+          };
         },1500);
       }
     },20000);
-  },8500);
-}
-
-// ── JOURNEY (só vídeo cósmico, sem overlays) ──
-function startJourney(){
-  document.getElementById('journey-view').classList.add('active');
-  var vid=document.getElementById('journey-video');
-  vid.play().catch(function(){});
-
-  // Narrador durante a jornada
-  setTimeout(function(){playVoice('teaser2-voice-02.mp3');},2000); // "Milhões buscam..."
-
-  // Progress
-  vid.addEventListener('timeupdate',function(){
-    if(vid.duration){
-      var total=vid.duration+60;
-      document.getElementById('progress-fill').style.width=(vid.currentTime/total*100)+'%';
-    }
-  });
-
-  // When journey ends → switch to pillars
-  vid.onended=function(){
-    document.getElementById('journey-view').classList.remove('active');
-    startPillars();
-  };
+  },8000);
 }
 
 function playVoice(file){
