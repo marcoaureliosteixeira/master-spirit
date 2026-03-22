@@ -342,24 +342,34 @@ if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
 @keyframes sp-ring-out{0%{transform:scale(.7);opacity:.7}100%{transform:scale(1.8);opacity:0}}
 
 /* ── Cena 3: Anel vazio surge flutuando (5.5s) ── */
-#orb-target{position:absolute;left:50%;top:calc(34% + 155px);transform:translate(-50%,-50%);z-index:5;pointer-events:none}
+#orb-target{position:absolute;left:50%;top:calc(34% + 155px);transform:translate(-50%,-50%);z-index:5;pointer-events:none;
+  transition:none}
 #orb-empty{width:min(52vw,230px);height:auto;opacity:0;display:block;
-  animation:orb-float-in 1.2s ease 5.5s forwards}
+  animation:orb-float-in 1.2s ease 5.5s forwards,orb-empty-hide .3s ease 8.2s forwards}
 @keyframes orb-float-in{
   0%{opacity:0;transform:scale(.5) translateY(30px);filter:brightness(2.5)}
   60%{opacity:.6;transform:scale(1.02) translateY(-3px);filter:brightness(1.2)}
   100%{opacity:.75;transform:scale(1) translateY(0);filter:brightness(1)}
 }
-/* Esconder anel vazio após impacto */
-#orb-empty{animation:orb-float-in 1.2s ease 5.5s forwards,orb-empty-hide .3s ease 8.2s forwards}
 @keyframes orb-empty-hide{0%{opacity:.75}100%{opacity:0}}
-/* Anel com espírito — aparece após impacto (8.2s) */
-#orb-full{width:min(52vw,230px);height:auto;opacity:0;display:block;position:absolute;left:0;top:0;
-  animation:orb-reveal .8s ease 8.2s forwards}
+/* Logo com espírito — aparece após impacto, sobe para posição final + flutuante */
+#orb-full{width:min(52vw,230px);height:auto;opacity:0;display:block;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  animation:orb-reveal .8s ease 8.2s forwards,orb-float 4s ease-in-out 9.5s infinite}
 @keyframes orb-reveal{
-  0%{opacity:0;transform:scale(.8);filter:brightness(3)}
-  50%{opacity:.9;transform:scale(1.05);filter:brightness(1.5)}
-  100%{opacity:1;transform:scale(1);filter:brightness(1)}
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.8);filter:brightness(3)}
+  50%{opacity:.9;transform:translate(-50%,-50%) scale(1.05);filter:brightness(1.5)}
+  100%{opacity:1;transform:translate(-50%,-50%) scale(1);filter:brightness(1)}
+}
+@keyframes orb-float{0%,100%{transform:translate(-50%,-50%) translateY(0)}50%{transform:translate(-50%,-50%) translateY(-12px)}}
+/* Título MASTER SPIRIT abaixo da logo */
+#orb-title{font-family:'Cinzel Decorative',serif;font-size:clamp(18px,4vw,28px);color:#E8C97A;letter-spacing:clamp(4px,.6vw,8px);
+  text-shadow:0 0 30px rgba(232,201,122,.4);text-align:center;margin-top:12px;
+  opacity:0;animation:content-rise .8s ease 9s forwards}
+/* O orb-target inteiro sobe após impacto */
+#orb-target{animation:orb-reposition 1.2s cubic-bezier(.22,1,.36,1) 8.5s forwards}
+@keyframes orb-reposition{
+  0%{top:calc(34% + 155px)}
+  100%{top:22%}
 }
 /* Flash de impacto (8.2s) */
 #orb-flash{position:absolute;left:50%;top:50%;width:min(55vw,250px);height:min(55vw,250px);
@@ -383,23 +393,23 @@ if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
   100%{opacity:0;transform:translate(-50%,-50%) scale(2.4)}
 }
 
-/* ── CONTEÚDO — surge em sequência após impacto (9s+) ── */
-#splash-content{position:absolute;bottom:0;left:0;right:0;text-align:center;padding:0 24px 20px}
-@keyframes content-rise{0%{opacity:0;transform:translateY(30px)}100%{opacity:1;transform:translateY(0)}}
-#splash-content .sub{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:clamp(11px,1.8vw,14px);color:rgba(240,234,214,.45);letter-spacing:2.5px;margin-bottom:16px;
-  opacity:0;animation:content-rise .7s cubic-bezier(.22,1,.36,1) 9s forwards}
-#splash-content .divider{width:60px;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.5),transparent);margin:0 auto 18px;
-  opacity:0;animation:content-rise .5s ease 9s forwards}
-#splash-content .verse{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:clamp(14px,2vw,17px);color:rgba(240,234,214,.7);line-height:1.7;margin-bottom:22px;
-  opacity:0;animation:content-rise .8s cubic-bezier(.22,1,.36,1) 9.3s forwards}
+/* ── CONTEÚDO — surge em sequência após logo reposicionar ── */
+@keyframes content-rise{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
+#splash-content{position:absolute;left:0;right:0;top:42%;text-align:center;padding:0 24px}
+#splash-content .sub{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:clamp(12px,2vw,15px);color:rgba(240,234,214,.5);letter-spacing:2px;margin-bottom:12px;
+  opacity:0;animation:content-rise .7s cubic-bezier(.22,1,.36,1) 9.3s forwards}
+#splash-content .divider{width:60px;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.5),transparent);margin:0 auto 14px;
+  opacity:0;animation:content-rise .5s ease 9.3s forwards}
+#splash-content .verse{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:clamp(13px,2vw,16px);color:rgba(240,234,214,.65);line-height:1.7;margin-bottom:18px;
+  opacity:0;animation:content-rise .8s cubic-bezier(.22,1,.36,1) 9.6s forwards}
 #splash-content .verse span{font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:rgba(201,168,76,.55);display:block;margin-top:6px}
 #splash-cards{opacity:0;animation:content-rise .8s cubic-bezier(.22,1,.36,1) 10s forwards}
-/* Splash entry cards */
-.splash-entry-card{width:90px;cursor:pointer;text-align:center;transition:all .3s;border-radius:12px;overflow:hidden;border:1px solid rgba(201,168,76,.25);background:rgba(6,10,22,.6);backdrop-filter:blur(8px)}
+/* Splash entry cards — maiores */
+.splash-entry-card{width:min(22vw,100px);cursor:pointer;text-align:center;transition:all .3s;border-radius:14px;overflow:hidden;border:1px solid rgba(201,168,76,.25);background:rgba(6,10,22,.6);backdrop-filter:blur(8px)}
 .splash-entry-card:hover{border-color:rgba(201,168,76,.6);transform:translateY(-3px);box-shadow:0 6px 24px rgba(201,168,76,.2)}
-.splash-entry-card img{width:100%;height:58px;object-fit:contain;display:block;border-bottom:1px solid rgba(201,168,76,.15);padding:3px}
-.splash-entry-card span{display:block;padding:7px 4px;font-family:'Cinzel',serif;font-size:7.5px;letter-spacing:1.2px;color:var(--gold);text-transform:uppercase;line-height:1.3}
-@media(max-width:380px){.splash-entry-card{width:72px}.splash-entry-card img{height:46px}.splash-entry-card span{font-size:5.5px;padding:4px 2px}}
+.splash-entry-card img{width:100%;height:65px;object-fit:contain;display:block;border-bottom:1px solid rgba(201,168,76,.15);padding:4px}
+.splash-entry-card span{display:block;padding:8px 4px;font-family:'Cinzel',serif;font-size:8px;letter-spacing:1.4px;color:var(--gold);text-transform:uppercase;line-height:1.3}
+@media(max-width:380px){.splash-entry-card{width:min(21vw,80px)}.splash-entry-card img{height:50px}.splash-entry-card span{font-size:6px;padding:5px 3px}}
 </style>
 
 <div id="splash" style="display:var(--splash-init,block)">
@@ -410,13 +420,14 @@ if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
     <div class="sp-ring"></div>
     <img id="spirit-img" src="master-spirit-avatar.png" alt="Master Spirit">
   </div>
-  <!-- Orb portal — recebe o espírito -->
+  <!-- Orb portal — recebe o espírito, depois sobe com logo flutuante -->
   <div id="orb-target">
     <div id="orb-flash"></div>
     <div id="orb-ring-1"></div>
     <div id="orb-ring-2"></div>
     <img id="orb-empty" src="logo-sem-master-spirit-fundo_preto.png" alt="">
-    <img id="orb-full" src="logo-master-spirit-fundo_preto.png" alt="Master Spirit">
+    <img id="orb-full" src="logo.png" alt="Master Spirit">
+    <p id="orb-title">Master Spirit</p>
   </div>
   <div id="splash-content">
     <p class="sub">Sabedoria espiritual para a evolução da alma</p>
@@ -1362,11 +1373,15 @@ function backToSplash(){
   // Esconder spark
   var sp=document.getElementById('spark');
   if(sp) sp.style.display='none';
-  // Mostrar orb com espírito (esconder anel vazio)
+  // Mostrar orb na posição final (já subiu)
+  var ot=document.getElementById('orb-target');
+  if(ot){ot.style.animation='none';ot.style.top='22%';}
   var oe=document.getElementById('orb-empty');
   if(oe){oe.style.animation='none';oe.style.opacity='0';}
   var ofull=document.getElementById('orb-full');
-  if(ofull){ofull.style.animation='none';ofull.style.opacity='1';ofull.style.filter='brightness(1)';}
+  if(ofull){ofull.style.animation='orb-float 4s ease-in-out infinite';ofull.style.opacity='1';ofull.style.filter='brightness(1)';}
+  var otitle=document.getElementById('orb-title');
+  if(otitle){otitle.style.animation='none';otitle.style.opacity='1';}
   var of=document.getElementById('orb-flash');
   if(of){of.style.animation='none';of.style.opacity='0';}
   var r1=document.getElementById('orb-ring-1');
