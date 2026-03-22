@@ -287,7 +287,7 @@ if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
 */
 
 /* ── Cena 2: Faísca de luz (delay 2s — universo fica sozinho antes) ── */
-#spark{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);width:6px;height:6px;border-radius:50%;
+#spark{position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);width:6px;height:6px;border-radius:50%;
   background:#fff;box-shadow:0 0 12px 6px rgba(255,240,180,.9),0 0 40px 20px rgba(201,168,76,.5),0 0 80px 40px rgba(100,60,200,.3);
   opacity:0;animation:spark-burst 1.2s cubic-bezier(.22,1,.36,1) 2s forwards}
 @keyframes spark-burst{
@@ -298,7 +298,7 @@ if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
 }
 
 /* ── Cena 2: Espírito — luz desenha o corpo devagar ── */
-#spirit-wrap{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);
+#spirit-wrap{position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);
   animation:spirit-rise 3.5s cubic-bezier(.22,1,.36,1) 2.5s both,
              spirit-dive 1.2s cubic-bezier(.55,0,1,.45) 7s forwards}
 @keyframes spirit-rise{
@@ -318,7 +318,7 @@ if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
 }
 /* Imagem: luz gradual desenha o corpo (sem silhueta branca) */
 #spirit-img{
-  width:min(65vw,380px);height:min(65vw,380px);object-fit:contain;display:block;
+  width:min(80vw,460px);height:min(80vw,460px);object-fit:contain;display:block;
   mix-blend-mode:screen;-webkit-mix-blend-mode:screen;
   animation:spirit-filter 3.5s cubic-bezier(.22,1,.36,1) 2.5s both;
 }
@@ -343,7 +343,7 @@ if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
 
 /* ── Cena 3: Anel vazio surge flutuando (5.5s) ── */
 #orb-target{position:absolute;left:50%;top:calc(34% + 155px);transform:translate(-50%,-50%);z-index:5;pointer-events:none}
-#orb-empty{width:min(42vw,190px);height:auto;opacity:0;display:block;
+#orb-empty{width:min(52vw,230px);height:auto;opacity:0;display:block;
   animation:orb-float-in 1.2s ease 5.5s forwards}
 @keyframes orb-float-in{
   0%{opacity:0;transform:scale(.5) translateY(30px);filter:brightness(2.5)}
@@ -354,7 +354,7 @@ if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
 #orb-empty{animation:orb-float-in 1.2s ease 5.5s forwards,orb-empty-hide .3s ease 8.2s forwards}
 @keyframes orb-empty-hide{0%{opacity:.75}100%{opacity:0}}
 /* Anel com espírito — aparece após impacto (8.2s) */
-#orb-full{width:min(42vw,190px);height:auto;opacity:0;display:block;position:absolute;left:0;top:0;
+#orb-full{width:min(52vw,230px);height:auto;opacity:0;display:block;position:absolute;left:0;top:0;
   animation:orb-reveal .8s ease 8.2s forwards}
 @keyframes orb-reveal{
   0%{opacity:0;transform:scale(.8);filter:brightness(3)}
@@ -384,23 +384,21 @@ if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
 }
 
 /* ── CONTEÚDO — surge em sequência após impacto (9s+) ── */
-#splash-content{position:absolute;bottom:0;left:0;right:0;text-align:center;padding:0 24px 40px}
+#splash-content{position:absolute;bottom:0;left:0;right:0;text-align:center;padding:0 24px 20px}
 @keyframes content-rise{0%{opacity:0;transform:translateY(30px)}100%{opacity:1;transform:translateY(0)}}
-#splash-title{font-family:'Cinzel Decorative',serif;font-size:clamp(22px,4vw,36px);color:#E8C97A;letter-spacing:5px;text-shadow:0 0 40px rgba(232,201,122,.5);margin-bottom:6px;line-height:1.2;
-  opacity:0;animation:content-rise .8s cubic-bezier(.22,1,.36,1) 9s forwards}
 #splash-content .sub{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:clamp(11px,1.8vw,14px);color:rgba(240,234,214,.45);letter-spacing:2.5px;margin-bottom:16px;
-  opacity:0;animation:content-rise .7s cubic-bezier(.22,1,.36,1) 9.3s forwards}
+  opacity:0;animation:content-rise .7s cubic-bezier(.22,1,.36,1) 9s forwards}
 #splash-content .divider{width:60px;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.5),transparent);margin:0 auto 18px;
-  opacity:0;animation:content-rise .5s ease 9.3s forwards}
+  opacity:0;animation:content-rise .5s ease 9s forwards}
 #splash-content .verse{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:clamp(14px,2vw,17px);color:rgba(240,234,214,.7);line-height:1.7;margin-bottom:22px;
-  opacity:0;animation:content-rise .8s cubic-bezier(.22,1,.36,1) 9.6s forwards}
+  opacity:0;animation:content-rise .8s cubic-bezier(.22,1,.36,1) 9.3s forwards}
 #splash-content .verse span{font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:rgba(201,168,76,.55);display:block;margin-top:6px}
 #splash-cards{opacity:0;animation:content-rise .8s cubic-bezier(.22,1,.36,1) 10s forwards}
 /* Splash entry cards */
-.splash-entry-card{width:80px;cursor:pointer;text-align:center;transition:all .3s;border-radius:12px;overflow:hidden;border:1px solid rgba(201,168,76,.25);background:rgba(6,10,22,.6);backdrop-filter:blur(8px)}
+.splash-entry-card{width:90px;cursor:pointer;text-align:center;transition:all .3s;border-radius:12px;overflow:hidden;border:1px solid rgba(201,168,76,.25);background:rgba(6,10,22,.6);backdrop-filter:blur(8px)}
 .splash-entry-card:hover{border-color:rgba(201,168,76,.6);transform:translateY(-3px);box-shadow:0 6px 24px rgba(201,168,76,.2)}
-.splash-entry-card img{width:100%;height:52px;object-fit:contain;display:block;border-bottom:1px solid rgba(201,168,76,.15);padding:3px}
-.splash-entry-card span{display:block;padding:6px 3px;font-family:'Cinzel',serif;font-size:6.5px;letter-spacing:1.2px;color:var(--gold);text-transform:uppercase;line-height:1.3}
+.splash-entry-card img{width:100%;height:58px;object-fit:contain;display:block;border-bottom:1px solid rgba(201,168,76,.15);padding:3px}
+.splash-entry-card span{display:block;padding:7px 4px;font-family:'Cinzel',serif;font-size:7.5px;letter-spacing:1.2px;color:var(--gold);text-transform:uppercase;line-height:1.3}
 @media(max-width:380px){.splash-entry-card{width:72px}.splash-entry-card img{height:46px}.splash-entry-card span{font-size:5.5px;padding:4px 2px}}
 </style>
 
@@ -421,7 +419,6 @@ if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
     <img id="orb-full" src="logo-master-spirit-fundo_preto.png" alt="Master Spirit">
   </div>
   <div id="splash-content">
-    <h1 id="splash-title">Master Spirit</h1>
     <p class="sub">Sabedoria espiritual para a evolução da alma</p>
     <div class="divider"></div>
     <p class="verse" id="splash-verse">"Vinde a mim, todos os que estais cansados e oprimidos, e eu vos darei descanso."</p>
@@ -1377,8 +1374,6 @@ function backToSplash(){
   if(r1){r1.style.animation='none';r1.style.opacity='0';}
   if(r2){r2.style.animation='none';r2.style.opacity='0';}
   // Mostrar conteúdo sem animação
-  var title=document.getElementById('splash-title');
-  if(title){title.style.animation='none';title.style.opacity='1';}
   var sc=document.getElementById('splash-content');
   if(sc){
     sc.querySelectorAll('.sub,.divider,.verse').forEach(function(el){el.style.animation='none';el.style.opacity='1';});
