@@ -47,26 +47,34 @@ body{font-family:'Cinzel',Georgia,serif}
 .pillars-content{position:relative;z-index:1;text-align:center;width:100%}
 .scene{display:none;animation:fadeIn .6s ease}
 .scene.active{display:block}
-/* Título: aparece grande em destaque, depois recua para segundo plano */
-.headline{font-family:'Cinzel Decorative',serif;font-size:clamp(20px,4vw,34px);color:#E8C97A;letter-spacing:clamp(2px,.4vw,4px);text-shadow:0 0 30px rgba(232,201,122,.3);text-align:center;line-height:1.4;margin-bottom:14px;
-  animation:headlineShow 1s ease both}
-@keyframes headlineShow{0%{opacity:0;transform:scale(.85) translateY(15px)}100%{opacity:1;transform:scale(1) translateY(0)}}
-/* Após 3s o título recua: menor, menos opaco */
-.scene.active .headline{animation:headlineShow 1s ease both,headlineRecede .8s ease 3s forwards}
-@keyframes headlineRecede{
-  0%{font-size:clamp(20px,4vw,34px);opacity:1;transform:scale(1)}
-  100%{font-size:clamp(13px,2.5vw,20px);opacity:.4;transform:scale(.85) translateY(-8px)}
+/* ── EFEITO TÍTULO→DESTAQUE ──
+   Cena 1: Eyebrow (título) entra grande e bold
+   Cena 2: Eyebrow recua (normal, menor), headline+sub entram grandes e bold
+*/
+/* Eyebrow: começa grande e bold, depois recua */
+.eyebrow{font-family:'Cinzel',serif;font-size:clamp(22px,4.5vw,36px);font-weight:700;letter-spacing:clamp(3px,.5vw,6px);color:#E8C97A;text-transform:uppercase;margin-bottom:10px;
+  text-shadow:0 0 30px rgba(232,201,122,.4);
+  opacity:0;animation:eyebrowShow .8s ease .3s forwards}
+@keyframes eyebrowShow{0%{opacity:0;transform:scale(.85) translateY(15px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+.scene.active .eyebrow{animation:eyebrowShow .8s ease .3s forwards,eyebrowRecede .8s ease 3s forwards}
+@keyframes eyebrowRecede{
+  0%{font-size:clamp(22px,4.5vw,36px);font-weight:700;opacity:1;color:#E8C97A;text-shadow:0 0 30px rgba(232,201,122,.4)}
+  100%{font-size:clamp(11px,1.8vw,14px);font-weight:400;opacity:.45;color:rgba(201,168,76,.5);text-shadow:none;transform:translateY(-5px)}
 }
-/* Sub: aparece quando título recua */
-.sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(15px,2.5vw,20px);color:rgba(240,234,214,.55);line-height:1.7;text-align:center;max-width:500px;margin:0 auto;
-  opacity:0;animation:subReveal .8s ease 3.2s forwards}
-@keyframes subReveal{0%{opacity:0;transform:translateY(15px)}100%{opacity:1;transform:translateY(0)}}
-.scene.no-recede.active .headline{animation:headlineShow 1s ease both}
-.scene.no-recede .sub{animation:subReveal .8s ease .5s forwards}
-.eyebrow{font-family:'Cinzel',serif;font-size:clamp(11px,1.8vw,14px);letter-spacing:clamp(3px,.5vw,5px);color:rgba(201,168,76,.5);text-transform:uppercase;margin-bottom:10px;
-  opacity:0;animation:fadeIn .6s ease .2s forwards}
+/* Headline: aparece quando eyebrow recua — grande e bold */
+.headline{font-family:'Cinzel Decorative',serif;font-size:clamp(20px,4vw,34px);font-weight:700;color:#E8C97A;letter-spacing:clamp(2px,.4vw,4px);text-shadow:0 0 30px rgba(232,201,122,.3);text-align:center;line-height:1.4;margin-bottom:14px;
+  opacity:0;animation:contentReveal .8s ease 3.2s forwards}
+/* Sub: aparece logo após headline */
+.sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(15px,2.5vw,20px);color:rgba(240,234,214,.6);line-height:1.7;text-align:center;max-width:500px;margin:0 auto;
+  opacity:0;animation:contentReveal .8s ease 3.5s forwards}
+@keyframes contentReveal{0%{opacity:0;transform:translateY(15px)}100%{opacity:1;transform:translateY(0)}}
+/* Divider: aparece com o conteúdo */
 .divider{width:50px;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.5),transparent);margin:12px auto;
-  opacity:0;animation:fadeIn .4s ease 2.8s forwards}
+  opacity:0;animation:fadeIn .4s ease 3s forwards}
+/* Climax e CTA: sem recuo do eyebrow */
+.scene.no-recede.active .eyebrow{animation:eyebrowShow .8s ease .3s forwards}
+.scene.no-recede .headline{animation:contentReveal .8s ease .8s forwards}
+.scene.no-recede .sub{animation:contentReveal .8s ease 1s forwards}
 .masters-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:16px 0}
 .master-circle{width:clamp(45px,9vw,65px);height:clamp(45px,9vw,65px);border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.3);box-shadow:0 0 15px rgba(201,168,76,.2);background:#d0d0d0;opacity:0}
 @keyframes masterIn{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
