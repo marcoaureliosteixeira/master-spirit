@@ -231,7 +231,8 @@ body{font-family:'Cinzel',Georgia,serif}
 // ══════════════════════════════════════════
 var PILLAR_SCENES=['sc-mestres','sc-salas','sc-evangelho','sc-passe','sc-climax'];
 var PILLAR_VOICES=['teaser2-voice-04.mp3','teaser2-voice-05.mp3','teaser2-voice-6.1.mp3','teaser2-voice-07.mp3',null];
-var PILLAR_DURATIONS=[14,15,12,12,10];
+// Duração = voz + 1s de respiro (mestres:9, salas:17, evangelho:5, passe:12, climax:10)
+var PILLAR_DURATIONS=[9,17,5,12,10];
 var music=null,voicePool={},voiceAudio=null,currentPillar=-1,pillarTimer=null;
 
 // ══════════════════════════════════════════
@@ -514,13 +515,7 @@ function startJesusFullVideo(){
   vid.addEventListener('timeupdate',function(){
     document.getElementById('progress-fill').style.width=Math.min(98,(85+vid.currentTime/vid.duration*12))+'%';
   });
-  // Voice-08 "Seis mestres..." nos últimos 15s
-  vid.addEventListener('timeupdate',function onV8(){
-    if(vid.duration&&vid.currentTime>=vid.duration-15){
-      vid.removeEventListener('timeupdate',onV8);
-      playVoice('teaser2-voice-08.mp3');
-    }
-  });
+  // SEM voice-08 aqui — vai tocar no CTA
   vid.onended=function(){
     view.classList.remove('active');
     if(music)music.volume=.7;
@@ -535,6 +530,8 @@ function startCTA(){
   document.getElementById('cta-view').classList.add('active');
   createParticles(document.getElementById('cta-particles'),80,.2);
   document.getElementById('progress-fill').style.width='100%';
+  // Voice-08 "Seis mestres..." na cena final
+  setTimeout(function(){playVoice('teaser2-voice-08.mp3');},1000);
   // Preencher cards
   var grid=document.getElementById('pillar-grid');grid.innerHTML='';
   [{img:'avatar-jesus.png',txt:'Mestres'},{img:'shelf-books.png',txt:'Salas de Estudo'},{img:'evangelho-lar.png?v=2',txt:'Evangelho no Lar'},{img:'passe-card.png',txt:'Passe Espiritual'}].forEach(function(p,i){
