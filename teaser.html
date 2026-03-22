@@ -32,7 +32,7 @@ body{font-family:'Cinzel',Georgia,serif}
 
 /* ── BRAND: Logo flutuante (mesmo estilo da cena final) ── */
 #brand-logo{position:absolute;left:50%;top:30%;transform:translate(-50%,-50%);z-index:10;
-  opacity:0;pointer-events:none;text-align:center}
+  display:none;pointer-events:none;text-align:center}
 #brand-logo img{max-width:min(60vw,280px);height:auto}
 @keyframes brandLogoIn{0%{opacity:0;transform:translate(-50%,-50%) scale(.7);filter:brightness(3)}
   60%{opacity:1;transform:translate(-50%,-50%) scale(1.05);filter:brightness(1.2)}
@@ -361,16 +361,18 @@ function startBrand(){
     flash.style.animation='flashBurst .5s ease both';
     sw1.style.animation='shockwave .7s ease-out both';
     setTimeout(function(){sw2.style.animation='shockwave .7s ease-out both';},100);
-    // LOGO APARECE — opacity via JS direto, sem animation que possa ser sobrescrita
-    logo.style.opacity='1';
-    logoImg.style.animation='brandLogoIn .8s ease both';
+    // LOGO APARECE — display:block, nunca mais esconde
+    logo.style.display='block';
+    logoImg.style.animation='brandLogoIn .8s ease forwards';
   },6200);
 
   // Logo sobe para posição final (top:22%) — fica flutuando
   setTimeout(function(){
     logo.style.transition='top 1.2s cubic-bezier(.22,1,.36,1)';
     logo.style.top='22%';
-    // Flutuação permanente via JS — nunca será sobrescrita
+    // Fixar opacity ANTES de trocar animation (senão reseta para 0)
+    logoImg.style.opacity='1';
+    logoImg.style.filter='brightness(1)';
     logoImg.style.animation='brandFloat 4s ease-in-out infinite';
   },7500);
 
