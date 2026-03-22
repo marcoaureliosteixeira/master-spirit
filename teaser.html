@@ -26,9 +26,10 @@ body{font-family:'Cinzel',Georgia,serif}
   align-items:center;justify-content:center}
 /* Splash keyframes for brand */
 @keyframes spark-burst{0%{transform:translate(-50%,-50%) scale(0);opacity:0}15%{opacity:1;transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(5);opacity:.8}100%{transform:translate(-50%,-50%) scale(10);opacity:0}}
-@keyframes spirit-rise{0%{top:45%;transform:translate(-50%,-50%) scale(.3);opacity:0}30%{opacity:1;transform:translate(-50%,-50%) scale(1.05)}60%{transform:translate(-50%,-50%) scale(1.02)}80%{top:34%;transform:translate(-50%,-50%) scale(1)}100%{top:34%;transform:translate(-50%,-50%) scale(1)}}
+@keyframes spirit-rise{0%{top:50%;transform:translate(-50%,-50%) scale(.3);opacity:0}30%{opacity:1;transform:translate(-50%,-50%) scale(1.05)}60%{transform:translate(-50%,-50%) scale(1.02)}80%{top:42%;transform:translate(-50%,-50%) scale(1)}100%{top:42%;transform:translate(-50%,-50%) scale(1)}}
 @keyframes spirit-filter{0%{opacity:0;filter:blur(35px) brightness(6) saturate(0)}15%{opacity:.2;filter:blur(20px) brightness(3.5) saturate(0)}35%{opacity:.4;filter:blur(12px) brightness(2.5) saturate(.2)}55%{opacity:.65;filter:blur(5px) brightness(1.8) saturate(.5)}75%{opacity:.85;filter:blur(2px) brightness(1.3) saturate(.8)}100%{opacity:1;filter:brightness(1) saturate(1) drop-shadow(0 0 30px rgba(201,168,76,.5))}}
-@keyframes spirit-dive{0%{transform:translate(-50%,-50%) scale(1);opacity:1}25%{transform:translate(-50%,-50%) scale(.9) translateY(8px);opacity:.95}55%{transform:translate(-50%,-50%) scale(.45) translateY(70px);opacity:.85}80%{transform:translate(-50%,-50%) scale(.15) translateY(120px);opacity:.5}100%{transform:translate(-50%,-50%) scale(0) translateY(140px);opacity:0}}
+/* Spirit dive — encolhe no centro (mesma posição da logo) */
+@keyframes spirit-dive{0%{transform:translate(-50%,-50%) scale(1);opacity:1}30%{transform:translate(-50%,-50%) scale(.7);opacity:.9}60%{transform:translate(-50%,-50%) scale(.35);opacity:.7}85%{transform:translate(-50%,-50%) scale(.1);opacity:.4}100%{transform:translate(-50%,-50%) scale(0);opacity:0}}
 @keyframes orb-float-in{0%{opacity:0;transform:scale(.5) translateY(30px);filter:brightness(2.5)}60%{opacity:.6;transform:scale(1.02) translateY(-3px);filter:brightness(1.2)}100%{opacity:.75;transform:scale(1) translateY(0);filter:brightness(1)}}
 @keyframes orb-empty-hide{0%{opacity:.75}100%{opacity:0}}
 @keyframes orb-reveal{0%{opacity:0;transform:translate(-50%,-50%) scale(.8);filter:brightness(3)}50%{opacity:.9;transform:translate(-50%,-50%) scale(1.05);filter:brightness(1.5)}100%{opacity:1;transform:translate(-50%,-50%) scale(1);filter:brightness(1)}}
@@ -39,7 +40,7 @@ body{font-family:'Cinzel',Georgia,serif}
 /* Journey view */
 #journey-view video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000;z-index:1}
 /* Jesus overlay — granular dissolve effect */
-#jesus-overlay{position:absolute;z-index:10;left:50%;top:58%;transform:translate(-50%,-50%);display:none;text-align:center}
+#jesus-overlay{position:absolute;z-index:10;left:50%;top:65%;transform:translate(-50%,-50%);display:none;text-align:center}
 #jesus-overlay.show{display:block;animation:jesusAppear 2s ease forwards}
 #jesus-overlay.hiding{animation:jesusDisappear 1.5s ease forwards}
 @keyframes jesusAppear{
@@ -136,14 +137,14 @@ body{font-family:'Cinzel',Georgia,serif}
 <!-- PART 0: BRAND (universo + splash effect + Jesus) -->
 <div class="view" id="brand-view">
   <canvas id="brand-stars" style="position:absolute;inset:0;z-index:0"></canvas>
-  <!-- Spark -->
-  <div id="brand-spark" style="position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);width:6px;height:6px;border-radius:50%;background:#fff;box-shadow:0 0 12px 6px rgba(255,240,180,.9),0 0 40px 20px rgba(201,168,76,.5),0 0 80px 40px rgba(100,60,200,.3);opacity:0;z-index:2"></div>
-  <!-- Spirit figure -->
-  <div id="brand-spirit" style="position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);z-index:3">
+  <!-- Spark — centro da tela -->
+  <div id="brand-spark" style="position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);width:6px;height:6px;border-radius:50%;background:#fff;box-shadow:0 0 12px 6px rgba(255,240,180,.9),0 0 40px 20px rgba(201,168,76,.5),0 0 80px 40px rgba(100,60,200,.3);opacity:0;z-index:2"></div>
+  <!-- Spirit figure — centro, alinhado com a logo -->
+  <div id="brand-spirit" style="position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);z-index:3">
     <img src="master-spirit-avatar.png" id="brand-spirit-img" style="width:min(80vw,460px);height:min(80vw,460px);object-fit:contain;display:block;mix-blend-mode:screen;-webkit-mix-blend-mode:screen;opacity:0" alt="">
   </div>
-  <!-- Orb (empty ring → full logo) -->
-  <div id="brand-orb" style="position:absolute;left:50%;top:calc(34% + 140px);transform:translate(-50%,-50%);z-index:4;text-align:center">
+  <!-- Orb — mesma posição central do espírito -->
+  <div id="brand-orb" style="position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);z-index:4;text-align:center">
     <div id="brand-flash" style="position:absolute;left:50%;top:50%;width:min(55vw,250px);height:min(55vw,250px);transform:translate(-50%,-50%) scale(.5);border-radius:50%;pointer-events:none;opacity:0;background:radial-gradient(circle,rgba(255,255,255,.9) 0%,rgba(201,168,76,.6) 40%,transparent 70%)"></div>
     <div id="brand-ring1" style="position:absolute;left:50%;top:50%;width:min(30vw,130px);height:min(30vw,130px);transform:translate(-50%,-50%);border:2px solid rgba(201,168,76,.9);border-radius:50%;opacity:0"></div>
     <div id="brand-ring2" style="position:absolute;left:50%;top:50%;width:min(30vw,130px);height:min(30vw,130px);transform:translate(-50%,-50%);border:2px solid rgba(201,168,76,.9);border-radius:50%;opacity:0"></div>
@@ -151,7 +152,7 @@ body{font-family:'Cinzel',Georgia,serif}
     <img id="brand-orb-full" src="logo.png" style="width:min(55vw,250px);height:auto;opacity:0;display:block;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)" alt="">
     <p id="brand-title" style="font-family:'Cinzel',serif;font-size:clamp(18px,4vw,28px);font-weight:600;color:#E8C97A;letter-spacing:clamp(4px,.6vw,8px);text-shadow:0 0 30px rgba(232,201,122,.4);margin-top:12px;opacity:0">Master Spirit</p>
   </div>
-  <!-- Jesus overlay (on brand screen) -->
+  <!-- Jesus overlay — abaixo da logo (top:65%) -->
   <div id="jesus-overlay" style="z-index:6">
     <div class="jesus-circle">
       <video id="jesus-vid" playsinline muted preload="none"><source src="teaser2-jesus-04.mp4" type="video/mp4"></video>
@@ -389,15 +390,15 @@ function startBrand(journeyVid){
     orbFull.style.animation='orb-reveal .8s ease forwards';
   },5500);
 
-  // Logo sobe para top:18% + título + flutuante (6.2s)
+  // Logo sobe para top:25% + título + flutuante (6.2s) — logo NÃO some
   setTimeout(function(){
     orbTarget.style.transition='top 1.2s cubic-bezier(.22,1,.36,1)';
-    orbTarget.style.top='18%';
+    orbTarget.style.top='25%';
     orbFull.style.animation='orb-float 4s ease-in-out infinite';
     title.style.animation='content-rise .8s ease forwards';
   },6200);
 
-  // Jesus aparece ABAIXO da logo (8s) — logo continua flutuando acima
+  // Jesus aparece ABAIXO da logo (8.5s) — logo continua flutuando acima
   setTimeout(function(){
     var ol=document.getElementById('jesus-overlay');
     ol.classList.add('show');
@@ -405,8 +406,7 @@ function startBrand(journeyVid){
     jv.currentTime=0;jv.muted=false;jv.play().catch(function(){});
     if(music) music.volume=.15;
 
-    // Quando Jesus termina → dissolve → resume journey → pillars
-    jv.onended=function(){
+    function afterJesus(){
       ol.classList.remove('show');
       ol.classList.add('hiding');
       jv.muted=true;
@@ -421,25 +421,13 @@ function startBrand(journeyVid){
           startPillars();
         };
       },1500);
-    };
+    }
 
+    // Quando Jesus termina → dissolve → resume journey
+    jv.onended=function(){ afterJesus(); };
     // Fallback 20s
-    setTimeout(function(){
-      if(!jv.ended){
-        ol.classList.remove('show');ol.classList.add('hiding');
-        jv.pause();jv.muted=true;if(music) music.volume=.7;
-        setTimeout(function(){
-          document.getElementById('brand-view').classList.remove('active');
-          document.getElementById('journey-view').classList.add('active');
-          journeyVid.play().catch(function(){});
-          journeyVid.onended=function(){
-            document.getElementById('journey-view').classList.remove('active');
-            startPillars();
-          };
-        },1500);
-      }
-    },20000);
-  },8000);
+    setTimeout(function(){ if(!jv.ended) afterJesus(); },20000);
+  },8500);
 }
 
 function playVoice(file){
