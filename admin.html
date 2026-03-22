@@ -10,9 +10,9 @@
 <style>
 :root{--gold:#C9A84C;--gold2:#E8C97A;--bg:#060a16;--text:#F5EFE0;--green:#5BAF7C;--red:#E05555}
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',Georgia,serif;font-size:16px;min-height:100vh}
+body{background:var(--bg);color:var(--text);font-family:'Cinzel',Georgia,serif;font-size:16px;min-height:100vh}
 header{background:rgba(12,18,38,.95);border-bottom:1px solid rgba(201,168,76,.2);padding:16px 24px;display:flex;align-items:center;justify-content:space-between}
-header h1{font-family:'Cinzel Decorative',serif;font-size:18px;color:var(--gold);letter-spacing:4px}
+header h1{font-family:'Cinzel',serif;font-size:18px;color:var(--gold);letter-spacing:4px}
 header span{font-size:12px;color:rgba(240,234,214,.4);letter-spacing:1px}
 .container{max-width:1100px;margin:0 auto;padding:24px 16px}
 .grid-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:32px}
@@ -60,6 +60,25 @@ tr:hover td{background:rgba(255,255,255,.02)}
   </header>
 
   <div class="container">
+    <!-- Menu rápido -->
+    <div style="display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap">
+      <a href="app.html" style="flex:1;min-width:200px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.3);border-radius:14px;padding:20px;text-decoration:none;text-align:center;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:10px" onmouseover="this.style.borderColor='rgba(201,168,76,.6)';this.style.background='rgba(201,168,76,.15)'" onmouseout="this.style.borderColor='rgba(201,168,76,.3)';this.style.background='rgba(201,168,76,.08)'">
+        <img src="logo-master-spirit.png" style="width:60px;height:auto" alt="">
+        <span style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:#E8C97A;text-transform:uppercase">Menu Principal</span>
+        <span style="font-size:12px;color:rgba(240,234,214,.4);font-style:italic">Acessar o app como usuário</span>
+      </a>
+      <a href="teaser.html" style="flex:1;min-width:200px;background:rgba(100,60,200,.08);border:1px solid rgba(100,60,200,.3);border-radius:14px;padding:20px;text-decoration:none;text-align:center;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:10px" onmouseover="this.style.borderColor='rgba(100,60,200,.6)';this.style.background='rgba(100,60,200,.15)'" onmouseout="this.style.borderColor='rgba(100,60,200,.3)';this.style.background='rgba(100,60,200,.08)'">
+        <span style="font-size:28px">🎬</span>
+        <span style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:rgba(150,120,255,.8);text-transform:uppercase">Teaser</span>
+        <span style="font-size:12px;color:rgba(240,234,214,.4);font-style:italic">Assistir o teaser</span>
+      </a>
+      <a href="landing.html" style="flex:1;min-width:200px;background:rgba(91,175,124,.08);border:1px solid rgba(91,175,124,.3);border-radius:14px;padding:20px;text-decoration:none;text-align:center;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:10px" onmouseover="this.style.borderColor='rgba(91,175,124,.6)';this.style.background='rgba(91,175,124,.15)'" onmouseout="this.style.borderColor='rgba(91,175,124,.3)';this.style.background='rgba(91,175,124,.08)'">
+        <span style="font-size:28px">🌐</span>
+        <span style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:rgba(91,175,124,.8);text-transform:uppercase">Landing Page</span>
+        <span style="font-size:12px;color:rgba(240,234,214,.4);font-style:italic">Página de marketing</span>
+      </a>
+    </div>
+
     <!-- Stats -->
     <div class="grid-stats" id="stats-grid">
       <div class="stat-card"><div class="lbl">Total Usuários</div><div class="val" id="s-total">—</div></div>
@@ -159,7 +178,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 var _sb, _token;
-var ADMIN_EMAIL = 'marcoasteixeira@hotmail.com';
+var ADMIN_EMAIL = 'marcoaureliosteixeira@gmail.com';
 
 window.addEventListener('load', function() {
   _sb = window.supabase.createClient(

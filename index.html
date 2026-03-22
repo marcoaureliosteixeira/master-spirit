@@ -248,7 +248,13 @@ function initSupabase() {
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp3ZHZidHVqenZxdmt0enh5Y3dqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1Mjc2NDksImV4cCI6MjA4OTEwMzY0OX0.ZfkRgdYcTjYF_E4qr1_1CZMtSiCvKLeUsoRSLoO16Mw'
       );
       sb.auth.getSession().then(function(r) {
-        if (r.data && r.data.session) window.location.href = 'app.html';
+        if (r.data && r.data.session) {
+          if (r.data.session.user.email === 'marcoaureliosteixeira@gmail.com') {
+            window.location.href = 'admin.html';
+          } else {
+            window.location.href = 'app.html';
+          }
+        }
       });
     }
   } catch(e) { console.warn('Supabase init error:', e); }
@@ -268,7 +274,8 @@ async function doLogin() {
       setBtn('btn-login', '✦ Entrar', false);
     } else {
       setMsg('msg-login', 'Bem-vindo! Entrando...', 'success');
-      setTimeout(function(){ window.location.href = 'app.html'; }, 800);
+      var dest = (r.data.session.user.email === 'marcoaureliosteixeira@gmail.com') ? 'admin.html' : 'app.html';
+      setTimeout(function(){ window.location.href = dest; }, 800);
     }
   } catch(e) {
     setMsg('msg-login', 'Erro inesperado. Tente novamente.', 'error');

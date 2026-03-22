@@ -1,6 +1,6 @@
 const { createClient } = require('@supabase/supabase-js');
 
-const ADMIN_EMAIL = 'marcoasteixeira@hotmail.com';
+const ADMIN_EMAIL = 'marcoaureliosteixeira@gmail.com';
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
