@@ -457,7 +457,7 @@ function enterMestres(){
   var jesusEl=document.getElementById('mestres-jesus');
   var jesusVid=document.getElementById('jesus-vid');
 
-  // Jesus aparece e fala primeiro
+  // Jesus aparece e fala primeiro — fica visível na tela
   jesusEl.style.animation='jesusIn 2s ease forwards';
   jesusVid.currentTime=0;jesusVid.muted=false;
   jesusVid.play().catch(function(){});
@@ -466,38 +466,31 @@ function enterMestres(){
   function afterJesusSpeaks(){
     jesusVid.muted=true;
     if(music)music.volume=.7;
-    // Jesus some suavemente
-    jesusEl.style.animation='jesusOut 1.5s ease forwards';
+    // Jesus FICA na tela — não some
 
-    // Depois o narrador + textos + avatares
-    setTimeout(function(){
-      // Mostrar textos
-      var ey=document.getElementById('mestres-eyebrow');
-      ey.style.animation='eyebrowShow .8s ease forwards';
-      var hl=document.getElementById('mestres-headline');
-      hl.style.animation='contentReveal .8s ease .5s forwards';
-      var dv=document.getElementById('mestres-divider');
-      dv.style.animation='fadeIn .4s ease .3s forwards';
-      var sb=document.getElementById('mestres-sub');
-      sb.style.animation='contentReveal .8s ease .8s forwards';
+    // Narrador voice-04 + textos + avatares
+    var ey=document.getElementById('mestres-eyebrow');
+    ey.style.animation='eyebrowShow .8s ease forwards';
+    var hl=document.getElementById('mestres-headline');
+    hl.style.animation='contentReveal .8s ease .5s forwards';
+    var dv=document.getElementById('mestres-divider');
+    dv.style.animation='fadeIn .4s ease .3s forwards';
+    var sb=document.getElementById('mestres-sub');
+    sb.style.animation='contentReveal .8s ease .8s forwards';
 
-      // Narrador voice-04
-      playVoice('teaser2-voice-04.mp3',function(){
-        // Voz terminou → avatares aparecem → +1s → próxima cena
-        var row=document.getElementById('masters-row');row.innerHTML='';
-        ['avatar-jesus.png','avatar-kardec.png','avatar-chico-xavier.png?v=2','avatar-bezerra.png','avatar-divaldo.png?v=2','avatar-krishna.png'].forEach(function(src,i){
-          var img=document.createElement('img');img.className='master-circle';img.src=src;img.alt='Mestre';
-          img.style.animation='masterIn .6s ease '+(i*.25)+'s forwards';row.appendChild(img);
-        });
-        // Espera avatares + 2s → próxima cena
-        pillarTimer=setTimeout(function(){goToPillar(currentPillar+1);},3000);
+    // Narrador fala
+    playVoice('teaser2-voice-04.mp3',function(){
+      // Avatares aparecem após narrador
+      var row=document.getElementById('masters-row');row.innerHTML='';
+      ['avatar-jesus.png','avatar-kardec.png','avatar-chico-xavier.png?v=2','avatar-bezerra.png','avatar-divaldo.png?v=2','avatar-krishna.png'].forEach(function(src,i){
+        var img=document.createElement('img');img.className='master-circle';img.src=src;img.alt='Mestre';
+        img.style.animation='masterIn .6s ease '+(i*.25)+'s forwards';row.appendChild(img);
       });
-    },1500);
+      pillarTimer=setTimeout(function(){goToPillar(currentPillar+1);},3000);
+    });
   }
 
-  // Quando Jesus termina de falar
   jesusVid.onended=function(){afterJesusSpeaks();};
-  // Fallback 20s
   setTimeout(function(){if(!jesusVid.ended&&!jesusVid.paused)afterJesusSpeaks();},20000);
 }
 
