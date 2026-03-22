@@ -144,18 +144,17 @@ body{font-family:'Cinzel',Georgia,serif}
     <img src="master-spirit-avatar.png" id="brand-spirit-img" style="width:min(80vw,460px);height:min(80vw,460px);object-fit:contain;display:block;mix-blend-mode:screen;-webkit-mix-blend-mode:screen;opacity:0" alt="">
   </div>
   <!-- Orb — centralizado na tela, mesma posição do espírito -->
-  <div id="brand-orb" style="position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);z-index:4;display:flex;flex-direction:column;align-items:center">
+  <div id="brand-orb" style="position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);z-index:8;display:flex;flex-direction:column;align-items:center">
     <div style="position:relative;width:min(55vw,250px);height:min(55vw,250px)">
       <div id="brand-flash" style="position:absolute;left:50%;top:50%;width:120%;height:120%;transform:translate(-50%,-50%) scale(.5);border-radius:50%;pointer-events:none;opacity:0;background:radial-gradient(circle,rgba(255,255,255,.9) 0%,rgba(201,168,76,.6) 40%,transparent 70%)"></div>
       <div id="brand-ring1" style="position:absolute;left:50%;top:50%;width:70%;height:70%;transform:translate(-50%,-50%);border:2px solid rgba(201,168,76,.9);border-radius:50%;opacity:0"></div>
       <div id="brand-ring2" style="position:absolute;left:50%;top:50%;width:70%;height:70%;transform:translate(-50%,-50%);border:2px solid rgba(201,168,76,.9);border-radius:50%;opacity:0"></div>
       <img id="brand-orb-empty" src="logo-sem-master-spirit-fundo_preto.png" style="width:100%;height:100%;object-fit:contain;opacity:0;display:block;position:absolute;left:0;top:0" alt="">
-      <img id="brand-orb-full" src="logo.png" style="width:100%;height:100%;object-fit:contain;opacity:0;display:block;position:absolute;left:0;top:0" alt="">
+      <img id="brand-orb-full" src="logo-master-spirit.png" style="width:100%;height:100%;object-fit:contain;opacity:0;display:block;position:absolute;left:0;top:0" alt="">
     </div>
-    <p id="brand-title" style="font-family:'Cinzel',serif;font-size:clamp(18px,4vw,28px);font-weight:600;color:#E8C97A;letter-spacing:clamp(4px,.6vw,8px);text-shadow:0 0 30px rgba(232,201,122,.4);margin-top:12px;opacity:0">Master Spirit</p>
   </div>
   <!-- Jesus overlay — abaixo da logo (top:65%) -->
-  <div id="jesus-overlay" style="z-index:6">
+  <div id="jesus-overlay" style="z-index:5">
     <div class="jesus-circle">
       <video id="jesus-vid" playsinline muted preload="none"><source src="teaser2-jesus-04.mp4" type="video/mp4"></video>
     </div>
@@ -360,7 +359,6 @@ function startBrand(journeyVid){
   var ring2=document.getElementById('brand-ring2');
   var orbFull=document.getElementById('brand-orb-full');
   var orbTarget=document.getElementById('brand-orb');
-  var title=document.getElementById('brand-title');
 
   // Spark (1s)
   setTimeout(function(){
@@ -397,7 +395,6 @@ function startBrand(journeyVid){
     orbTarget.style.transition='top 1.2s cubic-bezier(.22,1,.36,1)';
     orbTarget.style.top='25%';
     orbFull.style.animation='orb-float 4s ease-in-out infinite';
-    title.style.animation='content-rise .8s ease forwards';
   },6200);
 
   // Jesus aparece ABAIXO da logo (8.5s) — logo continua flutuando acima
