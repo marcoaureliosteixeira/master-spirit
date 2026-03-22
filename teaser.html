@@ -276,9 +276,9 @@ function startTeaser(){
   // Preload Jesus fullvideo
   var jfv=document.getElementById('jesus-full-video');
   if(jfv){jfv.src='teaser-jesus-fullvideo.mp4';jfv.load();}
-  // Preload Jesus video (needs user gesture context)
+  // Preload Jesus video (muted, needs user gesture context)
   var jv=document.getElementById('jesus-vid');
-  if(jv){jv.load();jv.play().then(function(){jv.pause();jv.currentTime=0;}).catch(function(){});}
+  if(jv){jv.muted=true;jv.load();jv.play().then(function(){jv.pause();jv.currentTime=0;jv.muted=true;}).catch(function(){});}
   // Preload journey
   var vid=document.getElementById('journey-video');
   vid.src='jornada-v3.mp4';vid.load();
