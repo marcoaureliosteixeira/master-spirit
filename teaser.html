@@ -31,13 +31,13 @@ body{font-family:'Cinzel',Georgia,serif}
   align-items:center;justify-content:center}
 
 /* ── BRAND: Logo flutuante (mesmo estilo da cena final) ── */
-#brand-logo{position:absolute;left:50%;top:30%;transform:translate(-50%,-50%);z-index:10;
+#brand-logo{position:absolute;left:50%;top:28%;transform:translateX(-50%);z-index:10;
   display:none;pointer-events:none;text-align:center}
-#brand-logo img{max-width:min(60vw,280px);height:auto}
-@keyframes brandLogoIn{0%{opacity:0;transform:translate(-50%,-50%) scale(.7);filter:brightness(3)}
-  60%{opacity:1;transform:translate(-50%,-50%) scale(1.05);filter:brightness(1.2)}
-  100%{opacity:1;transform:translate(-50%,-50%) scale(1);filter:brightness(1)}}
-@keyframes brandFloat{0%,100%{transform:translate(-50%,-50%) translateY(0)}50%{transform:translate(-50%,-50%) translateY(-12px)}}
+#brand-logo img{max-width:min(55vw,260px);height:auto}
+@keyframes brandLogoIn{0%{opacity:0;transform:scale(.7);filter:brightness(3)}
+  60%{opacity:1;transform:scale(1.05);filter:brightness(1.2)}
+  100%{opacity:1;transform:scale(1);filter:brightness(1)}}
+@keyframes brandFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
 
 /* ── BRAND: Splash effect elements ── */
 #brand-spark{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);width:6px;height:6px;
@@ -366,10 +366,10 @@ function startBrand(){
     logoImg.style.animation='brandLogoIn .8s ease forwards';
   },6200);
 
-  // Logo sobe para posição final (top:22%) — fica flutuando
+  // Logo sobe para posição final — fica flutuando
   setTimeout(function(){
     logo.style.transition='top 1.2s cubic-bezier(.22,1,.36,1)';
-    logo.style.top='22%';
+    logo.style.top='28%';
     // Fixar opacity ANTES de trocar animation (senão reseta para 0)
     logoImg.style.opacity='1';
     logoImg.style.filter='brightness(1)';
