@@ -20,12 +20,12 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 #stars::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 28% 58%,rgba(80,40,160,0.45) 0%,transparent 52%),radial-gradient(ellipse at 72% 28%,rgba(40,20,100,0.35) 0%,transparent 48%),radial-gradient(ellipse at 50% 88%,rgba(120,60,200,0.18) 0%,transparent 38%)}
 .page{position:relative;z-index:1;display:grid;grid-template-columns:1fr 440px;height:100vh}
 .brand{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3rem;border-right:1px solid var(--border)}
-.logo-img{width:260px;height:260px;border-radius:50%;object-fit:cover;margin-bottom:1.8rem;animation:halo 4s ease-in-out infinite,float 5s ease-in-out infinite}
+.logo-img{width:min(60vw,280px);height:auto;margin-bottom:1.2rem;animation:float 5s ease-in-out infinite}
 @keyframes halo{0%,100%{filter:drop-shadow(0 0 18px rgba(201,168,76,.3)) drop-shadow(0 0 50px rgba(100,60,200,.2))}50%{filter:drop-shadow(0 0 36px rgba(201,168,76,.55)) drop-shadow(0 0 80px rgba(100,60,200,.38))}}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
 .brand-welcome{font-family:'Cinzel',serif;font-size:.9rem;color:rgba(255,255,255,.55);letter-spacing:.18em;text-transform:uppercase;margin-bottom:.3rem;text-align:center}
-.brand-name{font-family:'Cinzel Decorative',serif;font-size:2.2rem;color:var(--gold);letter-spacing:.08em;line-height:1.15;text-align:center;text-shadow:0 0 30px rgba(201,168,76,.3)}
-.brand-tagline{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.95rem;color:rgba(240,234,214,.3);letter-spacing:.1em;margin-top:.7rem;text-align:center}
+.brand-name{font-family:'Cinzel',serif;font-size:2.2rem;color:var(--gold);letter-spacing:.08em;line-height:1.15;text-align:center;text-shadow:0 0 30px rgba(201,168,76,.3)}
+.brand-tagline{font-family:'Cinzel',serif;font-style:italic;font-size:.85rem;color:rgba(240,234,214,.3);letter-spacing:.1em;margin-top:.7rem;text-align:center}
 .free-badge{margin-top:2rem;background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.28);border-radius:14px;padding:.9rem 1.4rem;text-align:center;max-width:280px}
 .free-badge-title{font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:.55rem}
 .chat-dots{display:flex;gap:6px;justify-content:center;margin-bottom:.55rem}
@@ -89,16 +89,13 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
     gap:1rem;
   }
   .logo-img{
-    width:90px;
-    height:90px;
+    width:min(40vw,160px);
+    height:auto;
     margin-bottom:0;
     flex-shrink:0;
   }
   .brand-welcome{display:none}
-  .brand-name{
-    font-size:1.6rem;
-    text-align:left;
-  }
+  .brand-name{display:none}
   .brand-tagline{
     font-size:.8rem;
     text-align:left;
@@ -130,8 +127,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 }
 
 @media (max-width: 400px) {
-  .logo-img{width:70px;height:70px}
-  .brand-name{font-size:1.3rem}
+  .logo-img{width:min(50vw,140px);height:auto}
+  .brand-name{display:none}
   .free-badge{flex-direction:column;text-align:center}
   .free-badge-title{margin-bottom:.3rem}
   .row-2{grid-template-columns:1fr}
@@ -142,9 +139,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 <div id="stars"></div>
 <div class="page">
   <div class="brand">
-    <img class="logo-img" src="logo.png" alt="Master Spirit">
-    <h1 class="brand-name" style="font-family:'Cinzel',serif;font-size:2.2rem;color:#C9A84C;letter-spacing:.08em;line-height:1.15;text-align:center;text-shadow:0 0 30px rgba(201,168,76,.3)">MASTER<br>SPIRIT</h1>
-    <p class="brand-tagline">O Consolador · Sabedoria · Luz</p>
+    <img class="logo-img" src="logo-master-spirit.png" alt="Master Spirit">
+    <p class="brand-tagline">Sabedoria espiritual para a evolução da alma</p>
     <div class="free-badge">
       <p class="free-badge-title">Plano Gratuito</p>
       <div class="chat-dots">
@@ -156,7 +152,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
   </div>
 
   <div class="auth">
-    <div class="auth-logo"><img src="logo-master-spirit.png" alt="Master Spirit" style="height:20px"></div>
     <div class="tabs">
       <button class="tab active" id="tab-login" onclick="switchTab('login')">Entrar</button>
       <button class="tab" id="tab-signup" onclick="switchTab('signup')">Criar conta</button>
