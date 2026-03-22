@@ -119,6 +119,8 @@ body{font-family:'Cinzel',Georgia,serif}
 #progress{position:fixed;top:0;left:0;right:0;height:2px;z-index:100}
 #progress-fill{height:100%;background:linear-gradient(90deg,#C9A84C,#E8C97A);width:0%;transition:width 1s linear}
 #start-overlay{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.95);display:flex;align-items:center;justify-content:center;cursor:pointer}
+#cta-view{background:#060a16;align-items:center;justify-content:center}
+#jesus-full-view video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000;z-index:1}
 @media(max-width:500px){.pillar-grid{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
@@ -200,15 +202,25 @@ body{font-family:'Cinzel',Georgia,serif}
       <div class="divider" style="margin-top:16px"></div>
       <p class="sub" id="climax-sub" style="margin-top:10px"></p>
     </div>
-    <div class="scene no-recede" id="sc-cta">
-      <img src="logo-master-spirit.png" style="max-width:min(60vw,280px);height:auto;margin-bottom:14px;animation:floatIn 1s ease both,float 5s ease-in-out infinite 1s">
-      <div class="pillar-grid" id="pillar-grid"></div>
-      <p style="margin:10px 0"><a href="https://masterspirit.com.br" target="_blank" style="font-family:'Cinzel',serif;font-size:13px;color:rgba(240,234,214,.45);letter-spacing:2px;text-decoration:none">masterspirit.com.br</a></p>
-      <a class="cta-btn" href="https://masterspirit.com.br" target="_blank">✦ Entre nessa jornada ✦</a>
-      <div style="margin-top:18px;display:flex;align-items:center;gap:8px;justify-content:center">
-        <span style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:2px;color:rgba(240,234,214,.3);text-transform:uppercase">Produzido por</span>
-        <img src="logo-spyrit-systems.png" alt="Spyrit Systems" style="height:36px;opacity:.7;animation:floatBig 4s ease-in-out infinite">
-      </div>
+  </div>
+</div>
+
+<!-- JESUS FULL VIDEO (penúltimo — golpe emocional) -->
+<div class="view" id="jesus-full-view">
+  <video id="jesus-full-video" playsinline preload="auto" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000;z-index:1"></video>
+</div>
+
+<!-- CTA FINAL -->
+<div class="view" id="cta-view">
+  <canvas id="cta-particles" style="position:absolute;inset:0;z-index:0"></canvas>
+  <div style="position:relative;z-index:1;text-align:center;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:24px">
+    <img src="logo-master-spirit.png" style="max-width:min(60vw,280px);height:auto;margin-bottom:14px;animation:floatIn 1s ease both,float 5s ease-in-out infinite 1s">
+    <div class="pillar-grid" id="pillar-grid"></div>
+    <p style="margin:10px 0"><a href="https://masterspirit.com.br" target="_blank" style="font-family:'Cinzel',serif;font-size:13px;color:rgba(240,234,214,.45);letter-spacing:2px;text-decoration:none">masterspirit.com.br</a></p>
+    <a class="cta-btn" href="https://masterspirit.com.br" target="_blank">✦ Entre nessa jornada ✦</a>
+    <div style="margin-top:18px;display:flex;align-items:center;gap:8px;justify-content:center">
+      <span style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:2px;color:rgba(240,234,214,.3);text-transform:uppercase">Produzido por</span>
+      <img src="logo-spyrit-systems.png" alt="Spyrit Systems" style="height:36px;opacity:.7;animation:floatBig 4s ease-in-out infinite">
     </div>
   </div>
 </div>
@@ -217,9 +229,9 @@ body{font-family:'Cinzel',Georgia,serif}
 // ══════════════════════════════════════════
 //  CONFIG
 // ══════════════════════════════════════════
-var PILLAR_SCENES=['sc-mestres','sc-salas','sc-evangelho','sc-passe','sc-climax','sc-cta'];
-var PILLAR_VOICES=['teaser2-voice-04.mp3','teaser2-voice-05.mp3','teaser2-voice-6.1.mp3','teaser2-voice-07.mp3',null,'teaser2-voice-08.mp3'];
-var PILLAR_DURATIONS=[14,15,12,12,10,999];
+var PILLAR_SCENES=['sc-mestres','sc-salas','sc-evangelho','sc-passe','sc-climax'];
+var PILLAR_VOICES=['teaser2-voice-04.mp3','teaser2-voice-05.mp3','teaser2-voice-6.1.mp3','teaser2-voice-07.mp3',null];
+var PILLAR_DURATIONS=[14,15,12,12,10];
 var music=null,voicePool={},voiceAudio=null,currentPillar=-1,pillarTimer=null;
 
 // ══════════════════════════════════════════
@@ -256,9 +268,12 @@ function startTeaser(){
   document.getElementById('pause-btn').style.display='flex';
   music=new Audio('teaser-music.mp3');music.volume=.7;music.loop=true;music.play();
   // Preload all voices
-  PILLAR_VOICES.concat(['teaser2-voice-01.mp3','teaser2-voice-02.mp3','teaser2-voice-03.mp3']).forEach(function(v){
+  PILLAR_VOICES.concat(['teaser2-voice-01.mp3','teaser2-voice-02.mp3','teaser2-voice-03.mp3','teaser2-voice-08.mp3']).forEach(function(v){
     if(v){var a=new Audio(v);a.load();voicePool[v]=a;}
   });
+  // Preload Jesus fullvideo
+  var jfv=document.getElementById('jesus-full-video');
+  if(jfv){jfv.src='teaser-jesus-fullvideo.mp4';jfv.load();}
   // Preload Jesus video (needs user gesture context)
   var jv=document.getElementById('jesus-vid');
   if(jv){jv.load();jv.play().then(function(){jv.pause();jv.currentTime=0;}).catch(function(){});}
@@ -433,7 +448,12 @@ function startPillars(){
 }
 
 function goToPillar(n){
-  if(n>=PILLAR_SCENES.length)return;
+  if(n>=PILLAR_SCENES.length){
+    // Pilares acabaram → Jesus fullvideo
+    document.getElementById('pillars-view').classList.remove('active');
+    startJesusFullVideo();
+    return;
+  }
   if(pillarTimer){clearTimeout(pillarTimer);pillarTimer=null;}
   if(currentPillar>=0)document.getElementById(PILLAR_SCENES[currentPillar]).classList.remove('active');
   currentPillar=n;
@@ -441,7 +461,6 @@ function goToPillar(n){
   document.getElementById(sceneId).classList.add('active');
   if(sceneId==='sc-mestres')enterMestres();
   if(sceneId==='sc-climax')enterClimax();
-  if(sceneId==='sc-cta')enterCTA();
   // Voice
   if(PILLAR_VOICES[n]){setTimeout(function(){playVoice(PILLAR_VOICES[n]);},400);}
   // Progress
@@ -481,6 +500,51 @@ function enterCTA(){
 }
 
 // ══════════════════════════════════════════
+//  JESUS FULL VIDEO (penúltimo)
+// ══════════════════════════════════════════
+function startJesusFullVideo(){
+  var view=document.getElementById('jesus-full-view');
+  view.classList.add('active');
+  var vid=document.getElementById('jesus-full-video');
+  vid.src='teaser-jesus-fullvideo.mp4';
+  vid.muted=false;vid.volume=1;
+  if(music)music.volume=.1;
+  vid.play().catch(function(){});
+  // Progress
+  vid.addEventListener('timeupdate',function(){
+    document.getElementById('progress-fill').style.width=Math.min(98,(85+vid.currentTime/vid.duration*12))+'%';
+  });
+  // Voice-08 "Seis mestres..." nos últimos 15s
+  vid.addEventListener('timeupdate',function onV8(){
+    if(vid.duration&&vid.currentTime>=vid.duration-15){
+      vid.removeEventListener('timeupdate',onV8);
+      playVoice('teaser2-voice-08.mp3');
+    }
+  });
+  vid.onended=function(){
+    view.classList.remove('active');
+    if(music)music.volume=.7;
+    startCTA();
+  };
+}
+
+// ══════════════════════════════════════════
+//  CTA FINAL
+// ══════════════════════════════════════════
+function startCTA(){
+  document.getElementById('cta-view').classList.add('active');
+  createParticles(document.getElementById('cta-particles'),80,.2);
+  document.getElementById('progress-fill').style.width='100%';
+  // Preencher cards
+  var grid=document.getElementById('pillar-grid');grid.innerHTML='';
+  [{img:'avatar-jesus.png',txt:'Mestres'},{img:'shelf-books.png',txt:'Salas de Estudo'},{img:'evangelho-lar.png?v=2',txt:'Evangelho no Lar'},{img:'passe-card.png',txt:'Passe Espiritual'}].forEach(function(p,i){
+    var card=document.createElement('div');card.className='pillar-card';
+    card.innerHTML='<img src="'+p.img+'" style="width:100%;height:40px;object-fit:contain;border-radius:6px;margin-bottom:4px"><p>'+p.txt+'</p>';
+    card.style.animation='fadeUp .5s ease '+(i*.2)+'s forwards';grid.appendChild(card);
+  });
+}
+
+// ══════════════════════════════════════════
 //  PAUSE
 // ══════════════════════════════════════════
 var paused=false;
@@ -488,9 +552,9 @@ function togglePause(){
   paused=!paused;
   var btn=document.getElementById('pause-btn');
   btn.textContent=paused?'▶':'⏸';
-  var vid=document.getElementById('journey-video');
-  if(paused){if(vid&&!vid.paused)vid.pause();if(music)music.pause();}
-  else{if(vid&&vid.paused&&vid.currentTime>0)vid.play();if(music)music.play();}
+  var vids=[document.getElementById('journey-video'),document.getElementById('jesus-full-video')];
+  if(paused){vids.forEach(function(v){if(v&&!v.paused)v.pause();});if(music)music.pause();}
+  else{vids.forEach(function(v){if(v&&v.paused&&v.currentTime>0)v.play();});if(music)music.play();}
 }
 </script>
 </body>
