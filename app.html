@@ -2330,7 +2330,22 @@ function clearAttach(){
 }
 
 // ===================== SCROLL / OBS =====================
-function scrollChat(id){setTimeout(()=>{const el=document.getElementById(id);if(el)el.scrollTop=el.scrollHeight;},50);}
+function scrollChat(id){
+  setTimeout(()=>{
+    const el=document.getElementById(id);
+    if(el) el.scrollTop=el.scrollHeight;
+    // Também scrollar o content container (evita scroll aninhado preso)
+    const ct=document.getElementById('content');
+    if(ct) ct.scrollTop=ct.scrollHeight;
+  },100);
+  // Segundo scroll para garantir após render completo
+  setTimeout(()=>{
+    const el=document.getElementById(id);
+    if(el) el.scrollTop=el.scrollHeight;
+    const ct=document.getElementById('content');
+    if(ct) ct.scrollTop=ct.scrollHeight;
+  },300);
+}
 let _obs=null;
 function startObs(id){
   stopObs();
@@ -3066,8 +3081,14 @@ function startVoiceInput(){
 
   voiceRecognition.onerror=function(e){
     console.warn('Voice error:',e.error);
-    if(e.error==='not-allowed'){
-      alert('Permissão de microfone negada. Habilite nas configurações do navegador.');
+    if(e.error==='not-allowed'||e.error==='permission-denied'){
+      alert('Permissão de microfone negada. Toque no cadeado (🔒) ao lado da URL e habilite o microfone.');
+    } else if(e.error==='network'){
+      alert('Erro de rede no reconhecimento de voz. Verifique sua conexão.');
+    } else if(e.error==='no-speech'){
+      // Silêncio — não alertar, apenas parar
+    } else {
+      alert('Erro no microfone: '+e.error);
     }
     stopVoiceInput();
   };
