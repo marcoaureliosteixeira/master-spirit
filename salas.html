@@ -54,8 +54,8 @@ p,span,input,textarea,.field-input{font-family:Georgia,'Times New Roman',serif}
 .fac-card.specialist{border-color:#C4B0D9}
 .fac-card.specialist.selected{background:rgba(155,125,196,.1);border-color:rgba(155,125,196,.8);box-shadow:0 0 0 3px rgba(155,125,196,.15)}
 .fac-card .fac-emoji{font-size:32px;display:block;margin-bottom:6px}
-.fac-card img{transition:transform .3s ease,box-shadow .3s ease;cursor:pointer}
-.fac-card img:hover{transform:scale(1.6);z-index:20;position:relative;box-shadow:0 0 30px rgba(201,168,76,.5)}
+.fac-card img,.avatar-lupa{transition:transform .3s ease,box-shadow .3s ease;cursor:pointer}
+.fac-card img:hover,.avatar-lupa:hover{transform:scale(1.6);z-index:20;position:relative;box-shadow:0 0 30px rgba(201,168,76,.5)}
 /* Avatar zoom overlay */
 #fac-zoom{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;cursor:pointer}
 #fac-zoom img{max-width:70vw;max-height:70vh;border-radius:50%;border:3px solid rgba(201,168,76,.5);box-shadow:0 0 60px rgba(201,168,76,.3);animation:zoomFacIn .3s ease}
@@ -137,7 +137,7 @@ p,span,input,textarea,.field-input{font-family:Georgia,'Times New Roman',serif}
       <!-- Emmanuel suggestion -->
       <div id="emmanuel-section" style="background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.25);border-radius:14px;padding:16px;margin-bottom:16px">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-          <img src="avatar-mestre-emmanuel.png" onclick="document.getElementById('fac-zoom-img').src='avatar-mestre-emmanuel.png';document.getElementById('fac-zoom').style.display='flex'" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.3);box-shadow:0 0 12px rgba(201,168,76,.15);cursor:pointer" alt="Emmanuel">
+          <img src="avatar-mestre-emmanuel.png" class="avatar-lupa" onclick="document.getElementById('fac-zoom-img').src='avatar-mestre-emmanuel.png';document.getElementById('fac-zoom').style.display='flex'" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.3);box-shadow:0 0 12px rgba(201,168,76,.15);cursor:pointer" alt="Emmanuel">
           <div>
             <p style="font-family:'Cinzel',serif;font-size:12px;color:var(--gold);font-weight:600">Mestre Emmanuel</p>
             <p style="font-size:12px;color:rgba(240,234,214,.4);font-style:italic">Mentor estratégico da Biblioteca Espiritual</p>

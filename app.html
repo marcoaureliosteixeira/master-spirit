@@ -239,7 +239,8 @@ p,span,.desc,.sub,.modal-inner p,.copy-btn{font-family:Georgia,'Times New Roman'
 .mchat-header{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid rgba(201,168,76,.12);flex-shrink:0}
 .mchat-back{background:none;border:none;cursor:pointer;color:rgba(201,168,76,.6);font-size:22px;padding:0;transition:color .2s}
 .mchat-back:hover{color:var(--gold)}
-.mchat-avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,168,76,.3);background:#d0d0d0}
+.mchat-avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,168,76,.3);background:#d0d0d0;transition:transform .3s ease,box-shadow .3s ease;cursor:pointer}
+.mchat-avatar:hover{transform:scale(1.6);z-index:20;position:relative;box-shadow:0 0 30px rgba(201,168,76,.5)}
 .mchat-info h3{font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;color:var(--gold)}
 .mchat-info p{font-size:10px;font-style:italic;color:rgba(240,234,214,.35);margin-top:1px;font-family:Georgia,'Times New Roman',serif}
 /* HELP FAB */
