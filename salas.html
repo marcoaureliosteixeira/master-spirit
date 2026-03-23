@@ -40,7 +40,7 @@ p,span,input,textarea{font-family:Georgia,'Times New Roman',serif}
 .sec-title::after{content:'';flex:1;height:1px;background:rgba(201,168,76,.12)}
 
 /* Theme cards (biblioteca temática) */
-.theme-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px}
+.theme-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
 .theme-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:16px 12px;cursor:pointer;transition:all .2s;text-align:center;position:relative;overflow:hidden}
 .theme-card:hover{background:rgba(201,168,76,.08);border-color:var(--gold);transform:translateY(-2px);box-shadow:0 4px 16px rgba(201,168,76,.12)}
 .theme-card .theme-icon{font-size:28px;margin-bottom:8px;display:block}
@@ -89,9 +89,14 @@ p,span,input,textarea{font-family:Georgia,'Times New Roman',serif}
 #avatar-zoom{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;cursor:pointer}
 #avatar-zoom img{max-width:70vw;max-height:70vh;border-radius:50%;border:3px solid rgba(201,168,76,.5);box-shadow:0 0 60px rgba(201,168,76,.3)}
 
-@media(max-width:400px){
-  .theme-grid{grid-template-columns:1fr}
+@media(max-width:500px){
+  .theme-grid{grid-template-columns:repeat(2,1fr)}
   .theme-card img{width:50px;height:50px}
+  .theme-card .theme-name{font-size:9px}
+  .theme-card .theme-ref{font-size:9px}
+}
+@media(max-width:340px){
+  .theme-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
