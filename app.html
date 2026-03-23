@@ -231,6 +231,10 @@ p,span,.desc,.sub,.modal-inner p,.copy-btn{font-family:Georgia,'Times New Roman'
 .master-card .master-name{font-family:'Cinzel',serif;font-size:11px;letter-spacing:1.5px;color:var(--gold);margin-bottom:4px;text-transform:uppercase}
 .master-card .master-desc{font-size:12px;font-style:italic;color:rgba(240,234,214,.45);line-height:1.4;font-family:Georgia,'Times New Roman',serif}
 .master-section-title{font-family:'Cinzel',serif;font-size:10px;letter-spacing:3px;color:rgba(201,168,76,.5);text-transform:uppercase;text-align:center;padding:16px 14px 0}
+/* Avatar zoom */
+#avatar-zoom{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;cursor:pointer}
+#avatar-zoom img{max-width:80vw;max-height:80vh;border-radius:50%;border:3px solid rgba(201,168,76,.5);box-shadow:0 0 60px rgba(201,168,76,.3);animation:zoomIn .3s ease}
+@keyframes zoomIn{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
 /* MASTER CHAT HEADER */
 .mchat-header{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid rgba(201,168,76,.12);flex-shrink:0}
 .mchat-back{background:none;border:none;cursor:pointer;color:rgba(201,168,76,.6);font-size:22px;padding:0;transition:color .2s}
@@ -265,6 +269,7 @@ if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
   document.documentElement.style.setProperty('--disclaimer-init','none');
 }
 </script>
+<div id="avatar-zoom" onclick="this.style.display='none'"><img id="avatar-zoom-img" src="" alt=""></div>
 <div id="stars"></div>
 
 <!-- HELP FAB — global, visível em todas as telas -->
@@ -1628,7 +1633,7 @@ function renderMestres(){
   const cards=MASTERS.map(m=>{
     const hasHistory=(masterMsgs[m.id]||[]).length>0;
     return `<div class="master-card" onclick="openMasterChat('${m.id}')">
-      <img class="master-avatar" src="${m.avatar}" alt="${m.name}" onerror="this.src='master-spirit-avatar.png'">
+      <img class="master-avatar" src="${m.avatar}" alt="${m.name}" onerror="this.src='master-spirit-avatar.png'" onclick="event.stopPropagation();zoomAvatar('${m.avatar}')">
       <div class="master-name">${m.name}</div>
       <div class="master-desc">${m.desc}</div>
       ${hasHistory?'<div style="margin-top:8px;font-size:10px;color:rgba(201,168,76,.5);font-style:italic">● conversa ativa</div>':''}
@@ -1645,6 +1650,12 @@ function renderMestres(){
 }
 
 // ===================== MASTER CHAT =====================
+function zoomAvatar(src){
+  var z=document.getElementById('avatar-zoom');
+  document.getElementById('avatar-zoom-img').src=src;
+  z.style.display='flex';
+}
+
 function openMasterChat(masterId){
   stopSplashMusic(); // Parar música ao entrar no chat
   activeMaster=masterId;
