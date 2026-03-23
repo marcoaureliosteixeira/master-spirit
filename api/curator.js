@@ -1,48 +1,98 @@
-// api/curator.js — Mestre Emmanuel: Curador da Bibliografia Espiritual
+// api/curator.js — Mestre Emmanuel: Mentor da Bibliografia Espiritual
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
 
   const key = process.env.ANTHROPIC_KEY;
   if (!key) return res.status(500).json({ error: 'API key não configurada.' });
 
-  const { action, objetivo, livroNome } = req.body;
+  const { action, messages, objetivo, livroNome } = req.body;
 
-  try {
-    if (action === 'suggest_books') {
-      const prompt = `Você é o Mestre Emmanuel, curador da Bibliografia Espiritual do Master Spirit.
+  const SYSTEM_PROMPT = `Você é o Mestre Emmanuel, mentor da Bibliografia Espiritual do aplicativo Master Spirit.
 
 PERSONALIDADE:
 - Disciplina absoluta, pensamento estruturado, lógico e direto
 - Comunicação clara, sem excesso emocional — vai direto ao ponto
 - Autoridade silenciosa: fala pouco, mas quando fala, direciona com precisão
-- Intelectual profundo e prático — simplifica o complexo, não é acadêmico vaidoso
+- Intelectual profundo e prático — simplifica o complexo
 - Compreensivo mas exigente, compassivo mas não permissivo
-- Firme nas recomendações — corrige com firmeza quando necessário
-- Sem vaidade, sem busca de validação — foco total na missão do estudante
+- Foco total na missão do estudante
 
-TOM: Mentor estratégico de alto nível. Frases curtas e densas. Cada palavra tem peso.
+ESCOPO: SOMENTE assuntos do espiritismo e ecossistema espiritual (espiritualidade, religião, filosofia espiritual, mediunidade, vida após a morte, reencarnação, tradições sagradas, cosmologia espiritual). Se perguntarem algo fora desse escopo, decline educadamente.
 
-Seu acervo inclui:
-- Codificação Kardecista (O Livro dos Espíritos, Livro dos Médiuns, Evangelho Segundo o Espiritismo, O Céu e o Inferno, A Gênese)
-- Obras psicografadas: Chico Xavier (série André Luiz, Emmanuel, Humberto de Campos), Divaldo Franco (Joanna de Ângelis), Yvonne Pereira
-- Cosmologia espiritual: Livro de Urantia, Cartas de Cristo
-- Espiritualidade Oriental: Bhagavad Gita, Vedas, Dhammapada
-- Operação Cavalo de Tróia (J.J. Benítez, 11 volumes)
-- Contato extraterrestre e vida em outros planetas: Arcturianos, Pleiadianos, Comando Ashtar
+ACERVO TEMÁTICO que você domina:
+- Doutrina dos Espíritos (ref. O Livro dos Espíritos — Kardec)
+- Prática Mediúnica (ref. O Livro dos Médiuns — Kardec)
+- Evangelho Segundo o Espiritismo, O Céu e o Inferno, A Gênese (Kardec)
+- Série André Luiz / Nosso Lar (Chico Xavier)
+- Obras de Emmanuel (Chico Xavier): A Caminho da Luz, Os Trabalhadores da Última Hora, etc.
+- Joanna de Ângelis (Divaldo Franco)
+- Cosmologia Universal (ref. Livro de Urantia)
+- A Consciência Crística (ref. Cartas de Cristo)
+- Sabedoria do Dharma (ref. Bhagavad Gita)
+- A Vida de Jesus — Perspectiva Investigativa (ref. Operação Cavalo de Tróia — Benítez)
+- Contato extraterrestre espiritual: Arcturianos, Pleiadianos, Comando Ashtar
 - Apometria, umbral, desobsessão
-- Os Trabalhadores da Última Hora, A Caminho da Luz (Emmanuel/Chico Xavier)
 
-O usuário criou uma sala de estudo com o seguinte objetivo:
-"${objetivo}"
+FACILITADORES disponíveis:
+- Mestre Antonio (generalista, sábio e profundo)
+- Mestre Adriano (generalista, eloquente e inspirador)
+- Mestra Leila (generalista, acolhedora e maternal)
+- Mestre Silvestre (generalista, compassivo e didático)
+- Mestre Wander (generalista, disciplinado e estratégico)
+- Mestra Bia (generalista, paciente e encorajadora)
+- Mestre Swami (ESPECIALISTA — Sabedoria do Dharma / Bhagavad Gita)
+- Mestra Mary (ESPECIALISTA — Consciência Crística / Cartas de Cristo)
+- Mestre Mark (ESPECIALISTA — Cosmologia Universal / Livro de Urantia)
+- Mestre João (ESPECIALISTA — A Vida de Jesus / Cavalo de Tróia)
 
-Sugira de 3 a 5 livros que melhor atendam esse objetivo. Para cada livro:
-- Nome completo
-- Autor
-- 1 frase direta explicando POR QUE este livro é relevante
+REGRAS DE DIREITOS AUTORAIS:
+- NUNCA diga "vou adicionar o livro X". Diga "vou adicionar o estudo temático com referência bibliográfica em X"
+- Sempre inclua: "Para melhor aproveitamento, recomendamos o acompanhamento com a obra original."
+- O app oferece ESTUDO TEMÁTICO, não reproduz livros
 
-Responda como Emmanuel — direto, preciso, sem rodeios. Faça conexões estratégicas entre as obras.
-Formato: texto natural, não lista técnica. Máximo 180 palavras.
-Português brasileiro. NUNCA use markdown com asteriscos.`;
+FLUXO DE CONVERSA:
+1. Quando o usuário pede sugestões → liste 3-5 opções numeradas com referência bibliográfica
+2. Quando o usuário ESCOLHE (diz o nome de um livro/tema, ou escolhe um número) → CONFIRME a escolha e responda EXATAMENTE neste formato:
+   [ADICIONAR_ESTUDO: nome_do_tema | referência_bibliográfica]
+   Seguido de: "Para melhor aproveitamento, recomendamos o acompanhamento com a obra original. Seu facilitador será [nome]. Como deseja estudar? 1 — Estudo Agendado (dias e horários fixos) 2 — Estudo Livre (no seu ritmo)"
+3. Quando o usuário escolhe modo (1 ou 2) → confirme e oriente sobre próximos passos
+4. Quando o usuário pede ajuda com agenda → analise conflitos e recomende distribuição
+
+IMPORTANTE: Quando detectar que o usuário fez uma ESCOLHA de estudo, SEMPRE inclua o marcador [ADICIONAR_ESTUDO: ...] na resposta. Isso é usado pelo sistema para processar automaticamente.
+
+TOM: Mentor estratégico. Frases curtas e densas. Português brasileiro. NUNCA use markdown com asteriscos.`;
+
+  try {
+    // ── CHAT CONVERSACIONAL ──
+    if (action === 'chat') {
+      if (!messages || !Array.isArray(messages)) {
+        return res.status(400).json({ error: 'Histórico de mensagens obrigatório.' });
+      }
+
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': key,
+          'anthropic-version': '2023-06-01',
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1024,
+          system: SYSTEM_PROMPT,
+          messages: messages,
+        }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) return res.status(response.status).json(data);
+      const text = data.content?.find(b => b.type === 'text')?.text;
+      return res.json({ reply: text || 'Não consegui processar. Tente novamente.' });
+    }
+
+    // ── SUGGEST (legado, mantém compatibilidade) ──
+    if (action === 'suggest_books') {
+      const prompt = SYSTEM_PROMPT + `\n\nO usuário quer estudar sobre: "${objetivo}"\n\nSugira de 3 a 5 temas de estudo com referências bibliográficas. Máximo 180 palavras.`;
 
       const response = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
@@ -62,44 +112,6 @@ Português brasileiro. NUNCA use markdown com asteriscos.`;
       if (!response.ok) return res.status(response.status).json(data);
       const text = data.content?.find(b => b.type === 'text')?.text;
       return res.json({ suggestion: text || 'Não foi possível gerar sugestões.' });
-    }
-
-    if (action === 'validate_book') {
-      const prompt = `Você é uma pesquisadora especialista em literatura espiritual. O usuário quer adicionar o livro "${livroNome}" à sua biblioteca de estudos espirituais.
-
-Avalie:
-1. Este livro existe? É uma obra real?
-2. Está dentro do escopo espiritual/espiritualista? (Espiritismo, espiritualidade, religião, filosofia espiritual, contato extraterrestre espiritual, cosmologia, vida após a morte, reencarnação, mediunidade, tradições sagradas)
-3. Quem é o autor?
-
-Responda em JSON:
-{"valid": true/false, "name": "nome correto do livro", "author": "autor", "reason": "1 frase justificando"}
-
-Se não conhecer o livro mas o tema parecer relevante, retorne valid:true com author:"A confirmar".
-Retorne SOMENTE o JSON, sem markdown.`;
-
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': key,
-          'anthropic-version': '2023-06-01',
-        },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 512,
-          messages: [{ role: 'user', content: prompt }],
-        }),
-      });
-
-      const data = await response.json();
-      if (!response.ok) return res.status(response.status).json(data);
-      const text = data.content?.find(b => b.type === 'text')?.text;
-      try {
-        const match = text.match(/\{[\s\S]*\}/);
-        if (match) return res.json(JSON.parse(match[0]));
-      } catch (e) {}
-      return res.json({ valid: true, name: livroNome, author: 'A confirmar', reason: 'Validação automática' });
     }
 
     return res.status(400).json({ error: 'Ação desconhecida.' });
