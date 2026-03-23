@@ -88,6 +88,17 @@ p,span,input,textarea{font-family:Georgia,'Times New Roman',serif}
 .chat-msg .bubble{flex:1;font-size:14px;line-height:1.6;color:rgba(240,234,214,.75);font-family:Georgia,serif;padding:8px 12px;border-radius:10px}
 .chat-msg.emmanuel .bubble{background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.12)}
 .chat-msg.user .bubble{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.15)}
+/* Chat interactive buttons */
+.chat-btns{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chat-btn{background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:10px;padding:8px 14px;cursor:pointer;font-family:Georgia,serif;font-size:13px;color:var(--gold2);transition:all .2s}
+.chat-btn:hover{background:rgba(201,168,76,.2);border-color:var(--gold)}
+.chat-btn.selected{background:rgba(201,168,76,.25);border-color:var(--gold);font-weight:600}
+.chat-btn.confirm{background:rgba(91,175,124,.12);border-color:rgba(91,175,124,.4);color:rgba(91,175,124,.9)}
+.chat-btn.confirm:hover{background:rgba(91,175,124,.25)}
+/* Day checkboxes */
+.day-check{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:6px 12px;cursor:pointer;font-family:Georgia,serif;font-size:13px;color:rgba(240,234,214,.6);transition:all .2s;user-select:none}
+.day-check.checked{background:rgba(201,168,76,.15);border-color:rgba(201,168,76,.4);color:var(--gold)}
+.day-check input{display:none}
 .chat-input-row{display:flex;gap:8px;align-items:center}
 #emmanuel-input{flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.22);border-radius:15px;padding:10px 16px;color:var(--text);font-family:Georgia,serif;font-size:16px;outline:none;transition:border-color .2s}
 #emmanuel-input:focus{border-color:rgba(201,168,76,.5)}
@@ -189,17 +200,18 @@ p,span,input,textarea{font-family:Georgia,'Times New Roman',serif}
     <!-- Disclaimer -->
     <p class="disclaimer">O Master Spirit não reproduz nem substitui obras literárias. Oferecemos programas de estudo temático com referências bibliográficas. Recomendamos a aquisição das obras originais.</p>
 
-    <!-- ACCORDION: Minha Sala de Estudo -->
+    <!-- ACCORDION: Meu Objetivo -->
     <div class="section-accordion">
       <div class="section-header" onclick="toggleSection('sala')">
-        <span class="section-icon">📝</span>
-        <span class="section-label">Minha Sala de Estudo</span>
+        <span class="section-icon">🎯</span>
+        <span class="section-label">Meu Objetivo de Estudo</span>
         <span class="arrow" id="arrow-sala">▼</span>
       </div>
       <div class="section-body" id="body-sala">
-        <input id="sala-nome" type="text" placeholder="Nome da sua sala (ex: Grupo Fraternidade)" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:10px 14px;color:var(--text);font-family:Georgia,serif;font-size:14px;outline:none;margin-bottom:10px;transition:border-color .2s" onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(201,168,76,.2)'">
-        <textarea id="sala-objetivo" placeholder="Objetivo do estudo..." style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:10px 14px;color:var(--text);font-family:Georgia,serif;font-size:14px;outline:none;min-height:70px;resize:vertical;transition:border-color .2s" onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(201,168,76,.2)'"></textarea>
-        <p style="font-size:10px;color:rgba(240,234,214,.25);font-style:italic;font-family:Georgia,serif;margin-top:4px">Emmanuel usa o objetivo para personalizar recomendações.</p>
+        <div style="padding:0 16px 14px">
+          <textarea id="sala-objetivo" placeholder="O que você busca aprender? (ex: Aprofundar o estudo sobre reencarnação e vida após a morte...)" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:12px 14px;color:var(--text);font-family:Georgia,serif;font-size:16px;outline:none;min-height:80px;resize:vertical;transition:border-color .2s" onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(201,168,76,.2)'"></textarea>
+          <p style="font-size:10px;color:rgba(240,234,214,.25);font-style:italic;font-family:Georgia,serif;margin-top:4px">Emmanuel usará seu objetivo para personalizar recomendações e plano de estudo.</p>
+        </div>
       </div>
     </div>
 
@@ -365,14 +377,121 @@ function renderMyStudies(){
 function selectTheme(id){
   var tema=TEMAS.find(function(t){return t.id===id;});
   if(!tema)return;
-  var alreadyIdx=myStudies.findIndex(function(s){return s.themeId===id;});
+  var alreadyIdx=myStudies.findIndex(function(s){return s.themeId===id||s.theme_id===id;});
   if(alreadyIdx>=0){
     openStudy(alreadyIdx);
     return;
   }
-  addEmmanuelMsg('Excelente escolha: "'+tema.name+'". Para melhor aproveitamento, recomendamos o acompanhamento com a obra original ('+tema.ref.replace('Ref.: ','')+').\n\nSeu facilitador será '+tema.facilNome+(tema.specialist?' — especialista nesta tradição.':'.')+'\n\nComo deseja estudar?\n1 — Estudo Agendado (dias e horários fixos)\n2 — Estudo Livre (no seu ritmo)');
   pendingTheme=tema;
+  addEmmanuelMsg('Excelente escolha: "'+tema.name+'". Para melhor aproveitamento, recomendamos o acompanhamento com a obra original ('+tema.ref.replace('Ref.: ','')+').\n\nSeu facilitador será '+tema.facilNome+(tema.specialist?' — especialista nesta tradição.':'.')+'\n\nComo deseja estudar?');
+  addChatButtons([
+    {label:'📅 Estudo Agendado',value:'agendado',desc:'Dias e horários fixos'},
+    {label:'🕊️ Estudo Livre',value:'livre',desc:'No seu ritmo'}
+  ],'chooseMode');
 }
+
+// Chat buttons interativos
+function addChatButtons(options,action){
+  var area=document.getElementById('emmanuel-chat-area');
+  var html='<div class="chat-btns" id="chat-action-'+action+'">';
+  options.forEach(function(opt){
+    html+='<button class="chat-btn" onclick="handleChatAction(\''+action+'\',\''+opt.value+'\')">'+(opt.label||opt.value)+'</button>';
+  });
+  html+='</div>';
+  area.innerHTML+=html;
+  area.scrollTop=area.scrollHeight;
+}
+
+function addDaySelector(){
+  var area=document.getElementById('emmanuel-chat-area');
+  var days=[{k:'seg',l:'Seg'},{k:'ter',l:'Ter'},{k:'qua',l:'Qua'},{k:'qui',l:'Qui'},{k:'sex',l:'Sex'},{k:'sab',l:'Sáb'},{k:'dom',l:'Dom'}];
+  var html='<div class="chat-btns" id="chat-action-days">';
+  days.forEach(function(d){
+    html+='<label class="day-check" id="day-'+d.k+'" onclick="this.classList.toggle(\'checked\')"><input type="checkbox" value="'+d.k+'"> '+d.l+'</label>';
+  });
+  html+='</div><div class="chat-btns" style="margin-top:6px"><button class="chat-btn confirm" onclick="confirmDays()">✓ Confirmar dias</button></div>';
+  area.innerHTML+=html;
+  area.scrollTop=area.scrollHeight;
+}
+
+function handleChatAction(action,value){
+  // Desabilitar botões
+  var btns=document.getElementById('chat-action-'+action);
+  if(btns) btns.querySelectorAll('.chat-btn').forEach(function(b){b.style.pointerEvents='none';b.style.opacity='.4';});
+
+  if(action==='chooseMode'){
+    addUserMsg(value==='agendado'?'Estudo Agendado':'Estudo Livre');
+    if(value==='livre'){
+      addStudy(pendingTheme,'livre');
+      pendingTheme=null;
+    } else {
+      pendingMode='agendado';
+      addEmmanuelMsg('Selecione os dias da semana para seu estudo:');
+      addDaySelector();
+    }
+  }
+}
+
+var pendingMode=null;
+var pendingDays=[];
+
+function confirmDays(){
+  pendingDays=[];
+  document.querySelectorAll('#chat-action-days .day-check.checked input').forEach(function(inp){
+    pendingDays.push(inp.value);
+  });
+  if(pendingDays.length===0){
+    addEmmanuelMsg('Selecione pelo menos um dia.');
+    return;
+  }
+  var dayNames={seg:'Segunda',ter:'Terça',qua:'Quarta',qui:'Quinta',sex:'Sexta',sab:'Sábado',dom:'Domingo'};
+  addUserMsg(pendingDays.map(function(d){return dayNames[d];}).join(', '));
+  // Desabilitar seletor
+  document.querySelectorAll('#chat-action-days .day-check').forEach(function(l){l.style.pointerEvents='none';l.style.opacity='.5';});
+  document.querySelector('#chat-action-days + .chat-btns').style.display='none';
+
+  addEmmanuelMsg('Horário preferido para as sessões?');
+  addChatButtons([
+    {label:'🌅 Manhã (8h)',value:'08:00'},
+    {label:'☀️ Tarde (14h)',value:'14:00'},
+    {label:'🌙 Noite (19:30)',value:'19:30'},
+    {label:'🌑 Noite (21h)',value:'21:00'}
+  ],'chooseTime');
+}
+
+// Interceptar chooseTime
+var origHandleChatAction=handleChatAction;
+handleChatAction=function(action,value){
+  if(action==='chooseTime'){
+    var btns=document.getElementById('chat-action-'+action);
+    if(btns) btns.querySelectorAll('.chat-btn').forEach(function(b){b.style.pointerEvents='none';b.style.opacity='.4';});
+    addUserMsg(value);
+
+    addEmmanuelMsg('Duração por sessão?');
+    addChatButtons([
+      {label:'45 min',value:'45'},
+      {label:'1 hora',value:'60'},
+      {label:'1h30',value:'90'}
+    ],'chooseDuration');
+    pendingTime=value;
+    return;
+  }
+  if(action==='chooseDuration'){
+    var btns=document.getElementById('chat-action-'+action);
+    if(btns) btns.querySelectorAll('.chat-btn').forEach(function(b){b.style.pointerEvents='none';b.style.opacity='.4';});
+    addUserMsg(value+' min');
+
+    // Criar estudo agendado
+    if(pendingTheme){
+      pendingTheme.schedule={days:pendingDays,time:pendingTime,duration:parseInt(value)};
+      addStudy(pendingTheme,'agendado');
+      pendingTheme=null;pendingMode=null;pendingDays=[];pendingTime=null;
+    }
+    return;
+  }
+  origHandleChatAction(action,value);
+};
+var pendingTime=null;
 
 // ══════════════════════════════════════════
 //  EMMANUEL CHAT
@@ -427,10 +546,8 @@ async function sendToEmmanuel(){
 
   // Include sala context (nome, objetivo, estudos atuais)
   var salaCtx=[];
-  var nome=(document.getElementById('sala-nome')||{}).value||'';
   var objetivo=(document.getElementById('sala-objetivo')||{}).value||'';
-  if(nome) salaCtx.push('Nome da sala: '+nome);
-  if(objetivo) salaCtx.push('Objetivo: '+objetivo);
+  if(objetivo) salaCtx.push('Objetivo do estudante: '+objetivo);
   if(myStudies.length>0) salaCtx.push('Estudos atuais: '+myStudies.map(function(s){return s.name+' ('+s.mode+')';}).join(', '));
   if(salaCtx.length>0){
     apiMsgs.unshift({role:'user',content:'[Contexto da sala do usuário: '+salaCtx.join(' | ')+']'});
@@ -493,10 +610,13 @@ function detectFacilitadorId(ref){
 }
 
 function addStudy(tema,mode){
+  var dayNames={seg:'Segunda',ter:'Terça',qua:'Quarta',qui:'Quinta',sex:'Sexta',sab:'Sábado',dom:'Domingo'};
   if(mode==='livre'){
-    addEmmanuelMsg('Estudo Livre ativado para "'+tema.name+'". Vou sugerir uma carga de 2 sessões por semana, ~60 min cada. No seu ritmo, a previsão de conclusão é em aproximadamente 8 semanas.\n\nPara melhor aproveitamento: estude com calma, faça anotações. Qualidade sobre quantidade.\n\nQuando quiser iniciar a primeira sessão, me avise.');
+    addEmmanuelMsg('Estudo Livre ativado para "'+tema.name+'".\n\nSugestão: 2 sessões por semana, ~60 min cada. Previsão de conclusão: ~8 semanas.\n\nEstude com calma, faça anotações. Qualidade sobre quantidade. Quando quiser iniciar a primeira sessão, clique no estudo em "Meus Estudos".');
   } else {
-    addEmmanuelMsg('Estudo Agendado para "'+tema.name+'". Me diga:\n- Quais dias da semana?\n- Que horário?\n- Duração por sessão (45min, 60min ou 90min)?\n\nVou montar sua grade e verificar conflitos com outros estudos.');
+    var sched=tema.schedule||{};
+    var diasTxt=(sched.days||[]).map(function(d){return dayNames[d]||d;}).join(', ');
+    addEmmanuelMsg('Estudo Agendado para "'+tema.name+'".\n\n📅 '+diasTxt+' às '+(sched.time||'19:30')+'\n⏱️ '+(sched.duration||60)+' min por sessão\n\nPrevisão de conclusão: ~'+(Math.ceil(16/((sched.days||[1,2]).length)))+' semanas. Bom estudo!');
   }
   var study={
     theme_id:tema.id,
