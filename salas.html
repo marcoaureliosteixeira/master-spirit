@@ -54,8 +54,10 @@ p,span,input,textarea,.field-input{font-family:Georgia,'Times New Roman',serif}
 .fac-card.specialist{border-color:#C4B0D9}
 .fac-card.specialist.selected{background:rgba(155,125,196,.1);border-color:rgba(155,125,196,.8);box-shadow:0 0 0 3px rgba(155,125,196,.15)}
 .fac-card .fac-emoji{font-size:32px;display:block;margin-bottom:6px}
-.fac-card img{transition:transform .3s ease}
-.fac-card img:hover{transform:scale(1.8);z-index:10;position:relative;box-shadow:0 0 20px rgba(201,168,76,.4)}
+/* Avatar zoom overlay */
+#fac-zoom{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;cursor:pointer}
+#fac-zoom img{max-width:70vw;max-height:70vh;border-radius:50%;border:3px solid rgba(201,168,76,.5);box-shadow:0 0 60px rgba(201,168,76,.3);animation:zoomFacIn .3s ease}
+@keyframes zoomFacIn{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
 .fac-card .fac-name{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.5px;color:var(--text);font-weight:600}
 .fac-card .fac-type{font-size:11px;font-style:italic;color:rgba(240,234,214,.4);margin-top:3px}
 /* Freq options */
@@ -84,6 +86,7 @@ p,span,input,textarea,.field-input{font-family:Georgia,'Times New Roman',serif}
   .fac-grid{grid-template-columns:repeat(2,1fr)}
 }
 </style>
+<div id="fac-zoom" onclick="this.style.display='none'"><img id="fac-zoom-img" src="" alt=""></div>
 </head>
 <body>
 <div id="stars"></div>
@@ -132,7 +135,7 @@ p,span,input,textarea,.field-input{font-family:Georgia,'Times New Roman',serif}
       <!-- Emmanuel suggestion -->
       <div id="emmanuel-section" style="background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.25);border-radius:14px;padding:16px;margin-bottom:16px">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-          <img src="avatar-mestre-emmanuel.png" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.3);box-shadow:0 0 12px rgba(201,168,76,.15);transition:transform .3s ease;cursor:pointer" onmouseover="this.style.transform='scale(1.8)'" onmouseout="this.style.transform='scale(1)'" alt="Emmanuel">
+          <img src="avatar-mestre-emmanuel.png" onclick="document.getElementById('fac-zoom-img').src='avatar-mestre-emmanuel.png';document.getElementById('fac-zoom').style.display='flex'" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.3);box-shadow:0 0 12px rgba(201,168,76,.15);cursor:pointer" alt="Emmanuel">
           <div>
             <p style="font-family:'Cinzel',serif;font-size:12px;color:var(--gold);font-weight:600">Mestre Emmanuel</p>
             <p style="font-size:12px;color:rgba(240,234,214,.4);font-style:italic">Mentor estratégico da Biblioteca Espiritual</p>
@@ -461,7 +464,7 @@ function renderBooksConfig(){
 
     var facHtml=FACILITADORES_GEN.map(function(f){
       var sel=book.facilitador===f.id;
-      var icon=f.avatar?'<img src="'+f.avatar+'" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.3);margin-bottom:6px">':'<span class="fac-emoji">'+f.emoji+'</span>';
+      var icon=f.avatar?'<img src="'+f.avatar+'" onclick="event.stopPropagation();document.getElementById(\'fac-zoom-img\').src=\''+f.avatar+'\';document.getElementById(\'fac-zoom\').style.display=\'flex\'" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.3);margin-bottom:6px;cursor:pointer">':'<span class="fac-emoji">'+f.emoji+'</span>';
       return '<div class="fac-card'+(sel?' selected':'')+'" onclick="setBookFac('+bi+',\''+f.id+'\')">'+
         icon+'<div class="fac-name">'+f.name+'</div><div class="fac-type">'+f.estilo+'</div></div>';
     }).join('');
