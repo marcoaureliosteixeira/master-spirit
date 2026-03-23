@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#060a16">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>MASTER SPIRIT — Salas de Estudo</title>
@@ -19,7 +19,7 @@ p,span,input,textarea{font-family:Georgia,'Times New Roman',serif}
 #page{max-width:900px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
 
 /* Header */
-#hdr{background:rgba(12,18,38,.88);backdrop-filter:blur(16px);border-bottom:1px solid rgba(201,168,76,.12);padding:14px 18px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:50}
+#hdr{background:rgba(12,18,38,.88);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-bottom:1px solid rgba(201,168,76,.12);padding:14px 18px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:50}
 #hdr h1{font-family:'Cinzel',serif;font-size:14px;color:var(--gold);letter-spacing:2px}
 #hdr p{font-size:11px;font-style:italic;color:rgba(240,234,214,.35);margin-top:2px;font-family:Georgia,serif}
 
@@ -75,7 +75,7 @@ p,span,input,textarea{font-family:Georgia,'Times New Roman',serif}
 .progress-fill{background:linear-gradient(90deg,#C9A84C,#E8C97A);height:100%;border-radius:20px;transition:width .5s}
 
 /* Emmanuel chat — resizable */
-#emmanuel-bar{position:fixed;bottom:0;left:0;right:0;max-width:900px;margin:0 auto;z-index:80;background:rgba(6,10,22,.97);border-top:1px solid rgba(201,168,76,.15);padding:12px 16px;transition:height .1s}
+#emmanuel-bar{position:fixed;bottom:0;left:0;right:0;max-width:900px;margin:0 auto;z-index:80;background:rgba(6,10,22,.97);border-top:1px solid rgba(201,168,76,.15);padding:12px 16px calc(12px + env(safe-area-inset-bottom)) 16px;transition:height .1s}
 #resize-handle{position:absolute;top:-6px;left:0;right:0;height:12px;cursor:ns-resize;display:flex;align-items:center;justify-content:center;z-index:81}
 #resize-handle::after{content:'';width:40px;height:4px;background:rgba(201,168,76,.3);border-radius:2px}
 #emmanuel-bar .bar-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
@@ -89,7 +89,7 @@ p,span,input,textarea{font-family:Georgia,'Times New Roman',serif}
 .chat-msg.emmanuel .bubble{background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.12)}
 .chat-msg.user .bubble{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.15)}
 .chat-input-row{display:flex;gap:8px;align-items:center}
-#emmanuel-input{flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.22);border-radius:15px;padding:10px 16px;color:var(--text);font-family:Georgia,serif;font-size:14px;outline:none;transition:border-color .2s}
+#emmanuel-input{flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.22);border-radius:15px;padding:10px 16px;color:var(--text);font-family:Georgia,serif;font-size:16px;outline:none;transition:border-color .2s}
 #emmanuel-input:focus{border-color:rgba(201,168,76,.5)}
 #emmanuel-input::placeholder{color:rgba(240,234,214,.25);font-style:italic}
 .send-btn{background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.4);border-radius:50%;width:38px;height:38px;cursor:pointer;color:var(--gold);font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .2s}

@@ -18,7 +18,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .star{position:absolute;background:white;border-radius:50%;animation:tw var(--d,3s) ease-in-out infinite var(--dl,0s)}
 @keyframes tw{0%,100%{opacity:.04}50%{opacity:.6}}
 #stars::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 28% 58%,rgba(80,40,160,0.45) 0%,transparent 52%),radial-gradient(ellipse at 72% 28%,rgba(40,20,100,0.35) 0%,transparent 48%),radial-gradient(ellipse at 50% 88%,rgba(120,60,200,0.18) 0%,transparent 38%)}
-.page{position:relative;z-index:1;display:grid;grid-template-columns:1fr 440px;height:100vh}
+.page{position:relative;z-index:1;display:grid;grid-template-columns:1fr 440px;min-height:100vh;min-height:100dvh}
 .brand{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3rem;border-right:1px solid var(--border)}
 .logo-img{width:min(60vw,280px);height:auto;margin-bottom:1.2rem;animation:float 5s ease-in-out infinite}
 @keyframes halo{0%,100%{filter:drop-shadow(0 0 18px rgba(201,168,76,.3)) drop-shadow(0 0 50px rgba(100,60,200,.2))}50%{filter:drop-shadow(0 0 36px rgba(201,168,76,.55)) drop-shadow(0 0 80px rgba(100,60,200,.38))}}
@@ -32,7 +32,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .dot{width:10px;height:10px;border-radius:50%;background:var(--gold);opacity:.85}
 .dot.empty{background:rgba(255,255,255,.15);opacity:1}
 .free-badge-sub{font-style:italic;font-size:.82rem;color:rgba(240,234,214,.35);line-height:1.5}
-.auth{display:flex;flex-direction:column;justify-content:center;padding:2.5rem 3rem;background:rgba(6,10,22,.65);backdrop-filter:blur(14px)}
+.auth{display:flex;flex-direction:column;justify-content:center;padding:2.5rem 3rem;background:rgba(6,10,22,.65);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
 .auth-logo{font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.22em;color:rgba(201,168,76,.6);text-transform:uppercase;margin-bottom:1.8rem}
 .tabs{display:flex;border-bottom:1px solid rgba(201,168,76,.15);margin-bottom:2rem}
 .tab{font-family:'Cinzel',serif;font-size:.82rem;letter-spacing:.08em;padding:.6rem 0;margin-right:2rem;color:rgba(240,234,214,.35);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .25s;text-transform:uppercase}
