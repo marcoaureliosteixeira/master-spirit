@@ -9,6 +9,7 @@
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--gold:#C9A84C;--gold2:#E8C97A;--bg:#060a16;--text:#F5EFE0;--card-bg:rgba(255,255,255,.06);--card-border:rgba(201,168,76,.2)}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -249,11 +250,59 @@ var TEMAS=[
 ];
 
 // ══════════════════════════════════════════
-//  STATE
+//  SUPABASE + STATE
 // ══════════════════════════════════════════
 var myStudies=[];
 var chatHistory=[];
-try{myStudies=JSON.parse(localStorage.getItem('spirit_my_studies')||'[]');}catch(e){}
+var sbClient=null;
+var authToken=null;
+
+// Init Supabase
+(async function(){
+  try{
+    if(window.supabase){
+      sbClient=window.supabase.createClient(
+        'https://jwdvbtujzvqvktzxycwj.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp3ZHZidHVqenZxdmt0enh5Y3dqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1Mjc2NDksImV4cCI6MjA4OTEwMzY0OX0.ZfkRgdYcTjYF_E4qr1_1CZMtSiCvKLeUsoRSLoO16Mw'
+      );
+      var sess=await sbClient.auth.getSession();
+      if(sess.data?.session){
+        authToken=sess.data.session.access_token;
+        await loadStudiesFromDB();
+      }
+    }
+  }catch(e){console.warn('Supabase init:',e);}
+  // Fallback localStorage
+  if(myStudies.length===0){
+    try{myStudies=JSON.parse(localStorage.getItem('spirit_my_studies')||'[]');}catch(e){}
+  }
+  renderThemes();renderMyStudies();
+})();
+
+async function apiStudies(body){
+  if(!authToken) return null;
+  try{
+    var r=await fetch('/api/studies',{method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},
+      body:JSON.stringify(body)});
+    return await r.json();
+  }catch(e){console.warn('API studies error:',e);return null;}
+}
+
+async function loadStudiesFromDB(){
+  var d=await apiStudies({action:'list'});
+  if(d&&d.studies) myStudies=d.studies;
+}
+
+async function saveStudyToDB(study){
+  var d=await apiStudies({action:'add_study',...study});
+  if(d&&d.study) return d.study;
+  return null;
+}
+
+async function completeSessionDB(studyId,sessionNum,title,quizScore,quizTotal){
+  await apiStudies({action:'complete_session',study_id:studyId,session_number:sessionNum,session_title:title,quiz_score:quizScore,quiz_total:quizTotal});
+}
 
 // ══════════════════════════════════════════
 //  RENDER
@@ -429,17 +478,27 @@ function addStudy(tema,mode){
     addEmmanuelMsg('Estudo Agendado para "'+tema.name+'". Me diga:\n- Quais dias da semana?\n- Que horário?\n- Duração por sessão (45min, 60min ou 90min)?\n\nVou montar sua grade e verificar conflitos com outros estudos.');
   }
   var study={
+    theme_id:tema.id,
     themeId:tema.id,
     name:tema.name,
     ref:tema.ref,
+    facil_nome:tema.facilNome,
     facilNome:tema.facilNome,
     facilitador:tema.facilitador,
     mode:mode,
-    startDate:new Date().toISOString(),
+    completed_sessions:0,
     completedSessions:0,
-    totalSessions:16,
-    createdAt:new Date().toISOString()
+    total_sessions:16,
+    totalSessions:16
   };
+  // Salvar no banco (async) + localStorage (fallback)
+  saveStudyToDB(study).then(function(dbStudy){
+    if(dbStudy){
+      // Atualizar com ID do banco
+      var idx=myStudies.findIndex(function(s){return s.theme_id===tema.id&&!s.id;});
+      if(idx>=0) myStudies[idx].id=dbStudy.id;
+    }
+  });
   myStudies.push(study);
   localStorage.setItem('spirit_my_studies',JSON.stringify(myStudies));
   renderThemes();
@@ -600,12 +659,16 @@ function answerQuiz(qi,oi){
 
 function completeSession(){
   var study=myStudies[activeStudyIdx];
-  study.completedSessions=(study.completedSessions||0)+1;
+  study.completedSessions=(study.completedSessions||study.completed_sessions||0)+1;
+  study.completed_sessions=study.completedSessions;
   localStorage.setItem('spirit_my_studies',JSON.stringify(myStudies));
+  // Salvar no banco
+  var title=document.getElementById('session-title').textContent||'';
+  if(study.id) completeSessionDB(study.id,study.completedSessions,title,sessionQuizScore,sessionQuizData?sessionQuizData.length:3);
   closeSession();
   renderThemes();
   renderMyStudies();
-  addEmmanuelMsg('Sessão concluída! '+study.name+' — Progresso: '+study.completedSessions+'/'+(study.totalSessions||16)+' sessões.\n\n'+(sessionQuizScore>=2?'Bom desempenho no quiz. Continue assim.':'Recomendo revisar o conteúdo antes da próxima sessão.'));
+  addEmmanuelMsg('Sessão concluída! '+study.name+' — Progresso: '+study.completedSessions+'/'+(study.totalSessions||study.total_sessions||16)+' sessões.\n\n'+(sessionQuizScore>=2?'Bom desempenho no quiz. Continue assim.':'Recomendo revisar o conteúdo antes da próxima sessão.'));
 }
 
 function closeSession(){
@@ -707,10 +770,8 @@ function initStars(){
 //  INIT
 // ══════════════════════════════════════════
 initStars();
-renderThemes();
-renderMyStudies();
 
-// Welcome message
+// Welcome message (render é chamado pelo init async do Supabase)
 if(chatHistory.length===0){
   addEmmanuelMsg('Bem-vindo à Sala de Estudos. Sou o Mestre Emmanuel, seu mentor.\n\nEscolha um tema da biblioteca acima ou me pergunte sobre qualquer assunto do universo espiritual. Vou indicar o melhor caminho de estudo para você.\n\nLembre-se: qualidade sobre quantidade. Um livro bem estudado vale mais que dez lidos às pressas.');
 }
