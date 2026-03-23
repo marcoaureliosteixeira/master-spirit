@@ -40,18 +40,29 @@ p,span,input,textarea{font-family:Georgia,'Times New Roman',serif}
 .sec-title{font-family:'Cinzel',serif;font-size:11px;letter-spacing:2.5px;color:rgba(201,168,76,.5);text-transform:uppercase;margin:24px 0 12px;display:flex;align-items:center;gap:8px}
 .sec-title::after{content:'';flex:1;height:1px;background:rgba(201,168,76,.12)}
 
-/* Theme cards (biblioteca temática) */
-.theme-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
-.theme-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:16px 12px;cursor:pointer;transition:all .2s;text-align:center;position:relative;overflow:hidden}
-.theme-card:hover{background:rgba(201,168,76,.08);border-color:var(--gold);transform:translateY(-2px);box-shadow:0 4px 16px rgba(201,168,76,.12)}
-.theme-card .theme-icon{font-size:28px;margin-bottom:8px;display:block}
-.theme-card img{width:60px;height:60px;border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.3);margin-bottom:8px;transition:transform .3s}
-.theme-card img:hover{transform:scale(1.4)}
-.theme-card .theme-name{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.5px;color:var(--gold2);font-weight:600;margin-bottom:4px}
-.theme-card .theme-ref{font-size:11px;font-style:italic;color:rgba(240,234,214,.35);font-family:Georgia,serif}
-.theme-card .theme-fac{font-size:10px;color:rgba(201,168,76,.4);margin-top:6px;font-family:Georgia,serif}
-.theme-card.active{border-color:var(--gold);box-shadow:0 0 0 2px rgba(201,168,76,.2)}
-.theme-card .badge-studying{position:absolute;top:8px;right:8px;background:rgba(91,175,124,.15);border:1px solid rgba(91,175,124,.3);border-radius:10px;padding:2px 8px;font-size:8px;color:rgba(91,175,124,.8);font-family:'Cinzel',serif;letter-spacing:1px}
+/* Theme cards (accordion) */
+.theme-grid{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.theme-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;overflow:hidden;transition:all .2s}
+.theme-card:hover{border-color:rgba(201,168,76,.4)}
+.theme-card.active{border-color:var(--gold);box-shadow:0 0 0 2px rgba(201,168,76,.15)}
+.theme-header{display:flex;align-items:center;gap:12px;padding:12px 14px;cursor:pointer;transition:background .2s}
+.theme-header:hover{background:rgba(201,168,76,.05)}
+.theme-header img{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.3);flex-shrink:0;transition:transform .3s;cursor:pointer}
+.theme-header img:hover{transform:scale(1.5);z-index:10;position:relative}
+.theme-header .theme-icon{font-size:28px;flex-shrink:0}
+.theme-header .theme-info{flex:1;min-width:0}
+.theme-header .theme-name{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.5px;color:var(--gold2);font-weight:600}
+.theme-header .theme-ref{font-size:10px;font-style:italic;color:rgba(240,234,214,.3);font-family:Georgia,serif;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.theme-header .arrow{color:rgba(201,168,76,.4);font-size:14px;transition:transform .3s;flex-shrink:0}
+.theme-header.open .arrow{transform:rotate(180deg)}
+.theme-body{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.theme-body.open{max-height:200px}
+.theme-body-inner{padding:0 14px 14px;display:flex;align-items:center;gap:12px}
+.theme-fac{font-size:11px;color:rgba(201,168,76,.4);font-family:Georgia,serif}
+.theme-desc{font-size:12px;color:rgba(240,234,214,.45);font-family:Georgia,serif;line-height:1.5}
+.badge-studying{display:inline-block;background:rgba(91,175,124,.15);border:1px solid rgba(91,175,124,.3);border-radius:10px;padding:2px 8px;font-size:8px;color:rgba(91,175,124,.8);font-family:'Cinzel',serif;letter-spacing:1px;margin-left:8px}
+.btn-start{background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.35);border-radius:10px;padding:8px 16px;cursor:pointer;color:var(--gold);font-family:'Cinzel',serif;font-size:9px;letter-spacing:1px;transition:all .2s;flex-shrink:0}
+.btn-start:hover{background:rgba(201,168,76,.25)}
 
 /* My studies */
 .my-study{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:14px;margin-bottom:10px;transition:all .2s}
@@ -117,14 +128,9 @@ p,span,input,textarea{font-family:Georgia,'Times New Roman',serif}
 #avatar-zoom{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;cursor:pointer}
 #avatar-zoom img{max-width:70vw;max-height:70vh;border-radius:50%;border:3px solid rgba(201,168,76,.5);box-shadow:0 0 60px rgba(201,168,76,.3)}
 
-@media(max-width:500px){
-  .theme-grid{grid-template-columns:repeat(2,1fr)}
-  .theme-card img{width:50px;height:50px}
-  .theme-card .theme-name{font-size:9px}
-  .theme-card .theme-ref{font-size:9px}
-}
-@media(max-width:340px){
-  .theme-grid{grid-template-columns:1fr}
+@media(max-width:400px){
+  .theme-header img{width:36px;height:36px}
+  .theme-header .theme-name{font-size:10px}
 }
 </style>
 </head>
@@ -309,15 +315,27 @@ async function completeSessionDB(studyId,sessionNum,title,quizScore,quizTotal){
 // ══════════════════════════════════════════
 function renderThemes(){
   var el=document.getElementById('theme-grid');
-  el.innerHTML=TEMAS.map(function(t){
-    var studying=myStudies.find(function(s){return s.themeId===t.id;});
+  el.innerHTML=TEMAS.map(function(t,i){
+    var studying=myStudies.find(function(s){return s.themeId===t.id||s.theme_id===t.id;});
     var facImg=t.facilAvatar?'<img src="'+t.facilAvatar+'" onclick="event.stopPropagation();document.getElementById(\'avatar-zoom-img\').src=\''+t.facilAvatar+'\';document.getElementById(\'avatar-zoom\').style.display=\'flex\'" alt="">':'<span class="theme-icon">'+t.icon+'</span>';
-    return '<div class="theme-card'+(studying?' active':'')+'" onclick="selectTheme(\''+t.id+'\')">'+
-      (studying?'<span class="badge-studying">Estudando</span>':'')+
-      facImg+
-      '<div class="theme-name">'+t.name+'</div>'+
-      '<div class="theme-ref">'+t.ref+'</div>'+
-      '<div class="theme-fac">Facilitador: '+t.facilNome+'</div>'+
+    return '<div class="theme-card'+(studying?' active':'')+'">'+
+      '<div class="theme-header" onclick="toggleTheme('+i+')">'+
+        facImg+
+        '<div class="theme-info">'+
+          '<div class="theme-name">'+t.name+(studying?'<span class="badge-studying">Estudando</span>':'')+'</div>'+
+          '<div class="theme-ref">'+t.ref+'</div>'+
+        '</div>'+
+        '<span class="arrow">▼</span>'+
+      '</div>'+
+      '<div class="theme-body" id="theme-body-'+i+'">'+
+        '<div class="theme-body-inner">'+
+          '<div style="flex:1">'+
+            '<div class="theme-fac">Facilitador: '+t.facilNome+(t.specialist?' (especialista)':'')+'</div>'+
+            '<div class="theme-desc" style="margin-top:4px">'+t.ref+'</div>'+
+          '</div>'+
+          '<button class="btn-start" onclick="selectTheme(\''+t.id+'\')">'+(studying?'Continuar':'Iniciar')+'</button>'+
+        '</div>'+
+      '</div>'+
     '</div>';
   }).join('');
 }
@@ -710,6 +728,13 @@ function clearChat(){
 //  NAV + STARS
 // ══════════════════════════════════════════
 function toggleNav(){var m=document.getElementById('nav-menu');m.style.display=m.style.display==='none'?'block':'none';}
+
+function toggleTheme(idx){
+  var body=document.getElementById('theme-body-'+idx);
+  var header=body.previousElementSibling;
+  body.classList.toggle('open');
+  header.classList.toggle('open');
+}
 
 var currentTab='biblioteca';
 function switchTab(tab){
