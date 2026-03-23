@@ -8,637 +8,345 @@
 <title>MASTER SPIRIT — Salas de Estudo</title>
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="shared.css">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--gold:#C9A84C;--gold2:#E8C97A;--bg:#060a16;--text:#F5EFE0;--fs:18px;--font:'Cinzel',Georgia,serif;--card-bg:rgba(255,255,255,.06);--card-border:rgba(201,168,76,.2);--accent:#C9A84C;--soft:rgba(255,255,255,.04)}
+:root{--gold:#C9A84C;--gold2:#E8C97A;--bg:#060a16;--text:#F5EFE0;--card-bg:rgba(255,255,255,.06);--card-border:rgba(201,168,76,.2)}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;overflow:auto}
-body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:var(--fs)}
-p,span,input,textarea,.field-input{font-family:Georgia,'Times New Roman',serif}
+body{background:var(--bg);color:var(--text);font-family:'Cinzel',Georgia,serif;font-size:16px}
+p,span,input,textarea{font-family:Georgia,'Times New Roman',serif}
 #page{max-width:900px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
-#hdr{background:rgba(12,18,38,.88);backdrop-filter:blur(16px);border-bottom:1px solid rgba(201,168,76,.12);padding:16px 18px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:50}
-.back{background:none;border:none;cursor:pointer;color:var(--gold);font-size:26px;padding:0}
-#hdr h1{font-family:'Cinzel',serif;font-size:16px;color:var(--gold);letter-spacing:2px}
-#hdr p{font-size:12px;font-style:italic;color:rgba(240,234,214,.35);margin-top:2px}
-#main{flex:1;padding:20px 18px}
-#ft{text-align:center;padding:16px;border-top:1px solid rgba(201,168,76,.1)}
+
+/* Header */
+#hdr{background:rgba(12,18,38,.88);backdrop-filter:blur(16px);border-bottom:1px solid rgba(201,168,76,.12);padding:14px 18px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:50}
+#hdr h1{font-family:'Cinzel',serif;font-size:14px;color:var(--gold);letter-spacing:2px}
+#hdr p{font-size:11px;font-style:italic;color:rgba(240,234,214,.35);margin-top:2px;font-family:Georgia,serif}
+
 /* Stars */
 #stars{position:fixed;inset:0;pointer-events:none;z-index:0;max-width:900px;margin:0 auto}
 .star{position:absolute;background:white;border-radius:50%;animation:tw var(--d,3s) ease-in-out infinite var(--dl,0s)}
 @keyframes tw{0%,100%{opacity:.05}50%{opacity:.65}}
-@keyframes fadeup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-/* Wizard */
-.step{display:none;animation:fadeup .4s ease}
-.step.active{display:block}
-.step-title{font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:16px}
-.step-num{font-family:'Cinzel',serif;font-size:10px;letter-spacing:1.5px;color:#A89880;margin-bottom:8px}
-.field-label{font-family:'Cinzel',serif;font-size:10px;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase;margin-bottom:8px}
-.field-input{width:100%;background:rgba(255,255,255,.1);border:1px solid rgba(201,168,76,.25);border-radius:12px;padding:14px 18px;color:var(--text);font-family:var(--font);font-size:17px;outline:none;transition:border-color .2s;margin-bottom:16px}
-.field-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(201,168,76,.15)}
-.field-input::placeholder{color:rgba(240,234,214,.3)}
-.field-textarea{min-height:180px;resize:vertical}
-/* Book cards */
-.book-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px}
-.book-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:16px;cursor:pointer;transition:all .2s;text-align:center}
-.book-card:hover{background:rgba(201,168,76,.08);border-color:var(--accent);transform:translateY(-1px);box-shadow:0 4px 12px rgba(201,168,76,.1)}
-.book-card.selected{background:rgba(201,168,76,.15);border-color:var(--accent);box-shadow:0 0 0 3px rgba(201,168,76,.15)}
-.book-card .book-ico{font-size:28px;margin-bottom:8px;display:block}
-.book-card .book-name{font-family:'Cinzel',serif;font-size:12px;letter-spacing:.5px;color:var(--gold2);font-weight:600}
-.book-card .book-author{font-size:13px;font-style:italic;color:rgba(240,234,214,.45);margin-top:4px}
-/* Facilitator cards */
-.fac-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
-.fac-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:16px 10px;cursor:pointer;transition:all .2s;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.04)}
-.fac-card:hover{background:rgba(201,168,76,.08);border-color:var(--accent)}
-.fac-card.selected{background:rgba(201,168,76,.1);border-color:var(--accent);box-shadow:0 0 0 3px rgba(201,168,76,.15)}
-.fac-card.specialist{border-color:#C4B0D9}
-.fac-card.specialist.selected{background:rgba(155,125,196,.1);border-color:rgba(155,125,196,.8);box-shadow:0 0 0 3px rgba(155,125,196,.15)}
-.fac-card .fac-emoji{font-size:32px;display:block;margin-bottom:6px}
-.fac-card img,.avatar-lupa{transition:transform .3s ease,box-shadow .3s ease;cursor:pointer}
-.fac-card img:hover,.avatar-lupa:hover{transform:scale(1.6);z-index:20;position:relative;box-shadow:0 0 30px rgba(201,168,76,.5)}
-/* Avatar zoom overlay */
-#fac-zoom{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;cursor:pointer}
-#fac-zoom img{max-width:70vw;max-height:70vh;border-radius:50%;border:3px solid rgba(201,168,76,.5);box-shadow:0 0 60px rgba(201,168,76,.3);animation:zoomFacIn .3s ease}
-@keyframes zoomFacIn{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
-.fac-card .fac-name{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.5px;color:var(--text);font-weight:600}
-.fac-card .fac-type{font-size:11px;font-style:italic;color:rgba(240,234,214,.4);margin-top:3px}
-/* Freq options */
-.freq-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
-.freq-opt{padding:12px 18px;border-radius:12px;border:1px solid var(--card-border);background:var(--card-bg);cursor:pointer;font-size:15px;color:rgba(240,234,214,.7);transition:all .2s;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.04)}
-.freq-opt:hover{border-color:var(--accent)}
-.freq-opt.active{background:rgba(201,168,76,.1);border-color:var(--accent);color:var(--gold);font-weight:600}
-/* Days */
-.day-row{display:flex;gap:8px;margin-bottom:14px}
-.day-btn{width:42px;height:42px;border-radius:50%;border:1px solid var(--card-border);background:var(--card-bg);cursor:pointer;font-family:'Cinzel',serif;font-size:11px;color:rgba(240,234,214,.7);display:flex;align-items:center;justify-content:center;transition:all .2s;box-shadow:0 1px 3px rgba(0,0,0,.04)}
-.day-btn.active{background:rgba(201,168,76,.1);border-color:var(--accent);color:var(--gold);font-weight:600}
-/* Buttons */
-.btn-next{width:100%;padding:16px;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.4);border-radius:14px;color:var(--gold2);font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;cursor:pointer;transition:all .2s;text-transform:uppercase;margin-top:12px}
-.btn-next:hover{background:rgba(201,168,76,.3);border-color:rgba(201,168,76,.6)}
-.btn-next:disabled{opacity:.4;cursor:not-allowed}
-.btn-back{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:14px;color:rgba(240,234,214,.5);font-family:'Cinzel',serif;font-size:11px;letter-spacing:1.5px;cursor:pointer;width:100%;margin-top:10px}
-.btn-back:hover{background:rgba(255,255,255,.08)}
-.status{font-size:14px;font-style:italic;color:var(--gold);text-align:center;margin-top:10px;min-height:20px}
-/* Selected books list */
-.selected-books{margin-bottom:16px}
-.sel-book{display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:12px;margin-bottom:8px}
-.sel-book span{flex:1;font-size:15px;color:var(--text)}
-.sel-book button{background:none;border:none;cursor:pointer;color:rgba(232,122,122,.8);font-size:16px}
+
+/* Nav menu */
+#nav-menu{display:none;background:rgba(12,18,38,.95);border-bottom:1px solid rgba(201,168,76,.15);padding:10px 18px;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+#nav-menu a{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(201,168,76,.08);text-decoration:none;color:var(--text);font-size:15px;font-family:'Cinzel',serif}
+#nav-menu a:last-child{border-bottom:none}
+
+/* Content */
+#main{flex:1;padding:18px;padding-bottom:160px}
+
+/* Section titles */
+.sec-title{font-family:'Cinzel',serif;font-size:11px;letter-spacing:2.5px;color:rgba(201,168,76,.5);text-transform:uppercase;margin:24px 0 12px;display:flex;align-items:center;gap:8px}
+.sec-title::after{content:'';flex:1;height:1px;background:rgba(201,168,76,.12)}
+
+/* Theme cards (biblioteca temática) */
+.theme-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px}
+.theme-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:16px 12px;cursor:pointer;transition:all .2s;text-align:center;position:relative;overflow:hidden}
+.theme-card:hover{background:rgba(201,168,76,.08);border-color:var(--gold);transform:translateY(-2px);box-shadow:0 4px 16px rgba(201,168,76,.12)}
+.theme-card .theme-icon{font-size:28px;margin-bottom:8px;display:block}
+.theme-card img{width:60px;height:60px;border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.3);margin-bottom:8px;transition:transform .3s}
+.theme-card img:hover{transform:scale(1.4)}
+.theme-card .theme-name{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.5px;color:var(--gold2);font-weight:600;margin-bottom:4px}
+.theme-card .theme-ref{font-size:11px;font-style:italic;color:rgba(240,234,214,.35);font-family:Georgia,serif}
+.theme-card .theme-fac{font-size:10px;color:rgba(201,168,76,.4);margin-top:6px;font-family:Georgia,serif}
+.theme-card.active{border-color:var(--gold);box-shadow:0 0 0 2px rgba(201,168,76,.2)}
+.theme-card .badge-studying{position:absolute;top:8px;right:8px;background:rgba(91,175,124,.15);border:1px solid rgba(91,175,124,.3);border-radius:10px;padding:2px 8px;font-size:8px;color:rgba(91,175,124,.8);font-family:'Cinzel',serif;letter-spacing:1px}
+
+/* My studies */
+.my-study{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:14px;margin-bottom:10px;transition:all .2s}
+.my-study:hover{border-color:var(--gold)}
+.my-study .study-title{font-family:'Cinzel',serif;font-size:12px;color:var(--gold);margin-bottom:4px}
+.my-study .study-info{font-size:12px;color:rgba(240,234,214,.5);font-family:Georgia,serif}
+.progress-bar{background:rgba(255,255,255,.07);border-radius:20px;height:6px;overflow:hidden;margin-top:8px}
+.progress-fill{background:linear-gradient(90deg,#C9A84C,#E8C97A);height:100%;border-radius:20px;transition:width .5s}
+
+/* Emmanuel chat */
+#emmanuel-bar{position:fixed;bottom:0;left:0;right:0;max-width:900px;margin:0 auto;z-index:80;background:rgba(6,10,22,.97);border-top:1px solid rgba(201,168,76,.15);padding:12px 16px}
+#emmanuel-bar .bar-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+#emmanuel-bar .bar-header img{width:32px;height:32px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,168,76,.3)}
+#emmanuel-bar .bar-header span{font-family:'Cinzel',serif;font-size:10px;color:var(--gold);letter-spacing:1.5px}
+#emmanuel-chat-area{max-height:250px;overflow-y:auto;margin-bottom:8px;scroll-behavior:smooth}
+.chat-msg{display:flex;gap:8px;align-items:flex-start;margin-bottom:8px}
+.chat-msg img{width:24px;height:24px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,168,76,.3);flex-shrink:0;margin-top:2px}
+.chat-msg .user-ico{width:24px;height:24px;border-radius:50%;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.3);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--gold);flex-shrink:0;margin-top:2px}
+.chat-msg .bubble{flex:1;font-size:14px;line-height:1.6;color:rgba(240,234,214,.75);font-family:Georgia,serif;padding:8px 12px;border-radius:10px}
+.chat-msg.emmanuel .bubble{background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.12)}
+.chat-msg.user .bubble{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.15)}
+.chat-input-row{display:flex;gap:8px;align-items:center}
+#emmanuel-input{flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.22);border-radius:15px;padding:10px 16px;color:var(--text);font-family:Georgia,serif;font-size:14px;outline:none;transition:border-color .2s}
+#emmanuel-input:focus{border-color:rgba(201,168,76,.5)}
+#emmanuel-input::placeholder{color:rgba(240,234,214,.25);font-style:italic}
+.send-btn{background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.4);border-radius:50%;width:38px;height:38px;cursor:pointer;color:var(--gold);font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.send-btn:hover{background:rgba(201,168,76,.3)}
+
+/* Disclaimer */
+.disclaimer{font-size:10px;color:rgba(240,234,214,.2);font-style:italic;text-align:center;padding:8px;font-family:Georgia,serif;line-height:1.5}
+
+/* Footer */
+#ft{text-align:center;padding:16px;border-top:1px solid rgba(201,168,76,.1)}
+
+/* Avatar zoom */
+#avatar-zoom{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;cursor:pointer}
+#avatar-zoom img{max-width:70vw;max-height:70vh;border-radius:50%;border:3px solid rgba(201,168,76,.5);box-shadow:0 0 60px rgba(201,168,76,.3)}
+
 @media(max-width:400px){
-  .book-grid{grid-template-columns:1fr}
-  .fac-grid{grid-template-columns:repeat(2,1fr)}
+  .theme-grid{grid-template-columns:1fr}
+  .theme-card img{width:50px;height:50px}
 }
 </style>
-<div id="fac-zoom" onclick="this.style.display='none'"><img id="fac-zoom-img" src="" alt=""></div>
 </head>
 <body>
 <div id="stars"></div>
+<div id="avatar-zoom" onclick="this.style.display='none'"><img id="avatar-zoom-img" src="" alt=""></div>
+
 <div id="page">
   <div id="hdr">
-    <button class="back" onclick="goBack()" title="Voltar">‹</button>
-    <img src="shelf-books.png" style="width:44px;height:44px;border-radius:10px;object-fit:cover;flex-shrink:0" alt="" onerror="this.style.display='none'">
+    <button onclick="window.location.href='app.html'" style="background:none;border:none;cursor:pointer;color:var(--gold);font-size:22px;padding:0">‹</button>
+    <img src="avatar-mestre-emmanuel.png" onclick="document.getElementById('avatar-zoom-img').src='avatar-mestre-emmanuel.png';document.getElementById('avatar-zoom').style.display='flex'" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.3);cursor:pointer;transition:transform .3s" onmouseover="this.style.transform='scale(1.3)'" onmouseout="this.style.transform='scale(1)'" alt="Emmanuel">
     <div style="flex:1">
       <h1>SALAS DE ESTUDO</h1>
-      <p>crie sua sala de estudo personalizada</p>
+      <p>Mestre Emmanuel · Mentor da Biblioteca Espiritual</p>
     </div>
     <button onclick="toggleNav()" style="background:none;border:1px solid var(--card-border);border-radius:10px;padding:8px 10px;cursor:pointer;font-size:14px;color:var(--gold)" title="Menu">☰</button>
   </div>
-  <!-- Nav dropdown -->
-  <div id="nav-menu" style="display:none;position:sticky;top:60px;z-index:49;background:rgba(12,18,38,.95);border-bottom:1px solid rgba(201,168,76,.15);padding:10px 18px;box-shadow:0 4px 12px rgba(0,0,0,.3)">
-    <a href="app.html" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--soft);text-decoration:none;color:var(--text)">
-      <span style="font-size:18px">🕊️</span><span style="font-size:15px;font-family:'Cinzel',serif">Mestres Espirituais</span></a>
-    <a href="salas.html" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--soft);text-decoration:none;color:var(--gold);font-weight:600">
-      <span style="font-size:18px">📚</span><span style="font-size:15px;font-family:'Cinzel',serif">Salas de Estudo</span></a>
-    <a href="evangelho.html" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--soft);text-decoration:none;color:var(--text)">
-      <span style="font-size:18px">🕯️</span><span style="font-size:15px;font-family:'Cinzel',serif">Evangelho no Lar</span></a>
-    <a href="passe.html" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--soft);text-decoration:none;color:var(--text)">
-      <span style="font-size:18px">🙌</span><span style="font-size:15px;font-family:'Cinzel',serif">Passe Espiritual</span></a>
-    <a href="app.html" style="display:flex;align-items:center;gap:10px;padding:10px 0;text-decoration:none;color:rgba(240,234,214,.4)">
-      <span style="font-size:18px">🏠</span><span style="font-size:15px;font-family:'Cinzel',serif">Início</span></a>
+
+  <div id="nav-menu">
+    <a href="app.html"><span>🕊️</span> Mestres Espirituais</a>
+    <a href="salas.html" style="color:var(--gold);font-weight:600"><span>📚</span> Salas de Estudo</a>
+    <a href="evangelho.html"><span>🕯️</span> Evangelho no Lar</a>
+    <a href="passe.html"><span>🙌</span> Passe Espiritual</a>
+    <a href="app.html" style="color:rgba(240,234,214,.4)"><span>🏠</span> Início</a>
   </div>
+
   <div id="main">
-    <!-- STEP 1: Nome e Objetivo -->
-    <div class="step active" id="step-1">
-      <p class="step-num">Passo 1 de 5</p>
-      <p class="step-title">Nome e Objetivo da Sala</p>
-      <p class="field-label">Nome da Sala</p>
-      <input class="field-input" id="sala-nome" type="text" placeholder="Ex: Grupo Fraternidade — Livro dos Espíritos">
-      <p class="field-label">Objetivo da Sala *</p>
-      <textarea class="field-input field-textarea" id="sala-objetivo" placeholder="Ex: Aprofundar o estudo sobre reencarnação e vida após a morte para encontrar consolo e compreensão..."></textarea>
-      <p style="font-size:13px;color:rgba(240,234,214,.4);font-style:italic;margin:-10px 0 14px;line-height:1.5">A IA usará o objetivo para sugerir livros e personalizar o currículo de estudo.</p>
-      <button class="btn-next" onclick="nextStep(2)">Próximo →</button>
-    </div>
+    <!-- Disclaimer -->
+    <p class="disclaimer">O Master Spirit não reproduz nem substitui obras literárias. Oferecemos programas de estudo temático com referências bibliográficas. Recomendamos a aquisição das obras originais.</p>
 
-    <!-- STEP 2: Biblioteca / Livros -->
-    <div class="step" id="step-2">
-      <p class="step-num">Passo 2 de 5</p>
-      <p class="step-title">Escolha os Livros para Estudo</p>
-      <p style="font-size:14px;color:rgba(240,234,214,.4);font-style:italic;margin-bottom:14px">Selecione da biblioteca ou peça sugestões ao Mestre Emmanuel.</p>
+    <!-- Biblioteca Temática Permanente -->
+    <p class="sec-title">Biblioteca Temática</p>
+    <div class="theme-grid" id="theme-grid"></div>
 
-      <!-- Emmanuel suggestion -->
-      <div id="emmanuel-section" style="background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.25);border-radius:14px;padding:16px;margin-bottom:16px;overflow:visible">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;overflow:visible">
-          <img src="avatar-mestre-emmanuel.png" class="avatar-lupa" onclick="document.getElementById('fac-zoom-img').src='avatar-mestre-emmanuel.png';document.getElementById('fac-zoom').style.display='flex'" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.3);box-shadow:0 0 12px rgba(201,168,76,.15);cursor:pointer;flex-shrink:0" alt="Emmanuel">
-          <div>
-            <p style="font-family:'Cinzel',serif;font-size:12px;color:var(--gold);font-weight:600">Mestre Emmanuel</p>
-            <p style="font-size:12px;color:rgba(240,234,214,.4);font-style:italic">Mentor estratégico da Biblioteca Espiritual</p>
-          </div>
-          <button onclick="askEmmanuel()" id="emmanuel-btn" style="margin-left:auto;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.4);border-radius:10px;padding:8px 16px;cursor:pointer;color:var(--gold2);font-family:'Cinzel',serif;font-size:10px;letter-spacing:1px">✦ Sugerir Livros</button>
-        </div>
-        <div id="emmanuel-response" style="font-size:15px;line-height:1.7;color:rgba(240,234,214,.7);font-family:Georgia,'Times New Roman',serif;max-height:300px;overflow-y:auto"></div>
-        <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
-          <input class="field-input" id="emmanuel-chat" type="text" placeholder="Pergunte ao Emmanuel..." style="margin-bottom:0;flex:1;font-size:15px" onkeydown="if(event.key==='Enter'){event.preventDefault();chatEmmanuel();}">
-          <button onclick="chatEmmanuel()" style="background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.4);border-radius:12px;padding:10px 14px;cursor:pointer;color:var(--gold);font-size:14px" title="Enviar">↑</button>
-          <button onclick="copyEmmanuelChat()" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 10px;cursor:pointer;color:rgba(240,234,214,.4);font-size:12px" title="Copiar conversa">⎘</button>
-          <button onclick="clearEmmanuelChat()" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 10px;cursor:pointer;color:rgba(240,234,214,.4);font-size:12px" title="Limpar conversa">↺</button>
-        </div>
-      </div>
-
-      <div class="selected-books" id="selected-books"></div>
-
-      <p class="field-label">Biblioteca Padrão</p>
-      <div class="book-grid" id="book-grid"></div>
-
-      <p class="field-label" style="margin-top:14px">Adicionar Livro à Biblioteca Pessoal</p>
-      <div style="display:flex;gap:8px">
-        <input class="field-input" id="new-book" type="text" placeholder="Digite o nome do livro..." style="margin-bottom:0;flex:1">
-        <button onclick="addCustomBook()" style="background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.35);border-radius:12px;padding:10px 16px;cursor:pointer;color:var(--gold);font-family:'Cinzel',serif;font-size:9px;white-space:nowrap">+ Adicionar</button>
-      </div>
-      <p class="status" id="book-status"></p>
-
-      <button class="btn-next" onclick="nextStep(3)">Próximo →</button>
-      <button class="btn-back" onclick="nextStep(1)">← Voltar</button>
-    </div>
-
-    <!-- STEP 3: Configurar cada livro (solo/grupo + facilitador) -->
-    <div class="step" id="step-3">
-      <p class="step-num">Passo 3 de 4</p>
-      <p class="step-title">Configurar Livros</p>
-      <p style="font-size:14px;color:rgba(240,234,214,.4);font-style:italic;margin-bottom:16px">Para cada livro, defina o tipo de estudo e o facilitador</p>
-      <div id="books-config"></div>
-      <button class="btn-next" onclick="nextStep(4)">Próximo →</button>
-      <button class="btn-back" onclick="nextStep(2)">← Voltar</button>
-    </div>
-
-    <!-- STEP 4: Frequência -->
-    <div class="step" id="step-4">
-      <p class="step-num">Passo 4 de 4</p>
-      <p class="step-title">Frequência e Horário</p>
-
-      <p class="field-label">Dias da Semana</p>
-      <div class="day-row">
-        <div class="day-btn" onclick="toggleDay(this,'seg')">Seg</div>
-        <div class="day-btn" onclick="toggleDay(this,'ter')">Ter</div>
-        <div class="day-btn" onclick="toggleDay(this,'qua')">Qua</div>
-        <div class="day-btn" onclick="toggleDay(this,'qui')">Qui</div>
-        <div class="day-btn" onclick="toggleDay(this,'sex')">Sex</div>
-        <div class="day-btn" onclick="toggleDay(this,'sab')">Sáb</div>
-        <div class="day-btn" onclick="toggleDay(this,'dom')">Dom</div>
-      </div>
-
-      <p class="field-label">Horários</p>
-      <div id="horarios-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">
-        <p style="font-size:13px;color:rgba(240,234,214,.3);font-style:italic;font-family:Georgia,serif">Selecione os dias acima para definir os horários</p>
-      </div>
-
-      <p class="field-label">Duração da Sessão</p>
-      <div class="freq-row">
-        <div class="freq-opt" onclick="setDuracao(45)" id="dur-45">45 min</div>
-        <div class="freq-opt active" onclick="setDuracao(60)" id="dur-60">1 hora</div>
-        <div class="freq-opt" onclick="setDuracao(90)" id="dur-90">1h30</div>
-      </div>
-
-      <div style="margin-top:20px;padding:16px;background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.15);border-radius:12px">
-        <p class="field-label">Resumo da Sala</p>
-        <div id="resumo"></div>
-      </div>
-
-      <button class="btn-next" onclick="criarSala()" id="btn-criar">✦ Criar Sala de Estudo</button>
-      <p class="status" id="criar-status"></p>
-      <button class="btn-back" onclick="nextStep(3)">← Voltar</button>
-    </div>
+    <!-- Meus Estudos -->
+    <p class="sec-title" id="my-studies-title" style="display:none">Meus Estudos</p>
+    <div id="my-studies"></div>
   </div>
+
   <div id="ft">
-    <div style="display:flex;align-items:center;justify-content:center;gap:8px">
-      <span style="font-family:'Cinzel',serif;font-size:8px;letter-spacing:2px;color:rgba(240,234,214,.3);text-transform:uppercase">Powered by</span>
-      <img src="logo-spyrit-systems.png" alt="Spyrit Systems" style="height:28px;opacity:.7">
+    <div style="display:flex;align-items:center;gap:8px;justify-content:center">
+      <span style="font-family:'Cinzel',serif;font-size:8px;letter-spacing:2px;color:rgba(240,234,214,.35);text-transform:uppercase">Powered by</span>
+      <img src="logo-spyrit-systems.png" style="height:28px;opacity:.85" alt="Spyrit Systems">
     </div>
   </div>
 </div>
 
+<!-- Emmanuel Chat Bar (fixo embaixo) -->
+<div id="emmanuel-bar">
+  <div class="bar-header">
+    <img src="avatar-mestre-emmanuel.png" alt="">
+    <span>MESTRE EMMANUEL</span>
+    <div style="margin-left:auto;display:flex;gap:6px">
+      <button onclick="copyChat()" style="background:none;border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:4px 8px;cursor:pointer;color:rgba(240,234,214,.4);font-size:10px" title="Copiar">⎘</button>
+      <button onclick="clearChat()" style="background:none;border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:4px 8px;cursor:pointer;color:rgba(240,234,214,.4);font-size:10px" title="Limpar">↺</button>
+    </div>
+  </div>
+  <div id="emmanuel-chat-area"></div>
+  <div class="chat-input-row">
+    <input id="emmanuel-input" type="text" placeholder="Pergunte ao Emmanuel sobre temas de estudo..." onkeydown="if(event.key==='Enter'){event.preventDefault();sendToEmmanuel();}">
+    <button class="send-btn" onclick="sendToEmmanuel()">↑</button>
+  </div>
+</div>
+
 <script>
-// ── DATA ──
-var DEFAULT_BOOKS=[
-  {id:'livro-espiritos',name:'O Livro dos Espíritos',author:'Allan Kardec',icon:'📖'},
-  {id:'bhagavad-gita',name:'Bhagavad Gita (Canção do Senhor)',author:'Vyasa',icon:'⊕'},
-  {id:'urantia',name:'O Livro de Urantia',author:'Revelação Épocal',icon:'◎'},
-  {id:'cavalo-troia-1',name:'Operação Cavalo de Tróia — Livro 1',author:'J.J. Benítez',icon:'⚔️'},
-  {id:'cavalo-troia-2',name:'Operação Cavalo de Tróia — Livro 2',author:'J.J. Benítez',icon:'⚔️'},
-  {id:'cavalo-troia-3',name:'Operação Cavalo de Tróia — Livro 3',author:'J.J. Benítez',icon:'⚔️'},
-  {id:'cavalo-troia-4',name:'Operação Cavalo de Tróia — Livro 4',author:'J.J. Benítez',icon:'⚔️'},
-  {id:'cavalo-troia-5',name:'Operação Cavalo de Tróia — Livro 5',author:'J.J. Benítez',icon:'⚔️'},
-  {id:'cavalo-troia-6',name:'Operação Cavalo de Tróia — Livro 6',author:'J.J. Benítez',icon:'⚔️'},
-  {id:'evangelho-espiritismo',name:'O Evangelho Segundo o Espiritismo',author:'Allan Kardec',icon:'🕊️'},
-  {id:'livro-mediuns',name:'O Livro dos Médiuns',author:'Allan Kardec',icon:'🌀'},
-  {id:'nosso-lar',name:'Nosso Lar',author:'André Luiz / Chico Xavier',icon:'🌟'},
-  {id:'mensageiros',name:'Os Mensageiros',author:'André Luiz / Chico Xavier',icon:'🌟'},
-  {id:'ceu-inferno',name:'O Céu e o Inferno',author:'Allan Kardec',icon:'📖'},
-  {id:'genese',name:'A Gênese',author:'Allan Kardec',icon:'📖'},
-  {id:'cartas-cristo',name:'Cartas de Cristo',author:'Mary Margaret Moore',icon:'✝'},
-  {id:'caminho-luz',name:'A Caminho da Luz',author:'Emmanuel / Chico Xavier',icon:'🌟'},
-  {id:'trabalhadores',name:'Os Trabalhadores da Última Hora',author:'Espíritos Diversos / Chico Xavier',icon:'🌟'},
-  {id:'missionarios-luz',name:'Missionários da Luz',author:'André Luiz / Chico Xavier',icon:'🌟'},
-  {id:'arcturianos',name:'Os Arcturianos',author:'Norma Milanovich',icon:'🛸'},
-  {id:'comando-ashtar',name:'Comando Ashtar — Missão Terra',author:'Canalização Coletiva',icon:'🛸'},
-  {id:'vida-outros-planetas',name:'A Vida nos Mundos Superiores',author:'Espíritos Diversos',icon:'🌌'}
+// ══════════════════════════════════════════
+//  BIBLIOTECA TEMÁTICA PERMANENTE
+// ══════════════════════════════════════════
+var TEMAS=[
+  {id:'doutrina-espiritos',name:'Doutrina dos Espíritos',ref:'Ref.: O Livro dos Espíritos — Allan Kardec',icon:'📖',facilitador:'antonio',facilNome:'Mestre Antonio',facilAvatar:'avatar-mestre-antonio.png'},
+  {id:'pratica-mediunica',name:'Prática Mediúnica',ref:'Ref.: O Livro dos Médiuns — Allan Kardec',icon:'🔮',facilitador:'adriano',facilNome:'Mestre Adriano',facilAvatar:'avatar-mestre-adriano.png'},
+  {id:'cosmologia-universal',name:'Cosmologia Universal',ref:'Ref.: O Livro de Urantia',icon:'🌌',facilitador:'larry',facilNome:'Mestre Larry',facilAvatar:null,specialist:true},
+  {id:'consciencia-cristica',name:'A Consciência Crística',ref:'Ref.: Cartas de Cristo',icon:'✝',facilitador:'mary',facilNome:'Mestra Mary',facilAvatar:'avatar-mestra-mary.png',specialist:true},
+  {id:'sabedoria-dharma',name:'Sabedoria do Dharma',ref:'Ref.: Bhagavad Gita',icon:'🙏',facilitador:'swami',facilNome:'Mestre Swami',facilAvatar:null,specialist:true},
+  {id:'vida-jesus-investigativa',name:'A Vida de Jesus',ref:'Ref.: Operação Cavalo de Tróia 1 — J.J. Benítez',icon:'⚔️',facilitador:'benitez',facilNome:'Mestre Benítez',facilAvatar:null,specialist:true}
 ];
 
-var FACILITADORES_GEN=[
-  {id:'antonio',name:'Mestre Antonio',estilo:'Sábio e profundo',avatar:'avatar-mestre-antonio.png'},
-  {id:'adriano',name:'Mestre Adriano',estilo:'Eloquente e inspirador',avatar:'avatar-mestre-adriano.png'},
-  {id:'leila',name:'Mestra Leila',estilo:'Acolhedora e maternal',avatar:'avatar-mestre-leila.png'},
-  {id:'silvestre',name:'Mestre Silvestre',estilo:'Compassivo e didático',avatar:'avatar-mestre-silvestre.png'},
-  {id:'wander',name:'Mestre Wander',estilo:'Disciplinado e estratégico',avatar:'avatar-mestre-wander.png'},
-  {id:'bia',name:'Mestra Bia',estilo:'Paciente e encorajadora',avatar:'avatar-mestra-bia.png'}
-];
+// ══════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════
+var myStudies=[];
+var chatHistory=[];
+try{myStudies=JSON.parse(localStorage.getItem('spirit_my_studies')||'[]');}catch(e){}
 
-var FACILITADORES_SPEC=[
-  {id:'benitez',name:'Benítez',estilo:'Especialista Cavalo de Tróia',emoji:'⚔️',books:['cavalo-troia-1','cavalo-troia-2','cavalo-troia-3','cavalo-troia-4','cavalo-troia-5','cavalo-troia-6']},
-  {id:'swami',name:'Swami',estilo:'Especialista Bhagavad Gita',emoji:'🙏',books:['bhagavad-gita']},
-  {id:'larry',name:'Larry',estilo:'Especialista Livro de Urantia',emoji:'◎',books:['urantia']},
-  {id:'mary',name:'Mestra Mary',estilo:'Especialista Cartas de Cristo',avatar:'avatar-mestra-mary.png',books:['cartas-cristo']}
-];
-
-// ── STATE ──
-var sala={nome:'',objetivo:'',livros:[],dias:[],horarios:{},duracao:60};
-// Cada livro terá: {id, name, author, icon, tipo:'solo'|'grupo', facilitador:null, membros:[]}
-var personalLibrary=[];
-try{personalLibrary=JSON.parse(localStorage.getItem('spirit_personal_library')||'[]');}catch(e){}
-
-// ── INIT ──
-window.addEventListener('load',function(){
-  // Stars
-  var sf=document.getElementById('stars');
-  for(var i=0;i<60;i++){var d=document.createElement('div');d.className='star';var sz=(Math.random()*2+.5).toFixed(1);d.style.cssText='left:'+(Math.random()*100).toFixed(1)+'%;top:'+(Math.random()*100).toFixed(1)+'%;width:'+sz+'px;height:'+sz+'px;--d:'+(Math.random()*4+2).toFixed(1)+'s;--dl:'+(Math.random()*5).toFixed(1)+'s';sf.appendChild(d);}
-  renderBooks();
-  // facilitadores agora renderizados no step 3 por livro
-});
-
-function toggleNav(){
-  var m=document.getElementById('nav-menu');
-  m.style.display=m.style.display==='none'?'block':'none';
-}
-
-function goBack(){
-  var active=document.querySelector('.step.active');
-  var num=parseInt(active.id.split('-')[1]);
-  if(num>1) nextStep(num-1);
-  else toggleNav();
-}
-
-function nextStep(n){
-  // Validações por step
-  if(n===2){
-    var nome=document.getElementById('sala-nome').value.trim();
-    var obj=document.getElementById('sala-objetivo').value.trim();
-    if(!nome){alert('Digite o nome da sala.');return;}
-    if(!obj){alert('Descreva o objetivo da sala. A IA usará isso para personalizar seu estudo.');return;}
-  }
-  if(n===3&&sala.livros.length===0){alert('Selecione pelo menos um livro.');return;}
-  if(n===4){
-    // Validar que todos os livros têm facilitador
-    var semFac=sala.livros.filter(function(l){return !l.facilitador;});
-    if(semFac.length>0){alert('Selecione um facilitador para: '+semFac.map(function(l){return l.name;}).join(', '));return;}
-  }
-  document.querySelectorAll('.step').forEach(function(s){s.classList.remove('active');});
-  document.getElementById('step-'+n).classList.add('active');
-  if(n===3) renderBooksConfig();
-  if(n===4) updateResumo();
-  window.scrollTo(0,0);
-}
-
-// ── BOOKS ──
-function renderBooks(){
-  var grid=document.getElementById('book-grid');
-  var allBooks=DEFAULT_BOOKS.concat(personalLibrary);
-  grid.innerHTML=allBooks.map(function(b){
-    var sel=sala.livros.find(function(l){return l.id===b.id;});
-    return '<div class="book-card'+(sel?' selected':'')+'" onclick="toggleBook(\''+b.id+'\')">'+
-      '<span class="book-ico">'+b.icon+'</span>'+
-      '<div class="book-name">'+b.name+'</div>'+
-      '<div class="book-author">'+b.author+'</div></div>';
+// ══════════════════════════════════════════
+//  RENDER
+// ══════════════════════════════════════════
+function renderThemes(){
+  var el=document.getElementById('theme-grid');
+  el.innerHTML=TEMAS.map(function(t){
+    var studying=myStudies.find(function(s){return s.themeId===t.id;});
+    var facImg=t.facilAvatar?'<img src="'+t.facilAvatar+'" onclick="event.stopPropagation();document.getElementById(\'avatar-zoom-img\').src=\''+t.facilAvatar+'\';document.getElementById(\'avatar-zoom\').style.display=\'flex\'" alt="">':'<span class="theme-icon">'+t.icon+'</span>';
+    return '<div class="theme-card'+(studying?' active':'')+'" onclick="selectTheme(\''+t.id+'\')">'+
+      (studying?'<span class="badge-studying">Estudando</span>':'')+
+      facImg+
+      '<div class="theme-name">'+t.name+'</div>'+
+      '<div class="theme-ref">'+t.ref+'</div>'+
+      '<div class="theme-fac">Facilitador: '+t.facilNome+'</div>'+
+    '</div>';
   }).join('');
-  renderSelectedBooks();
 }
 
-function toggleBook(id){
-  var allBooks=DEFAULT_BOOKS.concat(personalLibrary);
-  var book=allBooks.find(function(b){return b.id===id;});
-  if(!book) return;
-  var idx=sala.livros.findIndex(function(l){return l.id===id;});
-  if(idx>=0) sala.livros.splice(idx,1);
-  else sala.livros.push(book);
-  renderBooks();
-  // facilitadores agora renderizados no step 3 por livro
+function renderMyStudies(){
+  var el=document.getElementById('my-studies');
+  var title=document.getElementById('my-studies-title');
+  if(myStudies.length===0){title.style.display='none';el.innerHTML='';return;}
+  title.style.display='flex';
+  el.innerHTML=myStudies.map(function(s){
+    var progress=s.completedSessions||0;
+    var total=s.totalSessions||10;
+    var pct=Math.round(progress/total*100);
+    return '<div class="my-study">'+
+      '<div class="study-title">'+s.name+'</div>'+
+      '<div class="study-info">'+s.facilNome+' · '+(s.mode==='livre'?'Estudo Livre':'Agendado')+' · '+pct+'%</div>'+
+      '<div class="progress-bar"><div class="progress-fill" style="width:'+pct+'%"></div></div>'+
+    '</div>';
+  }).join('');
 }
 
-function renderSelectedBooks(){
-  var el=document.getElementById('selected-books');
-  if(sala.livros.length===0){el.innerHTML='';return;}
-  el.innerHTML='<p class="field-label">Livros Selecionados ('+sala.livros.length+')</p>'+
-    sala.livros.map(function(b){
-      return '<div class="sel-book"><span>'+b.icon+' '+b.name+'</span><button onclick="toggleBook(\''+b.id+'\')">✕</button></div>';
-    }).join('');
-}
-
-async function addCustomBook(){
-  var inp=document.getElementById('new-book');
-  var name=inp.value.trim();
-  var status=document.getElementById('book-status');
-  if(!name){status.textContent='Digite o nome do livro.';return;}
-  status.style.color='var(--gold)';
-  status.textContent='Validando com a Mestre Emmanuel...';
-  try{
-    var r=await fetch('/api/curator',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({action:'validate_book',livroNome:name})});
-    var d=await r.json();
-    if(d.valid){
-      var id='custom-'+(d.name||name).toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
-      var book={id:id,name:d.name||name,author:d.author||'A confirmar',icon:'📗'};
-      personalLibrary.push(book);
-      localStorage.setItem('spirit_personal_library',JSON.stringify(personalLibrary));
-      sala.livros.push(book);
-      inp.value='';
-      status.style.color='#6BAF7C';
-      status.textContent='✓ "'+book.name+'" ('+book.author+') adicionado! '+(d.reason||'');
-      renderBooks();
-    } else {
-      status.style.color='#C75050';
-      status.textContent='✕ '+(d.reason||'Este livro não está no escopo espiritual do app.');
-    }
-  }catch(e){
-    // Fallback: adicionar sem validação
-    var id='custom-'+name.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
-    var book={id:id,name:name,author:'A confirmar',icon:'📗'};
-    personalLibrary.push(book);
-    localStorage.setItem('spirit_personal_library',JSON.stringify(personalLibrary));
-    sala.livros.push(book);
-    inp.value='';
-    status.style.color='#6BAF7C';
-    status.textContent='"'+name+'" adicionado à biblioteca.';
-    renderBooks();
-  }
-  setTimeout(function(){status.textContent='';},5000);
-}
-
-async function askEmmanuel(){
-  var objetivo=document.getElementById('sala-objetivo')?.value||sala.objetivo;
-  if(!objetivo){
-    document.getElementById('emmanuel-response').innerHTML='<p style="color:rgba(232,122,122,.8);font-style:italic">Preencha o objetivo da sala primeiro (Passo 1) para que eu possa sugerir livros adequados.</p>';
+function selectTheme(id){
+  var tema=TEMAS.find(function(t){return t.id===id;});
+  if(!tema)return;
+  var already=myStudies.find(function(s){return s.themeId===id;});
+  if(already){
+    addEmmanuelMsg('Você já está estudando "'+tema.name+'". Quer que eu mostre seu progresso ou reorganize sua grade?');
     return;
   }
-  var btn=document.getElementById('emmanuel-btn');
-  btn.disabled=true;btn.textContent='Pensando...';
-  document.getElementById('emmanuel-response').innerHTML='<p style="color:var(--gold);font-style:italic">Analisando seu objetivo e buscando as melhores obras...</p>';
+  addEmmanuelMsg('Excelente escolha: "'+tema.name+'". Para melhor aproveitamento, recomendamos o acompanhamento com a obra original ('+tema.ref.replace('Ref.: ','')+').\n\nSeu facilitador será '+tema.facilNome+(tema.specialist?' — especialista nesta tradição.':'.')+'\n\nComo deseja estudar?\n1 — Estudo Agendado (dias e horários fixos)\n2 — Estudo Livre (no seu ritmo)');
+  pendingTheme=tema;
+}
+
+// ══════════════════════════════════════════
+//  EMMANUEL CHAT
+// ══════════════════════════════════════════
+var pendingTheme=null;
+var emmanuelLoading=false;
+
+function addUserMsg(text){
+  chatHistory.push({role:'user',text:text});
+  var area=document.getElementById('emmanuel-chat-area');
+  area.innerHTML+='<div class="chat-msg user"><div class="user-ico">👤</div><div class="bubble">'+text+'</div></div>';
+  area.scrollTop=area.scrollHeight;
+}
+
+function addEmmanuelMsg(text){
+  chatHistory.push({role:'emmanuel',text:text});
+  var area=document.getElementById('emmanuel-chat-area');
+  area.innerHTML+='<div class="chat-msg emmanuel"><img src="avatar-mestre-emmanuel.png" alt=""><div class="bubble">'+text.replace(/\n/g,'<br>')+'</div></div>';
+  area.scrollTop=area.scrollHeight;
+}
+
+function addTyping(){
+  var area=document.getElementById('emmanuel-chat-area');
+  area.innerHTML+='<div class="chat-msg emmanuel" id="typing"><img src="avatar-mestre-emmanuel.png" alt=""><div class="bubble" style="color:var(--gold);font-style:italic">Emmanuel está pensando...</div></div>';
+  area.scrollTop=area.scrollHeight;
+}
+
+function removeTyping(){
+  var t=document.getElementById('typing');
+  if(t)t.remove();
+}
+
+async function sendToEmmanuel(){
+  var inp=document.getElementById('emmanuel-input');
+  var text=inp.value.trim();
+  if(!text||emmanuelLoading)return;
+  inp.value='';
+  addUserMsg(text);
+
+  // Check if answering theme selection (1 or 2)
+  if(pendingTheme&&(text==='1'||text==='2')){
+    var mode=text==='1'?'agendado':'livre';
+    addStudy(pendingTheme,mode);
+    pendingTheme=null;
+    return;
+  }
+
+  // Send to Emmanuel API
+  emmanuelLoading=true;
+  addTyping();
   try{
     var r=await fetch('/api/curator',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({action:'suggest_books',objetivo:objetivo})});
+      body:JSON.stringify({action:'suggest_books',objetivo:text})});
     var d=await r.json();
-    document.getElementById('emmanuel-response').innerHTML='<div style="display:flex;gap:10px;align-items:flex-start"><img src="avatar-mestre-emmanuel.png" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,168,76,.3);flex-shrink:0" alt=""><div style="flex:1"><p style="font-size:14px;line-height:1.6;color:rgba(240,234,214,.7);font-family:Georgia,serif">'+((d.suggestion||'').replace(/\n/g,'<br>'))+'</p></div></div>';
+    removeTyping();
+    addEmmanuelMsg(d.suggestion||'Não consegui processar. Tente reformular sua pergunta.');
   }catch(e){
-    document.getElementById('emmanuel-response').innerHTML='<p style="color:rgba(232,122,122,.8)">Erro de conexão. Tente novamente.</p>';
+    removeTyping();
+    addEmmanuelMsg('Erro de conexão. Verifique sua internet e tente novamente.');
   }
-  btn.disabled=false;btn.textContent='✦ Sugerir Livros';
+  emmanuelLoading=false;
 }
 
-async function chatEmmanuel(){
-  var inp=document.getElementById('emmanuel-chat');
-  var pergunta=inp.value.trim();
-  if(!pergunta) return;
-  inp.value='';
-  var el=document.getElementById('emmanuel-response');
-  el.innerHTML+='<div style="display:flex;gap:10px;align-items:flex-start;margin-top:8px"><div style="width:28px;height:28px;border-radius:50%;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;color:var(--gold)">👤</div><div style="flex:1;background:rgba(201,168,76,.08);border-radius:10px;padding:10px 12px;border:1px solid rgba(201,168,76,.15)"><p style="font-size:14px;color:rgba(240,234,214,.7);font-family:Georgia,serif">'+pergunta+'</p></div></div>';
-  el.innerHTML+='<p style="color:var(--gold);font-style:italic;margin-top:6px" id="emmanuel-loading">Emmanuel está pensando...</p>';
-  try{
-    var r=await fetch('/api/curator',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({action:'suggest_books',objetivo:pergunta})});
-    var d=await r.json();
-    var loading=document.getElementById('emmanuel-loading');
-    if(loading) loading.outerHTML='<div style="display:flex;gap:10px;align-items:flex-start;margin-top:6px"><img src="avatar-mestre-emmanuel.png" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,168,76,.3);flex-shrink:0" alt=""><div style="flex:1;background:rgba(255,255,255,.04);border-radius:10px;padding:10px 12px;border:1px solid rgba(201,168,76,.15)"><p style="font-size:14px;line-height:1.6;color:rgba(240,234,214,.7);font-family:Georgia,serif">'+((d.suggestion||'').replace(/\n/g,'<br>'))+'</p></div></div>';
-  }catch(e){
-    var loading2=document.getElementById('emmanuel-loading');
-    if(loading2) loading2.outerHTML='<p style="color:rgba(232,122,122,.8);margin-top:6px">Erro de conexão.</p>';
-  }
-}
-
-function copyEmmanuelChat(){
-  var el=document.getElementById('emmanuel-response');
-  if(!el||!el.textContent.trim()){alert('Nenhuma conversa para copiar.');return;}
-  navigator.clipboard.writeText(el.textContent).then(function(){
-    alert('Conversa copiada!');
-  }).catch(function(){
-    // Fallback
-    var range=document.createRange();range.selectNodeContents(el);
-    var sel=window.getSelection();sel.removeAllRanges();sel.addRange(range);
-    document.execCommand('copy');sel.removeAllRanges();
-    alert('Conversa copiada!');
-  });
-}
-
-function clearEmmanuelChat(){
-  if(!confirm('Limpar conversa com Emmanuel?'))return;
-  document.getElementById('emmanuel-response').innerHTML='';
-}
-
-// ── CONFIG POR LIVRO ──
-function renderBooksConfig(){
-  var el=document.getElementById('books-config');
-  el.innerHTML=sala.livros.map(function(book,bi){
-    if(!book.tipo) book.tipo='solo';
-    if(!book.facilitador) book.facilitador=null;
-    if(!book.membros) book.membros=[];
-
-    // Facilitadores disponíveis pra este livro
-    var specIds=[];
-    FACILITADORES_SPEC.forEach(function(f){
-      if(f.books.indexOf(book.id)>=0) specIds.push(f);
-    });
-    var hasSpec=specIds.length>0;
-
-    var facHtml='';
-    var specHtml='';
-
-    if(hasSpec){
-      // Livro com especialista: seleciona automaticamente, sem mostrar generalistas
-      var spec=specIds[0];
-      book.facilitador=spec.id;
-      var icon=spec.avatar?'<img src="'+spec.avatar+'" onclick="event.stopPropagation();document.getElementById(\'fac-zoom-img\').src=\''+spec.avatar+'\';document.getElementById(\'fac-zoom\').style.display=\'flex\'" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid rgba(155,125,196,.4);margin-bottom:6px;cursor:pointer">':'<span class="fac-emoji">'+spec.emoji+'</span>';
-      specHtml='<p class="field-label" style="color:rgba(155,125,196,.8)">Especialista desta obra</p>'+
-        '<div class="fac-card specialist selected" style="max-width:160px;margin:0 auto">'+
-        icon+'<div class="fac-name">'+spec.name+'</div><div class="fac-type">'+spec.estilo+'</div></div>';
-    } else {
-      // Sem especialista: mostrar facilitadores generalistas
-      facHtml=FACILITADORES_GEN.map(function(f){
-        var sel=book.facilitador===f.id;
-        var icon=f.avatar?'<img src="'+f.avatar+'" onclick="event.stopPropagation();document.getElementById(\'fac-zoom-img\').src=\''+f.avatar+'\';document.getElementById(\'fac-zoom\').style.display=\'flex\'" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.3);margin-bottom:6px;cursor:pointer">':'<span class="fac-emoji">'+f.emoji+'</span>';
-        return '<div class="fac-card'+(sel?' selected':'')+'" onclick="setBookFac('+bi+',\''+f.id+'\')">'+
-          icon+'<div class="fac-name">'+f.name+'</div><div class="fac-type">'+f.estilo+'</div></div>';
-      }).join('');
-    }
-
-    var grupoHtml='';
-    if(book.tipo==='grupo'){
-      grupoHtml='<div style="margin-top:12px"><p class="field-label">Convidar Membros</p>'+
-        '<div style="display:flex;gap:8px;margin-bottom:8px">'+
-        '<input class="field-input" id="invite-'+bi+'" type="text" placeholder="email@exemplo.com" style="margin-bottom:0;flex:1">'+
-        '<button onclick="addBookMember('+bi+')" style="background:#6BAF7C;border:none;border-radius:12px;padding:10px 14px;cursor:pointer;color:#fff;font-size:12px">Convidar</button></div>'+
-        book.membros.map(function(m,mi){
-          return '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--card-border)">'+
-            '<span style="font-size:14px;flex:1;color:var(--text)">'+m+'</span>'+
-            '<button onclick="removeBookMember('+bi+','+mi+')" style="background:none;border:none;cursor:pointer;color:rgba(232,122,122,.8);font-size:14px">✕</button></div>';
-        }).join('')+
-        '<p style="font-size:12px;color:rgba(240,234,214,.4);font-style:italic;margin-top:6px">Máximo 10 membros</p></div>';
-    }
-
-    return '<div style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:18px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.04)">'+
-      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">'+
-      '<span style="font-size:24px">'+book.icon+'</span>'+
-      '<div><p style="font-family:Cinzel,serif;font-size:14px;color:var(--text);font-weight:600">'+book.name+'</p>'+
-      '<p style="font-size:13px;font-style:italic;color:rgba(240,234,214,.4)">'+book.author+'</p></div></div>'+
-      '<p class="field-label">Tipo de Estudo</p>'+
-      '<div class="freq-row">'+
-      '<div class="freq-opt'+(book.tipo==='solo'?' active':'')+'" onclick="setBookTipo('+bi+',\'solo\')" style="flex:1">🧘 Solo</div>'+
-      '<div class="freq-opt'+(book.tipo==='grupo'?' active':'')+'" onclick="setBookTipo('+bi+',\'grupo\')" style="flex:1">👥 Grupo</div></div>'+
-      grupoHtml+
-      '<p class="field-label" style="margin-top:12px">Facilitador</p>'+
-      '<div class="fac-grid">'+facHtml+'</div>'+
-      specHtml+
-      '</div>';
-  }).join('');
-}
-
-function setBookTipo(bi,tipo){
-  sala.livros[bi].tipo=tipo;
-  renderBooksConfig();
-}
-
-function setBookFac(bi,facId){
-  sala.livros[bi].facilitador=facId;
-  renderBooksConfig();
-}
-
-function addBookMember(bi){
-  var inp=document.getElementById('invite-'+bi);
-  var v=inp.value.trim();
-  if(!v) return;
-  if(!sala.livros[bi].membros) sala.livros[bi].membros=[];
-  if(sala.livros[bi].membros.length>=10){alert('Máximo 10 membros.');return;}
-  sala.livros[bi].membros.push(v);
-  inp.value='';
-  renderBooksConfig();
-}
-
-function removeBookMember(bi,mi){
-  sala.livros[bi].membros.splice(mi,1);
-  renderBooksConfig();
-}
-
-// ── FACILITADORES ──
-// ── FREQUÊNCIA ──
-var DAY_NAMES={seg:'Segunda',ter:'Terça',qua:'Quarta',qui:'Quinta',sex:'Sexta',sab:'Sábado',dom:'Domingo'};
-function toggleDay(el,day){
-  el.classList.toggle('active');
-  var idx=sala.dias.indexOf(day);
-  if(idx>=0){
-    sala.dias.splice(idx,1);
-    delete sala.horarios[day];
+function addStudy(tema,mode){
+  if(mode==='livre'){
+    addEmmanuelMsg('Estudo Livre ativado para "'+tema.name+'". Vou sugerir uma carga de 2 sessões por semana, ~60 min cada. No seu ritmo, a previsão de conclusão é em aproximadamente 8 semanas.\n\nPara melhor aproveitamento: estude com calma, faça anotações. Qualidade sobre quantidade.\n\nQuando quiser iniciar a primeira sessão, me avise.');
   } else {
-    sala.dias.push(day);
-    sala.horarios[day]='19:30';
+    addEmmanuelMsg('Estudo Agendado para "'+tema.name+'". Me diga:\n- Quais dias da semana?\n- Que horário?\n- Duração por sessão (45min, 60min ou 90min)?\n\nVou montar sua grade e verificar conflitos com outros estudos.');
   }
-  renderHorarios();
+  var study={
+    themeId:tema.id,
+    name:tema.name,
+    ref:tema.ref,
+    facilNome:tema.facilNome,
+    facilitador:tema.facilitador,
+    mode:mode,
+    startDate:new Date().toISOString(),
+    completedSessions:0,
+    totalSessions:16,
+    createdAt:new Date().toISOString()
+  };
+  myStudies.push(study);
+  localStorage.setItem('spirit_my_studies',JSON.stringify(myStudies));
+  renderThemes();
+  renderMyStudies();
 }
-function renderHorarios(){
-  var el=document.getElementById('horarios-list');
-  if(sala.dias.length===0){
-    el.innerHTML='<p style="font-size:13px;color:rgba(240,234,214,.3);font-style:italic;font-family:Georgia,serif">Selecione os dias acima para definir os horários</p>';
-    return;
+
+function copyChat(){
+  var area=document.getElementById('emmanuel-chat-area');
+  if(!area||!area.textContent.trim()){alert('Nenhuma conversa.');return;}
+  navigator.clipboard.writeText(area.textContent).then(function(){alert('Conversa copiada!');}).catch(function(){});
+}
+
+function clearChat(){
+  if(!confirm('Limpar conversa com Emmanuel?'))return;
+  chatHistory=[];
+  document.getElementById('emmanuel-chat-area').innerHTML='';
+}
+
+// ══════════════════════════════════════════
+//  NAV + STARS
+// ══════════════════════════════════════════
+function toggleNav(){var m=document.getElementById('nav-menu');m.style.display=m.style.display==='none'?'block':'none';}
+
+function initStars(){
+  var sf=document.getElementById('stars');
+  if(!sf||sf.children.length>0)return;
+  for(var i=0;i<100;i++){
+    var d=document.createElement('div');d.className='star';
+    var sz=(Math.random()*2.5+.5).toFixed(1);
+    d.style.cssText='width:'+sz+'px;height:'+sz+'px;left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;--d:'+(Math.random()*4+2).toFixed(1)+'s;--dl:'+(Math.random()*5).toFixed(1)+'s';
+    sf.appendChild(d);
   }
-  var order=['seg','ter','qua','qui','sex','sab','dom'];
-  var sorted=order.filter(function(d){return sala.dias.indexOf(d)>=0;});
-  el.innerHTML=sorted.map(function(d){
-    return '<div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.15);border-radius:10px;padding:8px 12px">'+
-      '<span style="font-family:Cinzel,serif;font-size:11px;color:var(--gold);width:70px;letter-spacing:1px">'+DAY_NAMES[d]+'</span>'+
-      '<input type="time" value="'+(sala.horarios[d]||'19:30')+'" onchange="sala.horarios[\''+d+'\']=this.value" style="background:rgba(255,255,255,.06);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:6px 10px;color:var(--text);font-family:Georgia,serif;font-size:14px;outline:none">'+
-      '</div>';
-  }).join('');
 }
 
-function setDuracao(d){
-  sala.duracao=d;
-  document.querySelectorAll('.freq-opt[id^="dur-"]').forEach(function(e){e.classList.remove('active');});
-  document.getElementById('dur-'+d).classList.add('active');
-}
+// ══════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════
+initStars();
+renderThemes();
+renderMyStudies();
 
-// ── RESUMO ──
-function updateResumo(){
-  sala.nome=document.getElementById('sala-nome').value;
-  sala.objetivo=document.getElementById('sala-objetivo').value;
-  var allFacs=FACILITADORES_GEN.concat(FACILITADORES_SPEC);
-  var freqText='Livre';
-  if(sala.dias.length>0){
-    var order=['seg','ter','qua','qui','sex','sab','dom'];
-    var sorted=order.filter(function(d){return sala.dias.indexOf(d)>=0;});
-    freqText=sorted.map(function(d){return DAY_NAMES[d]+' '+sala.horarios[d];}).join(' · ');
-  }
-  var html='<p style="font-size:15px;color:var(--text);margin-bottom:8px"><strong style="color:var(--gold)">Sala:</strong> '+(sala.nome||'Sem nome')+'</p>'+
-    '<p style="font-size:14px;color:rgba(240,234,214,.7);margin-bottom:4px"><strong style="color:var(--gold)">Objetivo:</strong> '+(sala.objetivo||'-')+'</p>'+
-    '<p style="font-size:14px;color:rgba(240,234,214,.7);margin-bottom:8px"><strong style="color:var(--gold)">Frequência:</strong> '+freqText+' · '+sala.duracao+' min</p>';
-  sala.livros.forEach(function(b){
-    var fac=allFacs.find(function(f){return f.id===b.facilitador;});
-    html+='<div style="background:var(--soft);border-radius:10px;padding:10px 12px;margin-bottom:6px">'+
-      '<p style="font-size:14px;color:var(--text)"><strong>'+b.icon+' '+b.name+'</strong></p>'+
-      '<p style="font-size:13px;color:rgba(240,234,214,.4)">'+
-      (b.tipo==='grupo'?'👥 Grupo ('+((b.membros||[]).length)+' membros)':'🧘 Solo')+
-      ' · Facilitador: '+(fac?fac.name:'—')+'</p></div>';
-  });
-  document.getElementById('resumo').innerHTML=html;
-}
-
-// ── CRIAR SALA ──
-async function criarSala(){
-  sala.nome=document.getElementById('sala-nome').value.trim();
-  sala.objetivo=document.getElementById('sala-objetivo').value.trim();
-  var status=document.getElementById('criar-status');
-  if(!sala.nome){status.textContent='Digite o nome da sala.';return;}
-  if(sala.livros.length===0){status.textContent='Selecione pelo menos um livro.';return;}
-  // Facilitador é por livro (definido no passo 3), não no nível da sala
-  var semFac=sala.livros.find(function(b){return !b.facilitador;});
-  if(semFac){status.textContent='Selecione um facilitador para: '+semFac.name;return;}
-  status.textContent='Criando sala...';
-  document.getElementById('btn-criar').disabled=true;
-
-  // Salvar no localStorage (por enquanto — depois migra pro Supabase)
-  var salas=[];
-  try{salas=JSON.parse(localStorage.getItem('spirit_salas_custom')||'[]');}catch(e){}
-  sala.id='sala-'+Date.now();
-  sala.createdAt=new Date().toISOString();
-  salas.push(JSON.parse(JSON.stringify(sala)));
-  localStorage.setItem('spirit_salas_custom',JSON.stringify(salas));
-
-  status.style.color='rgba(91,175,124,.7)';
-  status.textContent='Sala criada com sucesso!';
-  setTimeout(function(){
-    window.location.href='app.html?tab=study';
-  },1500);
-}
-</script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" onload="checkAuth()"></script>
-<script>
-function checkAuth(){
-  try{
-    var sb=window.supabase.createClient('https://jwdvbtujzvqvktzxycwj.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp3ZHZidHVqenZxdmt0enh5Y3dqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1Mjc2NDksImV4cCI6MjA4OTEwMzY0OX0.ZfkRgdYcTjYF_E4qr1_1CZMtSiCvKLeUsoRSLoO16Mw');
-    sb.auth.getSession().then(function(r){if(!r.data||!r.data.session) window.location.href='index.html';});
-  }catch(e){}
+// Welcome message
+if(chatHistory.length===0){
+  addEmmanuelMsg('Bem-vindo à Sala de Estudos. Sou o Mestre Emmanuel, seu mentor.\n\nEscolha um tema da biblioteca acima ou me pergunte sobre qualquer assunto do universo espiritual. Vou indicar o melhor caminho de estudo para você.\n\nLembre-se: qualidade sobre quantidade. Um livro bem estudado vale mais que dez lidos às pressas.');
 }
 </script>
 </body>
