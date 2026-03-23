@@ -1,4 +1,4 @@
-// api/curator.js — Mestre Emmanuel: Curador da Biblioteca Espiritual
+// api/curator.js — Mestre Emmanuel: Curador da Bibliografia Espiritual
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
 
@@ -9,7 +9,7 @@ export default async function handler(req, res) {
 
   try {
     if (action === 'suggest_books') {
-      const prompt = `Você é o Mestre Emmanuel, curador da Biblioteca Espiritual do Master Spirit.
+      const prompt = `Você é o Mestre Emmanuel, curador da Bibliografia Espiritual do Master Spirit.
 
 PERSONALIDADE:
 - Disciplina absoluta, pensamento estruturado, lógico e direto
