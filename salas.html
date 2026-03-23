@@ -87,6 +87,31 @@ p,span,input,textarea{font-family:Georgia,'Times New Roman',serif}
 /* Footer */
 #ft{text-align:center;padding:16px;border-top:1px solid rgba(201,168,76,.1)}
 
+/* Session view (tela de estudo com facilitador) */
+#session-view{display:none;position:fixed;inset:0;z-index:90;background:var(--bg);overflow-y:auto}
+#session-view.active{display:flex;flex-direction:column}
+.session-header{display:flex;align-items:center;gap:12px;padding:14px 18px;background:rgba(12,18,38,.88);border-bottom:1px solid rgba(201,168,76,.12);position:sticky;top:0;z-index:10}
+.session-header img{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.3)}
+.session-header h2{font-family:'Cinzel',serif;font-size:13px;color:var(--gold);letter-spacing:1.5px}
+.session-header p{font-size:11px;color:rgba(240,234,214,.4);font-family:Georgia,serif}
+.session-content{flex:1;max-width:700px;margin:0 auto;padding:20px 18px;width:100%}
+.session-chapter{font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:rgba(201,168,76,.5);text-transform:uppercase;margin-bottom:6px}
+.session-title{font-family:'Cinzel',serif;font-size:18px;color:var(--gold);margin-bottom:16px}
+.session-body{font-size:15px;line-height:1.8;color:rgba(240,234,214,.75);font-family:Georgia,serif}
+.session-body p{margin-bottom:14px}
+/* Quiz */
+.quiz-box{background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.2);border-radius:14px;padding:18px;margin-top:20px}
+.quiz-title{font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--gold);margin-bottom:14px}
+.quiz-q{font-size:14px;color:var(--text);margin-bottom:10px;font-family:Georgia,serif;font-weight:600}
+.quiz-opt{display:block;width:100%;text-align:left;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:10px 14px;margin-bottom:6px;color:rgba(240,234,214,.7);font-family:Georgia,serif;font-size:13px;cursor:pointer;transition:all .2s}
+.quiz-opt:hover{background:rgba(201,168,76,.08);border-color:rgba(201,168,76,.3)}
+.quiz-opt.correct{background:rgba(91,175,124,.15);border-color:rgba(91,175,124,.5);color:rgba(91,175,124,.9)}
+.quiz-opt.wrong{background:rgba(232,122,122,.1);border-color:rgba(232,122,122,.4);color:rgba(232,122,122,.8)}
+.quiz-opt.disabled{pointer-events:none;opacity:.6}
+.quiz-feedback{margin-top:12px;padding:12px;border-radius:10px;font-size:13px;line-height:1.6;font-family:Georgia,serif}
+.session-nav{display:flex;gap:10px;padding:18px;max-width:700px;margin:0 auto;width:100%}
+.session-nav button{flex:1;padding:14px;border-radius:12px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:1.5px;cursor:pointer}
+
 /* Avatar zoom */
 #avatar-zoom{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;cursor:pointer}
 #avatar-zoom img{max-width:70vw;max-height:70vh;border-radius:50%;border:3px solid rgba(201,168,76,.5);box-shadow:0 0 60px rgba(201,168,76,.3)}
@@ -105,6 +130,31 @@ p,span,input,textarea{font-family:Georgia,'Times New Roman',serif}
 <body>
 <div id="stars"></div>
 <div id="avatar-zoom" onclick="this.style.display='none'"><img id="avatar-zoom-img" src="" alt=""></div>
+
+<!-- SESSION VIEW (tela de estudo com facilitador) -->
+<div id="session-view">
+  <div class="session-header">
+    <button onclick="closeSession()" style="background:none;border:none;cursor:pointer;color:var(--gold);font-size:22px;padding:0">‹</button>
+    <img id="session-fac-img" src="" alt="">
+    <div style="flex:1">
+      <h2 id="session-fac-name"></h2>
+      <p id="session-study-name"></p>
+    </div>
+    <span id="session-progress" style="font-family:'Cinzel',serif;font-size:9px;color:rgba(201,168,76,.5);letter-spacing:1px"></span>
+  </div>
+  <div class="session-content">
+    <p class="session-chapter" id="session-chapter"></p>
+    <h3 class="session-title" id="session-title"></h3>
+    <div class="session-body" id="session-body">
+      <div style="text-align:center;padding:40px;color:rgba(240,234,214,.3);font-style:italic">Carregando sessão...</div>
+    </div>
+    <div id="session-quiz" style="display:none"></div>
+  </div>
+  <div class="session-nav">
+    <button onclick="closeSession()" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:rgba(240,234,214,.5)">← Voltar</button>
+    <button id="session-next-btn" onclick="nextSessionStep()" style="background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.4);color:var(--gold)">Próximo →</button>
+  </div>
+</div>
 
 <div id="page">
   <div id="hdr">
@@ -369,23 +419,182 @@ function addStudy(tema,mode){
   renderMyStudies();
 }
 
+var activeStudyIdx=null;
+var sessionStep='content'; // 'content' or 'quiz'
+var sessionQuizData=null;
+var sessionQuizScore=0;
+var sessionQuizAnswered=0;
+
 function openStudy(idx){
+  activeStudyIdx=idx;
   var s=myStudies[idx];
   if(!s)return;
-  var progress=s.completedSessions||0;
-  var total=s.totalSessions||16;
-  var pct=Math.round(progress/total*100);
-  var nextSession=progress+1;
+  var nextSession=(s.completedSessions||0)+1;
+  startSession(s,nextSession);
+}
 
-  addEmmanuelMsg(
-    '📖 '+s.name+'\n'+
-    'Facilitador: '+s.facilNome+'\n'+
-    'Modo: '+(s.mode==='livre'?'Estudo Livre':'Agendado')+'\n'+
-    'Progresso: '+progress+'/'+total+' sessões ('+pct+'%)\n\n'+
-    (progress===0
-      ?'Você ainda não iniciou. Quando quiser começar a primeira sessão, digite "iniciar".'
-      :'Próxima sessão: #'+nextSession+'. Digite "continuar" para retomar ou "grade" para ver seu planejamento.')
-  );
+function startSession(study,sessionNum){
+  var view=document.getElementById('session-view');
+  view.classList.add('active');
+  sessionStep='content';
+
+  // Facilitador info
+  var facAvatar=getFacAvatar(study.facilitador);
+  document.getElementById('session-fac-img').src=facAvatar;
+  document.getElementById('session-fac-name').textContent=study.facilNome;
+  document.getElementById('session-study-name').textContent=study.name;
+  document.getElementById('session-progress').textContent='Sessão '+sessionNum+'/'+(study.totalSessions||16);
+  document.getElementById('session-chapter').textContent='Sessão '+sessionNum;
+  document.getElementById('session-title').textContent='Carregando...';
+  document.getElementById('session-body').innerHTML='<div style="text-align:center;padding:40px;color:rgba(240,234,214,.3);font-style:italic">'+study.facilNome+' está preparando a sessão...</div>';
+  document.getElementById('session-quiz').style.display='none';
+  document.getElementById('session-next-btn').textContent='Quiz →';
+
+  // Chamar API para gerar conteúdo da sessão
+  loadSessionContent(study,sessionNum);
+}
+
+async function loadSessionContent(study,sessionNum){
+  var msgs=[{role:'user',content:'Você é o facilitador '+study.facilNome+' do aplicativo Master Spirit. Prepare a sessão #'+sessionNum+' do estudo "'+study.name+'" ('+study.ref+').\n\nGere o conteúdo da sessão com:\n1. Título da sessão\n2. Capítulo/seção de referência\n3. Exposição do conteúdo (3-4 parágrafos, didático, acessível)\n4. 1 reflexão para o estudante\n\nFale na primeira pessoa como '+study.facilNome+'. Tom: didático, profundo mas acessível. Português brasileiro. NUNCA use markdown com asteriscos.\n\nFormato da resposta:\nTÍTULO: [título]\nREFERÊNCIA: [cap/seção]\nCONTEÚDO:\n[texto]\nREFLEXÃO:\n[texto]'}];
+
+  try{
+    var r=await fetch('/api/curator',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'chat',messages:msgs})});
+    var d=await r.json();
+    var text=d.reply||'';
+
+    // Parse response
+    var titulo=text.match(/T[ÍI]TULO:\s*(.+)/i);
+    var ref=text.match(/REFER[ÊE]NCIA:\s*(.+)/i);
+    var conteudo=text.match(/CONTE[ÚU]DO:\s*([\s\S]*?)(?=REFLEX[ÃA]O:|$)/i);
+    var reflexao=text.match(/REFLEX[ÃA]O:\s*([\s\S]*)/i);
+
+    document.getElementById('session-title').textContent=titulo?titulo[1]:'Sessão '+sessionNum;
+    document.getElementById('session-chapter').textContent=ref?ref[1]:'Sessão '+sessionNum;
+    document.getElementById('session-body').innerHTML=
+      (conteudo?conteudo[1].trim().split('\n\n').map(function(p){return '<p>'+p+'</p>';}).join(''):'<p>'+text+'</p>')+
+      (reflexao?'<div style="background:rgba(201,168,76,.06);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:14px;margin-top:16px"><p style="font-family:Cinzel,serif;font-size:10px;letter-spacing:1.5px;color:var(--gold);margin-bottom:6px">REFLEXÃO</p><p style="font-style:italic;color:rgba(240,234,214,.6)">'+reflexao[1].trim()+'</p></div>':'');
+
+  }catch(e){
+    document.getElementById('session-body').innerHTML='<p style="color:rgba(232,122,122,.7)">Erro ao carregar sessão. Verifique sua conexão.</p>';
+  }
+}
+
+function nextSessionStep(){
+  if(sessionStep==='content'){
+    sessionStep='quiz';
+    document.getElementById('session-next-btn').textContent='Concluir sessão ✓';
+    loadQuiz();
+  } else {
+    completeSession();
+  }
+}
+
+async function loadQuiz(){
+  var study=myStudies[activeStudyIdx];
+  var quizEl=document.getElementById('session-quiz');
+  quizEl.style.display='block';
+  quizEl.innerHTML='<div class="quiz-box"><p class="quiz-title">🧠 Quiz Rápido</p><p style="color:rgba(240,234,214,.3);font-style:italic">'+study.facilNome+' está preparando as perguntas...</p></div>';
+  sessionQuizScore=0;
+  sessionQuizAnswered=0;
+
+  var sessionTitle=document.getElementById('session-title').textContent;
+  var msgs=[{role:'user',content:'Você é o facilitador '+study.facilNome+'. Acabou de dar uma sessão sobre "'+sessionTitle+'" do estudo "'+study.name+'".\n\nGere um quiz de fixação com 3 perguntas de múltipla escolha (A, B, C, D). Cada pergunta baseada em CONCEITOS (não trechos literais).\n\nFormato EXATO (JSON):\n[{"q":"pergunta","opts":["A) opção","B) opção","C) opção","D) opção"],"correct":0,"explanation":"explicação curta"}]\n\nRetorne SOMENTE o JSON, sem markdown.'}];
+
+  try{
+    var r=await fetch('/api/curator',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'chat',messages:msgs})});
+    var d=await r.json();
+    var text=d.reply||'';
+    var match=text.match(/\[[\s\S]*\]/);
+    if(match){
+      sessionQuizData=JSON.parse(match[0]);
+      renderQuiz(study);
+    } else {
+      quizEl.innerHTML='<div class="quiz-box"><p class="quiz-title">🧠 Quiz</p><p style="color:rgba(240,234,214,.5)">Não foi possível gerar o quiz. Sessão concluída mesmo assim.</p></div>';
+    }
+  }catch(e){
+    quizEl.innerHTML='<div class="quiz-box"><p class="quiz-title">🧠 Quiz</p><p style="color:rgba(232,122,122,.7)">Erro de conexão.</p></div>';
+  }
+}
+
+function renderQuiz(study){
+  var html='<div class="quiz-box"><p class="quiz-title">🧠 Quiz Rápido — '+study.facilNome+'</p>';
+  sessionQuizData.forEach(function(q,qi){
+    html+='<div id="quiz-q-'+qi+'" style="margin-bottom:16px"><p class="quiz-q">'+(qi+1)+'. '+q.q+'</p>';
+    q.opts.forEach(function(opt,oi){
+      html+='<button class="quiz-opt" id="qo-'+qi+'-'+oi+'" onclick="answerQuiz('+qi+','+oi+')">'+opt+'</button>';
+    });
+    html+='<div id="quiz-fb-'+qi+'" class="quiz-feedback" style="display:none"></div></div>';
+  });
+  html+='<div id="quiz-result" style="display:none;text-align:center;padding:16px"></div></div>';
+  document.getElementById('session-quiz').innerHTML=html;
+}
+
+function answerQuiz(qi,oi){
+  var q=sessionQuizData[qi];
+  if(!q)return;
+  // Disable all options for this question
+  q.opts.forEach(function(_,i){
+    var btn=document.getElementById('qo-'+qi+'-'+i);
+    btn.classList.add('disabled');
+    if(i===q.correct) btn.classList.add('correct');
+    if(i===oi&&i!==q.correct) btn.classList.add('wrong');
+  });
+  if(oi===q.correct) sessionQuizScore++;
+  sessionQuizAnswered++;
+
+  // Show feedback
+  var fb=document.getElementById('quiz-fb-'+qi);
+  fb.style.display='block';
+  fb.style.background=oi===q.correct?'rgba(91,175,124,.1)':'rgba(232,122,122,.08)';
+  fb.style.color=oi===q.correct?'rgba(91,175,124,.8)':'rgba(232,122,122,.7)';
+  fb.textContent=(oi===q.correct?'✓ Correto! ':'✗ Incorreto. ')+(q.explanation||'');
+
+  // All answered?
+  if(sessionQuizAnswered>=sessionQuizData.length){
+    var study=myStudies[activeStudyIdx];
+    var result=document.getElementById('quiz-result');
+    result.style.display='block';
+    result.innerHTML='<p style="font-family:Cinzel,serif;font-size:14px;color:var(--gold);margin-bottom:8px">Resultado: '+sessionQuizScore+'/'+sessionQuizData.length+'</p>'+
+      '<p style="font-size:13px;color:rgba(240,234,214,.6);font-family:Georgia,serif">'+
+      (sessionQuizScore===sessionQuizData.length?study.facilNome+': "Excelente! Domínio completo. Pronto para a próxima sessão."':
+       sessionQuizScore>=2?study.facilNome+': "Bom aproveitamento. Revise os pontos que errou antes de avançar."':
+       study.facilNome+': "Precisamos revisar este conteúdo. Releia com calma antes de prosseguir."')+'</p>';
+  }
+}
+
+function completeSession(){
+  var study=myStudies[activeStudyIdx];
+  study.completedSessions=(study.completedSessions||0)+1;
+  localStorage.setItem('spirit_my_studies',JSON.stringify(myStudies));
+  closeSession();
+  renderThemes();
+  renderMyStudies();
+  addEmmanuelMsg('Sessão concluída! '+study.name+' — Progresso: '+study.completedSessions+'/'+(study.totalSessions||16)+' sessões.\n\n'+(sessionQuizScore>=2?'Bom desempenho no quiz. Continue assim.':'Recomendo revisar o conteúdo antes da próxima sessão.'));
+}
+
+function closeSession(){
+  document.getElementById('session-view').classList.remove('active');
+  activeStudyIdx=null;
+  sessionQuizData=null;
+}
+
+function getFacAvatar(facId){
+  var avatars={
+    antonio:'avatar-mestre-antonio.png',
+    adriano:'avatar-mestre-adriano.png',
+    leila:'avatar-mestre-leila.png',
+    silvestre:'avatar-mestre-silvestre.png',
+    wander:'avatar-mestre-wander.png',
+    bia:'avatar-mestra-bia.png',
+    swami:'avatar-mestre-especialista-swami.png',
+    mary:'avatar-mestra-mary.png',
+    mark:'avatar-mestre-especialista-mark.png',
+    joao:'avatar-mestre-joao.png',
+    emmanuel:'avatar-mestre-emmanuel.png'
+  };
+  return avatars[facId]||'avatar-mestre-emmanuel.png';
 }
 
 function copyChat(){
