@@ -175,17 +175,29 @@ p,span,input,textarea{font-family:Georgia,'Times New Roman',serif}
     <a href="app.html" style="color:rgba(240,234,214,.4)"><span>🏠</span> Início</a>
   </div>
 
+  <!-- Tabs -->
+  <div id="tabs" style="display:flex;gap:0;border-bottom:1px solid rgba(201,168,76,.12);position:sticky;top:52px;z-index:40;background:rgba(6,10,22,.97)">
+    <button class="sala-tab active" onclick="switchTab('biblioteca')" id="tab-biblioteca" style="flex:1;padding:12px;background:none;border:none;border-bottom:2px solid var(--gold);cursor:pointer;font-family:'Cinzel',serif;font-size:10px;letter-spacing:1.5px;color:var(--gold);transition:all .2s">📚 Biblioteca</button>
+    <button class="sala-tab" onclick="switchTab('estudos')" id="tab-estudos" style="flex:1;padding:12px;background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;font-family:'Cinzel',serif;font-size:10px;letter-spacing:1.5px;color:rgba(240,234,214,.4);transition:all .2s">📖 Meus Estudos</button>
+  </div>
+
   <div id="main">
-    <!-- Disclaimer -->
-    <p class="disclaimer">O Master Spirit não reproduz nem substitui obras literárias. Oferecemos programas de estudo temático com referências bibliográficas. Recomendamos a aquisição das obras originais.</p>
+    <!-- Tab: Biblioteca -->
+    <div id="view-biblioteca">
+      <p class="disclaimer">O Master Spirit não reproduz nem substitui obras literárias. Oferecemos programas de estudo temático com referências bibliográficas. Recomendamos a aquisição das obras originais.</p>
+      <p class="sec-title">Biblioteca Temática</p>
+      <div class="theme-grid" id="theme-grid"></div>
+    </div>
 
-    <!-- Biblioteca Temática Permanente -->
-    <p class="sec-title">Biblioteca Temática</p>
-    <div class="theme-grid" id="theme-grid"></div>
-
-    <!-- Meus Estudos -->
-    <p class="sec-title" id="my-studies-title" style="display:none">Meus Estudos</p>
-    <div id="my-studies"></div>
+    <!-- Tab: Meus Estudos -->
+    <div id="view-estudos" style="display:none">
+      <div id="my-studies-empty" style="text-align:center;padding:40px 20px;color:rgba(240,234,214,.3)">
+        <p style="font-size:32px;margin-bottom:12px">📖</p>
+        <p style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:rgba(201,168,76,.4);margin-bottom:8px">Nenhum estudo em andamento</p>
+        <p style="font-size:13px;font-style:italic;font-family:Georgia,serif">Escolha um tema na Biblioteca ou peça sugestões ao Emmanuel</p>
+      </div>
+      <div id="my-studies"></div>
+    </div>
   </div>
 
   <div id="ft">
@@ -254,9 +266,11 @@ function renderThemes(){
 
 function renderMyStudies(){
   var el=document.getElementById('my-studies');
-  var title=document.getElementById('my-studies-title');
-  if(myStudies.length===0){title.style.display='none';el.innerHTML='';return;}
-  title.style.display='flex';
+  var empty=document.getElementById('my-studies-empty');
+  if(myStudies.length===0){empty.style.display='block';el.innerHTML='';return;}
+  empty.style.display='none';
+  // Atualizar badge na tab
+  document.getElementById('tab-estudos').textContent='📖 Meus Estudos ('+myStudies.length+')';
   el.innerHTML=myStudies.map(function(s,i){
     var progress=s.completedSessions||0;
     var total=s.totalSessions||10;
@@ -416,6 +430,7 @@ function addStudy(tema,mode){
   myStudies.push(study);
   localStorage.setItem('spirit_my_studies',JSON.stringify(myStudies));
   renderThemes();
+  switchTab('estudos');
   renderMyStudies();
 }
 
@@ -619,6 +634,17 @@ function clearChat(){
 //  NAV + STARS
 // ══════════════════════════════════════════
 function toggleNav(){var m=document.getElementById('nav-menu');m.style.display=m.style.display==='none'?'block':'none';}
+
+var currentTab='biblioteca';
+function switchTab(tab){
+  currentTab=tab;
+  document.getElementById('view-biblioteca').style.display=tab==='biblioteca'?'block':'none';
+  document.getElementById('view-estudos').style.display=tab==='estudos'?'block':'none';
+  document.getElementById('tab-biblioteca').style.borderBottomColor=tab==='biblioteca'?'var(--gold)':'transparent';
+  document.getElementById('tab-biblioteca').style.color=tab==='biblioteca'?'var(--gold)':'rgba(240,234,214,.4)';
+  document.getElementById('tab-estudos').style.borderBottomColor=tab==='estudos'?'var(--gold)':'transparent';
+  document.getElementById('tab-estudos').style.color=tab==='estudos'?'var(--gold)':'rgba(240,234,214,.4)';
+}
 
 function initStars(){
   var sf=document.getElementById('stars');
