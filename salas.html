@@ -246,7 +246,7 @@ var DEFAULT_BOOKS=[
 ];
 
 var FACILITADORES_GEN=[
-  {id:'antonio',name:'Mestre Antonio',estilo:'Sábio e profundo',emoji:'🧔'},
+  {id:'antonio',name:'Mestre Antonio',estilo:'Sábio e profundo',avatar:'avatar-mestre-antonio.png'},
   {id:'adriano',name:'Mestre Adriano',estilo:'Eloquente e inspirador',emoji:'👨‍🏫'},
   {id:'leila',name:'Mestra Leila',estilo:'Acolhedora e maternal',emoji:'👩‍🦳'},
   {id:'silvestre',name:'Mestre Silvestre',estilo:'Compassivo e didático',emoji:'👨‍⚕️'},
@@ -459,8 +459,9 @@ function renderBooksConfig(){
 
     var facHtml=FACILITADORES_GEN.map(function(f){
       var sel=book.facilitador===f.id;
+      var icon=f.avatar?'<img src="'+f.avatar+'" style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,168,76,.3);margin-bottom:6px">':'<span class="fac-emoji">'+f.emoji+'</span>';
       return '<div class="fac-card'+(sel?' selected':'')+'" onclick="setBookFac('+bi+',\''+f.id+'\')">'+
-        '<span class="fac-emoji">'+f.emoji+'</span><div class="fac-name">'+f.name+'</div><div class="fac-type">'+f.estilo+'</div></div>';
+        icon+'<div class="fac-name">'+f.name+'</div><div class="fac-type">'+f.estilo+'</div></div>';
     }).join('');
 
     var specHtml='';
@@ -468,8 +469,9 @@ function renderBooksConfig(){
       specHtml='<p class="field-label" style="margin-top:10px;color:rgba(155,125,196,.8)">Especialista Recomendado</p><div class="fac-grid">'+
         specIds.map(function(f){
           var sel=book.facilitador===f.id;
+          var icon=f.avatar?'<img src="'+f.avatar+'" style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:1px solid rgba(155,125,196,.3);margin-bottom:6px">':'<span class="fac-emoji">'+f.emoji+'</span>';
           return '<div class="fac-card specialist'+(sel?' selected':'')+'" onclick="setBookFac('+bi+',\''+f.id+'\')">'+
-            '<span class="fac-emoji">'+f.emoji+'</span><div class="fac-name">'+f.name+'</div><div class="fac-type">'+f.estilo+'</div></div>';
+            icon+'<div class="fac-name">'+f.name+'</div><div class="fac-type">'+f.estilo+'</div></div>';
         }).join('')+'</div>';
     }
 
