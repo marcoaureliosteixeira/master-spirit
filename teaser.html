@@ -473,9 +473,13 @@ function enterMestres(){
   function afterJesusSpeaks(){
     jesusVid.muted=true;
     if(music)music.volume=.7;
-    // Jesus some suavemente
-    jesusEl.style.transition='opacity 1.5s ease';
-    jesusEl.style.opacity='0';
+    // Jesus some suavemente — remover animation antes (forwards bloqueia opacity)
+    jesusEl.style.animation='none';
+    jesusEl.style.opacity='1';
+    requestAnimationFrame(function(){
+      jesusEl.style.transition='opacity 1.5s ease';
+      jesusEl.style.opacity='0';
+    });
 
     var ey=document.getElementById('mestres-eyebrow');
     var hl=document.getElementById('mestres-headline');
