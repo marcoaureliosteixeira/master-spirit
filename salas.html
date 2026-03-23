@@ -40,6 +40,19 @@ p,span,input,textarea{font-family:Georgia,'Times New Roman',serif}
 .sec-title{font-family:'Cinzel',serif;font-size:11px;letter-spacing:2.5px;color:rgba(201,168,76,.5);text-transform:uppercase;margin:24px 0 12px;display:flex;align-items:center;gap:8px}
 .sec-title::after{content:'';flex:1;height:1px;background:rgba(201,168,76,.12)}
 
+/* Section accordions */
+.section-accordion{border:1px solid var(--card-border);border-radius:12px;margin-bottom:10px;overflow:hidden;background:var(--card-bg)}
+.section-header{display:flex;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;transition:background .2s}
+.section-header:hover{background:rgba(201,168,76,.05)}
+.section-icon{font-size:18px;flex-shrink:0}
+.section-label{font-family:'Cinzel',serif;font-size:11px;letter-spacing:1.5px;color:var(--gold);flex:1}
+.section-header .arrow{color:rgba(201,168,76,.4);font-size:12px;transition:transform .3s}
+.section-header.open .arrow{transform:rotate(180deg)}
+.section-body{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.section-body.open{max-height:2000px}
+.section-body>*:first-child{padding-top:0}
+.section-body-pad{padding:0 16px 14px}
+
 /* Theme cards (accordion) */
 .theme-grid{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
 .theme-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;overflow:hidden;transition:all .2s}
@@ -182,37 +195,49 @@ p,span,input,textarea{font-family:Georgia,'Times New Roman',serif}
     <a href="app.html" style="color:rgba(240,234,214,.4)"><span>🏠</span> Início</a>
   </div>
 
-  <!-- Tabs -->
-  <div id="tabs" style="display:flex;gap:0;border-bottom:1px solid rgba(201,168,76,.12);position:sticky;top:52px;z-index:40;background:rgba(6,10,22,.97)">
-    <button class="sala-tab active" onclick="switchTab('biblioteca')" id="tab-biblioteca" style="flex:1;padding:12px;background:none;border:none;border-bottom:2px solid var(--gold);cursor:pointer;font-family:'Cinzel',serif;font-size:10px;letter-spacing:1.5px;color:var(--gold);transition:all .2s">📚 Biblioteca</button>
-    <button class="sala-tab" onclick="switchTab('estudos')" id="tab-estudos" style="flex:1;padding:12px;background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;font-family:'Cinzel',serif;font-size:10px;letter-spacing:1.5px;color:rgba(240,234,214,.4);transition:all .2s">📖 Meus Estudos</button>
-  </div>
-
   <div id="main">
-    <!-- Tab: Biblioteca -->
-    <div id="view-biblioteca">
-      <p class="disclaimer">O Master Spirit não reproduz nem substitui obras literárias. Oferecemos programas de estudo temático com referências bibliográficas. Recomendamos a aquisição das obras originais.</p>
+    <!-- Disclaimer -->
+    <p class="disclaimer">O Master Spirit não reproduz nem substitui obras literárias. Oferecemos programas de estudo temático com referências bibliográficas. Recomendamos a aquisição das obras originais.</p>
 
-      <!-- Nome e Objetivo da Sala -->
-      <div style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:16px;margin-bottom:16px">
-        <p style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:var(--gold);margin-bottom:10px">MINHA SALA DE ESTUDO</p>
-        <input id="sala-nome" type="text" placeholder="Nome da sua sala (ex: Grupo Fraternidade)" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:10px 14px;color:var(--text);font-family:Georgia,serif;font-size:14px;outline:none;margin-bottom:10px;transition:border-color .2s" onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(201,168,76,.2)'">
-        <textarea id="sala-objetivo" placeholder="Objetivo do estudo (ex: Aprofundar o estudo sobre reencarnação e vida após a morte...)" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:10px 14px;color:var(--text);font-family:Georgia,serif;font-size:14px;outline:none;min-height:80px;resize:vertical;transition:border-color .2s" onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(201,168,76,.2)'"></textarea>
-        <p style="font-size:11px;color:rgba(240,234,214,.3);font-style:italic;font-family:Georgia,serif;margin-top:6px">Emmanuel usará o objetivo para personalizar suas recomendações e plano de estudo.</p>
+    <!-- ACCORDION: Minha Sala de Estudo -->
+    <div class="section-accordion">
+      <div class="section-header" onclick="toggleSection('sala')">
+        <span class="section-icon">📝</span>
+        <span class="section-label">Minha Sala de Estudo</span>
+        <span class="arrow" id="arrow-sala">▼</span>
       </div>
-
-      <p class="sec-title">Biblioteca Temática</p>
-      <div class="theme-grid" id="theme-grid"></div>
+      <div class="section-body" id="body-sala">
+        <input id="sala-nome" type="text" placeholder="Nome da sua sala (ex: Grupo Fraternidade)" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:10px 14px;color:var(--text);font-family:Georgia,serif;font-size:14px;outline:none;margin-bottom:10px;transition:border-color .2s" onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(201,168,76,.2)'">
+        <textarea id="sala-objetivo" placeholder="Objetivo do estudo..." style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:10px 14px;color:var(--text);font-family:Georgia,serif;font-size:14px;outline:none;min-height:70px;resize:vertical;transition:border-color .2s" onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(201,168,76,.2)'"></textarea>
+        <p style="font-size:10px;color:rgba(240,234,214,.25);font-style:italic;font-family:Georgia,serif;margin-top:4px">Emmanuel usa o objetivo para personalizar recomendações.</p>
+      </div>
     </div>
 
-    <!-- Tab: Meus Estudos -->
-    <div id="view-estudos" style="display:none">
-      <div id="my-studies-empty" style="text-align:center;padding:40px 20px;color:rgba(240,234,214,.3)">
-        <p style="font-size:32px;margin-bottom:12px">📖</p>
-        <p style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:rgba(201,168,76,.4);margin-bottom:8px">Nenhum estudo em andamento</p>
-        <p style="font-size:13px;font-style:italic;font-family:Georgia,serif">Escolha um tema na Biblioteca ou peça sugestões ao Emmanuel</p>
+    <!-- ACCORDION: Biblioteca Temática -->
+    <div class="section-accordion">
+      <div class="section-header" onclick="toggleSection('biblioteca')">
+        <span class="section-icon">📚</span>
+        <span class="section-label">Biblioteca Temática</span>
+        <span class="arrow" id="arrow-biblioteca">▼</span>
       </div>
-      <div id="my-studies"></div>
+      <div class="section-body" id="body-biblioteca">
+        <div class="theme-grid" id="theme-grid"></div>
+      </div>
+    </div>
+
+    <!-- ACCORDION: Meus Estudos -->
+    <div class="section-accordion">
+      <div class="section-header" onclick="toggleSection('estudos')">
+        <span class="section-icon">📖</span>
+        <span class="section-label" id="estudos-label">Meus Estudos</span>
+        <span class="arrow" id="arrow-estudos">▼</span>
+      </div>
+      <div class="section-body" id="body-estudos">
+        <div id="my-studies-empty" style="text-align:center;padding:20px;color:rgba(240,234,214,.3)">
+          <p style="font-size:13px;font-style:italic;font-family:Georgia,serif">Nenhum estudo em andamento. Escolha um tema ou pergunte ao Emmanuel.</p>
+        </div>
+        <div id="my-studies"></div>
+      </div>
     </div>
   </div>
 
@@ -345,8 +370,8 @@ function renderMyStudies(){
   var empty=document.getElementById('my-studies-empty');
   if(myStudies.length===0){empty.style.display='block';el.innerHTML='';return;}
   empty.style.display='none';
-  // Atualizar badge na tab
-  document.getElementById('tab-estudos').textContent='📖 Meus Estudos ('+myStudies.length+')';
+  // Atualizar label com contagem
+  document.getElementById('estudos-label').textContent='Meus Estudos ('+myStudies.length+')';
   el.innerHTML=myStudies.map(function(s,i){
     var progress=s.completedSessions||0;
     var total=s.totalSessions||10;
@@ -520,7 +545,9 @@ function addStudy(tema,mode){
   myStudies.push(study);
   localStorage.setItem('spirit_my_studies',JSON.stringify(myStudies));
   renderThemes();
-  switchTab('estudos');
+  // Abrir accordion de Meus Estudos
+  var bodyEstudos=document.getElementById('body-estudos');
+  if(!bodyEstudos.classList.contains('open')) toggleSection('estudos');
   renderMyStudies();
 }
 
@@ -729,6 +756,14 @@ function clearChat(){
 // ══════════════════════════════════════════
 function toggleNav(){var m=document.getElementById('nav-menu');m.style.display=m.style.display==='none'?'block':'none';}
 
+function toggleSection(name){
+  var body=document.getElementById('body-'+name);
+  var arrow=document.getElementById('arrow-'+name);
+  var header=arrow.closest('.section-header');
+  body.classList.toggle('open');
+  header.classList.toggle('open');
+}
+
 function toggleTheme(idx){
   var body=document.getElementById('theme-body-'+idx);
   var header=body.previousElementSibling;
@@ -736,16 +771,6 @@ function toggleTheme(idx){
   header.classList.toggle('open');
 }
 
-var currentTab='biblioteca';
-function switchTab(tab){
-  currentTab=tab;
-  document.getElementById('view-biblioteca').style.display=tab==='biblioteca'?'block':'none';
-  document.getElementById('view-estudos').style.display=tab==='estudos'?'block':'none';
-  document.getElementById('tab-biblioteca').style.borderBottomColor=tab==='biblioteca'?'var(--gold)':'transparent';
-  document.getElementById('tab-biblioteca').style.color=tab==='biblioteca'?'var(--gold)':'rgba(240,234,214,.4)';
-  document.getElementById('tab-estudos').style.borderBottomColor=tab==='estudos'?'var(--gold)':'transparent';
-  document.getElementById('tab-estudos').style.color=tab==='estudos'?'var(--gold)':'rgba(240,234,214,.4)';
-}
 
 function initStars(){
   var sf=document.getElementById('stars');
