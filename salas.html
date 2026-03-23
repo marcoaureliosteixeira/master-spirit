@@ -60,8 +60,10 @@ p,span,input,textarea{font-family:Georgia,'Times New Roman',serif}
 .progress-bar{background:rgba(255,255,255,.07);border-radius:20px;height:6px;overflow:hidden;margin-top:8px}
 .progress-fill{background:linear-gradient(90deg,#C9A84C,#E8C97A);height:100%;border-radius:20px;transition:width .5s}
 
-/* Emmanuel chat */
-#emmanuel-bar{position:fixed;bottom:0;left:0;right:0;max-width:900px;margin:0 auto;z-index:80;background:rgba(6,10,22,.97);border-top:1px solid rgba(201,168,76,.15);padding:12px 16px}
+/* Emmanuel chat — resizable */
+#emmanuel-bar{position:fixed;bottom:0;left:0;right:0;max-width:900px;margin:0 auto;z-index:80;background:rgba(6,10,22,.97);border-top:1px solid rgba(201,168,76,.15);padding:12px 16px;transition:height .1s}
+#resize-handle{position:absolute;top:-6px;left:0;right:0;height:12px;cursor:ns-resize;display:flex;align-items:center;justify-content:center;z-index:81}
+#resize-handle::after{content:'';width:40px;height:4px;background:rgba(201,168,76,.3);border-radius:2px}
 #emmanuel-bar .bar-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
 #emmanuel-bar .bar-header img{width:32px;height:32px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,168,76,.3)}
 #emmanuel-bar .bar-header span{font-family:'Cinzel',serif;font-size:10px;color:var(--gold);letter-spacing:1.5px}
@@ -145,7 +147,8 @@ p,span,input,textarea{font-family:Georgia,'Times New Roman',serif}
 </div>
 
 <!-- Emmanuel Chat Bar (fixo embaixo) -->
-<div id="emmanuel-bar">
+<div id="emmanuel-bar" style="height:220px">
+  <div id="resize-handle"></div>
   <div class="bar-header">
     <img src="avatar-mestre-emmanuel.png" alt="">
     <span>MESTRE EMMANUEL</span>
@@ -393,6 +396,39 @@ function initStars(){
     sf.appendChild(d);
   }
 }
+
+// ══════════════════════════════════════════
+//  RESIZE HANDLE (drag to resize chat)
+// ══════════════════════════════════════════
+(function(){
+  var handle=document.getElementById('resize-handle');
+  var bar=document.getElementById('emmanuel-bar');
+  var dragging=false,startY=0,startH=0;
+  function onStart(e){
+    dragging=true;
+    startY=e.touches?e.touches[0].clientY:e.clientY;
+    startH=bar.offsetHeight;
+    document.body.style.userSelect='none';
+  }
+  function onMove(e){
+    if(!dragging)return;
+    var y=e.touches?e.touches[0].clientY:e.clientY;
+    var newH=startH+(startY-y);
+    newH=Math.max(140,Math.min(window.innerHeight*0.75,newH));
+    bar.style.height=newH+'px';
+    document.getElementById('main').style.paddingBottom=(newH+20)+'px';
+  }
+  function onEnd(){
+    dragging=false;
+    document.body.style.userSelect='';
+  }
+  handle.addEventListener('mousedown',onStart);
+  handle.addEventListener('touchstart',onStart,{passive:true});
+  document.addEventListener('mousemove',onMove);
+  document.addEventListener('touchmove',onMove,{passive:true});
+  document.addEventListener('mouseup',onEnd);
+  document.addEventListener('touchend',onEnd);
+})();
 
 // ══════════════════════════════════════════
 //  INIT
