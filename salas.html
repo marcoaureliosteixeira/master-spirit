@@ -185,6 +185,15 @@ p,span,input,textarea{font-family:Georgia,'Times New Roman',serif}
     <!-- Tab: Biblioteca -->
     <div id="view-biblioteca">
       <p class="disclaimer">O Master Spirit não reproduz nem substitui obras literárias. Oferecemos programas de estudo temático com referências bibliográficas. Recomendamos a aquisição das obras originais.</p>
+
+      <!-- Nome e Objetivo da Sala -->
+      <div style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:16px;margin-bottom:16px">
+        <p style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:var(--gold);margin-bottom:10px">MINHA SALA DE ESTUDO</p>
+        <input id="sala-nome" type="text" placeholder="Nome da sua sala (ex: Grupo Fraternidade)" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:10px 14px;color:var(--text);font-family:Georgia,serif;font-size:14px;outline:none;margin-bottom:10px;transition:border-color .2s" onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(201,168,76,.2)'">
+        <textarea id="sala-objetivo" placeholder="Objetivo do estudo (ex: Aprofundar o estudo sobre reencarnação e vida após a morte...)" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:10px 14px;color:var(--text);font-family:Georgia,serif;font-size:14px;outline:none;min-height:80px;resize:vertical;transition:border-color .2s" onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(201,168,76,.2)'"></textarea>
+        <p style="font-size:11px;color:rgba(240,234,214,.3);font-style:italic;font-family:Georgia,serif;margin-top:6px">Emmanuel usará o objetivo para personalizar suas recomendações e plano de estudo.</p>
+      </div>
+
       <p class="sec-title">Biblioteca Temática</p>
       <div class="theme-grid" id="theme-grid"></div>
     </div>
@@ -346,12 +355,16 @@ async function sendToEmmanuel(){
     return {role:m.role==='user'?'user':'assistant',content:m.text};
   });
 
-  // Include current studies context
-  var ctx='';
-  if(myStudies.length>0){
-    ctx='[Estudos atuais do usuário: '+myStudies.map(function(s){return s.name+' ('+s.mode+')';}).join(', ')+']';
-    apiMsgs.unshift({role:'user',content:ctx});
-    apiMsgs.splice(1,0,{role:'assistant',content:'Entendido, vou considerar seus estudos atuais.'});
+  // Include sala context (nome, objetivo, estudos atuais)
+  var salaCtx=[];
+  var nome=(document.getElementById('sala-nome')||{}).value||'';
+  var objetivo=(document.getElementById('sala-objetivo')||{}).value||'';
+  if(nome) salaCtx.push('Nome da sala: '+nome);
+  if(objetivo) salaCtx.push('Objetivo: '+objetivo);
+  if(myStudies.length>0) salaCtx.push('Estudos atuais: '+myStudies.map(function(s){return s.name+' ('+s.mode+')';}).join(', '));
+  if(salaCtx.length>0){
+    apiMsgs.unshift({role:'user',content:'[Contexto da sala do usuário: '+salaCtx.join(' | ')+']'});
+    apiMsgs.splice(1,0,{role:'assistant',content:'Entendido, vou considerar o contexto da sua sala.'});
   }
 
   emmanuelLoading=true;
