@@ -207,11 +207,11 @@ function renderMyStudies(){
   var title=document.getElementById('my-studies-title');
   if(myStudies.length===0){title.style.display='none';el.innerHTML='';return;}
   title.style.display='flex';
-  el.innerHTML=myStudies.map(function(s){
+  el.innerHTML=myStudies.map(function(s,i){
     var progress=s.completedSessions||0;
     var total=s.totalSessions||10;
     var pct=Math.round(progress/total*100);
-    return '<div class="my-study">'+
+    return '<div class="my-study" onclick="openStudy('+i+')" style="cursor:pointer">'+
       '<div class="study-title">'+s.name+'</div>'+
       '<div class="study-info">'+s.facilNome+' · '+(s.mode==='livre'?'Estudo Livre':'Agendado')+' · '+pct+'%</div>'+
       '<div class="progress-bar"><div class="progress-fill" style="width:'+pct+'%"></div></div>'+
@@ -222,9 +222,9 @@ function renderMyStudies(){
 function selectTheme(id){
   var tema=TEMAS.find(function(t){return t.id===id;});
   if(!tema)return;
-  var already=myStudies.find(function(s){return s.themeId===id;});
-  if(already){
-    addEmmanuelMsg('Você já está estudando "'+tema.name+'". Quer que eu mostre seu progresso ou reorganize sua grade?');
+  var alreadyIdx=myStudies.findIndex(function(s){return s.themeId===id;});
+  if(alreadyIdx>=0){
+    openStudy(alreadyIdx);
     return;
   }
   addEmmanuelMsg('Excelente escolha: "'+tema.name+'". Para melhor aproveitamento, recomendamos o acompanhamento com a obra original ('+tema.ref.replace('Ref.: ','')+').\n\nSeu facilitador será '+tema.facilNome+(tema.specialist?' — especialista nesta tradição.':'.')+'\n\nComo deseja estudar?\n1 — Estudo Agendado (dias e horários fixos)\n2 — Estudo Livre (no seu ritmo)');
@@ -367,6 +367,25 @@ function addStudy(tema,mode){
   localStorage.setItem('spirit_my_studies',JSON.stringify(myStudies));
   renderThemes();
   renderMyStudies();
+}
+
+function openStudy(idx){
+  var s=myStudies[idx];
+  if(!s)return;
+  var progress=s.completedSessions||0;
+  var total=s.totalSessions||16;
+  var pct=Math.round(progress/total*100);
+  var nextSession=progress+1;
+
+  addEmmanuelMsg(
+    '📖 '+s.name+'\n'+
+    'Facilitador: '+s.facilNome+'\n'+
+    'Modo: '+(s.mode==='livre'?'Estudo Livre':'Agendado')+'\n'+
+    'Progresso: '+progress+'/'+total+' sessões ('+pct+'%)\n\n'+
+    (progress===0
+      ?'Você ainda não iniciou. Quando quiser começar a primeira sessão, digite "iniciar".'
+      :'Próxima sessão: #'+nextSession+'. Digite "continuar" para retomar ou "grade" para ver seu planejamento.')
+  );
 }
 
 function copyChat(){
