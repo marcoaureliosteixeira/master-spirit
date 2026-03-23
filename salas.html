@@ -455,7 +455,11 @@ function startSession(study,sessionNum){
 }
 
 async function loadSessionContent(study,sessionNum){
-  var msgs=[{role:'user',content:'Você é o facilitador '+study.facilNome+' do aplicativo Master Spirit. Prepare a sessão #'+sessionNum+' do estudo "'+study.name+'" ('+study.ref+').\n\nGere o conteúdo da sessão com:\n1. Título da sessão\n2. Capítulo/seção de referência\n3. Exposição do conteúdo (3-4 parágrafos, didático, acessível)\n4. 1 reflexão para o estudante\n\nFale na primeira pessoa como '+study.facilNome+'. Tom: didático, profundo mas acessível. Português brasileiro. NUNCA use markdown com asteriscos.\n\nFormato da resposta:\nTÍTULO: [título]\nREFERÊNCIA: [cap/seção]\nCONTEÚDO:\n[texto]\nREFLEXÃO:\n[texto]'}];
+  var resumoAnterior='';
+  if(sessionNum>1){
+    resumoAnterior='\n\nIMPORTANTE: Esta é a sessão #'+sessionNum+'. Antes de começar o conteúdo novo, faça um breve resumo (2-3 frases) do que foi abordado na sessão anterior (#'+(sessionNum-1)+'), para contextualizar o estudante. Use o formato:\nRESUMO ANTERIOR:\n[resumo]';
+  }
+  var msgs=[{role:'user',content:'Você é o facilitador '+study.facilNome+' do aplicativo Master Spirit. Prepare a sessão #'+sessionNum+' do estudo "'+study.name+'" ('+study.ref+').'+resumoAnterior+'\n\nGere o conteúdo da sessão com:\n1. Título da sessão\n2. Capítulo/seção de referência\n'+(sessionNum>1?'3. Resumo da sessão anterior (2-3 frases)\n4':'3')+'. Exposição do conteúdo (3-4 parágrafos, didático, acessível)\n'+(sessionNum>1?'5':'4')+'. 1 reflexão para o estudante\n\nFale na primeira pessoa como '+study.facilNome+'. Tom: didático, profundo mas acessível. Português brasileiro. NUNCA use markdown com asteriscos.\n\nFormato da resposta:\nTÍTULO: [título]\nREFERÊNCIA: [cap/seção]\n'+(sessionNum>1?'RESUMO ANTERIOR:\n[resumo]\n':'')+'CONTEÚDO:\n[texto]\nREFLEXÃO:\n[texto]'}];
 
   try{
     var r=await fetch('/api/curator',{method:'POST',headers:{'Content-Type':'application/json'},
@@ -466,12 +470,14 @@ async function loadSessionContent(study,sessionNum){
     // Parse response
     var titulo=text.match(/T[ÍI]TULO:\s*(.+)/i);
     var ref=text.match(/REFER[ÊE]NCIA:\s*(.+)/i);
+    var resumoAnt=text.match(/RESUMO ANTERIOR:\s*([\s\S]*?)(?=CONTE[ÚU]DO:|$)/i);
     var conteudo=text.match(/CONTE[ÚU]DO:\s*([\s\S]*?)(?=REFLEX[ÃA]O:|$)/i);
     var reflexao=text.match(/REFLEX[ÃA]O:\s*([\s\S]*)/i);
 
     document.getElementById('session-title').textContent=titulo?titulo[1]:'Sessão '+sessionNum;
     document.getElementById('session-chapter').textContent=ref?ref[1]:'Sessão '+sessionNum;
     document.getElementById('session-body').innerHTML=
+      (resumoAnt?'<div style="background:rgba(100,60,200,.06);border-left:3px solid rgba(100,60,200,.4);border-radius:0 10px 10px 0;padding:14px;margin-bottom:18px"><p style="font-family:Cinzel,serif;font-size:10px;letter-spacing:1.5px;color:rgba(150,120,255,.7);margin-bottom:6px">SESSÃO ANTERIOR</p><p style="font-style:italic;color:rgba(240,234,214,.55)">'+resumoAnt[1].trim()+'</p></div>':'')+
       (conteudo?conteudo[1].trim().split('\n\n').map(function(p){return '<p>'+p+'</p>';}).join(''):'<p>'+text+'</p>')+
       (reflexao?'<div style="background:rgba(201,168,76,.06);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:14px;margin-top:16px"><p style="font-family:Cinzel,serif;font-size:10px;letter-spacing:1.5px;color:var(--gold);margin-bottom:6px">REFLEXÃO</p><p style="font-style:italic;color:rgba(240,234,214,.6)">'+reflexao[1].trim()+'</p></div>':'');
 
