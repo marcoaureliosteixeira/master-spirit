@@ -475,26 +475,34 @@ function enterMestres(){
     if(music)music.volume=.7;
     // Jesus FICA na tela — não some
 
-    // Narrador voice-04 + textos + avatares
     var ey=document.getElementById('mestres-eyebrow');
-    ey.style.animation='eyebrowShow .8s ease forwards';
     var hl=document.getElementById('mestres-headline');
-    hl.style.animation='contentReveal .8s ease .5s forwards';
     var dv=document.getElementById('mestres-divider');
-    dv.style.animation='fadeIn .4s ease .3s forwards';
     var sb=document.getElementById('mestres-sub');
-    sb.style.animation='contentReveal .8s ease .8s forwards';
 
-    // Narrador fala
-    playVoice('teaser2-voice-04.mp3',function(){
-      // Avatares aparecem após narrador
-      var row=document.getElementById('masters-row');row.innerHTML='';
-      ['avatar-jesus.png','avatar-kardec.png','avatar-chico-xavier.png?v=2','avatar-bezerra.png','avatar-divaldo.png?v=2','avatar-krishna.png'].forEach(function(src,i){
-        var img=document.createElement('img');img.className='master-circle';img.src=src;img.alt='Mestre';
-        img.style.animation='masterIn .6s ease '+(i*.25)+'s forwards';row.appendChild(img);
+    // Cena 1: Eyebrow aparece grande e bold (igual às outras cenas)
+    ey.style.animation='eyebrowShow .8s ease forwards';
+
+    // Cena 2 (3s depois): Eyebrow recua + headline/sub entram bold
+    setTimeout(function(){
+      ey.style.animation='eyebrowRecede 1s ease forwards';
+      dv.style.animation='fadeIn .4s ease forwards';
+      hl.style.animation='contentReveal .8s ease .2s forwards';
+      sb.style.animation='contentReveal .8s ease .5s forwards';
+    },3000);
+
+    // Narrador fala junto com a transição
+    setTimeout(function(){
+      playVoice('teaser2-voice-04.mp3',function(){
+        // Avatares aparecem após narrador
+        var row=document.getElementById('masters-row');row.innerHTML='';
+        ['avatar-jesus.png','avatar-kardec.png','avatar-chico-xavier.png?v=2','avatar-bezerra.png','avatar-divaldo.png?v=2','avatar-krishna.png'].forEach(function(src,i){
+          var img=document.createElement('img');img.className='master-circle';img.src=src;img.alt='Mestre';
+          img.style.animation='masterIn .6s ease '+(i*.25)+'s forwards';row.appendChild(img);
+        });
+        pillarTimer=setTimeout(function(){goToPillar(currentPillar+1);},3000);
       });
-      pillarTimer=setTimeout(function(){goToPillar(currentPillar+1);},3000);
-    });
+    },3000);
   }
 
   jesusVid.onended=function(){afterJesusSpeaks();};
