@@ -473,7 +473,9 @@ function enterMestres(){
   function afterJesusSpeaks(){
     jesusVid.muted=true;
     if(music)music.volume=.7;
-    // Jesus FICA na tela — não some
+    // Jesus some suavemente
+    jesusEl.style.transition='opacity 1.5s ease';
+    jesusEl.style.opacity='0';
 
     var ey=document.getElementById('mestres-eyebrow');
     var hl=document.getElementById('mestres-headline');
