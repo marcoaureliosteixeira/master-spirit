@@ -132,7 +132,6 @@ body{font-family:'Cinzel',Georgia,serif}
 </head>
 <body>
 <div id="progress"><div id="progress-fill"></div></div>
-<button id="pause-btn" onclick="togglePause()" style="position:fixed;top:14px;right:14px;z-index:9998;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.4);border-radius:50%;width:40px;height:40px;cursor:pointer;font-size:16px;color:#E8C97A;display:none;align-items:center;justify-content:center">⏸</button>
 
 <!-- START -->
 <div id="start-overlay" onclick="startTeaser()">
@@ -274,7 +273,6 @@ createParticles(document.getElementById('start-particles'),100,.2);
 // ══════════════════════════════════════════
 function startTeaser(){
   document.getElementById('start-overlay').style.display='none';
-  document.getElementById('pause-btn').style.display='flex';
   music=new Audio('teaser-music.mp3');music.volume=.7;music.loop=true;music.play();
   // Preload all voices
   PILLAR_VOICES.concat(['teaser2-voice-01.mp3','teaser2-voice-02.mp3','teaser2-voice-03.mp3','teaser2-voice-08.mp3']).forEach(function(v){
