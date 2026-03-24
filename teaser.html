@@ -40,19 +40,16 @@ body{font-family:'Cinzel',Georgia,serif}
 @keyframes brandFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
 
 /* ── BRAND: Splash effect elements ── */
-#brand-spark{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);width:6px;height:6px;
-  border-radius:50%;background:#fff;box-shadow:0 0 12px 6px rgba(255,240,180,.9),0 0 40px 20px rgba(201,168,76,.5),0 0 80px 40px rgba(100,60,200,.3);opacity:0;z-index:3}
-#brand-spirit{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);z-index:4}
-#brand-spirit img{width:min(80vw,460px);height:min(80vw,460px);object-fit:contain;display:block;
+#brand-spark{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);width:4px;height:4px;
+  border-radius:50%;background:#fff;opacity:0;z-index:3}
+#brand-spirit{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);z-index:4}
+#brand-spirit img{width:min(75vw,440px);height:min(75vw,440px);object-fit:contain;display:block;
   mix-blend-mode:screen;-webkit-mix-blend-mode:screen;opacity:0}
-/* Anel vazio */
-#brand-ring-empty{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);z-index:5;opacity:0;
-  width:min(50vw,220px);height:auto}
-/* Flash + ondas */
-#brand-flash{position:absolute;left:50%;top:42%;width:min(55vw,250px);height:min(55vw,250px);
-  transform:translate(-50%,-50%) scale(.5);border-radius:50%;pointer-events:none;opacity:0;z-index:6;
-  background:radial-gradient(circle,rgba(255,255,255,.9) 0%,rgba(201,168,76,.6) 40%,transparent 70%)}
-.brand-shockwave{position:absolute;left:50%;top:42%;width:min(30vw,130px);height:min(30vw,130px);
+/* Flash de implosão */
+#brand-flash{position:absolute;left:50%;top:40%;width:min(60vw,280px);height:min(60vw,280px);
+  transform:translate(-50%,-50%) scale(.3);border-radius:50%;pointer-events:none;opacity:0;z-index:6;
+  background:radial-gradient(circle,rgba(255,255,255,1) 0%,rgba(201,168,76,.7) 30%,rgba(100,60,200,.3) 60%,transparent 80%)}
+.brand-shockwave{position:absolute;left:50%;top:40%;width:min(25vw,110px);height:min(25vw,110px);
   transform:translate(-50%,-50%);border:2px solid rgba(201,168,76,.9);border-radius:50%;opacity:0;z-index:6;pointer-events:none}
 
 /* ── BRAND: Jesus ── */
@@ -69,11 +66,15 @@ body{font-family:'Cinzel',Georgia,serif}
 @keyframes sparkBurst{0%{transform:translate(-50%,-50%) scale(0);opacity:0}15%{opacity:1;transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(5);opacity:.8}100%{transform:translate(-50%,-50%) scale(10);opacity:0}}
 @keyframes spiritRise{0%{top:50%;transform:translate(-50%,-50%) scale(.3);opacity:0}30%{opacity:1;transform:translate(-50%,-50%) scale(1.05)}60%{transform:translate(-50%,-50%) scale(1.02)}80%{top:42%;transform:translate(-50%,-50%) scale(1)}100%{top:42%;transform:translate(-50%,-50%) scale(1)}}
 @keyframes spiritForm{0%{opacity:0;filter:blur(35px) brightness(6) saturate(0)}15%{opacity:.2;filter:blur(20px) brightness(3.5) saturate(0)}35%{opacity:.4;filter:blur(12px) brightness(2.5) saturate(.2)}55%{opacity:.65;filter:blur(5px) brightness(1.8) saturate(.5)}75%{opacity:.85;filter:blur(2px) brightness(1.3) saturate(.8)}100%{opacity:1;filter:brightness(1) saturate(1) drop-shadow(0 0 30px rgba(201,168,76,.5))}}
-@keyframes spiritDive{0%{transform:translate(-50%,-50%) scale(1);opacity:1}30%{transform:translate(-50%,-50%) scale(.7);opacity:.9}60%{transform:translate(-50%,-50%) scale(.3);opacity:.6}85%{transform:translate(-50%,-50%) scale(.08);opacity:.3}100%{transform:translate(-50%,-50%) scale(0);opacity:0}}
-@keyframes ringFloatIn{0%{opacity:0;transform:translate(-50%,-50%) scale(.5);filter:brightness(2.5)}60%{opacity:.6;transform:translate(-50%,-50%) scale(1.02);filter:brightness(1.2)}100%{opacity:.75;transform:translate(-50%,-50%) scale(1);filter:brightness(1)}}
-@keyframes ringHide{to{opacity:0}}
-@keyframes flashBurst{0%{opacity:0;transform:translate(-50%,-50%) scale(.5)}40%{opacity:1;transform:translate(-50%,-50%) scale(1.4)}100%{opacity:0;transform:translate(-50%,-50%) scale(1)}}
-@keyframes shockwave{0%{opacity:.9;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(2.4)}}
+/* Implosão do espírito (se transforma na logo) */
+@keyframes spiritImplode{0%{transform:translate(-50%,-50%) scale(1);opacity:1;filter:brightness(1)}30%{transform:translate(-50%,-50%) scale(1.1);filter:brightness(1.5)}60%{transform:translate(-50%,-50%) scale(.4);opacity:.8;filter:brightness(2.5)}85%{transform:translate(-50%,-50%) scale(.08);opacity:.5;filter:brightness(4)}100%{transform:translate(-50%,-50%) scale(0);opacity:0;filter:brightness(6)}}
+/* Supernova */
+@keyframes supernova{0%{transform:translate(-50%,-50%) scale(0);opacity:0}10%{opacity:1;transform:translate(-50%,-50%) scale(1);box-shadow:0 0 20px 10px rgba(255,240,180,1),0 0 60px 30px rgba(201,168,76,.8)}30%{transform:translate(-50%,-50%) scale(3);box-shadow:0 0 40px 20px rgba(255,240,180,.9),0 0 100px 50px rgba(201,168,76,.6)}60%{transform:translate(-50%,-50%) scale(8);opacity:.6}100%{transform:translate(-50%,-50%) scale(15);opacity:0}}
+/* Flash de implosão */
+@keyframes implosionFlash{0%{opacity:0;transform:translate(-50%,-50%) scale(.3)}40%{opacity:1;transform:translate(-50%,-50%) scale(1.6)}100%{opacity:0;transform:translate(-50%,-50%) scale(.8)}}
+/* Logo emerge */
+@keyframes logoEmerge{0%{opacity:0;transform:scale(.3);filter:brightness(5)}30%{opacity:.7;transform:scale(1.15);filter:brightness(2)}60%{opacity:.95;transform:scale(.95);filter:brightness(1.3)}100%{opacity:1;transform:scale(1);filter:brightness(1)}}
+@keyframes shockwave{0%{opacity:.9;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(3)}}
 @keyframes jesusIn{0%{opacity:0;filter:blur(15px) brightness(2)}40%{opacity:.6;filter:blur(6px) brightness(1.3)}100%{opacity:1;filter:blur(0) brightness(1)}}
 @keyframes jesusOut{0%{opacity:1;filter:blur(0)}50%{opacity:.5;filter:blur(8px) brightness(1.5)}100%{opacity:0;filter:blur(20px) brightness(2)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
@@ -156,7 +157,6 @@ body{font-family:'Cinzel',Georgia,serif}
   <canvas id="brand-stars" style="position:absolute;inset:0;z-index:0"></canvas>
   <div id="brand-spark"></div>
   <div id="brand-spirit"><img src="master-spirit-avatar.png" alt=""></div>
-  <img id="brand-ring-empty" src="logo-sem-master-spirit-fundo_transparente.png" alt="">
   <div id="brand-flash"></div>
   <div class="brand-shockwave" id="brand-sw1"></div>
   <div class="brand-shockwave" id="brand-sw2"></div>
@@ -330,7 +330,6 @@ function startBrand(){
   var spark=document.getElementById('brand-spark');
   var spirit=document.getElementById('brand-spirit');
   var spiritImg=spirit.querySelector('img');
-  var ringEmpty=document.getElementById('brand-ring-empty');
   var flash=document.getElementById('brand-flash');
   var sw1=document.getElementById('brand-sw1');
   var sw2=document.getElementById('brand-sw2');
@@ -354,37 +353,31 @@ function startBrand(){
   // Voice-03
   setTimeout(function(){playVoice('teaser2-voice-03.mp3');},500);
 
-  // Spark
+  // Supernova (1s)
   setTimeout(function(){
-    spark.style.animation='sparkBurst 1.2s cubic-bezier(.22,1,.36,1) forwards';
+    spark.style.animation='supernova 1.5s cubic-bezier(.22,1,.36,1) forwards';
   },1000);
 
-  // Spirit forms
+  // Spirit nasce da explosão (1.5s)
   setTimeout(function(){
-    spirit.style.animation='spiritRise 2.5s cubic-bezier(.22,1,.36,1) forwards';
-    spiritImg.style.animation='spiritForm 2.5s cubic-bezier(.22,1,.36,1) forwards';
+    spirit.style.animation='spiritRise 3s cubic-bezier(.22,1,.36,1) forwards';
+    spiritImg.style.animation='spiritForm 3s cubic-bezier(.22,1,.36,1) forwards';
   },1500);
 
-  // Ring empty
+  // Spirit implode (5s) — se transforma na logo
   setTimeout(function(){
-    ringEmpty.style.animation='ringFloatIn 1s ease forwards';
-  },4000);
-
-  // Spirit dive
-  setTimeout(function(){
-    spirit.style.animation='spiritDive 1.2s cubic-bezier(.55,0,1,.45) forwards';
+    spirit.style.animation='spiritImplode 1s cubic-bezier(.55,0,1,.45) forwards';
   },5000);
 
-  // Impact + logo reveal
+  // Flash de implosão + logo emerge (6s)
   setTimeout(function(){
-    ringEmpty.style.animation='ringHide .3s ease forwards';
-    flash.style.animation='flashBurst .5s ease both';
-    sw1.style.animation='shockwave .7s ease-out both';
-    setTimeout(function(){sw2.style.animation='shockwave .7s ease-out both';},100);
-    // LOGO APARECE — display:block, nunca mais esconde
+    flash.style.animation='implosionFlash .6s ease both';
+    sw1.style.animation='shockwave .8s ease-out both';
+    setTimeout(function(){sw2.style.animation='shockwave .8s ease-out both';},100);
+    // LOGO emerge da implosão
     logo.style.display='block';
-    logoImg.style.animation='brandLogoIn .8s ease forwards';
-  },6200);
+    logoImg.style.animation='logoEmerge 1s ease forwards';
+  },6000);
 
   // Logo sobe para posição final — fica flutuando
   setTimeout(function(){
