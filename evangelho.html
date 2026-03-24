@@ -13,6 +13,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;overflow:hidden}
 body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:var(--fs);-webkit-tap-highlight-color:transparent}
+p,span,input,textarea,.session-text,.qa-msg,.timer-label,.fac-desc{font-family:Georgia,'Times New Roman',serif}
 #app{display:flex;flex-direction:column;height:100%;max-width:900px;margin:0 auto}
 #hdr{flex-shrink:0;background:rgba(12,18,38,.88);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-bottom:1px solid rgba(201,168,76,.12);padding:16px 18px;display:flex;align-items:center;gap:14px;z-index:50}
 .back{background:none;border:none;cursor:pointer;color:var(--gold);font-size:26px;padding:0}
@@ -77,6 +78,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:va
       <p>O Evangelho Segundo o Espiritismo</p>
     </div>
     <span id="step-badge">Configuração</span>
+    <button id="ev-podcast-btn" onclick="toggleEvPodcast()" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:6px;width:28px;height:28px;cursor:pointer;color:rgba(240,234,214,.5);font-size:14px;display:none" title="Ouvir como podcast">🎧</button>
     <button onclick="toggleNav()" style="background:none;border:1px solid var(--card-border,#E8E0D0);border-radius:10px;padding:8px 10px;cursor:pointer;font-size:14px;color:var(--gold,#8B7535);margin-left:8px" title="Menu">☰</button>
   </div>
   <div id="nav-menu" style="display:none;position:sticky;top:56px;z-index:49;background:rgba(12,18,38,.95);border-bottom:1px solid rgba(201,168,76,.15);padding:10px 18px;box-shadow:0 4px 12px rgba(0,0,0,.3)">
@@ -161,6 +163,37 @@ window.addEventListener('load',function(){
   renderFase();
 });
 
+// ── PODCAST (Web Speech API) ──
+var evPodcastPlaying=false;
+function toggleEvPodcast(){
+  if(evPodcastPlaying){speechSynthesis.cancel();evPodcastPlaying=false;updateEvPodcastBtn();return;}
+  var main=document.getElementById('main');
+  if(!main||!main.textContent.trim()) return;
+  if(!('speechSynthesis' in window)){alert('Navegador não suporta leitura em voz.');return;}
+
+  var text=main.textContent;
+  var voices=speechSynthesis.getVoices();
+  var savedURI=localStorage.getItem('spirit_voice_uri')||'';
+  var voice=savedURI?voices.find(function(v){return v.voiceURI===savedURI;}):null;
+  if(!voice) voice=voices.find(function(v){return v.lang.startsWith('pt');});
+  var rate=parseFloat(localStorage.getItem('spirit_voice_rate')||'0.9');
+  var pitch=parseFloat(localStorage.getItem('spirit_voice_pitch')||'1');
+
+  var utt=new SpeechSynthesisUtterance(text);
+  utt.lang='pt-BR';utt.rate=rate;utt.pitch=pitch;utt.volume=1;
+  if(voice) utt.voice=voice;
+  utt.onstart=function(){evPodcastPlaying=true;updateEvPodcastBtn();};
+  utt.onend=function(){evPodcastPlaying=false;updateEvPodcastBtn();};
+  utt.onerror=function(){evPodcastPlaying=false;updateEvPodcastBtn();};
+  speechSynthesis.speak(utt);
+}
+function updateEvPodcastBtn(){
+  var btn=document.getElementById('ev-podcast-btn');
+  if(!btn)return;
+  btn.textContent=evPodcastPlaying?'⏹':'🎧';
+  btn.style.color=evPodcastPlaying?'var(--gold)':'rgba(240,234,214,.5)';
+}
+
 function toggleNav(){
   var m=document.getElementById('nav-menu');
   m.style.display=m.style.display==='none'?'block':'none';
@@ -175,6 +208,12 @@ function renderFase(){
   var m=document.getElementById('main');
   var c=document.getElementById('controls');
   var badge=document.getElementById('step-badge');
+  // Mostrar botão podcast nas fases com conteúdo
+  var podBtn=document.getElementById('ev-podcast-btn');
+  var showPod=['prece1','leitura','comentarios','vibracoes','prece2'].indexOf(fase)>=0;
+  if(podBtn) podBtn.style.display=showPod?'inline-flex':'none';
+  // Parar podcast ao mudar de fase
+  if(evPodcastPlaying){speechSynthesis.cancel();evPodcastPlaying=false;updateEvPodcastBtn();}
 
   if(fase==='config'){
     badge.textContent='Configuração';
@@ -377,7 +416,7 @@ async function gerarPrece(tipo){
     var d=await r.json();
     var txt=d.text||'Não foi possível gerar a prece.';
     document.getElementById('main').innerHTML='<div class="session-text" style="padding:10px">'+txt+'</div>'+
-      (tipo==='prece_final'?'<div style="margin-top:20px;padding:16px;background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.15);border-radius:14px;text-align:center"><p style="font-family:Cinzel,serif;font-size:10px;letter-spacing:2px;color:rgba(201,168,76,.5);margin-bottom:14px">PAI NOSSO</p><div style="width:min(60vw,240px);height:min(60vw,240px);border-radius:50%;overflow:hidden;border:2px solid rgba(201,168,76,.5);box-shadow:0 0 40px rgba(201,168,76,.3);margin:0 auto 14px;-webkit-mask-image:-webkit-radial-gradient(white,black)"><video id="jesus-pai-nosso" playsinline style="width:100%;height:100%;object-fit:cover;border-radius:50%" preload="auto"><source src="avatar-jesus-pai-nosso.mp4" type="video/mp4"></video></div><p style="font-family:Cinzel,serif;font-size:14px;color:#E8C97A;letter-spacing:2px;margin-bottom:12px">Jesus</p><p style="font-size:15px;line-height:1.85;font-style:italic;color:rgba(240,234,214,.7);max-width:400px;margin:0 auto">Pai nosso, que estais nos céus, santificado seja o Vosso nome. Venha a nós o Vosso reino. Seja feita a Vossa vontade, assim na Terra como no Céu. O pão nosso de cada dia nos dai hoje. Perdoai as nossas ofensas, assim como nós perdoamos a quem nos tem ofendido. E não nos deixeis cair em tentação, mas livrai-nos do mal. Amém.</p></div>':'');
+      (tipo==='prece_final'?'<div style="margin-top:20px;padding:16px;background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.15);border-radius:14px;text-align:center"><p style="font-family:Cinzel,serif;font-size:10px;letter-spacing:2px;color:rgba(201,168,76,.5);margin-bottom:14px">PAI NOSSO</p><div style="width:min(60vw,240px);height:min(60vw,240px);border-radius:50%;overflow:hidden;border:2px solid rgba(201,168,76,.5);box-shadow:0 0 40px rgba(201,168,76,.3);margin:0 auto 14px;-webkit-mask-image:-webkit-radial-gradient(white,black)"><video id="jesus-pai-nosso" playsinline style="width:100%;height:100%;object-fit:cover;border-radius:50%" preload="auto"><source src="avatar-jesus-pai-nosso.mp4" type="video/mp4"></video></div><p style="font-family:Cinzel,serif;font-size:14px;color:#E8C97A;letter-spacing:2px;margin-bottom:12px">Jesus</p><p style="font-size:15px;line-height:1.85;font-style:italic;color:rgba(240,234,214,.7);max-width:400px;margin:0 auto">Pai nosso, que estais nos céus, santificado seja o Vosso nome. Venha a nós o Vosso reino. Seja feita a Vossa vontade, assim na Terra como no Céu. O pão nosso de cada dia nos dai hoje. Perdoai as nossas ofensas, assim como nós perdoamos a quem nos tem ofendido. E não nos deixeis cair em tentação, mas livrai-nos do mal. Assim seja.</p></div>':'');
     var btn=document.getElementById('btn-av');if(btn) btn.disabled=false;
     // Tocar vídeo do Jesus orando na prece final
     if(tipo==='prece_final'){
