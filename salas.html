@@ -75,13 +75,13 @@ p,span,input,textarea{font-family:Georgia,'Times New Roman',serif}
 .progress-fill{background:linear-gradient(90deg,#C9A84C,#E8C97A);height:100%;border-radius:20px;transition:width .5s}
 
 /* Emmanuel chat — resizable */
-#emmanuel-bar{position:fixed;bottom:0;left:0;right:0;max-width:900px;margin:0 auto;z-index:80;background:rgba(6,10,22,.97);border-top:1px solid rgba(201,168,76,.15);padding:12px 16px calc(12px + env(safe-area-inset-bottom)) 16px;transition:height .1s}
+#emmanuel-bar{position:fixed;bottom:0;left:0;right:0;max-width:900px;margin:0 auto;z-index:80;background:rgba(6,10,22,.97);border-top:1px solid rgba(201,168,76,.15);padding:12px 16px calc(12px + env(safe-area-inset-bottom)) 16px;transition:height .1s;display:flex;flex-direction:column}
 #resize-handle{position:absolute;top:-6px;left:0;right:0;height:12px;cursor:ns-resize;display:flex;align-items:center;justify-content:center;z-index:81}
 #resize-handle::after{content:'';width:40px;height:4px;background:rgba(201,168,76,.3);border-radius:2px}
 #emmanuel-bar .bar-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
 #emmanuel-bar .bar-header img{width:32px;height:32px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,168,76,.3)}
 #emmanuel-bar .bar-header span{font-family:'Cinzel',serif;font-size:10px;color:var(--gold);letter-spacing:1.5px}
-#emmanuel-chat-area{max-height:250px;overflow-y:auto;margin-bottom:8px;scroll-behavior:smooth}
+#emmanuel-chat-area{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;margin-bottom:8px;scroll-behavior:smooth;min-height:60px}
 .chat-msg{display:flex;gap:8px;align-items:flex-start;margin-bottom:8px}
 .chat-msg img{width:24px;height:24px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,168,76,.3);flex-shrink:0;margin-top:2px}
 .chat-msg .user-ico{width:24px;height:24px;border-radius:50%;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.3);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--gold);flex-shrink:0;margin-top:2px}
@@ -161,6 +161,10 @@ p,span,input,textarea{font-family:Georgia,'Times New Roman',serif}
       <h2 id="session-fac-name"></h2>
       <p id="session-study-name"></p>
     </div>
+    <div style="display:flex;align-items:center;gap:4px">
+      <button onclick="changeFontSize(-2)" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:6px;width:28px;height:28px;cursor:pointer;color:rgba(240,234,214,.5);font-size:14px;font-weight:700">A-</button>
+      <button onclick="changeFontSize(2)" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:6px;width:28px;height:28px;cursor:pointer;color:rgba(240,234,214,.5);font-size:14px;font-weight:700">A+</button>
+    </div>
     <span id="session-progress" style="font-family:'Cinzel',serif;font-size:9px;color:rgba(201,168,76,.5);letter-spacing:1px"></span>
   </div>
   <div class="session-content">
@@ -170,6 +174,17 @@ p,span,input,textarea{font-family:Georgia,'Times New Roman',serif}
       <div style="text-align:center;padding:40px;color:rgba(240,234,214,.3);font-style:italic">Carregando sessão...</div>
     </div>
     <div id="session-quiz" style="display:none"></div>
+    <!-- Chat com facilitador pós-aula -->
+    <div id="session-qa" style="display:none;margin-top:20px">
+      <div style="background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.2);border-radius:14px;padding:16px">
+        <p style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:var(--gold);margin-bottom:10px">PERGUNTE AO FACILITADOR</p>
+        <div id="qa-messages" style="max-height:300px;overflow-y:auto;-webkit-overflow-scrolling:touch;margin-bottom:10px"></div>
+        <div style="display:flex;gap:8px">
+          <input id="qa-input" type="text" placeholder="Sua dúvida sobre a sessão..." style="flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.22);border-radius:12px;padding:10px 14px;color:var(--text);font-family:Georgia,serif;font-size:16px;outline:none" onkeydown="if(event.key==='Enter'){event.preventDefault();askFacilitador();}">
+          <button onclick="askFacilitador()" style="background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.4);border-radius:50%;width:38px;height:38px;cursor:pointer;color:var(--gold);font-size:16px">↑</button>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="session-nav">
     <button onclick="closeSession()" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:rgba(240,234,214,.5)">← Voltar</button>
@@ -718,11 +733,55 @@ async function loadSessionContent(study,sessionNum){
 function nextSessionStep(){
   if(sessionStep==='content'){
     sessionStep='quiz';
-    document.getElementById('session-next-btn').textContent='Concluir sessão ✓';
+    document.getElementById('session-next-btn').textContent='Perguntas ao Facilitador →';
     loadQuiz();
+  } else if(sessionStep==='quiz'){
+    sessionStep='qa';
+    document.getElementById('session-next-btn').textContent='Concluir sessão ✓';
+    document.getElementById('session-qa').style.display='block';
+    var study=myStudies[activeStudyIdx];
+    var qaEl=document.getElementById('qa-messages');
+    qaEl.innerHTML='<div class="chat-msg emmanuel"><img src="'+getFacAvatar(study.facilitador)+'" alt=""><div class="bubble">Sessão concluída! Ficou com alguma dúvida sobre o conteúdo? Estou aqui para esclarecer.</div></div>';
+    document.getElementById('qa-input').focus();
   } else {
     completeSession();
   }
+}
+
+// Font size control
+var sessionFontSize=15;
+function changeFontSize(delta){
+  sessionFontSize=Math.max(12,Math.min(24,sessionFontSize+delta));
+  document.getElementById('session-body').style.fontSize=sessionFontSize+'px';
+}
+
+// Q&A com facilitador pós-aula
+async function askFacilitador(){
+  var inp=document.getElementById('qa-input');
+  var text=inp.value.trim();
+  if(!text)return;
+  inp.value='';
+  var study=myStudies[activeStudyIdx];
+  var qaEl=document.getElementById('qa-messages');
+  qaEl.innerHTML+='<div class="chat-msg user"><div class="user-ico">👤</div><div class="bubble">'+text+'</div></div>';
+  qaEl.innerHTML+='<div class="chat-msg emmanuel" id="qa-typing"><img src="'+getFacAvatar(study.facilitador)+'" alt=""><div class="bubble" style="color:var(--gold);font-style:italic">Pensando...</div></div>';
+  qaEl.scrollTop=qaEl.scrollHeight;
+
+  var sessionTitle=document.getElementById('session-title').textContent;
+  var sessionContent=document.getElementById('session-body').textContent.substring(0,500);
+  try{
+    var r=await fetch('/api/curator',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'chat',messages:[
+        {role:'user',content:'Você é o facilitador '+study.facilNome+' do Master Spirit. Acabou de dar uma sessão sobre "'+sessionTitle+'" do estudo "'+study.name+'". Contexto da sessão: '+sessionContent+'\n\nO estudante tem uma dúvida: '+text+'\n\nResponda como '+study.facilNome+', de forma didática e direta. Máximo 150 palavras. NUNCA use markdown com asteriscos.'}
+      ]})});
+    var d=await r.json();
+    var typing=document.getElementById('qa-typing');
+    if(typing) typing.outerHTML='<div class="chat-msg emmanuel"><img src="'+getFacAvatar(study.facilitador)+'" alt=""><div class="bubble">'+(d.reply||'Não consegui processar.').replace(/\n/g,'<br>')+'</div></div>';
+  }catch(e){
+    var typing2=document.getElementById('qa-typing');
+    if(typing2) typing2.outerHTML='<div class="chat-msg emmanuel"><img src="'+getFacAvatar(study.facilitador)+'" alt=""><div class="bubble" style="color:rgba(232,122,122,.7)">Erro de conexão.</div></div>';
+  }
+  qaEl.scrollTop=qaEl.scrollHeight;
 }
 
 async function loadQuiz(){
