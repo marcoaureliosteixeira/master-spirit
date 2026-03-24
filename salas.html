@@ -688,11 +688,16 @@ async function addStudy(tema,mode){
     var r=await fetch('/api/curator',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({action:'chat',messages:[{role:'user',content:
         'Gere um currículo COMPLETO para o estudo temático "'+tema.name+'" ('+tema.ref+').\n\n'+
-        'REGRA FUNDAMENTAL: O currículo DEVE cobrir 100% de todo o conteúdo da obra de referência. NENHUM capítulo ou tema pode ser omitido.\n\n'+
-        'Retorne SOMENTE um JSON válido, sem markdown:\n'+
-        '[{"n":1,"title":"título da sessão","ref":"capítulo/seção de referência"},{"n":2,...}]\n\n'+
-        'Cada sessão deve cobrir 1-3 capítulos relacionados. Mínimo 10 sessões, máximo 30.\n'+
-        'Títulos descritivos e atrativos em português brasileiro.'
+        'REGRAS:\n'+
+        '1. O currículo DEVE cobrir 100% de todo o conteúdo. Se é um livro, todos os capítulos. Se é uma temática (ex: Reiki, Terapias Energéticas), todos os aspectos fundamentais.\n'+
+        '2. Cada sessão deve ter título DESCRITIVO e ATRATIVO — nunca "Sessão 1" genérico.\n'+
+        '3. O campo "ref" deve indicar a referência bibliográfica específica (capítulo, seção, ou fonte).\n'+
+        '4. Mínimo 10 sessões, máximo 30.\n\n'+
+        'Retorne SOMENTE um array JSON válido, sem texto antes ou depois, sem markdown:\n'+
+        '[{"n":1,"title":"título descritivo","ref":"capítulo ou fonte de referência"},{"n":2,"title":"...","ref":"..."}]\n\n'+
+        'Exemplo para Reiki:\n'+
+        '[{"n":1,"title":"Origens do Reiki: Mikao Usui e a energia universal","ref":"História e fundamentos"},{"n":2,"title":"Os Cinco Princípios do Reiki","ref":"Filosofia Reiki"},...]\n\n'+
+        'Português brasileiro.'
       }]})});
     var d=await r.json();
     var text=d.reply||'';
