@@ -677,33 +677,72 @@ function detectFacilitadorId(ref){
   return 'antonio';
 }
 
-function addStudy(tema,mode){
+async function addStudy(tema,mode){
   var dayNames={seg:'Segunda',ter:'Terça',qua:'Quarta',qui:'Quinta',sex:'Sexta',sab:'Sábado',dom:'Domingo'};
+
+  addEmmanuelMsg('Preparando seu plano de estudo para "'+tema.name+'"...\nGerando currículo completo cobrindo 100% da referência bibliográfica. Aguarde.');
+
+  // Gerar currículo completo via IA
+  var curriculum=[];
+  try{
+    var r=await fetch('/api/curator',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'chat',messages:[{role:'user',content:
+        'Gere um currículo COMPLETO para o estudo temático "'+tema.name+'" ('+tema.ref+').\n\n'+
+        'REGRA FUNDAMENTAL: O currículo DEVE cobrir 100% de todo o conteúdo da obra de referência. NENHUM capítulo ou tema pode ser omitido.\n\n'+
+        'Retorne SOMENTE um JSON válido, sem markdown:\n'+
+        '[{"n":1,"title":"título da sessão","ref":"capítulo/seção de referência"},{"n":2,...}]\n\n'+
+        'Cada sessão deve cobrir 1-3 capítulos relacionados. Mínimo 10 sessões, máximo 30.\n'+
+        'Títulos descritivos e atrativos em português brasileiro.'
+      }]})});
+    var d=await r.json();
+    var text=d.reply||'';
+    var match=text.match(/\[[\s\S]*\]/);
+    if(match) curriculum=JSON.parse(match[0]);
+  }catch(e){console.warn('Curriculum error:',e);}
+
+  // Fallback se IA não retornou
+  if(curriculum.length===0){
+    for(var i=1;i<=16;i++) curriculum.push({n:i,title:'Sessão '+i,ref:'A definir'});
+  }
+
+  var totalSessions=curriculum.length;
+
   if(mode==='livre'){
-    addEmmanuelMsg('Estudo Livre ativado para "'+tema.name+'".\n\nSugestão: 2 sessões por semana, ~60 min cada. Previsão de conclusão: ~8 semanas.\n\nEstude com calma, faça anotações. Qualidade sobre quantidade. Quando quiser iniciar a primeira sessão, clique no estudo em "Meus Estudos".');
+    var weeks=Math.ceil(totalSessions/2);
+    addEmmanuelMsg('Estudo Livre ativado para "'+tema.name+'".\n\n📚 '+totalSessions+' sessões cobrindo 100% da referência.\nSugestão: 2 sessões por semana. Previsão: ~'+weeks+' semanas.');
   } else {
     var sched=tema.schedule||{};
     var diasTxt=(sched.days||[]).map(function(d){return dayNames[d]||d;}).join(', ');
-    addEmmanuelMsg('Estudo Agendado para "'+tema.name+'".\n\n📅 '+diasTxt+' às '+(sched.time||'19:30')+'\n⏱️ '+(sched.duration||60)+' min por sessão\n\nPrevisão de conclusão: ~'+(Math.ceil(16/((sched.days||[1,2]).length)))+' semanas. Bom estudo!');
+    var weeks2=Math.ceil(totalSessions/((sched.days||[1,2]).length));
+    addEmmanuelMsg('Estudo Agendado para "'+tema.name+'".\n\n📚 '+totalSessions+' sessões cobrindo 100% da referência.\n📅 '+diasTxt+' às '+(sched.time||'19:30')+'\n⏱️ '+(sched.duration||60)+' min/sessão\nPrevisão: ~'+weeks2+' semanas.');
   }
+
+  // Mostrar índice completo no chat
+  var indexHtml='<div style="background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.15);border-radius:12px;padding:14px;margin-top:8px;max-height:300px;overflow-y:auto;-webkit-overflow-scrolling:touch">';
+  indexHtml+='<p style="font-family:Cinzel,serif;font-size:10px;letter-spacing:2px;color:var(--gold);margin-bottom:10px">ÍNDICE DO CURSO — '+totalSessions+' SESSÕES</p>';
+  curriculum.forEach(function(s){
+    indexHtml+='<div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:6px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04)">'+
+      '<span style="font-family:Cinzel,serif;font-size:10px;color:rgba(201,168,76,.5);min-width:20px">'+s.n+'</span>'+
+      '<div><p style="font-size:13px;color:rgba(240,234,214,.7)">'+s.title+'</p>'+
+      '<p style="font-size:10px;color:rgba(240,234,214,.3);font-style:italic">'+s.ref+'</p></div></div>';
+  });
+  indexHtml+='</div>';
+  var area=document.getElementById('emmanuel-chat-area');
+  area.innerHTML+='<div class="chat-msg emmanuel"><img src="avatar-mestre-emmanuel.png" alt=""><div class="bubble">'+indexHtml+'</div></div>';
+  area.scrollTop=area.scrollHeight;
+
+  // Salvar estudo
   var study={
-    theme_id:tema.id,
-    themeId:tema.id,
-    name:tema.name,
-    ref:tema.ref,
-    facil_nome:tema.facilNome,
-    facilNome:tema.facilNome,
-    facilitador:tema.facilitador,
-    mode:mode,
-    completed_sessions:0,
-    completedSessions:0,
-    total_sessions:16,
-    totalSessions:16
+    theme_id:tema.id,themeId:tema.id,
+    name:tema.name,ref:tema.ref,
+    facil_nome:tema.facilNome,facilNome:tema.facilNome,
+    facilitador:tema.facilitador,mode:mode,
+    completed_sessions:0,completedSessions:0,
+    total_sessions:totalSessions,totalSessions:totalSessions,
+    curriculum:curriculum,schedule:tema.schedule||{}
   };
-  // Salvar no banco (async) + localStorage (fallback)
   saveStudyToDB(study).then(function(dbStudy){
     if(dbStudy){
-      // Atualizar com ID do banco
       var idx=myStudies.findIndex(function(s){return s.theme_id===tema.id&&!s.id;});
       if(idx>=0) myStudies[idx].id=dbStudy.id;
     }
@@ -711,10 +750,12 @@ function addStudy(tema,mode){
   myStudies.push(study);
   localStorage.setItem('spirit_my_studies',JSON.stringify(myStudies));
   renderThemes();
-  // Abrir accordion de Meus Estudos
-  var bodyEstudos=document.getElementById('body-estudos');
-  if(!bodyEstudos.classList.contains('open')) toggleSection('estudos');
   renderMyStudies();
+
+  // Botão "Ir para o estudo"
+  var studyIdx=myStudies.length-1;
+  area.innerHTML+='<div class="chat-btns" style="margin-top:8px"><button class="chat-btn confirm" onclick="openStudy('+studyIdx+')" style="padding:12px 24px;font-size:14px">📖 Ir para o estudo →</button></div>';
+  area.scrollTop=area.scrollHeight;
 }
 
 var activeStudyIdx=null;
@@ -727,8 +768,56 @@ function openStudy(idx){
   activeStudyIdx=idx;
   var s=myStudies[idx];
   if(!s)return;
-  var nextSession=(s.completedSessions||0)+1;
-  startSession(s,nextSession);
+  var completed=s.completedSessions||s.completed_sessions||0;
+  var total=s.totalSessions||s.total_sessions||16;
+  var curriculum=s.curriculum||[];
+
+  // Mostrar painel do estudo com índice
+  var view=document.getElementById('session-view');
+  view.classList.add('active');
+  sessionStep='index';
+  var facAvatar=getFacAvatar(s.facilitador);
+  document.getElementById('session-fac-img').src=facAvatar;
+  document.getElementById('session-fac-name').textContent=s.facilNome||s.facil_nome;
+  document.getElementById('session-study-name').textContent=s.name;
+  document.getElementById('session-progress').textContent=completed+'/'+total+' sessões';
+  document.getElementById('session-chapter').textContent='';
+  document.getElementById('session-title').textContent=s.name;
+  document.getElementById('session-quiz').style.display='none';
+  document.getElementById('session-qa').style.display='none';
+  document.getElementById('session-next-btn').textContent='▶ Iniciar sessão '+(completed+1);
+
+  // Renderizar índice
+  var html='<div style="margin-bottom:16px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">'+
+    '<p style="font-family:Cinzel,serif;font-size:10px;letter-spacing:2px;color:var(--gold)">ÍNDICE DO CURSO</p>'+
+    '<p style="font-size:11px;color:rgba(240,234,214,.4)">'+completed+'/'+total+' concluídas ('+Math.round(completed/total*100)+'%)</p></div>';
+
+  if(curriculum.length>0){
+    curriculum.forEach(function(c){
+      var done=c.n<=completed;
+      var current=c.n===completed+1;
+      var icon=done?'✅':current?'▶':'○';
+      var bg=current?'rgba(201,168,76,.08)':done?'rgba(91,175,124,.04)':'transparent';
+      var border=current?'rgba(201,168,76,.25)':done?'rgba(91,175,124,.15)':'rgba(255,255,255,.06)';
+      var textColor=done?'rgba(240,234,214,.4)':current?'var(--text)':'rgba(240,234,214,.55)';
+      html+='<div style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:'+bg+';border:1px solid '+border+';border-radius:10px;margin-bottom:4px;'+(current?'cursor:pointer':'')+'" '+(current?'onclick="startSessionFromIndex('+c.n+')"':'')+'>'+
+        '<span style="font-size:14px;flex-shrink:0;margin-top:1px">'+icon+'</span>'+
+        '<div style="flex:1"><p style="font-size:13px;color:'+textColor+'">'+c.title+'</p>'+
+        '<p style="font-size:10px;color:rgba(240,234,214,.25);font-style:italic">'+c.ref+'</p></div>'+
+        (current?'<span style="font-size:10px;color:var(--gold);font-family:Cinzel,serif">PRÓXIMA</span>':'')+
+      '</div>';
+    });
+  } else {
+    html+='<p style="color:rgba(240,234,214,.3);font-style:italic">Índice será gerado na primeira sessão.</p>';
+  }
+  html+='</div>';
+  document.getElementById('session-body').innerHTML=html;
+}
+
+function startSessionFromIndex(n){
+  var s=myStudies[activeStudyIdx];
+  if(!s)return;
+  startSession(s,n);
 }
 
 function startSession(study,sessionNum){
@@ -753,11 +842,17 @@ function startSession(study,sessionNum){
 }
 
 async function loadSessionContent(study,sessionNum){
+  // Buscar título do currículo se disponível
+  var curriculum=study.curriculum||[];
+  var currSession=curriculum.find(function(c){return c.n===sessionNum;});
+  var sessionTitle=currSession?currSession.title:'Sessão '+sessionNum;
+  var sessionRef=currSession?currSession.ref:'';
+
   var resumoAnterior='';
   if(sessionNum>1){
-    resumoAnterior='\n\nIMPORTANTE: Esta é a sessão #'+sessionNum+'. Antes de começar o conteúdo novo, faça um breve resumo (2-3 frases) do que foi abordado na sessão anterior (#'+(sessionNum-1)+'), para contextualizar o estudante. Use o formato:\nRESUMO ANTERIOR:\n[resumo]';
+    resumoAnterior='\n\nIMPORTANTE: Esta é a sessão #'+sessionNum+'. Antes de começar o conteúdo novo, faça um breve resumo (2-3 frases) do que foi abordado na sessão anterior, para contextualizar o estudante. Use o formato:\nRESUMO ANTERIOR:\n[resumo]';
   }
-  var msgs=[{role:'user',content:'Você é o facilitador '+study.facilNome+' do aplicativo Master Spirit. Prepare a sessão #'+sessionNum+' do estudo "'+study.name+'" ('+study.ref+').'+resumoAnterior+'\n\nGere o conteúdo da sessão com:\n1. Título da sessão\n2. Capítulo/seção de referência\n'+(sessionNum>1?'3. Resumo da sessão anterior (2-3 frases)\n4':'3')+'. Exposição do conteúdo (3-4 parágrafos, didático, acessível)\n'+(sessionNum>1?'5':'4')+'. 1 reflexão para o estudante\n\nFale na primeira pessoa como '+study.facilNome+'. Tom: didático, profundo mas acessível. Português brasileiro. NUNCA use markdown com asteriscos.\n\nFormato da resposta:\nTÍTULO: [título]\nREFERÊNCIA: [cap/seção]\n'+(sessionNum>1?'RESUMO ANTERIOR:\n[resumo]\n':'')+'CONTEÚDO:\n[texto]\nREFLEXÃO:\n[texto]'}];
+  var msgs=[{role:'user',content:'Você é o facilitador '+study.facilNome+' do aplicativo Master Spirit. Prepare a sessão #'+sessionNum+' do estudo "'+study.name+'" ('+study.ref+').\n\nTEMA DESTA SESSÃO: "'+sessionTitle+'"'+(sessionRef?' — Referência: '+sessionRef:'')+resumoAnterior+'\n\nGere o conteúdo ESPECÍFICO sobre este tema. O conteúdo deve cobrir EXATAMENTE o que está indicado no título e referência acima.\n\n1. Título da sessão\n2. Capítulo/seção de referência\n'+(sessionNum>1?'3. Resumo da sessão anterior (2-3 frases)\n4':'3')+'. Exposição do conteúdo (3-4 parágrafos, didático, acessível)\n'+(sessionNum>1?'5':'4')+'. 1 reflexão para o estudante\n\nFale na primeira pessoa como '+study.facilNome+'. Tom: didático, profundo mas acessível. Português brasileiro. NUNCA use markdown com asteriscos.\n\nFormato da resposta:\nTÍTULO: [título]\nREFERÊNCIA: [cap/seção]\n'+(sessionNum>1?'RESUMO ANTERIOR:\n[resumo]\n':'')+'CONTEÚDO:\n[texto]\nREFLEXÃO:\n[texto]'}];
 
   try{
     var r=await fetch('/api/curator',{method:'POST',headers:{'Content-Type':'application/json'},
@@ -804,6 +899,13 @@ async function loadIllustration(topic,context){
 }
 
 function nextSessionStep(){
+  if(sessionStep==='index'){
+    // Do índice → iniciar próxima sessão
+    var s=myStudies[activeStudyIdx];
+    var next=(s.completedSessions||s.completed_sessions||0)+1;
+    startSession(s,next);
+    return;
+  }
   if(sessionStep==='content'){
     sessionStep='quiz';
     document.getElementById('session-next-btn').textContent='Perguntas ao Facilitador →';
