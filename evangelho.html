@@ -358,7 +358,8 @@ function renderFase(){
         var current=cap.n===lastCap;
         var cls=current?'current':done?'done':'';
         var badge2=done?'<span class="cap-badge">✅</span>':current?'<span class="cap-badge" style="color:var(--gold)">▶</span>':'';
-        html+='<div class="cap-item '+cls+'" id="cap-'+cap.n+'" onclick="selectCap('+cap.n+')">'+badge2+
+        var clickable=current||done;
+        html+='<div class="cap-item '+cls+'" id="cap-'+cap.n+'" '+(clickable?'onclick="selectCap('+cap.n+')"':'style="opacity:.4;cursor:default"')+'>'+badge2+
           '<div class="cap-num">CAPÍTULO '+cap.n+'</div>'+
           '<div class="cap-title">'+cap.t+'</div></div>';
       });
