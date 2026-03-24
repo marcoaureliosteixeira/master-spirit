@@ -152,6 +152,32 @@ p,span,input,textarea{font-family:Georgia,'Times New Roman',serif}
 <div id="stars"></div>
 <div id="avatar-zoom" onclick="this.style.display='none'"><img id="avatar-zoom-img" src="" alt=""></div>
 
+<!-- Modal seletor de voz -->
+<div id="voice-modal" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.85);align-items:center;justify-content:center;padding:20px" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:var(--bg);border:1px solid rgba(201,168,76,.3);border-radius:16px;max-width:400px;width:100%;max-height:80vh;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:20px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <p style="font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;color:var(--gold)">ESCOLHER VOZ</p>
+      <button onclick="document.getElementById('voice-modal').style.display='none'" style="background:none;border:none;cursor:pointer;color:rgba(240,234,214,.4);font-size:18px">✕</button>
+    </div>
+    <p style="font-size:12px;color:rgba(240,234,214,.4);margin-bottom:12px;font-family:Georgia,serif">Teste as vozes disponíveis no seu dispositivo:</p>
+    <div id="voice-list"></div>
+    <div style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.06)">
+      <p style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:1.5px;color:rgba(201,168,76,.5);margin-bottom:8px">VELOCIDADE</p>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:11px;color:rgba(240,234,214,.4)">Lenta</span>
+        <input type="range" id="voice-rate" min="0.5" max="1.5" step="0.1" value="0.9" style="flex:1;accent-color:#C9A84C">
+        <span style="font-size:11px;color:rgba(240,234,214,.4)">Rápida</span>
+      </div>
+      <p style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:1.5px;color:rgba(201,168,76,.5);margin-top:12px;margin-bottom:8px">TOM</p>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:11px;color:rgba(240,234,214,.4)">Grave</span>
+        <input type="range" id="voice-pitch" min="0.5" max="1.5" step="0.1" value="1" style="flex:1;accent-color:#C9A84C">
+        <span style="font-size:11px;color:rgba(240,234,214,.4)">Agudo</span>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- SESSION VIEW (tela de estudo com facilitador) -->
 <div id="session-view">
   <div class="session-header">
@@ -165,6 +191,7 @@ p,span,input,textarea{font-family:Georgia,'Times New Roman',serif}
       <button onclick="changeFontSize(-2)" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:6px;width:28px;height:28px;cursor:pointer;color:rgba(240,234,214,.5);font-size:14px;font-weight:700">A-</button>
       <button onclick="changeFontSize(2)" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:6px;width:28px;height:28px;cursor:pointer;color:rgba(240,234,214,.5);font-size:14px;font-weight:700">A+</button>
       <button id="podcast-btn" onclick="togglePodcast()" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:6px;width:28px;height:28px;cursor:pointer;color:rgba(240,234,214,.5);font-size:14px" title="Ouvir como podcast">🎧</button>
+      <button onclick="openVoiceSelector()" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:6px;width:28px;height:28px;cursor:pointer;color:rgba(240,234,214,.5);font-size:11px" title="Escolher voz">🎤</button>
     </div>
     <span id="session-progress" style="font-family:'Cinzel',serif;font-size:9px;color:rgba(201,168,76,.5);letter-spacing:1px"></span>
   </div>
@@ -1056,20 +1083,26 @@ function togglePodcast(){
   }
 
   var text=body.textContent;
+  loadVoices();
+
+  // Usar voz selecionada pelo usuário, senão perfil do facilitador
   var study=myStudies[activeStudyIdx];
   var facId=study?study.facilitador:'antonio';
   var profile=VOICE_PROFILES[facId]||{pitch:1,rate:0.9};
+  var useRate=selectedVoiceURI?selectedRate:profile.rate;
+  var usePitch=selectedVoiceURI?selectedPitch:profile.pitch;
 
-  // Buscar voz em português
-  var voices=speechSynthesis.getVoices();
-  var ptVoice=voices.find(function(v){return v.lang.startsWith('pt');});
+  // Buscar voz: selecionada > português > qualquer
+  var voice=null;
+  if(selectedVoiceURI) voice=allVoices.find(function(v){return v.voiceURI===selectedVoiceURI;});
+  if(!voice) voice=allVoices.find(function(v){return v.lang.startsWith('pt');});
 
   podcastUtterance=new SpeechSynthesisUtterance(text);
   podcastUtterance.lang='pt-BR';
-  podcastUtterance.pitch=profile.pitch;
-  podcastUtterance.rate=profile.rate;
+  podcastUtterance.pitch=usePitch;
+  podcastUtterance.rate=useRate;
   podcastUtterance.volume=1;
-  if(ptVoice) podcastUtterance.voice=ptVoice;
+  if(voice) podcastUtterance.voice=voice;
 
   podcastUtterance.onstart=function(){
     podcastPlaying=true;
@@ -1099,10 +1132,82 @@ function stopPodcast(){
   }
 }
 
-// Carregar vozes (alguns browsers carregam async)
-if('speechSynthesis' in window){
-  speechSynthesis.onvoiceschanged=function(){speechSynthesis.getVoices();};
+// Carregar vozes
+var allVoices=[];
+var selectedVoiceURI=localStorage.getItem('spirit_voice_uri')||'';
+var selectedRate=parseFloat(localStorage.getItem('spirit_voice_rate')||'0.9');
+var selectedPitch=parseFloat(localStorage.getItem('spirit_voice_pitch')||'1');
+
+function loadVoices(){
+  allVoices=speechSynthesis.getVoices();
 }
+if('speechSynthesis' in window){
+  speechSynthesis.onvoiceschanged=loadVoices;
+  loadVoices();
+}
+
+function openVoiceSelector(){
+  loadVoices();
+  var modal=document.getElementById('voice-modal');
+  modal.style.display='flex';
+  document.getElementById('voice-rate').value=selectedRate;
+  document.getElementById('voice-pitch').value=selectedPitch;
+
+  // Agrupar vozes por idioma (pt primeiro)
+  var ptVoices=allVoices.filter(function(v){return v.lang.startsWith('pt');});
+  var enVoices=allVoices.filter(function(v){return v.lang.startsWith('en');});
+  var otherVoices=allVoices.filter(function(v){return !v.lang.startsWith('pt')&&!v.lang.startsWith('en');});
+
+  var html='';
+  function renderGroup(label,voices){
+    if(voices.length===0)return '';
+    var h='<p style="font-family:Cinzel,serif;font-size:9px;letter-spacing:1.5px;color:rgba(201,168,76,.4);margin:10px 0 6px">'+label+'</p>';
+    voices.forEach(function(v){
+      var sel=v.voiceURI===selectedVoiceURI;
+      h+='<div onclick="selectVoice(\''+v.voiceURI.replace(/'/g,"\\'")+'\')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:'+(sel?'rgba(201,168,76,.15)':'rgba(255,255,255,.03)')+';border:1px solid '+(sel?'rgba(201,168,76,.4)':'rgba(255,255,255,.06)')+';border-radius:10px;margin-bottom:4px;cursor:pointer;transition:all .2s">'+
+        '<div style="flex:1"><p style="font-size:13px;color:'+(sel?'var(--gold)':'rgba(240,234,214,.7)')+'">'+v.name+'</p>'+
+        '<p style="font-size:10px;color:rgba(240,234,214,.3)">'+v.lang+'</p></div>'+
+        '<button onclick="event.stopPropagation();previewVoice(\''+v.voiceURI.replace(/'/g,"\\'")+'\')" style="background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:8px;padding:4px 10px;cursor:pointer;color:var(--gold);font-size:11px">▶ Testar</button>'+
+      '</div>';
+    });
+    return h;
+  }
+  html+=renderGroup('PORTUGUÊS',ptVoices);
+  html+=renderGroup('INGLÊS',enVoices);
+  html+=renderGroup('OUTROS',otherVoices);
+  if(allVoices.length===0) html='<p style="color:rgba(240,234,214,.4);font-style:italic">Nenhuma voz encontrada. Tente recarregar a página.</p>';
+  document.getElementById('voice-list').innerHTML=html;
+}
+
+function selectVoice(uri){
+  selectedVoiceURI=uri;
+  localStorage.setItem('spirit_voice_uri',uri);
+  openVoiceSelector(); // Re-render para mostrar seleção
+}
+
+function previewVoice(uri){
+  speechSynthesis.cancel();
+  var voice=allVoices.find(function(v){return v.voiceURI===uri;});
+  var rate=parseFloat(document.getElementById('voice-rate').value);
+  var pitch=parseFloat(document.getElementById('voice-pitch').value);
+  var utt=new SpeechSynthesisUtterance('Bem-vindo à sessão de estudos do Master Spirit. Sou seu facilitador.');
+  utt.lang='pt-BR';
+  utt.rate=rate;
+  utt.pitch=pitch;
+  if(voice) utt.voice=voice;
+  speechSynthesis.speak(utt);
+  // Salvar preferências
+  selectedRate=rate;
+  selectedPitch=pitch;
+  localStorage.setItem('spirit_voice_rate',rate);
+  localStorage.setItem('spirit_voice_pitch',pitch);
+}
+
+// Salvar rate/pitch ao mudar sliders
+document.addEventListener('change',function(e){
+  if(e.target.id==='voice-rate'){selectedRate=parseFloat(e.target.value);localStorage.setItem('spirit_voice_rate',selectedRate);}
+  if(e.target.id==='voice-pitch'){selectedPitch=parseFloat(e.target.value);localStorage.setItem('spirit_voice_pitch',selectedPitch);}
+});
 
 // Q&A com facilitador pós-aula
 async function askFacilitador(){
