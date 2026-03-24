@@ -1,0 +1,164 @@
+================================================================
+MASTER SPIRIT — PROMPTS PARA BANCO DE IMAGENS
+================================================================
+Total: 28 imagens (7 temas x 3-5 imagens cada)
+Formato: 16:9
+================================================================
+
+PROMPT BASE (adicionar antes de cada prompt específico):
+"Spiritual educational infographic, dark background #060a16,
+golden #C9A84C and deep blue tones, cosmic mystical style,
+clean diagram layout, Portuguese labels, no watermark, 16:9"
+
+================================================================
+1. DOUTRINA DOS ESPÍRITOS (5 imagens)
+================================================================
+
+Arquivo: img-doutrina-01-hierarquia.png
+Prompt:
+Hierarchy of spirits diagram: from pure spirits at top radiating golden light, through good spirits in blue aura, to imperfect spirits below. Ascending ladder of evolution. Labels: Espíritos Puros, Bons Espíritos, Espíritos Imperfeitos. Dark cosmic background, golden accent lines
+
+Arquivo: img-doutrina-02-reencarnacao.png
+Prompt:
+Reincarnation cycle infographic: immortal spirit (glowing orb) → enters physical body → life on earth → death/disincarnation → spirit world → new incarnation. Circular flow with arrows. Labels: Encarnação, Vida Terrena, Desencarne, Mundo Espiritual, Reencarnação
+
+Arquivo: img-doutrina-03-perispirito.png
+Prompt:
+Perispirit diagram: luminous human silhouette with three layers - innermost bright spirit core, middle semi-material perispirit layer in blue-violet, outer physical body outline. Labels: Espírito, Perispírito, Corpo Físico
+
+Arquivo: img-doutrina-04-fluido-universal.png
+Prompt:
+Universal fluid concept: cosmic energy flowing from divine source through space, condensing into matter and spirit. Abstract flowing golden streams. Labels: Fluido Cósmico Universal, Matéria, Espírito
+
+Arquivo: img-doutrina-05-causa-efeito.png
+Prompt:
+Law of cause and effect: scales of cosmic justice, golden balance with actions on one side and consequences on the other. Spiritual karma concept. Labels: Lei de Causa e Efeito, Ações, Consequências
+
+================================================================
+2. PRÁTICA MEDIÚNICA (4 imagens)
+================================================================
+
+Arquivo: img-mediunica-01-tipos.png
+Prompt:
+Types of mediumship diagram: six circles showing different abilities - psychography (hand writing), clairvoyance (eye with light), clairaudience (ear with waves), healing (hands with energy), incorporation (two overlapping silhouettes), intuition (brain with light). Labels: Psicografia, Clarividência, Clariaudiência, Cura, Incorporação, Intuição
+
+Arquivo: img-mediunica-02-comunicacao.png
+Prompt:
+Spirit communication process: discarnate spirit → perispirit connection → medium's perispirit → medium's brain → spoken/written message. Flow diagram with golden connection lines. Labels: Espírito Comunicante, Perispírito, Médium, Mensagem
+
+Arquivo: img-mediunica-03-passes.png
+Prompt:
+Magnetic passes: healer's hands radiating golden-blue energy over patient. Energy field visible around both figures. Labels: Passista, Fluidos Curativos, Paciente
+
+Arquivo: img-mediunica-04-sessao.png
+Prompt:
+Mediumistic session setup: circular arrangement of people as luminous silhouettes, spiritual protection dome of light above the group. Labels: Mesa Mediúnica, Proteção Espiritual, Médiuns
+
+================================================================
+3. COSMOLOGIA UNIVERSAL / URANTIA (5 imagens)
+================================================================
+
+Arquivo: img-urantia-01-cosmologia.png
+Prompt:
+Urantia cosmology hierarchy: concentric circles from center outward - Paradise Island (golden core) → Havona (7 circuits) → 7 Superuniverses → Outer Space. Grand universe map. Labels: Ilha do Paraíso, Havona, 7 Superuniversos, Espaço Exterior
+
+Arquivo: img-urantia-02-universo-local.png
+Prompt:
+Local Universe structure: tree-like diagram from top - Local Universe of Nebadon → Constellations → Systems → Inhabited Planets. Golden connections between nodes. Labels: Universo Local de Nébadon, Constelação, Sistema, Planetas Habitados
+
+Arquivo: img-urantia-03-seres-celestiais.png
+Prompt:
+Celestial beings hierarchy: ascending vertical order from mortals at bottom to seraphim, archangels, Melchizedeks, Creator Son at top. Golden ladder of ascension. Labels: Mortais, Serafins, Arcanjos, Melquisedeques, Filho Criador
+
+Arquivo: img-urantia-04-mundos-mansoes.png
+Prompt:
+Mansion Worlds: seven ascending spheres of spiritual education after death, each progressively brighter and more golden. Ascending stairway between worlds. Labels: Mundos Mansões 1, 2, 3, 4, 5, 6, 7
+
+Arquivo: img-urantia-05-trindade.png
+Prompt:
+Paradise Trinity: three interconnected golden circles of light forming a sacred triangle. Each circle radiating unique energy. Labels: Pai Universal, Filho Eterno, Espírito Infinito
+
+================================================================
+4. CONSCIÊNCIA CRÍSTICA (3 imagens)
+================================================================
+
+Arquivo: img-cristica-01-consciencia.png
+Prompt:
+Christ consciousness expanding: human silhouette with heart center radiating outward in golden waves of love, connecting to universal consciousness above. Labels: Consciência Crística, Amor Universal, Conexão Divina
+
+Arquivo: img-cristica-02-cartas.png
+Prompt:
+Nine Letters of Christ: nine luminous scrolls arranged in sacred geometry circle pattern, each emanating different colored light rays. Central golden light. Labels: As 9 Cartas de Cristo
+
+Arquivo: img-cristica-03-conexao.png
+Prompt:
+Divine-human connection: golden thread of light descending from cosmic source through layers of consciousness to human heart center. Labels: Fonte Divina, Consciência Cósmica, Conexão, Coração Humano
+
+================================================================
+5. SABEDORIA DO DHARMA / BHAGAVAD GITA (4 imagens)
+================================================================
+
+Arquivo: img-dharma-01-roda.png
+Prompt:
+Dharma wheel with eight golden spokes on dark cosmic background. Each spoke representing a spiritual path. Center glowing. Labels: Roda do Dharma, Karma Yoga, Bhakti Yoga, Jnana Yoga, Raja Yoga
+
+Arquivo: img-dharma-02-krishna-arjuna.png
+Prompt:
+Krishna and Arjuna on battlefield: two luminous silhouettes on divine chariot, Krishna larger with blue aura, Arjuna smaller with golden armor. Cosmic battlefield backdrop. Labels: Krishna, Arjuna, Campo de Kurukshetra
+
+Arquivo: img-dharma-03-chakras.png
+Prompt:
+Seven chakras diagram: human silhouette in meditation pose with seven energy centers from base (red) to crown (violet). Each chakra with its symbol and color. Golden connections between chakras. Labels: Muladhara, Svadhisthana, Manipura, Anahata, Vishuddha, Ajna, Sahasrara
+
+Arquivo: img-dharma-04-atman.png
+Prompt:
+Atman (eternal soul) concept: indestructible golden light core at center of human form, surrounded by temporary material layers dissolving outward. Eternal vs temporary. Labels: Atman (Alma Eterna), Corpo Material, Imortalidade
+
+================================================================
+6. A VIDA DE JESUS (3 imagens)
+================================================================
+
+Arquivo: img-jesus-01-mapa.png
+Prompt:
+Map of Jesus journeys: stylized ancient Middle East map with golden route lines showing travels through Galilee, Jerusalem, Bethlehem, Egypt, Jordan River. Dark parchment style with cosmic overlay. Labels: Galileia, Jerusalém, Belém, Egito, Rio Jordão, Nazaré
+
+Arquivo: img-jesus-02-ensinamento.png
+Prompt:
+Jesus teaching on hillside: luminous figure with golden aura addressing crowd of silhouettes below. Sermon on the Mount atmosphere. Cosmic dark sky with stars. Rays of wisdom descending.
+
+Arquivo: img-jesus-03-ultima-ceia.png
+Prompt:
+Last Supper: thirteen luminous silhouettes seated at long table, central figure (Jesus) radiating strongest golden light. Sacred chalice glowing on table. Golden sacred geometry patterns in dark background.
+
+================================================================
+7. TERAPIAS ENERGÉTICAS (4 imagens)
+================================================================
+
+Arquivo: img-energia-01-maos.png
+Prompt:
+Energy healing hands: two open hands facing each other with golden-blue energy flowing and swirling between them. Reiki-style universal energy symbols floating around. Labels: Energia Universal, Canalização, Cura
+
+Arquivo: img-energia-02-centros-vitais.png
+Prompt:
+Vital energy centers: human body outline with 7 main energy centers glowing in their respective colors, connected by golden meridian lines throughout the body. Labels: Centros Vitais, Meridianos Energéticos
+
+Arquivo: img-energia-03-aura.png
+Prompt:
+Aura layers: five concentric luminous layers around human silhouette - physical (red), etheric (orange), emotional (green), mental (blue), spiritual (violet/gold). Labels: Corpo Físico, Etérico, Emocional, Mental, Espiritual
+
+Arquivo: img-energia-04-limpeza.png
+Prompt:
+Spiritual cleansing: human figure surrounded by dense dark grey energy being dispersed and transformed by golden light descending from above. Before and after concept. Labels: Energias Densas, Limpeza Fluídica, Renovação Espiritual
+
+================================================================
+TOTAL: 28 IMAGENS
+================================================================
+Formatos recomendados:
+- Resolução: 1920x1080 (16:9) ou 1080x1080 (1:1)
+- Formato: PNG com fundo escuro (#060a16)
+- Tamanho: otimizar para web (máximo 500KB cada)
+- Nomenclatura: seguir os nomes de arquivo acima
+
+Após gerar, colocar na pasta raiz do projeto.
+O código já tem placeholder para integrar por tema/sessão.
+================================================================
