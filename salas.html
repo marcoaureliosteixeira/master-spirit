@@ -205,6 +205,7 @@ p,span,input,textarea{font-family:Georgia,'Times New Roman',serif}
   <div id="nav-menu">
     <a href="app.html"><span>🕊️</span> Mestres Espirituais</a>
     <a href="salas.html" style="color:var(--gold);font-weight:600"><span>📚</span> Salas de Estudo</a>
+    <a href="meus-estudos.html"><span>📖</span> Meus Estudos</a>
     <a href="evangelho.html"><span>🕯️</span> Evangelho no Lar</a>
     <a href="passe.html"><span>🙌</span> Passe Espiritual</a>
     <a href="app.html" style="color:rgba(240,234,214,.4)"><span>🏠</span> Início</a>
@@ -241,20 +242,13 @@ p,span,input,textarea{font-family:Georgia,'Times New Roman',serif}
       </div>
     </div>
 
-    <!-- ACCORDION: Meus Estudos -->
-    <div class="section-accordion">
-      <div class="section-header" onclick="toggleSection('estudos')">
-        <span class="section-icon">📖</span>
-        <span class="section-label" id="estudos-label">Meus Estudos</span>
-        <span class="arrow" id="arrow-estudos">▼</span>
-      </div>
-      <div class="section-body" id="body-estudos">
-        <div id="my-studies-empty" style="text-align:center;padding:20px;color:rgba(240,234,214,.3)">
-          <p style="font-size:13px;font-style:italic;font-family:Georgia,serif">Nenhum estudo em andamento. Escolha um tema ou pergunte ao Emmanuel.</p>
-        </div>
-        <div id="my-studies"></div>
-      </div>
-    </div>
+    <!-- Link para Meus Estudos (página própria) -->
+    <a href="meus-estudos.html" style="display:flex;align-items:center;gap:10px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:14px 16px;text-decoration:none;transition:all .2s;margin-top:8px" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='rgba(201,168,76,.2)'">
+      <span style="font-size:18px">📖</span>
+      <span style="font-family:'Cinzel',serif;font-size:11px;color:var(--gold);letter-spacing:1.5px;flex:1">Meus Estudos</span>
+      <span id="estudos-badge" style="background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.3);border-radius:10px;padding:2px 8px;font-size:10px;color:var(--gold);font-family:'Cinzel',serif;display:none"></span>
+      <span style="color:rgba(201,168,76,.4)">›</span>
+    </a>
   </div>
 
   <div id="ft">
@@ -370,22 +364,12 @@ function renderThemes(){
 }
 
 function renderMyStudies(){
-  var el=document.getElementById('my-studies');
-  var empty=document.getElementById('my-studies-empty');
-  if(myStudies.length===0){empty.style.display='block';el.innerHTML='';return;}
-  empty.style.display='none';
-  // Atualizar label com contagem
-  document.getElementById('estudos-label').textContent='Meus Estudos ('+myStudies.length+')';
-  el.innerHTML=myStudies.map(function(s,i){
-    var progress=s.completedSessions||0;
-    var total=s.totalSessions||10;
-    var pct=Math.round(progress/total*100);
-    return '<div class="my-study" onclick="openStudy('+i+')" style="cursor:pointer">'+
-      '<div class="study-title">'+s.name+'</div>'+
-      '<div class="study-info">'+s.facilNome+' · '+(s.mode==='livre'?'Estudo Livre':'Agendado')+' · '+pct+'%</div>'+
-      '<div class="progress-bar"><div class="progress-fill" style="width:'+pct+'%"></div></div>'+
-    '</div>';
-  }).join('');
+  // Atualizar badge no link
+  var badge=document.getElementById('estudos-badge');
+  if(badge){
+    if(myStudies.length>0){badge.textContent=myStudies.length;badge.style.display='inline';}
+    else badge.style.display='none';
+  }
 }
 
 function selectTheme(id){
