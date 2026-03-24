@@ -582,10 +582,12 @@ async function sendToEmmanuel(){
     if(match){
       var themeName=match[1].trim();
       var themeRef=match[2].trim();
-      // Remover o marcador da mensagem visível
       reply=reply.replace(/\[ADICIONAR_ESTUDO:[^\]]+\]/,'').trim();
-      addEmmanuelMsg(reply);
-      // Esperar escolha de modo (1 ou 2) — setar pending
+      // Remover "1 — Estudo Agendado" e "2 — Estudo Livre" do texto (Emmanuel já manda)
+      reply=reply.replace(/\d\s*[—–-]\s*Estudo (Agendado|Livre)[^\n]*/gi,'').trim();
+      reply=reply.replace(/Como deseja estudar\?/i,'').trim();
+      addEmmanuelMsg(reply+'\n\nComo deseja estudar?');
+      // Setar pending e mostrar botões interativos
       pendingTheme={
         id:'custom-'+Date.now(),
         name:themeName,
@@ -594,6 +596,10 @@ async function sendToEmmanuel(){
         facilitador:detectFacilitadorId(themeRef),
         specialist:false
       };
+      addChatButtons([
+        {label:'📅 Estudo Agendado',value:'agendado'},
+        {label:'🕊️ Estudo Livre',value:'livre'}
+      ],'chooseMode');
     } else {
       addEmmanuelMsg(reply);
     }
