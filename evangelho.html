@@ -241,6 +241,74 @@ function updateEvPodcastBtn(){
   btn.style.color=evPodcastPlaying?'var(--gold)':'rgba(240,234,214,.5)';
 }
 
+// ── WIND CHIMES (sino dos ventos) ──
+var _chimesCtx=null;
+var _chimesInterval=null;
+
+function startWindChimes(){
+  try{
+    _chimesCtx=new (window.AudioContext||window.webkitAudioContext)();
+    // Notas de sino dos ventos (pentatônica em Dó)
+    var notes=[523.25,587.33,659.25,783.99,880,1046.50,1174.66,1318.51];
+
+    function chime(){
+      if(!_chimesCtx)return;
+      var freq=notes[Math.floor(Math.random()*notes.length)];
+      var osc=_chimesCtx.createOscillator();
+      var gain=_chimesCtx.createGain();
+
+      // Som de sino: ataque rápido, decay longo
+      osc.type='sine';
+      osc.frequency.value=freq;
+
+      // Harmônico sutil (dá brilho ao sino)
+      var osc2=_chimesCtx.createOscillator();
+      var gain2=_chimesCtx.createGain();
+      osc2.type='sine';
+      osc2.frequency.value=freq*2.01; // leve detuning
+      gain2.gain.setValueAtTime(0.015,_chimesCtx.currentTime);
+      gain2.gain.exponentialRampToValueAtTime(0.001,_chimesCtx.currentTime+3);
+
+      // Volume: ataque suave, sustain, decay longo
+      gain.gain.setValueAtTime(0,_chimesCtx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.06,_chimesCtx.currentTime+0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001,_chimesCtx.currentTime+4);
+
+      osc.connect(gain);gain.connect(_chimesCtx.destination);
+      osc2.connect(gain2);gain2.connect(_chimesCtx.destination);
+      osc.start(_chimesCtx.currentTime);
+      osc.stop(_chimesCtx.currentTime+4);
+      osc2.start(_chimesCtx.currentTime);
+      osc2.stop(_chimesCtx.currentTime+4);
+    }
+
+    // Primeiro toque imediato
+    chime();
+    // Toques aleatórios a cada 2-5 segundos
+    _chimesInterval=setInterval(function(){
+      chime();
+      // Às vezes toca 2 notas juntas (acorde)
+      if(Math.random()>0.6) setTimeout(chime,150);
+    },2000+Math.random()*3000);
+
+    // Recalcular intervalo periodicamente para parecer natural
+    setInterval(function(){
+      if(_chimesInterval){
+        clearInterval(_chimesInterval);
+        _chimesInterval=setInterval(function(){
+          chime();
+          if(Math.random()>0.6) setTimeout(chime,150);
+        },2000+Math.random()*3000);
+      }
+    },8000);
+  }catch(e){console.warn('Wind chimes error:',e);}
+}
+
+function stopWindChimes(){
+  if(_chimesInterval){clearInterval(_chimesInterval);_chimesInterval=null;}
+  if(_chimesCtx){try{_chimesCtx.close();}catch(e){}_chimesCtx=null;}
+}
+
 function toggleNav(){
   var m=document.getElementById('nav-menu');
   m.style.display=m.style.display==='none'?'block':'none';
@@ -315,8 +383,9 @@ function renderFase(){
     badge.textContent='4 de 5 · Vibrações';
     var mins=config.duracao<=15?1:config.duracao<=20?2:3;
     m.innerHTML=renderVibracoes(mins);
-    c.innerHTML='<button class="btn-s" onclick="avancar()">Pular</button>';
+    c.innerHTML='<button class="btn-s" onclick="stopWindChimes();avancar()">Pular</button>';
     iniciarTimer(mins*60);
+    startWindChimes();
   }
   else if(fase==='prece2'){
     badge.textContent='5 de 5 · Prece Final';
@@ -398,6 +467,8 @@ function avancar(){
   if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
   // Parar música da prece ao sair da etapa
   if(fase==='prece1'||fase==='prece2'){stopPreceMusic();stopPaiNosso();}
+  // Parar wind chimes ao sair das vibrações
+  if(fase==='vibracoes') stopWindChimes();
   var fases=['config','facilitador','prece1','leitura','comentarios','vibracoes','prece2','fim'];
   var idx=fases.indexOf(fase);
   if(idx<fases.length-1){fase=fases[idx+1];renderFase();}
