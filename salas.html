@@ -115,7 +115,8 @@ p,span,input,textarea{font-family:Georgia,'Times New Roman',serif}
 #session-view{display:none;position:fixed;inset:0;z-index:90;background:var(--bg);overflow-y:auto}
 #session-view.active{display:flex;flex-direction:column}
 .session-header{display:flex;align-items:center;gap:12px;padding:14px 18px;background:rgba(12,18,38,.88);border-bottom:1px solid rgba(201,168,76,.12);position:sticky;top:0;z-index:10}
-.session-header img{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.3)}
+.session-header img{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.3);transition:transform .3s ease,box-shadow .3s ease;cursor:pointer}
+.session-header img:hover{transform:scale(1.6);z-index:20;position:relative;box-shadow:0 0 30px rgba(201,168,76,.5)}
 .session-header h2{font-family:'Cinzel',serif;font-size:13px;color:var(--gold);letter-spacing:1.5px}
 .session-header p{font-size:11px;color:rgba(240,234,214,.4);font-family:Georgia,serif}
 .session-content{flex:1;max-width:700px;margin:0 auto;padding:20px 18px;width:100%}

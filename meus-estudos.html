@@ -36,7 +36,8 @@ p,span{font-family:Georgia,'Times New Roman',serif}
 .study-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:16px;margin-bottom:12px;cursor:pointer;transition:all .2s}
 .study-card:hover{border-color:var(--gold);transform:translateY(-1px)}
 .study-top{display:flex;align-items:center;gap:12px;margin-bottom:10px}
-.study-top img{width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.3)}
+.study-top img{width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.3);transition:transform .3s ease,box-shadow .3s ease;cursor:pointer}
+.study-top img:hover{transform:scale(1.6);z-index:20;position:relative;box-shadow:0 0 30px rgba(201,168,76,.5)}
 .study-name{font-family:'Cinzel',serif;font-size:12px;color:var(--gold);letter-spacing:.5px}
 .study-ref{font-size:11px;color:rgba(240,234,214,.35);font-style:italic;font-family:Georgia,serif;margin-top:2px}
 .study-meta{display:flex;gap:12px;font-size:11px;color:rgba(240,234,214,.45);font-family:Georgia,serif;margin-bottom:8px;flex-wrap:wrap}
