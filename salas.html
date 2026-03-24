@@ -713,10 +713,32 @@ async function loadSessionContent(study,sessionNum){
     document.getElementById('session-body').innerHTML=
       (resumoAnt?'<div style="background:rgba(100,60,200,.06);border-left:3px solid rgba(100,60,200,.4);border-radius:0 10px 10px 0;padding:14px;margin-bottom:18px"><p style="font-family:Cinzel,serif;font-size:10px;letter-spacing:1.5px;color:rgba(150,120,255,.7);margin-bottom:6px">SESSÃO ANTERIOR</p><p style="font-style:italic;color:rgba(240,234,214,.55)">'+resumoAnt[1].trim()+'</p></div>':'')+
       (conteudo?conteudo[1].trim().split('\n\n').map(function(p){return '<p>'+p+'</p>';}).join(''):'<p>'+text+'</p>')+
-      (reflexao?'<div style="background:rgba(201,168,76,.06);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:14px;margin-top:16px"><p style="font-family:Cinzel,serif;font-size:10px;letter-spacing:1.5px;color:var(--gold);margin-bottom:6px">REFLEXÃO</p><p style="font-style:italic;color:rgba(240,234,214,.6)">'+reflexao[1].trim()+'</p></div>':'');
+      (reflexao?'<div style="background:rgba(201,168,76,.06);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:14px;margin-top:16px"><p style="font-family:Cinzel,serif;font-size:10px;letter-spacing:1.5px;color:var(--gold);margin-bottom:6px">REFLEXÃO</p><p style="font-style:italic;color:rgba(240,234,214,.6)">'+reflexao[1].trim()+'</p></div>':'')+
+      '<div id="session-illustration" style="margin-top:20px;text-align:center"><p style="font-size:11px;color:rgba(201,168,76,.4);font-style:italic">Gerando ilustração...</p></div>';
+
+    // Gerar ilustração em paralelo
+    loadIllustration(titulo?titulo[1]:'Sessão '+sessionNum, study.name+' '+study.ref);
 
   }catch(e){
     document.getElementById('session-body').innerHTML='<p style="color:rgba(232,122,122,.7)">Erro ao carregar sessão. Verifique sua conexão.</p>';
+  }
+}
+
+async function loadIllustration(topic,context){
+  var el=document.getElementById('session-illustration');
+  if(!el)return;
+  try{
+    var r=await fetch('/api/curator',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'illustrate',topic:topic,context:context})});
+    var d=await r.json();
+    if(d.image){
+      el.innerHTML='<img src="data:'+(d.media_type||'image/png')+';base64,'+d.image+'" style="max-width:100%;border-radius:12px;border:1px solid rgba(201,168,76,.2);box-shadow:0 4px 20px rgba(0,0,0,.3)" alt="Ilustração">'+
+        (d.caption?'<p style="font-size:11px;color:rgba(240,234,214,.4);font-style:italic;margin-top:8px;font-family:Georgia,serif">'+d.caption+'</p>':'');
+    } else {
+      el.innerHTML=d.caption?'<p style="font-size:12px;color:rgba(240,234,214,.4);font-style:italic;font-family:Georgia,serif">'+d.caption+'</p>':'';
+    }
+  }catch(e){
+    el.innerHTML='';
   }
 }
 

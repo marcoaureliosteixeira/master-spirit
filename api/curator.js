@@ -114,6 +114,55 @@ TOM: Mentor estratégico. Frases curtas e densas. Português brasileiro. NUNCA u
       return res.json({ suggestion: text || 'Não foi possível gerar sugestões.' });
     }
 
+    // ── GERAR ILUSTRAÇÃO (Claude 4.5 Sonnet) ──
+    if (action === 'illustrate') {
+      const { topic, context } = req.body;
+      if (!topic) return res.status(400).json({ error: 'Tópico obrigatório.' });
+
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': key,
+          'anthropic-version': '2023-06-01',
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-5-20250514',
+          max_tokens: 4096,
+          messages: [{
+            role: 'user',
+            content: `Crie uma ilustração educativa e visualmente rica sobre: "${topic}". ${context ? 'Contexto: ' + context : ''}
+
+A ilustração deve ser:
+- Estilo: diagrama conceitual / infográfico espiritual
+- Cores: tons dourados, azuis profundos e roxos (tema dark, fundo escuro)
+- Clara e didática, com hierarquias visuais se aplicável
+- Rótulos em português brasileiro
+- Estilo espiritual/cósmico que combine com o tema Master Spirit
+
+Gere a imagem.`
+          }],
+        }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) return res.status(response.status).json(data);
+
+      // Buscar bloco de imagem na resposta
+      const imageBlock = data.content?.find(b => b.type === 'image');
+      const textBlock = data.content?.find(b => b.type === 'text');
+
+      if (imageBlock) {
+        return res.json({
+          image: imageBlock.source?.data || null,
+          media_type: imageBlock.source?.media_type || 'image/png',
+          caption: textBlock?.text || ''
+        });
+      }
+
+      return res.json({ image: null, caption: textBlock?.text || 'Não foi possível gerar a ilustração.' });
+    }
+
     return res.status(400).json({ error: 'Ação desconhecida.' });
   } catch (err) {
     console.error('curator error:', err);
