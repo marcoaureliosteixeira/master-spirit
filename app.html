@@ -1287,6 +1287,67 @@ function saveMasterMsgs(id){try{localStorage.setItem('spirit_chat_'+id,JSON.stri
   if(el) el.textContent='"'+verses[Math.floor(Math.random()*verses.length)]+'"';
 })();
 
+// ===================== SPLASH SOUND EFFECTS =====================
+function playSplashSFX(){
+  try{
+    var ctx=new (window.AudioContext||window.webkitAudioContext)();
+
+    // Supernova (2s) — whoosh crescente
+    setTimeout(function(){
+      var osc=ctx.createOscillator();
+      var gain=ctx.createGain();
+      osc.type='sine';
+      osc.frequency.setValueAtTime(80,ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(800,ctx.currentTime+1.2);
+      gain.gain.setValueAtTime(0,ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.15,ctx.currentTime+0.6);
+      gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+1.5);
+      osc.connect(gain);gain.connect(ctx.destination);
+      osc.start(ctx.currentTime);osc.stop(ctx.currentTime+1.5);
+    },2000);
+
+    // Implosão (6.5s) — impacto reverberado
+    setTimeout(function(){
+      // Sub bass hit
+      var osc=ctx.createOscillator();
+      var gain=ctx.createGain();
+      osc.type='sine';
+      osc.frequency.setValueAtTime(60,ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(20,ctx.currentTime+0.8);
+      gain.gain.setValueAtTime(0.3,ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+1);
+      osc.connect(gain);gain.connect(ctx.destination);
+      osc.start(ctx.currentTime);osc.stop(ctx.currentTime+1);
+
+      // Shimmer / sineiro celestial
+      var osc2=ctx.createOscillator();
+      var gain2=ctx.createGain();
+      osc2.type='triangle';
+      osc2.frequency.setValueAtTime(1200,ctx.currentTime);
+      osc2.frequency.exponentialRampToValueAtTime(600,ctx.currentTime+2);
+      gain2.gain.setValueAtTime(0.08,ctx.currentTime);
+      gain2.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+2.5);
+      osc2.connect(gain2);gain2.connect(ctx.destination);
+      osc2.start(ctx.currentTime);osc2.stop(ctx.currentTime+2.5);
+    },6500);
+
+    // Logo surge (7.5s) — tom celestial
+    setTimeout(function(){
+      [523.25,659.25,783.99].forEach(function(freq,i){
+        var osc=ctx.createOscillator();
+        var gain=ctx.createGain();
+        osc.type='sine';
+        osc.frequency.value=freq;
+        gain.gain.setValueAtTime(0,ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.06,ctx.currentTime+0.3);
+        gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+3);
+        osc.connect(gain);gain.connect(ctx.destination);
+        osc.start(ctx.currentTime+i*0.15);osc.stop(ctx.currentTime+3);
+      });
+    },7500);
+  }catch(e){}
+}
+
 // ===================== SPLASH MUSIC =====================
 var _splashAudio=null;
 function startSplashMusic(){
@@ -1489,8 +1550,9 @@ window.addEventListener('load',()=>{
   else if(sessionStorage.getItem('spirit_splash_seen')){
     skipSplash();
   } else {
-    // Splash visível — iniciar música
+    // Splash visível — iniciar música + SFX
     setTimeout(startSplashMusic, 1500);
+    playSplashSFX();
   }
   render();
   if(typeof buildSuggestions==='function') buildSuggestions();
