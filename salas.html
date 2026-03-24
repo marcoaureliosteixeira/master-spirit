@@ -225,7 +225,7 @@ p,span,input,textarea{font-family:Georgia,'Times New Roman',serif}
       </div>
       <div class="section-body" id="body-sala">
         <div style="padding:0 16px 14px">
-          <textarea id="sala-objetivo" placeholder="O que você busca aprender? (ex: Aprofundar o estudo sobre reencarnação e vida após a morte...)" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:12px 14px;color:var(--text);font-family:Georgia,serif;font-size:16px;outline:none;min-height:80px;resize:vertical;transition:border-color .2s" onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(201,168,76,.2)'"></textarea>
+          <textarea id="sala-objetivo" placeholder="O que você busca aprender? (ex: Aprofundar o estudo sobre reencarnação e vida após a morte...)" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:12px 14px;color:var(--text);font-family:Georgia,serif;font-size:16px;outline:none;min-height:80px;resize:vertical;transition:border-color .2s" onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(201,168,76,.2)';saveObjetivo()"></textarea>
           <p style="font-size:10px;color:rgba(240,234,214,.25);font-style:italic;font-family:Georgia,serif;margin-top:4px">Emmanuel usará seu objetivo para personalizar recomendações e plano de estudo.</p>
         </div>
       </div>
@@ -386,6 +386,16 @@ var FACILITADORES_GEN=[
 function selectTheme(id){
   var tema=TEMAS.find(function(t){return t.id===id;});
   if(!tema)return;
+  // Objetivo é obrigatório
+  var objetivo=(document.getElementById('sala-objetivo')||{}).value||'';
+  if(!objetivo.trim()){
+    addEmmanuelMsg('Antes de escolher um tema, defina seu objetivo de estudo. Abra a seção "Meu Objetivo" acima e descreva o que busca aprender. Isso me ajudará a personalizar seu plano.');
+    // Abrir o accordion do objetivo se estiver fechado
+    var body=document.getElementById('body-sala');
+    if(body&&!body.classList.contains('open')) toggleSection('sala');
+    document.getElementById('sala-objetivo').focus();
+    return;
+  }
   var alreadyIdx=myStudies.findIndex(function(s){return s.themeId===id||s.theme_id===id;});
   if(alreadyIdx>=0){
     openStudy(alreadyIdx);
@@ -1057,6 +1067,17 @@ function clearChat(){
 // ══════════════════════════════════════════
 function toggleNav(){var m=document.getElementById('nav-menu');m.style.display=m.style.display==='none'?'block':'none';}
 
+// Salvar/carregar objetivo
+function saveObjetivo(){
+  var val=(document.getElementById('sala-objetivo')||{}).value||'';
+  localStorage.setItem('spirit_objetivo',val);
+}
+function loadObjetivo(){
+  var val=localStorage.getItem('spirit_objetivo')||'';
+  var el=document.getElementById('sala-objetivo');
+  if(el&&val) el.value=val;
+}
+
 function toggleSection(name){
   var body=document.getElementById('body-'+name);
   var arrow=document.getElementById('arrow-'+name);
@@ -1121,6 +1142,7 @@ function initStars(){
 //  INIT
 // ══════════════════════════════════════════
 initStars();
+loadObjetivo();
 
 // Welcome message (render é chamado pelo init async do Supabase)
 if(chatHistory.length===0){
