@@ -372,6 +372,15 @@ function renderMyStudies(){
   }
 }
 
+var FACILITADORES_GEN=[
+  {id:'antonio',name:'Mestre Antonio',estilo:'Sábio e profundo — direto ao ponto',avatar:'avatar-mestre-antonio.png'},
+  {id:'adriano',name:'Mestre Adriano',estilo:'Eloquente e inspirador — motiva pelo exemplo',avatar:'avatar-mestre-adriano.png'},
+  {id:'leila',name:'Mestra Leila',estilo:'Acolhedora e maternal — gentil e paciente',avatar:'avatar-mestre-leila.png'},
+  {id:'silvestre',name:'Mestre Silvestre',estilo:'Compassivo e didático — explica com clareza',avatar:'avatar-mestre-silvestre.png'},
+  {id:'wander',name:'Mestre Wander',estilo:'Disciplinado e estratégico — foco total',avatar:'avatar-mestre-wander.png'},
+  {id:'bia',name:'Mestra Bia',estilo:'Paciente e encorajadora — celebra cada avanço',avatar:'avatar-mestra-bia.png'}
+];
+
 function selectTheme(id){
   var tema=TEMAS.find(function(t){return t.id===id;});
   if(!tema)return;
@@ -380,11 +389,54 @@ function selectTheme(id){
     openStudy(alreadyIdx);
     return;
   }
-  pendingTheme=tema;
-  addEmmanuelMsg('Excelente escolha: "'+tema.name+'". Para melhor aproveitamento, recomendamos o acompanhamento com a obra original ('+tema.ref.replace('Ref.: ','')+').\n\nSeu facilitador será '+tema.facilNome+(tema.specialist?' — especialista nesta tradição.':'.')+'\n\nComo deseja estudar?');
+  pendingTheme=JSON.parse(JSON.stringify(tema));
+
+  if(tema.specialist){
+    // Especialista: facilitador fixo, vai direto para modo de estudo
+    addEmmanuelMsg('Excelente escolha: "'+tema.name+'". Para melhor aproveitamento, recomendamos o acompanhamento com a obra original ('+tema.ref.replace('Ref.: ','')+').\n\nSeu facilitador será '+tema.facilNome+' — especialista nesta tradição.\n\nQuer definir dias e horários para se organizar?');
+    addChatButtons([
+      {label:'📅 Sim, me ajude a planejar',value:'agendado'},
+      {label:'🕊️ Não, vou no meu ritmo',value:'livre'}
+    ],'chooseMode');
+  } else {
+    // Generalista: Emmanuel apresenta os mestres para escolha
+    addEmmanuelMsg('Excelente escolha: "'+tema.name+'". Para melhor aproveitamento, recomendamos o acompanhamento com a obra original ('+tema.ref.replace('Ref.: ','')+').\n\nEscolha o facilitador que mais combina com você:');
+    var btns=FACILITADORES_GEN.map(function(f){
+      return {label:f.name,value:f.id,desc:f.estilo};
+    });
+    addFacilitadorButtons(btns);
+  }
+}
+
+function addFacilitadorButtons(options){
+  var area=document.getElementById('emmanuel-chat-area');
+  var html='<div class="chat-btns" id="chat-action-chooseFac" style="flex-direction:column">';
+  options.forEach(function(opt){
+    var fac=FACILITADORES_GEN.find(function(f){return f.id===opt.value;});
+    var avatar=fac&&fac.avatar?'<img src="'+fac.avatar+'" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,168,76,.3)">':'';
+    html+='<button class="chat-btn" onclick="chooseFacilitador(\''+opt.value+'\')" style="display:flex;align-items:center;gap:10px;text-align:left;padding:10px 14px">'+
+      avatar+'<div><strong style="color:var(--gold2)">'+opt.label+'</strong><br><span style="font-size:11px;color:rgba(240,234,214,.45)">'+opt.desc+'</span></div></button>';
+  });
+  html+='</div>';
+  area.innerHTML+=html;
+  area.scrollTop=area.scrollHeight;
+}
+
+function chooseFacilitador(facId){
+  var fac=FACILITADORES_GEN.find(function(f){return f.id===facId;});
+  if(!fac||!pendingTheme)return;
+  // Desabilitar botões
+  var btns=document.getElementById('chat-action-chooseFac');
+  if(btns) btns.querySelectorAll('.chat-btn').forEach(function(b){b.style.pointerEvents='none';b.style.opacity='.4';});
+
+  pendingTheme.facilitador=fac.id;
+  pendingTheme.facilNome=fac.name;
+  pendingTheme.facilAvatar=fac.avatar;
+  addUserMsg(fac.name);
+  addEmmanuelMsg(fac.name+' será seu facilitador. '+fac.estilo+'.\n\nQuer definir dias e horários para se organizar?');
   addChatButtons([
-    {label:'📅 Estudo Agendado',value:'agendado',desc:'Dias e horários fixos'},
-    {label:'🕊️ Estudo Livre',value:'livre',desc:'No seu ritmo'}
+    {label:'📅 Sim, me ajude a planejar',value:'agendado'},
+    {label:'🕊️ Não, vou no meu ritmo',value:'livre'}
   ],'chooseMode');
 }
 
