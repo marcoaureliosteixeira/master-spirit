@@ -707,24 +707,30 @@ async function addStudy(tema,mode){
 
   var totalSessions=curriculum.length;
 
+  // Calcular datas previstas para cada sessão
+  var sched=tema.schedule||{};
+  calcDates(curriculum,sched,0);
+
+  var startDate=curriculum[0]?curriculum[0].date:'';
+  var endDate=curriculum[curriculum.length-1]?curriculum[curriculum.length-1].date:'';
+
   if(mode==='livre'){
     var weeks=Math.ceil(totalSessions/2);
-    addEmmanuelMsg('Estudo Livre ativado para "'+tema.name+'".\n\n📚 '+totalSessions+' sessões cobrindo 100% da referência.\nSugestão: 2 sessões por semana. Previsão: ~'+weeks+' semanas.');
+    addEmmanuelMsg('Estudo Livre ativado para "'+tema.name+'".\n\n📚 '+totalSessions+' sessões cobrindo 100% da referência.\nSugestão: 2 sessões por semana.\n📅 Início: '+startDate+' · Previsão de conclusão: '+endDate);
   } else {
-    var sched=tema.schedule||{};
     var diasTxt=(sched.days||[]).map(function(d){return dayNames[d]||d;}).join(', ');
-    var weeks2=Math.ceil(totalSessions/((sched.days||[1,2]).length));
-    addEmmanuelMsg('Estudo Agendado para "'+tema.name+'".\n\n📚 '+totalSessions+' sessões cobrindo 100% da referência.\n📅 '+diasTxt+' às '+(sched.time||'19:30')+'\n⏱️ '+(sched.duration||60)+' min/sessão\nPrevisão: ~'+weeks2+' semanas.');
+    addEmmanuelMsg('Estudo Agendado para "'+tema.name+'".\n\n📚 '+totalSessions+' sessões cobrindo 100% da referência.\n📅 '+diasTxt+' às '+(sched.time||'19:30')+'\n📅 Início: '+startDate+' · Previsão de conclusão: '+endDate);
   }
 
-  // Mostrar índice completo no chat
+  // Mostrar índice com datas
   var indexHtml='<div style="background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.15);border-radius:12px;padding:14px;margin-top:8px;max-height:300px;overflow-y:auto;-webkit-overflow-scrolling:touch">';
   indexHtml+='<p style="font-family:Cinzel,serif;font-size:10px;letter-spacing:2px;color:var(--gold);margin-bottom:10px">ÍNDICE DO CURSO — '+totalSessions+' SESSÕES</p>';
   curriculum.forEach(function(s){
     indexHtml+='<div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:6px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04)">'+
       '<span style="font-family:Cinzel,serif;font-size:10px;color:rgba(201,168,76,.5);min-width:20px">'+s.n+'</span>'+
-      '<div><p style="font-size:13px;color:rgba(240,234,214,.7)">'+s.title+'</p>'+
-      '<p style="font-size:10px;color:rgba(240,234,214,.3);font-style:italic">'+s.ref+'</p></div></div>';
+      '<div style="flex:1"><p style="font-size:13px;color:rgba(240,234,214,.7)">'+s.title+'</p>'+
+      '<p style="font-size:10px;color:rgba(240,234,214,.3);font-style:italic">'+s.ref+'</p></div>'+
+      '<span style="font-size:10px;color:rgba(201,168,76,.4);white-space:nowrap;flex-shrink:0">'+(s.date||'')+'</span></div>';
   });
   indexHtml+='</div>';
   var area=document.getElementById('emmanuel-chat-area');
@@ -764,6 +770,36 @@ var sessionQuizData=null;
 var sessionQuizScore=0;
 var sessionQuizAnswered=0;
 
+// Calcula datas previstas para sessões pendentes
+function calcDates(curriculum,schedule,completedCount){
+  var dayMap={dom:0,seg:1,ter:2,qua:3,qui:4,sex:5,sab:6};
+  var days=schedule&&schedule.days?schedule.days:[];
+  var dayNums=days.map(function(d){return dayMap[d];}).filter(function(n){return n!==undefined;});
+
+  // Se livre (sem dias), distribuir 2x por semana (seg+qui)
+  if(dayNums.length===0) dayNums=[1,4];
+
+  var date=new Date();
+  // Começar do próximo dia válido
+  date.setDate(date.getDate()+1);
+
+  curriculum.forEach(function(s){
+    if(s.n<=completedCount){
+      s.date='✅';
+      return;
+    }
+    // Encontrar próximo dia válido
+    var attempts=0;
+    while(dayNums.indexOf(date.getDay())===-1&&attempts<7){
+      date.setDate(date.getDate()+1);
+      attempts++;
+    }
+    s.date=date.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'});
+    // Avançar para próximo slot
+    date.setDate(date.getDate()+1);
+  });
+}
+
 function openStudy(idx){
   activeStudyIdx=idx;
   var s=myStudies[idx];
@@ -771,6 +807,9 @@ function openStudy(idx){
   var completed=s.completedSessions||s.completed_sessions||0;
   var total=s.totalSessions||s.total_sessions||16;
   var curriculum=s.curriculum||[];
+
+  // Recalcular datas a partir de hoje (antecipa se adiantou)
+  if(curriculum.length>0) calcDates(curriculum,s.schedule||{},completed);
 
   // Mostrar painel do estudo com índice
   var view=document.getElementById('session-view');
@@ -804,7 +843,8 @@ function openStudy(idx){
         '<span style="font-size:14px;flex-shrink:0;margin-top:1px">'+icon+'</span>'+
         '<div style="flex:1"><p style="font-size:13px;color:'+textColor+'">'+c.title+'</p>'+
         '<p style="font-size:10px;color:rgba(240,234,214,.25);font-style:italic">'+c.ref+'</p></div>'+
-        (current?'<span style="font-size:10px;color:var(--gold);font-family:Cinzel,serif">PRÓXIMA</span>':'')+
+        '<div style="text-align:right;flex-shrink:0"><span style="font-size:10px;color:'+(current?'var(--gold)':'rgba(201,168,76,.35)')+';white-space:nowrap">'+(c.date||'')+'</span>'+
+        (current?'<br><span style="font-size:9px;color:var(--gold);font-family:Cinzel,serif;letter-spacing:1px">PRÓXIMA</span>':'')+'</div>'+
       '</div>';
     });
   } else {
