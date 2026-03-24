@@ -167,6 +167,25 @@ function render(){
     var startDate=s.startDate||s.started_at||s.createdAt||s.created_at;
     var started=startDate?new Date(startDate).toLocaleDateString('pt-BR'):'—';
 
+    // Calcular projeção temporal
+    var startObj=startDate?new Date(startDate):new Date();
+    var daysPerSession=3.5; // média: 2 sessões por semana
+    var sched=s.schedule||{};
+    if(sched.days&&sched.days.length>0) daysPerSession=7/sched.days.length;
+    var remainingSessions=total-completed;
+    var daysRemaining=Math.ceil(remainingSessions*daysPerSession);
+    var endDate=new Date();endDate.setDate(endDate.getDate()+daysRemaining);
+    var endStr=endDate.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'});
+    var schedText=sched.days&&sched.days.length>0?sched.days.join(', ')+' às '+(sched.time||'19:30'):'No seu ritmo';
+
+    // Timeline dots
+    var dots='';
+    for(var d=0;d<total;d++){
+      var dotColor=d<completed?'rgba(91,175,124,.8)':d===completed?'var(--gold)':'rgba(255,255,255,.12)';
+      var dotBorder=d===completed?'2px solid var(--gold)':'1px solid transparent';
+      dots+='<div style="width:8px;height:8px;border-radius:50%;background:'+dotColor+';border:'+dotBorder+';flex-shrink:0"></div>';
+    }
+
     return '<div class="study-card" onclick="window.location.href=\'salas.html\'">'+
       '<div class="study-top">'+
         '<img src="'+facAvatar+'" onclick="event.stopPropagation();document.getElementById(\'avatar-zoom-img\').src=\''+facAvatar+'\';document.getElementById(\'avatar-zoom\').style.display=\'flex\'" alt="">'+
@@ -178,10 +197,16 @@ function render(){
       '<div class="study-meta">'+
         '<span>'+(s.facilNome||s.facil_nome||'Facilitador')+'</span>'+
         '<span>'+mode+'</span>'+
-        '<span>Início: '+started+'</span>'+
       '</div>'+
       '<div class="progress-bar"><div class="progress-fill" style="width:'+pct+'%"></div></div>'+
       '<div class="progress-text">'+completed+'/'+total+' sessões ('+pct+'%)</div>'+
+      '<!-- Timeline visual -->'+
+      '<div style="display:flex;gap:3px;flex-wrap:wrap;margin-top:10px;align-items:center">'+dots+'</div>'+
+      '<div style="display:flex;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.06)">'+
+        '<div style="text-align:left"><p style="font-size:8px;color:rgba(201,168,76,.4);font-family:Cinzel,serif;letter-spacing:1px">INÍCIO</p><p style="font-size:12px;color:rgba(240,234,214,.5)">'+started+'</p></div>'+
+        '<div style="text-align:center"><p style="font-size:8px;color:rgba(201,168,76,.4);font-family:Cinzel,serif;letter-spacing:1px">AGENDA</p><p style="font-size:11px;color:rgba(240,234,214,.45)">'+schedText+'</p></div>'+
+        '<div style="text-align:right"><p style="font-size:8px;color:rgba(201,168,76,.4);font-family:Cinzel,serif;letter-spacing:1px">PREVISÃO</p><p style="font-size:12px;color:var(--gold)">'+endStr+'</p></div>'+
+      '</div>'+
     '</div>';
   }).join('');
 }
