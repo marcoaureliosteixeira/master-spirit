@@ -43,6 +43,21 @@ p,span,input,textarea,.session-text,.qa-msg,.timer-label,.fac-desc{font-family:G
 .fac-name{font-family:'Cinzel',serif;font-size:18px;color:var(--gold);letter-spacing:2px;margin-bottom:4px}
 .fac-desc{font-size:15px;font-style:italic;color:rgba(240,234,214,.4);margin-bottom:8px}
 .fac-style{font-size:12px;color:var(--gold);font-family:'Cinzel',serif;letter-spacing:1.5px}
+/* Índice dos capítulos */
+.cap-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:10px 0}
+.cap-item{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px;cursor:pointer;transition:all .3s;position:relative;overflow:hidden}
+.cap-item:hover{border-color:rgba(201,168,76,.4);background:rgba(201,168,76,.06)}
+.cap-item.current{border-color:var(--gold);background:rgba(201,168,76,.1);box-shadow:0 0 20px rgba(201,168,76,.15)}
+.cap-item.done{border-color:rgba(91,175,124,.3);background:rgba(91,175,124,.04)}
+.cap-item .cap-num{font-family:'Cinzel',serif;font-size:9px;color:rgba(201,168,76,.5);letter-spacing:1px}
+.cap-item .cap-title{font-size:12px;color:rgba(240,234,214,.7);margin-top:3px;line-height:1.4}
+.cap-item .cap-badge{position:absolute;top:6px;right:6px;font-size:10px}
+/* Efeito zoom ao selecionar */
+@keyframes capZoom{0%{transform:scale(1);opacity:1}50%{transform:scale(1.05);opacity:.8}100%{transform:scale(30);opacity:0}}
+.cap-item.zooming{animation:capZoom .6s ease forwards;z-index:10}
+/* Efeito abertura de página */
+@keyframes pageOpen{0%{opacity:0;transform:perspective(800px) rotateY(-90deg)}60%{transform:perspective(800px) rotateY(5deg)}100%{opacity:1;transform:perspective(800px) rotateY(0)}}
+.page-opening{animation:pageOpen .8s ease both}
 /* Session content */
 .session-text{font-size:var(--fs);line-height:1.85;white-space:pre-wrap;color:var(--text);animation:fadeup .5s ease}
 .ref-text{font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:var(--gold);margin-top:14px;text-align:right}
@@ -143,6 +158,38 @@ var PASSAGENS=[
   ]}
 ];
 
+// Títulos completos dos 28 capítulos
+var CAPITULOS=[
+  {n:1,t:'Não vim destruir a lei'},
+  {n:2,t:'Meu reino não é deste mundo'},
+  {n:3,t:'Há muitas moradas na casa de meu Pai'},
+  {n:4,t:'Ninguém poderá ver o reino de Deus se não nascer de novo'},
+  {n:5,t:'Bem-aventurados os aflitos'},
+  {n:6,t:'O Cristo Consolador'},
+  {n:7,t:'Bem-aventurados os pobres de espírito'},
+  {n:8,t:'Bem-aventurados os que têm puro o coração'},
+  {n:9,t:'Bem-aventurados os que são brandos e pacíficos'},
+  {n:10,t:'Bem-aventurados os que são misericordiosos'},
+  {n:11,t:'Amar o próximo como a si mesmo'},
+  {n:12,t:'Amai os vossos inimigos'},
+  {n:13,t:'Que a mão esquerda não saiba o que faz a direita'},
+  {n:14,t:'Honrai vosso pai e vossa mãe'},
+  {n:15,t:'Fora da caridade não há salvação'},
+  {n:16,t:'Não se pode servir a Deus e a Mamon'},
+  {n:17,t:'Sede perfeitos'},
+  {n:18,t:'Muitos os chamados, poucos os escolhidos'},
+  {n:19,t:'A fé transporta montanhas'},
+  {n:20,t:'Os trabalhadores da última hora'},
+  {n:21,t:'Haverá falsos cristos e falsos profetas'},
+  {n:22,t:'Não separeis o que Deus juntou'},
+  {n:23,t:'Estranha moral'},
+  {n:24,t:'Não ponhais a candeia debaixo do alqueire'},
+  {n:25,t:'Buscai e achareis'},
+  {n:26,t:'Dai gratuitamente o que gratuitamente recebestes'},
+  {n:27,t:'Pedi e obtereis'},
+  {n:28,t:'Coletânea de preces espíritas'}
+];
+
 // ── ESTADO ──
 var fase='config'; // config, facilitador, prece1, leitura, comentarios, vibracoes, prece2, fim
 var facilitador=null;
@@ -233,9 +280,30 @@ function renderFase(){
   }
   else if(fase==='leitura'){
     badge.textContent='2 de 5 · Leitura';
-    selecionarTrecho();
-    m.innerHTML=renderLeitura();
-    c.innerHTML=(config.modo==='aleatorio'?'<button class="btn-s" onclick="selecionarTrecho(true);document.getElementById(\'main\').innerHTML=renderLeitura()">🎲 Outra</button>':'')+'<button class="btn-g" onclick="avancar()">Li a passagem</button>';
+    if(config.modo==='sequencial'){
+      // Mostrar índice dos 28 capítulos com zoom
+      var lastCap=parseInt(localStorage.getItem('spirit_evang_cap')||'1');
+      var html='<p style="font-family:Cinzel,serif;font-size:10px;letter-spacing:2px;color:var(--gold);margin-bottom:12px;text-align:center">ÍNDICE · O EVANGELHO SEGUNDO O ESPIRITISMO</p>';
+      html+='<div class="cap-grid">';
+      CAPITULOS.forEach(function(cap){
+        var done=cap.n<lastCap;
+        var current=cap.n===lastCap;
+        var cls=current?'current':done?'done':'';
+        var badge2=done?'<span class="cap-badge">✅</span>':current?'<span class="cap-badge" style="color:var(--gold)">▶</span>':'';
+        html+='<div class="cap-item '+cls+'" id="cap-'+cap.n+'" onclick="selectCap('+cap.n+')">'+badge2+
+          '<div class="cap-num">CAPÍTULO '+cap.n+'</div>'+
+          '<div class="cap-title">'+cap.t+'</div></div>';
+      });
+      html+='</div>';
+      m.innerHTML=html;
+      c.innerHTML='';
+      // Scroll para o capítulo atual
+      setTimeout(function(){var el=document.getElementById('cap-'+lastCap);if(el)el.scrollIntoView({behavior:'smooth',block:'center'});},300);
+    } else {
+      selecionarTrecho(true);
+      m.innerHTML='<div class="page-opening">'+renderLeitura()+'</div>';
+      c.innerHTML='<button class="btn-s" onclick="selecionarTrecho(true);document.getElementById(\'main\').innerHTML=\'<div class=page-opening>\'+renderLeitura()+\'</div>\'">🎲 Outra</button><button class="btn-g" onclick="avancar()">Li a passagem</button>';
+    }
   }
   else if(fase==='comentarios'){
     badge.textContent='3 de 5 · Comentários';
@@ -333,6 +401,33 @@ function avancar(){
   var fases=['config','facilitador','prece1','leitura','comentarios','vibracoes','prece2','fim'];
   var idx=fases.indexOf(fase);
   if(idx<fases.length-1){fase=fases[idx+1];renderFase();}
+}
+
+// ── SELEÇÃO DE CAPÍTULO (índice visual) ──
+function selectCap(n){
+  // Efeito zoom no card selecionado
+  var el=document.getElementById('cap-'+n);
+  if(el){
+    el.classList.add('zooming');
+    // Salvar progresso
+    localStorage.setItem('spirit_evang_cap',n);
+  }
+  // Após zoom, mostrar leitura com efeito de abertura de página
+  setTimeout(function(){
+    // Selecionar trecho do capítulo
+    var cap=PASSAGENS.find(function(p){return p.cap===n;});
+    if(cap){
+      var item=cap.itens[0];
+      trechoAtual={cap:cap.cap,item:item.n,titulo:cap.titulo,texto:item.texto};
+    } else {
+      // Capítulo não cadastrado nas PASSAGENS — usar título do CAPITULOS
+      var titulo=CAPITULOS.find(function(c){return c.n===n;});
+      trechoAtual={cap:n,item:1,titulo:titulo?titulo.t:'Capítulo '+n,texto:'Conteúdo deste capítulo será gerado pelo facilitador durante os comentários.'};
+    }
+    var m=document.getElementById('main');
+    m.innerHTML='<div class="page-opening">'+renderLeitura()+'</div>';
+    document.getElementById('controls').innerHTML='<button class="btn-g" onclick="avancar()">Li a passagem</button>';
+  },600);
 }
 
 // ── SELEÇÃO DE TRECHO ──
