@@ -163,6 +163,7 @@ p,span,input,textarea{font-family:Georgia,'Times New Roman',serif}
     <div style="display:flex;align-items:center;gap:4px">
       <button onclick="changeFontSize(-2)" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:6px;width:28px;height:28px;cursor:pointer;color:rgba(240,234,214,.5);font-size:14px;font-weight:700">A-</button>
       <button onclick="changeFontSize(2)" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:6px;width:28px;height:28px;cursor:pointer;color:rgba(240,234,214,.5);font-size:14px;font-weight:700">A+</button>
+      <button id="podcast-btn" onclick="togglePodcast()" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:6px;width:28px;height:28px;cursor:pointer;color:rgba(240,234,214,.5);font-size:14px" title="Ouvir como podcast">🎧</button>
     </div>
     <span id="session-progress" style="font-family:'Cinzel',serif;font-size:9px;color:rgba(201,168,76,.5);letter-spacing:1px"></span>
   </div>
@@ -817,6 +818,88 @@ var sessionFontSize=15;
 function changeFontSize(delta){
   sessionFontSize=Math.max(12,Math.min(24,sessionFontSize+delta));
   document.getElementById('session-body').style.fontSize=sessionFontSize+'px';
+}
+
+// ══════════════════════════════════════════
+//  PODCAST (Web Speech API)
+// ══════════════════════════════════════════
+var podcastPlaying=false;
+var podcastUtterance=null;
+
+// Perfis de voz por facilitador (pitch, rate)
+var VOICE_PROFILES={
+  antonio:{pitch:0.8,rate:0.88,name:'Voz grave, sábia e pausada'},
+  adriano:{pitch:0.95,rate:0.95,name:'Voz clara e inspiradora'},
+  leila:{pitch:1.25,rate:0.85,name:'Voz suave e acolhedora'},
+  silvestre:{pitch:0.9,rate:0.9,name:'Voz calma e compassiva'},
+  wander:{pitch:0.85,rate:1.0,name:'Voz firme e disciplinada'},
+  bia:{pitch:1.15,rate:0.92,name:'Voz animada e encorajadora'},
+  swami:{pitch:0.75,rate:0.82,name:'Voz profunda e meditativa'},
+  mary:{pitch:1.2,rate:0.88,name:'Voz serena e crística'},
+  mark:{pitch:0.8,rate:0.9,name:'Voz cósmica e contemplativa'},
+  joao:{pitch:0.9,rate:0.95,name:'Voz investigativa e intensa'}
+};
+
+function togglePodcast(){
+  if(podcastPlaying){
+    stopPodcast();
+    return;
+  }
+  var body=document.getElementById('session-body');
+  if(!body||!body.textContent.trim()){alert('Aguarde o conteúdo carregar.');return;}
+
+  if(!('speechSynthesis' in window)){
+    alert('Seu navegador não suporta leitura em voz alta.');
+    return;
+  }
+
+  var text=body.textContent;
+  var study=myStudies[activeStudyIdx];
+  var facId=study?study.facilitador:'antonio';
+  var profile=VOICE_PROFILES[facId]||{pitch:1,rate:0.9};
+
+  // Buscar voz em português
+  var voices=speechSynthesis.getVoices();
+  var ptVoice=voices.find(function(v){return v.lang.startsWith('pt');});
+
+  podcastUtterance=new SpeechSynthesisUtterance(text);
+  podcastUtterance.lang='pt-BR';
+  podcastUtterance.pitch=profile.pitch;
+  podcastUtterance.rate=profile.rate;
+  podcastUtterance.volume=1;
+  if(ptVoice) podcastUtterance.voice=ptVoice;
+
+  podcastUtterance.onstart=function(){
+    podcastPlaying=true;
+    document.getElementById('podcast-btn').textContent='⏹';
+    document.getElementById('podcast-btn').style.color='var(--gold)';
+    document.getElementById('podcast-btn').style.borderColor='rgba(201,168,76,.5)';
+  };
+  podcastUtterance.onend=function(){
+    stopPodcast();
+  };
+  podcastUtterance.onerror=function(){
+    stopPodcast();
+  };
+
+  speechSynthesis.speak(podcastUtterance);
+}
+
+function stopPodcast(){
+  speechSynthesis.cancel();
+  podcastPlaying=false;
+  podcastUtterance=null;
+  var btn=document.getElementById('podcast-btn');
+  if(btn){
+    btn.textContent='🎧';
+    btn.style.color='rgba(240,234,214,.5)';
+    btn.style.borderColor='rgba(255,255,255,.12)';
+  }
+}
+
+// Carregar vozes (alguns browsers carregam async)
+if('speechSynthesis' in window){
+  speechSynthesis.onvoiceschanged=function(){speechSynthesis.getVoices();};
 }
 
 // Q&A com facilitador pós-aula
