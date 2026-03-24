@@ -133,7 +133,11 @@ var avatars={
           headers:{'Content-Type':'application/json','Authorization':'Bearer '+sess.data.session.access_token},
           body:JSON.stringify({action:'list'})});
         var d=await r.json();
-        if(d.studies&&d.studies.length>0) myStudies=d.studies;
+        if(d.studies&&d.studies.length>0){
+          myStudies=d.studies;
+          // Sincronizar com localStorage
+          localStorage.setItem('spirit_my_studies',JSON.stringify(myStudies));
+        }
       }
     }catch(e){}
   }

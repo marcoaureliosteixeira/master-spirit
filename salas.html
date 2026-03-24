@@ -323,28 +323,55 @@ var authToken=null;
 })();
 
 async function apiStudies(body){
-  if(!authToken) return null;
+  // Tentar pegar token se não tem
+  if(!authToken&&sbClient){
+    try{
+      var sess=await sbClient.auth.getSession();
+      if(sess.data?.session) authToken=sess.data.session.access_token;
+    }catch(e){}
+  }
+  if(!authToken){console.warn('apiStudies: sem authToken');return null;}
   try{
     var r=await fetch('/api/studies',{method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},
       body:JSON.stringify(body)});
-    return await r.json();
-  }catch(e){console.warn('API studies error:',e);return null;}
+    var d=await r.json();
+    if(d.error){console.error('apiStudies error:',d.error);return null;}
+    return d;
+  }catch(e){console.error('apiStudies fetch error:',e);return null;}
 }
 
 async function loadStudiesFromDB(){
   var d=await apiStudies({action:'list'});
-  if(d&&d.studies) myStudies=d.studies;
+  if(d&&d.studies&&d.studies.length>0){
+    myStudies=d.studies;
+    // Sincronizar com localStorage
+    localStorage.setItem('spirit_my_studies',JSON.stringify(myStudies));
+  }
 }
 
 async function saveStudyToDB(study){
-  var d=await apiStudies({action:'add_study',...study});
-  if(d&&d.study) return d.study;
+  var d=await apiStudies({action:'add_study',
+    theme_id:study.theme_id||study.themeId,
+    name:study.name,
+    ref:study.ref||'',
+    facilitador:study.facilitador||'',
+    facil_nome:study.facil_nome||study.facilNome||'',
+    mode:study.mode||'livre',
+    total_sessions:study.total_sessions||study.totalSessions||16
+  });
+  if(d&&d.study){
+    console.log('Estudo salvo no banco:',d.study.id);
+    return d.study;
+  }
+  console.warn('Falha ao salvar estudo no banco');
   return null;
 }
 
 async function completeSessionDB(studyId,sessionNum,title,quizScore,quizTotal){
-  await apiStudies({action:'complete_session',study_id:studyId,session_number:sessionNum,session_title:title,quiz_score:quizScore,quiz_total:quizTotal});
+  var d=await apiStudies({action:'complete_session',study_id:studyId,session_number:sessionNum,session_title:title,quiz_score:quizScore,quiz_total:quizTotal});
+  if(d&&d.ok) console.log('Sessão salva no banco');
+  else console.warn('Falha ao salvar sessão no banco');
 }
 
 // ══════════════════════════════════════════
@@ -752,14 +779,17 @@ async function addStudy(tema,mode){
     total_sessions:totalSessions,totalSessions:totalSessions,
     curriculum:curriculum,schedule:tema.schedule||{}
   };
-  saveStudyToDB(study).then(function(dbStudy){
-    if(dbStudy){
-      var idx=myStudies.findIndex(function(s){return s.theme_id===tema.id&&!s.id;});
-      if(idx>=0) myStudies[idx].id=dbStudy.id;
-    }
-  });
   myStudies.push(study);
   localStorage.setItem('spirit_my_studies',JSON.stringify(myStudies));
+  // Salvar no banco (await para garantir)
+  var dbStudy=await saveStudyToDB(study);
+  if(dbStudy){
+    var idx=myStudies.findIndex(function(s){return s.theme_id===tema.id&&!s.id;});
+    if(idx>=0){myStudies[idx].id=dbStudy.id;localStorage.setItem('spirit_my_studies',JSON.stringify(myStudies));}
+    addEmmanuelMsg('✅ Estudo salvo no seu perfil. Disponível em qualquer dispositivo.');
+  } else {
+    addEmmanuelMsg('⚠️ Estudo salvo localmente. Faça login para sincronizar entre dispositivos.');
+  }
   renderThemes();
   renderMyStudies();
 
