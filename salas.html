@@ -96,9 +96,8 @@ p,span,input,textarea{font-family:Georgia,'Times New Roman',serif}
 .chat-btn.confirm{background:rgba(91,175,124,.12);border-color:rgba(91,175,124,.4);color:rgba(91,175,124,.9)}
 .chat-btn.confirm:hover{background:rgba(91,175,124,.25)}
 /* Day checkboxes */
-.day-check{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:6px 12px;cursor:pointer;font-family:Georgia,serif;font-size:13px;color:rgba(240,234,214,.6);transition:all .2s;user-select:none}
-.day-check.checked{background:rgba(201,168,76,.15);border-color:rgba(201,168,76,.4);color:var(--gold)}
-.day-check input{display:none}
+.day-check{display:inline-flex;align-items:center;justify-content:center;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:8px 14px;cursor:pointer;font-family:Georgia,serif;font-size:14px;color:rgba(240,234,214,.6);transition:all .2s;user-select:none;min-width:44px;min-height:44px}
+.day-check.checked{background:rgba(201,168,76,.2);border-color:rgba(201,168,76,.5);color:var(--gold);font-weight:600}
 .chat-input-row{display:flex;gap:8px;align-items:center}
 #emmanuel-input{flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.22);border-radius:15px;padding:10px 16px;color:var(--text);font-family:Georgia,serif;font-size:16px;outline:none;transition:border-color .2s}
 #emmanuel-input:focus{border-color:rgba(201,168,76,.5)}
@@ -406,7 +405,7 @@ function addDaySelector(){
   var days=[{k:'seg',l:'Seg'},{k:'ter',l:'Ter'},{k:'qua',l:'Qua'},{k:'qui',l:'Qui'},{k:'sex',l:'Sex'},{k:'sab',l:'Sáb'},{k:'dom',l:'Dom'}];
   var html='<div class="chat-btns" id="chat-action-days">';
   days.forEach(function(d){
-    html+='<label class="day-check" id="day-'+d.k+'" onclick="this.classList.toggle(\'checked\')"><input type="checkbox" value="'+d.k+'"> '+d.l+'</label>';
+    html+='<div class="day-check" data-day="'+d.k+'" onclick="this.classList.toggle(\'checked\')">'+d.l+'</div>';
   });
   html+='</div><div class="chat-btns" style="margin-top:6px"><button class="chat-btn confirm" onclick="confirmDays()">✓ Confirmar dias</button></div>';
   area.innerHTML+=html;
@@ -436,8 +435,8 @@ var pendingDays=[];
 
 function confirmDays(){
   pendingDays=[];
-  document.querySelectorAll('#chat-action-days .day-check.checked input').forEach(function(inp){
-    pendingDays.push(inp.value);
+  document.querySelectorAll('#chat-action-days .day-check.checked').forEach(function(el){
+    pendingDays.push(el.dataset.day);
   });
   if(pendingDays.length===0){
     addEmmanuelMsg('Selecione pelo menos um dia.');
