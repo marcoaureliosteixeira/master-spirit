@@ -1045,6 +1045,24 @@ initStars();
 if(chatHistory.length===0){
   addEmmanuelMsg('Bem-vindo à Sala de Estudos. Sou o Mestre Emmanuel, seu mentor.\n\nEscolha um tema da biblioteca acima ou me pergunte sobre qualquer assunto do universo espiritual. Vou indicar o melhor caminho de estudo para você.\n\nLembre-se: qualidade sobre quantidade. Um livro bem estudado vale mais que dez lidos às pressas.');
 }
+
+// Abrir estudo se veio da página Meus Estudos
+(function(){
+  var params=new URLSearchParams(window.location.search);
+  var studyIdx=params.get('study');
+  if(studyIdx!==null){
+    // Esperar dados carregarem
+    var check=setInterval(function(){
+      if(myStudies.length>0){
+        clearInterval(check);
+        var idx=parseInt(studyIdx);
+        if(idx>=0&&idx<myStudies.length) openStudy(idx);
+      }
+    },500);
+    // Timeout 5s
+    setTimeout(function(){clearInterval(check);},5000);
+  }
+})();
 </script>
 </body>
 </html>

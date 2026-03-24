@@ -186,7 +186,7 @@ function render(){
       dots+='<div style="width:8px;height:8px;border-radius:50%;background:'+dotColor+';border:'+dotBorder+';flex-shrink:0"></div>';
     }
 
-    return '<div class="study-card" onclick="window.location.href=\'salas.html\'">'+
+    return '<div class="study-card" onclick="openStudy('+i+')">'+
       '<div class="study-top">'+
         '<img src="'+facAvatar+'" onclick="event.stopPropagation();document.getElementById(\'avatar-zoom-img\').src=\''+facAvatar+'\';document.getElementById(\'avatar-zoom\').style.display=\'flex\'" alt="">'+
         '<div style="flex:1">'+
@@ -212,6 +212,12 @@ function render(){
 }
 
 function toggleNav(){var m=document.getElementById('nav-menu');m.style.display=m.style.display==='none'?'block':'none';}
+
+function openStudy(idx){
+  // Salvar índice e redirecionar para salas.html que abre a sessão
+  sessionStorage.setItem('spirit_open_study',idx);
+  window.location.href='salas.html?study='+idx;
+}
 
 function initStars(){
   var sf=document.getElementById('stars');
