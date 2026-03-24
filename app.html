@@ -276,9 +276,9 @@ if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
 <!-- HELP FAB — global, visível em todas as telas -->
 <button id="help-fab" onclick="openHelpChat()" title="Master Spirit · Ajuda">?</button>
 
-<!-- SPLASH SCREEN — universo → espírito → dive no anel -->
+<!-- SPLASH SCREEN — supernova → espírito → implosão → logo -->
 <style>
-/* Fundo: universo com nebulosa (não preto liso) */
+/* Fundo: universo com nebulosa */
 #splash{position:fixed;inset:0;z-index:999;
   background:radial-gradient(ellipse at 30% 40%,rgba(40,20,80,.4) 0%,transparent 50%),
              radial-gradient(ellipse at 70% 60%,rgba(20,40,100,.3) 0%,transparent 50%),
@@ -286,129 +286,118 @@ if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
 
 /*
   TIMELINE:
-  0-2s     Cena 1: Só universo (estrelas)
-  2-5.5s   Cena 2: Chispa + luz desenha o espírito devagar
-  5.5-7s   Cena 3: Anel vazio surge flutuando
-  7-8.2s   Cena 4: Espírito mergulha no anel
-  8.2s     Flash + ondas + anel com espírito
+  0-2s     Universo + estrelas (contemplação)
+  2-3.2s   Supernova (explosão de luz intensa)
+  2.5-6s   Espírito nasce da explosão
+  5-6s     Espírito pulsa e irradia anéis de energia
+  6.5-7.5s Espírito comprime e implode (shrink rápido)
+  7.5s     Flash de implosão + ondas de choque
+  7.5-8.5s Logo emerge da implosão
+  8.5s     Logo sobe + flutua
   9s+      Conteúdo
 */
 
-/* ── Cena 2: Faísca de luz (delay 2s — universo fica sozinho antes) ── */
-#spark{position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);width:6px;height:6px;border-radius:50%;
-  background:#fff;box-shadow:0 0 12px 6px rgba(255,240,180,.9),0 0 40px 20px rgba(201,168,76,.5),0 0 80px 40px rgba(100,60,200,.3);
-  opacity:0;animation:spark-burst 1.2s cubic-bezier(.22,1,.36,1) 2s forwards}
-@keyframes spark-burst{
-  0%{transform:translate(-50%,-50%) scale(0);opacity:0}
-  15%{opacity:1;transform:translate(-50%,-50%) scale(1)}
-  50%{transform:translate(-50%,-50%) scale(5);opacity:.8}
-  100%{transform:translate(-50%,-50%) scale(10);opacity:0}
+/* ── Supernova (explosão de luz) ── */
+#spark{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);width:4px;height:4px;border-radius:50%;
+  background:#fff;opacity:0}
+#spark{animation:supernova 1.5s cubic-bezier(.22,1,.36,1) 2s forwards}
+@keyframes supernova{
+  0%{transform:translate(-50%,-50%) scale(0);opacity:0;box-shadow:0 0 0 0 rgba(255,255,255,0)}
+  10%{opacity:1;transform:translate(-50%,-50%) scale(1);box-shadow:0 0 20px 10px rgba(255,240,180,1),0 0 60px 30px rgba(201,168,76,.8),0 0 120px 60px rgba(100,60,200,.5)}
+  30%{transform:translate(-50%,-50%) scale(3);box-shadow:0 0 40px 20px rgba(255,240,180,.9),0 0 100px 50px rgba(201,168,76,.6),0 0 200px 100px rgba(100,60,200,.3)}
+  60%{transform:translate(-50%,-50%) scale(8);opacity:.6;box-shadow:0 0 60px 30px rgba(255,240,180,.4),0 0 150px 80px rgba(201,168,76,.2)}
+  100%{transform:translate(-50%,-50%) scale(15);opacity:0;box-shadow:none}
 }
 
-/* ── Cena 2: Espírito — luz desenha o corpo devagar ── */
-#spirit-wrap{position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);
-  animation:spirit-rise 3.5s cubic-bezier(.22,1,.36,1) 2.5s both,
-             spirit-dive 1.2s cubic-bezier(.55,0,1,.45) 7s forwards}
-@keyframes spirit-rise{
-  0%{top:45%;transform:translate(-50%,-50%) scale(.3);opacity:0}
-  30%{opacity:1;transform:translate(-50%,-50%) scale(1.05)}
-  60%{transform:translate(-50%,-50%) scale(1.02)}
-  80%{top:34%;transform:translate(-50%,-50%) scale(1)}
-  100%{top:34%;transform:translate(-50%,-50%) scale(1)}
+/* ── Espírito nasce da explosão ── */
+#spirit-wrap{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);
+  animation:spirit-born 3.5s cubic-bezier(.22,1,.36,1) 2.5s both,
+             spirit-implode 1s cubic-bezier(.55,0,1,.45) 6.5s forwards}
+@keyframes spirit-born{
+  0%{top:42%;transform:translate(-50%,-50%) scale(.1);opacity:0}
+  20%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}
+  40%{transform:translate(-50%,-50%) scale(.95)}
+  60%{top:36%;transform:translate(-50%,-50%) scale(1.05)}
+  80%{top:36%;transform:translate(-50%,-50%) scale(1)}
+  100%{top:36%;transform:translate(-50%,-50%) scale(1)}
 }
-/* ── Cena 4: Espírito mergulha para frente e para baixo no anel ── */
-@keyframes spirit-dive{
-  0%{transform:translate(-50%,-50%) scale(1);opacity:1}
-  25%{transform:translate(-50%,-50%) scale(.9) translateY(8px);opacity:.95}
-  55%{transform:translate(-50%,-50%) scale(.45) translateY(70px);opacity:.85}
-  80%{transform:translate(-50%,-50%) scale(.15) translateY(130px);opacity:.5}
-  100%{transform:translate(-50%,-50%) scale(0) translateY(155px);opacity:0}
+/* Espírito comprime e implode (transforma em logo) */
+@keyframes spirit-implode{
+  0%{transform:translate(-50%,-50%) scale(1);opacity:1;filter:brightness(1)}
+  30%{transform:translate(-50%,-50%) scale(1.1);filter:brightness(1.5)}
+  60%{transform:translate(-50%,-50%) scale(.4);opacity:.8;filter:brightness(2.5)}
+  85%{transform:translate(-50%,-50%) scale(.08);opacity:.5;filter:brightness(4)}
+  100%{transform:translate(-50%,-50%) scale(0);opacity:0;filter:brightness(6)}
 }
-/* Imagem: luz gradual desenha o corpo (sem silhueta branca) */
+/* Luz gradual desenha o corpo */
 #spirit-img{
-  width:min(80vw,460px);height:min(80vw,460px);object-fit:contain;display:block;
+  width:min(75vw,440px);height:min(75vw,440px);object-fit:contain;display:block;
   mix-blend-mode:screen;-webkit-mix-blend-mode:screen;
   animation:spirit-filter 3.5s cubic-bezier(.22,1,.36,1) 2.5s both;
 }
 @keyframes spirit-filter{
   0%{opacity:0;filter:blur(35px) brightness(6) saturate(0)}
-  10%{opacity:.15;filter:blur(25px) brightness(4) saturate(0)}
-  25%{opacity:.3;filter:blur(16px) brightness(3) saturate(.1)}
-  40%{opacity:.5;filter:blur(10px) brightness(2.2) saturate(.3)}
-  55%{opacity:.65;filter:blur(6px) brightness(1.8) saturate(.5)}
-  70%{opacity:.8;filter:blur(3px) brightness(1.4) saturate(.7)}
-  85%{opacity:.92;filter:blur(1px) brightness(1.15) saturate(.9)}
+  15%{opacity:.2;filter:blur(20px) brightness(4) saturate(0)}
+  30%{opacity:.4;filter:blur(12px) brightness(2.5) saturate(.2)}
+  50%{opacity:.65;filter:blur(5px) brightness(1.8) saturate(.5)}
+  70%{opacity:.85;filter:blur(2px) brightness(1.3) saturate(.8)}
   100%{opacity:1;filter:brightness(1) saturate(1) drop-shadow(0 0 30px rgba(201,168,76,.5)) drop-shadow(0 0 60px rgba(100,60,200,.3))}
 }
 
-/* Anéis sutis ao redor do espírito */
+/* Anéis de energia pulsando ao redor do espírito */
 .sp-ring{position:absolute;top:50%;left:50%;border-radius:50%;border:1px solid rgba(201,168,76,.35);opacity:0}
-.sp-ring{animation:sp-ring-out 2s ease-out 1}
-.sp-ring:nth-child(1){width:260px;height:260px;margin:-130px 0 0 -130px;animation-delay:4.5s}
-.sp-ring:nth-child(2){width:260px;height:260px;margin:-130px 0 0 -130px;border-color:rgba(201,168,76,.2);animation-delay:5s}
-.sp-ring:nth-child(3){width:260px;height:260px;margin:-130px 0 0 -130px;border-color:rgba(150,100,255,.2);animation-delay:5.5s}
-@keyframes sp-ring-out{0%{transform:scale(.7);opacity:.7}100%{transform:scale(1.8);opacity:0}}
+.sp-ring{animation:sp-ring-out 1.5s ease-out 1}
+.sp-ring:nth-child(1){width:260px;height:260px;margin:-130px 0 0 -130px;animation-delay:5s}
+.sp-ring:nth-child(2){width:260px;height:260px;margin:-130px 0 0 -130px;border-color:rgba(201,168,76,.25);animation-delay:5.4s}
+.sp-ring:nth-child(3){width:260px;height:260px;margin:-130px 0 0 -130px;border-color:rgba(150,100,255,.25);animation-delay:5.8s}
+@keyframes sp-ring-out{0%{transform:scale(.7);opacity:.8}100%{transform:scale(2);opacity:0}}
 
-/* ── Cena 3: Anel vazio surge flutuando (5.5s) ── */
-#orb-target{position:absolute;left:50%;top:calc(34% + 155px);transform:translate(-50%,-50%);z-index:5;pointer-events:none;
-  transition:none}
-#orb-empty{width:min(52vw,230px);height:auto;opacity:0;display:block;
-  animation:orb-float-in 1.2s ease 5.5s forwards,orb-empty-hide .3s ease 8.2s forwards}
-@keyframes orb-float-in{
-  0%{opacity:0;transform:scale(.5) translateY(30px);filter:brightness(2.5)}
-  60%{opacity:.6;transform:scale(1.02) translateY(-3px);filter:brightness(1.2)}
-  100%{opacity:.75;transform:scale(1) translateY(0);filter:brightness(1)}
+/* ── Logo emerge da implosão ── */
+#orb-target{position:absolute;left:50%;top:36%;transform:translate(-50%,-50%);z-index:5;pointer-events:none;
+  animation:logo-reposition 1.2s cubic-bezier(.22,1,.36,1) 8s forwards}
+@keyframes logo-reposition{0%{top:36%}100%{top:22%}}
+#orb-full{width:min(55vw,250px);height:auto;opacity:0;display:block;
+  animation:logo-emerge 1s ease 7.5s forwards,logo-float 4s ease-in-out 9s infinite}
+@keyframes logo-emerge{
+  0%{opacity:0;transform:scale(.3);filter:brightness(5)}
+  30%{opacity:.7;transform:scale(1.15);filter:brightness(2)}
+  60%{opacity:.95;transform:scale(.95);filter:brightness(1.3)}
+  100%{opacity:1;transform:scale(1);filter:brightness(1)}
 }
-@keyframes orb-empty-hide{0%{opacity:.75}100%{opacity:0}}
-/* Logo com espírito — aparece após impacto, sobe para posição final + flutuante */
-#orb-full{width:min(52vw,230px);height:auto;opacity:0;display:block;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-  animation:orb-reveal .8s ease 8.2s forwards,orb-float 4s ease-in-out 9.5s infinite}
-@keyframes orb-reveal{
-  0%{opacity:0;transform:translate(-50%,-50%) scale(.8);filter:brightness(3)}
-  50%{opacity:.9;transform:translate(-50%,-50%) scale(1.05);filter:brightness(1.5)}
-  100%{opacity:1;transform:translate(-50%,-50%) scale(1);filter:brightness(1)}
+@keyframes logo-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+/* Flash de implosão */
+#orb-flash{position:absolute;left:50%;top:50%;width:min(60vw,280px);height:min(60vw,280px);
+  transform:translate(-50%,-50%) scale(.3);border-radius:50%;pointer-events:none;opacity:0;
+  background:radial-gradient(circle,rgba(255,255,255,1) 0%,rgba(201,168,76,.7) 30%,rgba(100,60,200,.3) 60%,transparent 80%);
+  animation:implosion-flash .6s ease 7.5s both}
+@keyframes implosion-flash{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.3)}
+  40%{opacity:1;transform:translate(-50%,-50%) scale(1.6)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(.8)}
 }
-@keyframes orb-float{0%,100%{transform:translate(-50%,-50%) translateY(0)}50%{transform:translate(-50%,-50%) translateY(-12px)}}
-/* O orb-target inteiro sobe após impacto */
-#orb-target{animation:orb-reposition 1.2s cubic-bezier(.22,1,.36,1) 8.5s forwards}
-@keyframes orb-reposition{
-  0%{top:calc(34% + 155px)}
-  100%{top:22%}
-}
-/* Flash de impacto (8.2s) */
-#orb-flash{position:absolute;left:50%;top:50%;width:min(55vw,250px);height:min(55vw,250px);
-  transform:translate(-50%,-50%) scale(.5);border-radius:50%;pointer-events:none;opacity:0;
-  background:radial-gradient(circle,rgba(255,255,255,.9) 0%,rgba(201,168,76,.6) 40%,transparent 70%);
-  animation:flash-burst .5s ease 8.2s both}
-@keyframes flash-burst{
-  0%{opacity:0;transform:translate(-50%,-50%) scale(.5)}
-  40%{opacity:1;transform:translate(-50%,-50%) scale(1.4)}
-  100%{opacity:0;transform:translate(-50%,-50%) scale(1)}
-}
-/* Ondas de choque (8.2s) */
+/* Ondas de choque da implosão */
 #orb-ring-1,#orb-ring-2{position:absolute;left:50%;top:50%;
-  width:min(30vw,130px);height:min(30vw,130px);
+  width:min(25vw,110px);height:min(25vw,110px);
   transform:translate(-50%,-50%);border:2px solid rgba(201,168,76,.9);border-radius:50%;
   opacity:0;pointer-events:none}
-#orb-ring-1{animation:ring-expand .7s ease-out 8.2s both}
-#orb-ring-2{animation:ring-expand .7s ease-out 8.3s both}
+#orb-ring-1{animation:ring-expand .8s ease-out 7.5s both}
+#orb-ring-2{animation:ring-expand .8s ease-out 7.6s both}
 @keyframes ring-expand{
   0%{opacity:.9;transform:translate(-50%,-50%) scale(1)}
-  100%{opacity:0;transform:translate(-50%,-50%) scale(2.4)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(3)}
 }
 
-/* ── CONTEÚDO — surge em sequência após logo reposicionar ── */
+/* ── CONTEÚDO ── */
 @keyframes content-rise{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
 #splash-content{position:absolute;left:0;right:0;top:42%;text-align:center;padding:0 24px}
-#splash-content .sub{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:clamp(12px,2vw,15px);color:rgba(240,234,214,.5);letter-spacing:2px;margin-bottom:12px;
-  opacity:0;animation:content-rise .7s cubic-bezier(.22,1,.36,1) 9.3s forwards}
+#splash-content .sub{font-family:Georgia,serif;font-style:italic;font-size:clamp(12px,2vw,15px);color:rgba(240,234,214,.5);letter-spacing:2px;margin-bottom:12px;
+  opacity:0;animation:content-rise .7s cubic-bezier(.22,1,.36,1) 8.8s forwards}
 #splash-content .divider{width:60px;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.5),transparent);margin:0 auto 14px;
-  opacity:0;animation:content-rise .5s ease 9.3s forwards}
-#splash-content .verse{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:clamp(13px,2vw,16px);color:rgba(240,234,214,.65);line-height:1.7;margin-bottom:18px;
-  opacity:0;animation:content-rise .8s cubic-bezier(.22,1,.36,1) 9.6s forwards}
+  opacity:0;animation:content-rise .5s ease 8.8s forwards}
+#splash-content .verse{font-family:Georgia,serif;font-style:italic;font-size:clamp(13px,2vw,16px);color:rgba(240,234,214,.65);line-height:1.7;margin-bottom:18px;
+  opacity:0;animation:content-rise .8s cubic-bezier(.22,1,.36,1) 9.1s forwards}
 #splash-content .verse span{font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:rgba(201,168,76,.55);display:block;margin-top:6px}
-#splash-cards{opacity:0;animation:content-rise .8s cubic-bezier(.22,1,.36,1) 10s forwards}
-/* Splash entry cards — maiores */
+#splash-cards{opacity:0;animation:content-rise .8s cubic-bezier(.22,1,.36,1) 9.5s forwards}
 .splash-entry-card{width:min(22vw,100px);cursor:pointer;text-align:center;transition:all .3s;border-radius:14px;overflow:hidden;border:1px solid rgba(201,168,76,.25);background:rgba(6,10,22,.6);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 .splash-entry-card:hover{border-color:rgba(201,168,76,.6);transform:translateY(-3px);box-shadow:0 6px 24px rgba(201,168,76,.2)}
 .splash-entry-card img{width:100%;height:65px;object-fit:contain;display:block;border-bottom:1px solid rgba(201,168,76,.15);padding:4px}
@@ -424,12 +413,11 @@ if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
     <div class="sp-ring"></div>
     <img id="spirit-img" src="master-spirit-avatar.png" alt="Master Spirit">
   </div>
-  <!-- Orb portal — recebe o espírito, depois sobe com logo flutuante -->
+  <!-- Logo emerge da implosão do espírito -->
   <div id="orb-target">
     <div id="orb-flash"></div>
     <div id="orb-ring-1"></div>
     <div id="orb-ring-2"></div>
-    <img id="orb-empty" src="logo-sem-master-spirit-fundo_transparente.png" alt="">
     <img id="orb-full" src="logo-master-spirit.png" alt="Master Spirit">
   </div>
   <div id="splash-content">
@@ -1387,13 +1375,11 @@ function backToSplash(){
   // Esconder spark
   var sp=document.getElementById('spark');
   if(sp) sp.style.display='none';
-  // Mostrar orb na posição final (já subiu)
+  // Mostrar logo na posição final (já subiu)
   var ot=document.getElementById('orb-target');
   if(ot){ot.style.animation='none';ot.style.top='22%';}
-  var oe=document.getElementById('orb-empty');
-  if(oe){oe.style.animation='none';oe.style.opacity='0';}
   var ofull=document.getElementById('orb-full');
-  if(ofull){ofull.style.animation='orb-float 4s ease-in-out infinite';ofull.style.opacity='1';ofull.style.filter='brightness(1)';}
+  if(ofull){ofull.style.animation='logo-float 4s ease-in-out infinite';ofull.style.opacity='1';ofull.style.filter='brightness(1)';}
   var of=document.getElementById('orb-flash');
   if(of){of.style.animation='none';of.style.opacity='0';}
   var r1=document.getElementById('orb-ring-1');
