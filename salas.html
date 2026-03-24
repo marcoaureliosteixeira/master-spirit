@@ -714,16 +714,33 @@ async function addStudy(tema,mode){
   try{
     var r=await fetch('/api/curator',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({action:'chat',messages:[{role:'user',content:
-        'Gere um currículo COMPLETO para o estudo temático "'+tema.name+'" ('+tema.ref+').\n\n'+
+        'Você é Emmanuel, mentor da Bibliografia Espiritual. Gere um currículo para o estudo temático "'+tema.name+'" ('+tema.ref+').\n\n'+
+        'MÉTODO DE TRABALHO (OBRIGATÓRIO):\n'+
+        '1. PRIMEIRO: avalie se o tema tem conexão com o espiritismo/espiritualidade\n'+
+        '2. SEGUNDO: identifique TODAS as obras do acervo que abordam este tema ou temas relacionados\n'+
+        '3. TERCEIRO: monte as sessões SEMPRE ancoradas em referências bibliográficas reais\n\n'+
+        'ACERVO DISPONÍVEL:\n'+
+        '- O Livro dos Espíritos (Kardec) — 1.019 questões em 4 partes\n'+
+        '- O Livro dos Médiuns (Kardec) — 32 capítulos\n'+
+        '- O Evangelho Segundo o Espiritismo (Kardec) — 28 capítulos\n'+
+        '- O Céu e o Inferno (Kardec), A Gênese (Kardec)\n'+
+        '- Nosso Lar e série André Luiz (Chico Xavier) — 13 livros\n'+
+        '- A Caminho da Luz (Emmanuel/Chico Xavier) — 25 capítulos\n'+
+        '- Livro de Urantia — 196 fascículos em 4 partes\n'+
+        '- Cartas de Cristo — 9 cartas + artigos\n'+
+        '- Bhagavad Gita — 18 capítulos\n'+
+        '- Operação Cavalo de Tróia (Benítez) — 11 volumes\n'+
+        '- Mecanismos da Mediunidade, Nos Domínios da Mediunidade (André Luiz)\n'+
+        '- Missionários da Luz, Obreiros da Vida Eterna (André Luiz)\n\n'+
         'REGRAS:\n'+
-        '1. O currículo DEVE cobrir 100% de todo o conteúdo. Se é um livro, todos os capítulos. Se é uma temática (ex: Reiki, Terapias Energéticas), todos os aspectos fundamentais.\n'+
-        '2. Cada sessão deve ter título DESCRITIVO e ATRATIVO — nunca "Sessão 1" genérico.\n'+
-        '3. O campo "ref" deve indicar a referência bibliográfica específica (capítulo, seção, ou fonte).\n'+
-        '4. Mínimo 10 sessões, máximo 30.\n\n'+
+        '1. CADA sessão DEVE ter referência bibliográfica REAL e ESPECÍFICA (obra + capítulo/questão/fascículo)\n'+
+        '2. Se o tema não é um livro direto (ex: Reiki), identifique QUAIS obras do acervo cobrem aspectos do tema\n'+
+        '   Exemplo Reiki: fluido universal (LE Q.64-68), magnetismo (LM Cap.14), passes (André Luiz), centros de força (Nosso Lar Cap.5)\n'+
+        '3. NUNCA invente referências. Se não sabe o capítulo exato, indique a obra e o tema abordado\n'+
+        '4. Título descritivo e atrativo. NUNCA "Sessão 1" genérico.\n'+
+        '5. Mínimo 10 sessões, máximo 30. Cobrir 100% do tema.\n\n'+
         'Retorne SOMENTE um array JSON válido, sem texto antes ou depois, sem markdown:\n'+
-        '[{"n":1,"title":"título descritivo","ref":"capítulo ou fonte de referência"},{"n":2,"title":"...","ref":"..."}]\n\n'+
-        'Exemplo para Reiki:\n'+
-        '[{"n":1,"title":"Origens do Reiki: Mikao Usui e a energia universal","ref":"História e fundamentos"},{"n":2,"title":"Os Cinco Princípios do Reiki","ref":"Filosofia Reiki"},...]\n\n'+
+        '[{"n":1,"title":"título descritivo","ref":"Obra — Cap/Seção específica"}]\n\n'+
         'Português brasileiro.'
       }]})});
     var d=await r.json();
