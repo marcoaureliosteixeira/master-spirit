@@ -2691,12 +2691,12 @@ async function acceptDisclaimer(){
   var stampData={accepted_at:now,email:email,name:userName,version:'1.0'};
   localStorage.setItem('spirit_disclaimer','accepted');
   localStorage.setItem('spirit_disclaimer_stamp',JSON.stringify(stampData));
-  // Log no banco de dados (Supabase)
+  // Salvar no banco de dados (user_usage)
   try{
     if(window._sb&&uid){
-      await window._sb.from('disclaimer_log').insert({user_id:uid,accepted_at:now,version:'1.0'});
+      await window._sb.from('user_usage').update({disclaimer_accepted:true,disclaimer_accepted_at:now}).eq('id',uid);
     }
-  }catch(e){console.warn('Disclaimer log error:',e);}
+  }catch(e){console.warn('Disclaimer save error:',e);}
   // Enviar email com o termo assinado
   try{
     if(email){
@@ -3496,6 +3496,16 @@ function initSupa() {
             var ab = document.getElementById('admin-btn');
             if (ab) { ab.style.display = 'flex'; }
           }
+          // Verificar disclaimer no banco (sincronizar entre devices)
+          try{
+            var uid=r.data.session.user.id;
+            var usage=await window._sb.from('user_usage').select('disclaimer_accepted').eq('id',uid).maybeSingle();
+            if(usage.data&&usage.data.disclaimer_accepted){
+              localStorage.setItem('spirit_disclaimer','accepted');
+              var overlay=document.getElementById('disclaimer-overlay');
+              if(overlay) overlay.style.display='none';
+            }
+          }catch(e){}
         }
       });
     }
