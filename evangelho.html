@@ -250,6 +250,10 @@ function stopWindChimes(){
   if(_chimesAudio){_chimesAudio.pause();_chimesAudio.currentTime=0;_chimesAudio=null;}
 }
 
+function stopJesusMusic(){
+  if(window._jesusMusic){window._jesusMusic.pause();window._jesusMusic=null;}
+}
+
 function voltarEtapa(){
   var fases=['config','facilitador','prece1','leitura','comentarios','vibracoes','prece2','fim'];
   var idx=fases.indexOf(fase);
@@ -341,20 +345,20 @@ function renderFase(){
   else if(fase==='prece2'){
     badge.textContent='5 de 5 · Prece Final';
     m.innerHTML='<div class="session-text" style="text-align:center;padding:20px;color:rgba(201,168,76,.5);font-style:italic">O facilitador está preparando a prece de encerramento...</div>';
-    c.innerHTML='<button class="btn-g" onclick="avancar()" disabled id="btn-av">Concluir sessão</button>';
+    c.innerHTML='<button class="btn-g" onclick="avancar()" disabled id="btn-av">🙏 Oração do Pai Nosso</button>';
     gerarPrece('prece_final');
   }
   else if(fase==='fim'){
-    badge.textContent='Concluído';
+    badge.textContent='Pai Nosso';
     stopPreceMusic();
-    // Jesus orando Pai Nosso
-    m.innerHTML='<div style="text-align:center;padding:20px;animation:fadeup .5s ease">'+
-      '<div style="width:min(44vw,176px);height:min(44vw,176px);border-radius:50%;overflow:hidden;border:2px solid rgba(201,168,76,.5);box-shadow:0 0 40px rgba(201,168,76,.3);margin:0 auto 14px;-webkit-mask-image:-webkit-radial-gradient(white,black)">'+
+    // Jesus orando — tudo em uma tela sem scroll
+    m.innerHTML='<div style="text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - 160px);animation:fadeup .5s ease">'+
+      '<div style="width:min(35vw,140px);height:min(35vw,140px);border-radius:50%;overflow:hidden;border:2px solid rgba(201,168,76,.5);box-shadow:0 0 30px rgba(201,168,76,.3);margin-bottom:10px;-webkit-mask-image:-webkit-radial-gradient(white,black)">'+
       '<video id="jesus-pai-nosso" playsinline style="width:100%;height:100%;object-fit:cover;object-position:center 20%;border-radius:50%" preload="auto"><source src="avatar-jesus-pai-nosso.mp4" type="video/mp4"></video></div>'+
-      '<p style="font-family:Cinzel,serif;font-size:14px;color:#E8C97A;letter-spacing:2px;margin-bottom:12px">Jesus</p>'+
-      '<p style="font-size:15px;line-height:1.85;font-style:italic;color:rgba(240,234,214,.7);max-width:400px;margin:0 auto">Pai nosso, que estais nos céus, santificado seja o Vosso nome. Venha a nós o Vosso reino. Seja feita a Vossa vontade, assim na Terra como no Céu. O pão nosso de cada dia nos dai hoje. Perdoai as nossas ofensas, assim como nós perdoamos a quem nos tem ofendido. E não nos deixeis cair em tentação, mas livrai-nos do mal. Assim seja.</p>'+
-      '</div>'+renderFim();
-    c.innerHTML='<button class="btn-s" onclick="window.location.href=\'app.html\'">🏠 Menu Principal</button><button class="btn-g" onclick="fase=\'config\';renderFase()">Nova sessão</button>';
+      '<p style="font-family:Cinzel,serif;font-size:12px;color:#E8C97A;letter-spacing:2px;margin-bottom:10px">Jesus</p>'+
+      '<p style="font-size:13px;line-height:1.7;font-style:italic;color:rgba(240,234,214,.65);max-width:360px;margin:0 auto">Pai nosso, que estais nos céus, santificado seja o Vosso nome. Venha a nós o Vosso reino. Seja feita a Vossa vontade, assim na Terra como no Céu. O pão nosso de cada dia nos dai hoje. Perdoai as nossas ofensas, assim como nós perdoamos a quem nos tem ofendido. E não nos deixeis cair em tentação, mas livrai-nos do mal. Assim seja.</p>'+
+      '</div>';
+    c.innerHTML='<button class="btn-s" onclick="stopJesusMusic();window.location.href=\'app.html\'">🏠 Menu Principal</button><button class="btn-g" onclick="stopJesusMusic();fase=\'config\';renderFase()">Nova sessão</button>';
     // Música de fundo do teaser + Play vídeo Jesus
     setTimeout(function(){
       window._jesusMusic=new Audio('teaser-music.mp3');
