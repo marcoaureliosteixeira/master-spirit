@@ -1288,17 +1288,41 @@ function saveMasterMsgs(id){try{localStorage.setItem('spirit_chat_'+id,JSON.stri
 })();
 
 // ===================== SPLASH SOUND EFFECTS =====================
-// Toca MP3 se existir (splash-sfx.mp3), sincronizado com a implosão
+var _splashSfx=null;
+var _sfxPlayed=false;
+// Pré-carregar o SFX
+try{_splashSfx=new Audio('splash-sfx.mp3');_splashSfx.preload='auto';_splashSfx.volume=1;}catch(e){}
+
 function playSplashSFX(){
   try{
-    var sfx=new Audio('splash-sfx.mp3');
-    sfx.preload='auto';
-    sfx.volume=1;
-    // Bass drop sincronizado: começa 2s antes da implosão para o build-up
-    // Implosão em 6.5s, áudio tem ~2.5s, então tocar em ~5s
+    _sfxPlayed=false;
+    // Tentar tocar no timing certo
     setTimeout(function(){
-      sfx.play().catch(function(){});
+      if(_splashSfx&&!_sfxPlayed){
+        _sfxPlayed=true;
+        _splashSfx.currentTime=0;
+        _splashSfx.play().catch(function(){
+          // Bloqueado — registrar retry no próximo toque
+          _sfxPlayed=false;
+        });
+      }
     },5000);
+    // Fallback: tocar no primeiro toque/click se ainda não tocou
+    function sfxRetry(){
+      if(!_sfxPlayed&&_splashSfx){
+        _sfxPlayed=true;
+        _splashSfx.currentTime=0;
+        _splashSfx.play().catch(function(){});
+      }
+      document.removeEventListener('touchstart',sfxRetry);
+      document.removeEventListener('click',sfxRetry);
+    }
+    setTimeout(function(){
+      if(!_sfxPlayed){
+        document.addEventListener('touchstart',sfxRetry,{once:true});
+        document.addEventListener('click',sfxRetry,{once:true});
+      }
+    },5500);
   }catch(e){}
 }
 
