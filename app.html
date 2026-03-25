@@ -1288,33 +1288,14 @@ function saveMasterMsgs(id){try{localStorage.setItem('spirit_chat_'+id,JSON.stri
 })();
 
 // ===================== SPLASH SOUND EFFECTS =====================
-var _splashSfx=null;
+var _splashSfxPlayed=false;
 
 function playSplashSFX(){
-  try{
-    // Agendar o SFX para 5s, mas só toca após primeira interação
-    var played=false;
-    function doPlay(){
-      if(played)return;
-      played=true;
-      _splashSfx=new Audio('splash-sfx.mp3');
-      _splashSfx.volume=1;
-      _splashSfx.play().catch(function(){});
-    }
-    // Registrar para tocar no primeiro toque/click do splash
-    function onInteraction(){
-      document.removeEventListener('touchstart',onInteraction);
-      document.removeEventListener('click',onInteraction);
-      // Calcular delay restante (SFX deve cair em 5s do início do splash)
-      var elapsed=Date.now()-_splashStartTime;
-      var delay=Math.max(0,5000-elapsed);
-      setTimeout(doPlay,delay);
-    }
-    _splashStartTime=Date.now();
-    document.addEventListener('touchstart',onInteraction,{once:true});
-    document.addEventListener('click',onInteraction,{once:true});
-  }catch(e){}
+  _splashSfxPlayed=false;
+  _splashStartTime=Date.now();
 }
+// O SFX é disparado dentro do fadeSplashIn (quando música é liberada)
+// Removido: listeners de click/touch que vazavam para outras páginas
 
 // ===================== SPLASH MUSIC =====================
 var _splashAudio=null;
@@ -1339,16 +1320,19 @@ function splashMusicRetry(){
 }
 function fadeSplashIn(){
   if(!_splashAudio) return;
-  // Áudio liberado pelo browser — agendar SFX sincronizado
-  var elapsed=Date.now()-_splashStartTime;
-  var sfxDelay=Math.max(0,5000-elapsed);
-  setTimeout(function(){
-    try{
-      var sfx=new Audio('splash-sfx.mp3');
-      sfx.volume=1;
-      sfx.play().catch(function(){});
-    }catch(e){}
-  },sfxDelay);
+  // Áudio liberado pelo browser — agendar SFX sincronizado (só no splash)
+  if(!_splashSfxPlayed&&document.getElementById('splash')&&document.getElementById('splash').style.display!=='none'){
+    _splashSfxPlayed=true;
+    var elapsed=Date.now()-_splashStartTime;
+    var sfxDelay=Math.max(0,5000-elapsed);
+    setTimeout(function(){
+      try{
+        var sfx=new Audio('splash-sfx.mp3');
+        sfx.volume=1;
+        sfx.play().catch(function(){});
+      }catch(e){}
+    },sfxDelay);
+  }
   var vol=0;
   var fi=setInterval(function(){
     vol+=0.015;
@@ -1506,21 +1490,25 @@ function loadRooms(){
 window.addEventListener('load',async ()=>{
   // Disclaimer: verificar localStorage E banco antes de mostrar
   if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
-    // Esperar verificação do banco (Supabase pode confirmar que já aceitou)
     var accepted=false;
     try{
-      if(window._sb){
-        var sess=await window._sb.auth.getSession();
+      // Criar client Supabase direto (não depende de initSupa)
+      if(window.supabase){
+        var _sbCheck=window.supabase.createClient(
+          'https://jwdvbtujzvqvktzxycwj.supabase.co',
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp3ZHZidHVqenZxdmt0enh5Y3dqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1Mjc2NDksImV4cCI6MjA4OTEwMzY0OX0.ZfkRgdYcTjYF_E4qr1_1CZMtSiCvKLeUsoRSLoO16Mw'
+        );
+        var sess=await _sbCheck.auth.getSession();
         if(sess.data?.session){
           var uid=sess.data.session.user.id;
-          var usage=await window._sb.from('user_usage').select('disclaimer_accepted').eq('id',uid).maybeSingle();
+          var usage=await _sbCheck.from('user_usage').select('disclaimer_accepted').eq('id',uid).maybeSingle();
           if(usage.data&&usage.data.disclaimer_accepted){
             accepted=true;
             localStorage.setItem('spirit_disclaimer','accepted');
           }
         }
       }
-    }catch(e){}
+    }catch(e){console.warn('Disclaimer check error:',e);}
     if(!accepted){
       document.getElementById('splash').style.display='none';
       document.getElementById('app').style.display='none';
