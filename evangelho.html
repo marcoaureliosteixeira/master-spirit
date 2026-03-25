@@ -461,6 +461,25 @@ function renderFacilitador(){
 
 // ── NAVEGAÇÃO ──
 function iniciarSessao(){
+  // Validar configurações
+  var erros=[];
+  if(!config.duracao) erros.push('Selecione a duração da sessão');
+  if(!config.modo) erros.push('Selecione o modo de leitura');
+  if(!config.participantes) erros.push('Selecione Solo ou Em Família');
+  if(!config.musica&&config.musica!=='splash-music.mp3') config.musica='splash-music.mp3';
+  if(erros.length>0){
+    // Destacar campos não preenchidos
+    document.querySelectorAll('.cfg-section').forEach(function(s){
+      var hasActive=s.querySelector('.cfg-opt.active');
+      if(!hasActive){
+        s.style.border='1px solid rgba(232,122,122,.5)';
+        s.style.borderRadius='12px';
+        s.style.padding='10px';
+        setTimeout(function(){s.style.border='';s.style.padding='';},3000);
+      }
+    });
+    return;
+  }
   sortearFacilitador();
   fase='facilitador';
   renderFase();
