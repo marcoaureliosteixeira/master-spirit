@@ -438,10 +438,11 @@ if(localStorage.getItem('spirit_disclaimer')==='accepted'){
       </div>
     </div>
     </div>
-    <div style="margin-top:14px;display:flex;align-items:center;gap:6px;justify-content:center;opacity:0;animation:content-rise .5s ease 10s forwards;padding-bottom:10px">
+    <div style="margin-top:14px;display:flex;align-items:center;gap:6px;justify-content:center;opacity:0;animation:content-rise .5s ease 10s forwards;padding-bottom:6px">
       <span style="font-family:'Cinzel',serif;font-size:7px;letter-spacing:2px;color:rgba(240,234,214,.25);text-transform:uppercase">Powered by</span>
       <img src="logo-spyrit-systems.png" style="height:20px;opacity:.5" alt="Spyrit Systems">
     </div>
+    <button onclick="doLogout()" style="background:none;border:none;cursor:pointer;font-size:10px;color:rgba(240,234,214,.2);font-family:Georgia,serif;padding:4px;opacity:0;animation:content-rise .5s ease 10.5s forwards">Sair da conta</button>
   </div>
 </div>
 
@@ -1293,9 +1294,15 @@ var _splashSfxPlayed=false;
 function playSplashSFX(){
   _splashSfxPlayed=false;
   _splashStartTime=Date.now();
+  // Tocar direto com setTimeout — se autoplay bloqueado, toca no primeiro click
+  setTimeout(function(){
+    if(_splashSfxPlayed)return;
+    try{
+      var s=new Audio('splash-sfx.mp3');s.volume=1;
+      s.play().then(function(){_splashSfxPlayed=true;}).catch(function(){});
+    }catch(e){}
+  },5000);
 }
-// O SFX é disparado dentro do fadeSplashIn (quando música é liberada)
-// Removido: listeners de click/touch que vazavam para outras páginas
 
 // ===================== SPLASH MUSIC =====================
 var _splashAudio=null;
@@ -3488,6 +3495,28 @@ function checkMPReturn() {
     document.body.appendChild(msg);
     setTimeout(function() { msg.remove(); }, 5000);
   }
+}
+
+// ── PUSH NOTIFICATIONS ──
+async function initPush(userId){
+  try{
+    if(!('serviceWorker' in navigator)||!('PushManager' in window)) return;
+    var reg=await navigator.serviceWorker.register('/sw.js');
+    var permission=await Notification.requestPermission();
+    if(permission!=='granted') return;
+    var vapidKey=await fetch('/api/push',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'get_vapid'})}).then(function(r){return r.json();}).then(function(d){return d.key;}).catch(function(){return null;});
+    if(!vapidKey) return;
+    var sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:urlBase64ToUint8Array(vapidKey)});
+    await fetch('/api/push',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'subscribe',user_id:userId,subscription:sub.toJSON()})});
+  }catch(e){console.warn('Push init error:',e);}
+}
+function urlBase64ToUint8Array(base64String){
+  var padding='='.repeat((4-base64String.length%4)%4);
+  var base64=(base64String+padding).replace(/-/g,'+').replace(/_/g,'/');
+  var raw=window.atob(base64);
+  var arr=new Uint8Array(raw.length);
+  for(var i=0;i<raw.length;++i) arr[i]=raw.charCodeAt(i);
+  return arr;
 }
 
 function initSupa() {
