@@ -1289,45 +1289,36 @@ function saveMasterMsgs(id){try{localStorage.setItem('spirit_chat_'+id,JSON.stri
 
 // ===================== SPLASH SOUND EFFECTS =====================
 var _splashSfx=null;
-var _sfxPlayed=false;
-// Pré-carregar o SFX
-try{_splashSfx=new Audio('splash-sfx.mp3');_splashSfx.preload='auto';_splashSfx.volume=1;}catch(e){}
 
 function playSplashSFX(){
   try{
-    _sfxPlayed=false;
-    // Tentar tocar no timing certo
-    setTimeout(function(){
-      if(_splashSfx&&!_sfxPlayed){
-        _sfxPlayed=true;
-        _splashSfx.currentTime=0;
-        _splashSfx.play().catch(function(){
-          // Bloqueado — registrar retry no próximo toque
-          _sfxPlayed=false;
-        });
-      }
-    },5000);
-    // Fallback: tocar no primeiro toque/click se ainda não tocou
-    function sfxRetry(){
-      if(!_sfxPlayed&&_splashSfx){
-        _sfxPlayed=true;
-        _splashSfx.currentTime=0;
-        _splashSfx.play().catch(function(){});
-      }
-      document.removeEventListener('touchstart',sfxRetry);
-      document.removeEventListener('click',sfxRetry);
+    // Agendar o SFX para 5s, mas só toca após primeira interação
+    var played=false;
+    function doPlay(){
+      if(played)return;
+      played=true;
+      _splashSfx=new Audio('splash-sfx.mp3');
+      _splashSfx.volume=1;
+      _splashSfx.play().catch(function(){});
     }
-    setTimeout(function(){
-      if(!_sfxPlayed){
-        document.addEventListener('touchstart',sfxRetry,{once:true});
-        document.addEventListener('click',sfxRetry,{once:true});
-      }
-    },5500);
+    // Registrar para tocar no primeiro toque/click do splash
+    function onInteraction(){
+      document.removeEventListener('touchstart',onInteraction);
+      document.removeEventListener('click',onInteraction);
+      // Calcular delay restante (SFX deve cair em 5s do início do splash)
+      var elapsed=Date.now()-_splashStartTime;
+      var delay=Math.max(0,5000-elapsed);
+      setTimeout(doPlay,delay);
+    }
+    _splashStartTime=Date.now();
+    document.addEventListener('touchstart',onInteraction,{once:true});
+    document.addEventListener('click',onInteraction,{once:true});
   }catch(e){}
 }
 
 // ===================== SPLASH MUSIC =====================
 var _splashAudio=null;
+var _splashStartTime=Date.now();
 function startSplashMusic(){
   try{
     _splashAudio=new Audio('splash-music.mp3');
@@ -1348,6 +1339,16 @@ function splashMusicRetry(){
 }
 function fadeSplashIn(){
   if(!_splashAudio) return;
+  // Áudio liberado pelo browser — agendar SFX sincronizado
+  var elapsed=Date.now()-_splashStartTime;
+  var sfxDelay=Math.max(0,5000-elapsed);
+  setTimeout(function(){
+    try{
+      var sfx=new Audio('splash-sfx.mp3');
+      sfx.volume=1;
+      sfx.play().catch(function(){});
+    }catch(e){}
+  },sfxDelay);
   var vol=0;
   var fi=setInterval(function(){
     vol+=0.015;
