@@ -596,7 +596,19 @@ function renderVibracoes(mins){
     '<p style="font-family:Cinzel,serif;font-size:10px;letter-spacing:3px;color:rgba(201,168,76,.4);margin-bottom:16px">MOMENTO DE SILÊNCIO E VIBRAÇÕES</p>'+
     '<div class="timer-num" id="timer-display">'+String(mins).padStart(2,'0')+':00</div>'+
     '<p class="timer-label">Feche os olhos. Respire. Envie boas vibrações.</p>'+
+    '<div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-top:20px">'+
+      '<button onclick="changeChimesVol(-0.1)" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;width:36px;height:36px;cursor:pointer;color:rgba(240,234,214,.5);font-size:16px">🔉</button>'+
+      '<span id="vol-display" style="font-family:Cinzel,serif;font-size:11px;color:rgba(201,168,76,.5);min-width:40px;text-align:center">100%</span>'+
+      '<button onclick="changeChimesVol(0.1)" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;width:36px;height:36px;cursor:pointer;color:rgba(240,234,214,.5);font-size:16px">🔊</button>'+
+    '</div>'+
     '</div>';
+}
+
+function changeChimesVol(delta){
+  if(!_chimesAudio) return;
+  _chimesAudio.volume=Math.max(0,Math.min(1,_chimesAudio.volume+delta));
+  var el=document.getElementById('vol-display');
+  if(el) el.textContent=Math.round(_chimesAudio.volume*100)+'%';
 }
 
 function iniciarTimer(secs){
