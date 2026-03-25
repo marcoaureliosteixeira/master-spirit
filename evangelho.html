@@ -188,7 +188,7 @@ var CAPITULOS=[
 // ── ESTADO ──
 var fase='config'; // config, facilitador, prece1, leitura, comentarios, vibracoes, prece2, fim
 var facilitador=null;
-var config={duracao:20,modo:'sequencial',participantes:'solo',contexto:''};
+var config={duracao:20,modo:'sequencial',participantes:'solo',contexto:'',dias:[],horario:'19:30',lembrete:false};
 var trechoAtual={cap:1,item:1,titulo:'',texto:''};
 var timerInterval=null;
 var lessonContext='';
@@ -425,7 +425,24 @@ function renderConfig(){
     '<button onclick="previewMusic()" style="margin-top:8px;background:none;border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:6px 14px;cursor:pointer;font-size:11px;color:rgba(201,168,76,.5);transition:all .2s" id="preview-btn">▶ Ouvir prévia</button>'+
     '</div>'+
     '<div class="cfg-section"><p class="cfg-label">Contexto Familiar (opcional)</p>'+
-    '<input type="text" value="'+(config.contexto||'')+'" maxlength="200" placeholder="Ex: família com crianças pequenas..." onchange="setConfig(\'contexto\',this.value)" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.22);border-radius:12px;padding:11px 16px;color:var(--text);font-family:var(--font);font-size:15px;font-style:italic;outline:none">'+
+    '<input type="text" value="'+(config.contexto||'')+'" maxlength="200" placeholder="Ex: família com crianças pequenas..." onchange="setConfig(\'contexto\',this.value)" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.22);border-radius:12px;padding:11px 16px;color:var(--text);font-family:Georgia,serif;font-size:15px;font-style:italic;outline:none">'+
+    '</div>'+
+    '<div class="cfg-section"><p class="cfg-label">📅 Agenda do Evangelho</p>'+
+    '<p style="font-size:11px;color:rgba(240,234,214,.35);font-style:italic;font-family:Georgia,serif;margin-bottom:10px">Escolha os dias e horário para suas sessões</p>'+
+    '<div class="cfg-row" style="flex-wrap:wrap;gap:6px">'+
+    renderDayButtons()+
+    '</div>'+
+    '<div style="display:flex;align-items:center;gap:10px;margin-top:10px">'+
+      '<span style="font-size:12px;color:rgba(240,234,214,.4);font-family:Georgia,serif">Horário:</span>'+
+      '<input type="time" value="'+(config.horario||'19:30')+'" onchange="setConfig(\'horario\',this.value)" style="background:rgba(255,255,255,.06);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:8px 12px;color:var(--text);font-family:Georgia,serif;font-size:14px;outline:none">'+
+    '</div>'+
+    '<div style="margin-top:10px;display:flex;align-items:center;gap:8px">'+
+      '<div onclick="toggleLembrete()" style="width:42px;height:24px;border-radius:12px;background:'+(config.lembrete?'rgba(91,175,124,.4)':'rgba(255,255,255,.1)')+';cursor:pointer;position:relative;transition:all .2s;border:1px solid '+(config.lembrete?'rgba(91,175,124,.5)':'rgba(255,255,255,.15)')+'">'+
+        '<div style="width:20px;height:20px;border-radius:50%;background:'+(config.lembrete?'#fff':'rgba(255,255,255,.4)')+';position:absolute;top:1px;'+(config.lembrete?'right:1px':'left:1px')+';transition:all .2s"></div>'+
+      '</div>'+
+      '<span style="font-size:12px;color:rgba(240,234,214,.5);font-family:Georgia,serif">🔔 Lembrete antes da sessão</span>'+
+    '</div>'+
+    (config.dias&&config.dias.length>0?'<p style="font-size:11px;color:rgba(91,175,124,.6);margin-top:8px;font-family:Georgia,serif">✓ Próxima sessão: '+calcProximaSessao()+'</p>':'')+
     '</div></div>';
 }
 
@@ -433,6 +450,56 @@ function setConfig(k,v){
   config[k]=v;
   localStorage.setItem('spirit_evangelho_config',JSON.stringify(config));
   document.getElementById('main').innerHTML=renderConfig();
+}
+
+var DAY_NAMES={dom:'Dom',seg:'Seg',ter:'Ter',qua:'Qua',qui:'Qui',sex:'Sex',sab:'Sáb'};
+var DAY_FULL={dom:'Domingo',seg:'Segunda',ter:'Terça',qua:'Quarta',qui:'Quinta',sex:'Sexta',sab:'Sábado'};
+
+function renderDayButtons(){
+  if(!config.dias) config.dias=[];
+  var days=['dom','seg','ter','qua','qui','sex','sab'];
+  return days.map(function(d){
+    var active=config.dias.indexOf(d)>=0;
+    return '<div class="cfg-opt'+(active?' active':'')+'" onclick="toggleEvDay(\''+d+'\')" style="min-width:42px;padding:8px 6px;font-size:12px">'+DAY_NAMES[d]+'</div>';
+  }).join('');
+}
+
+function toggleEvDay(day){
+  if(!config.dias) config.dias=[];
+  var idx=config.dias.indexOf(day);
+  if(idx>=0) config.dias.splice(idx,1);
+  else config.dias.push(day);
+  localStorage.setItem('spirit_evangelho_config',JSON.stringify(config));
+  document.getElementById('main').innerHTML=renderConfig();
+}
+
+function toggleLembrete(){
+  config.lembrete=!config.lembrete;
+  localStorage.setItem('spirit_evangelho_config',JSON.stringify(config));
+  document.getElementById('main').innerHTML=renderConfig();
+  // Tentar ativar notificações push se lembrete ativo
+  if(config.lembrete&&'Notification' in window&&Notification.permission==='default'){
+    Notification.requestPermission();
+  }
+}
+
+function calcProximaSessao(){
+  if(!config.dias||config.dias.length===0) return '';
+  var dayMap={dom:0,seg:1,ter:2,qua:3,qui:4,sex:5,sab:6};
+  var dayNums=config.dias.map(function(d){return dayMap[d];});
+  var now=new Date();
+  var hora=(config.horario||'19:30').split(':');
+  for(var i=0;i<7;i++){
+    var check=new Date(now);
+    check.setDate(check.getDate()+i);
+    if(dayNums.indexOf(check.getDay())>=0){
+      check.setHours(parseInt(hora[0]),parseInt(hora[1]),0);
+      if(check>now){
+        return DAY_FULL[config.dias.find(function(d){return dayMap[d]===check.getDay();})]||''+' às '+(config.horario||'19:30')+' ('+check.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'})+')';
+      }
+    }
+  }
+  return DAY_FULL[config.dias[0]]+' às '+(config.horario||'19:30');
 }
 
 // ── FACILITADOR ──
