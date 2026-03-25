@@ -182,7 +182,7 @@ var CAPITULOS=[
 // ── ESTADO ──
 var fase='config'; // config, facilitador, prece1, leitura, comentarios, vibracoes, prece2, fim
 var facilitador=null;
-var config={duracao:20,modo:'sequencial',participantes:'1',contexto:''};
+var config={duracao:20,modo:'sequencial',participantes:'solo',contexto:''};
 var trechoAtual={cap:1,item:1,titulo:'',texto:''};
 var timerInterval=null;
 var lessonContext='';
@@ -409,9 +409,8 @@ function renderConfig(){
     '<div class="cfg-opt'+(config.modo==='aleatorio'?' active':'')+'" onclick="setConfig(\'modo\',\'aleatorio\')" style="flex:1">🎲 Aleatório</div>'+
     '</div>'+progText+'</div>'+
     '<div class="cfg-section"><p class="cfg-label">Participantes</p><div class="cfg-row">'+
-    '<div class="cfg-opt'+(config.participantes==='1'?' active':'')+'" onclick="setConfig(\'participantes\',\'1\')">Sozinho</div>'+
-    '<div class="cfg-opt'+(config.participantes==='2-4'?' active':'')+'" onclick="setConfig(\'participantes\',\'2-4\')">2-4</div>'+
-    '<div class="cfg-opt'+(config.participantes==='5+'?' active':'')+'" onclick="setConfig(\'participantes\',\'5+\')">5+</div>'+
+    '<div class="cfg-opt'+(config.participantes==='solo'?' active':'')+'" onclick="setConfig(\'participantes\',\'solo\')">🧘 Solo</div>'+
+    '<div class="cfg-opt'+(config.participantes==='familia'?' active':'')+'" onclick="setConfig(\'participantes\',\'familia\')">👨‍👩‍👧‍👦 Em Família</div>'+
     '</div></div>'+
     '<div class="cfg-section"><p class="cfg-label">Música de Fundo</p><div class="cfg-row">'+
     '<div class="cfg-opt'+(config.musica==='splash-music.mp3'||!config.musica?' active':'')+'" onclick="setConfig(\'musica\',\'splash-music.mp3\')" style="flex:1">🎵 Espiritual</div>'+
