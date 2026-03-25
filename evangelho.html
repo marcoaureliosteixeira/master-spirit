@@ -88,27 +88,13 @@ p,span,input,textarea,.session-text,.qa-msg,.timer-label,.fac-desc{font-family:G
 <div id="stars"></div>
 <div id="app">
   <div id="hdr">
-    <div id="hdr-info" style="flex:1">
+    <button id="back-btn" onclick="voltarEtapa()" style="background:none;border:none;cursor:pointer;color:var(--gold);font-size:22px;padding:0">‹</button>
+    <img src="evangelho-lar.png?v=2" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,168,76,.3)" alt="" onerror="this.style.display='none'">
+    <div style="flex:1">
       <h1>EVANGELHO NO LAR</h1>
-      <p>O Evangelho Segundo o Espiritismo</p>
     </div>
-    <span id="step-badge">Configuração</span>
     <button id="ev-podcast-btn" onclick="toggleEvPodcast()" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:6px;width:28px;height:28px;cursor:pointer;color:rgba(240,234,214,.5);font-size:14px;display:none" title="Ouvir como podcast">🎧</button>
-    <button onclick="toggleNav()" style="background:none;border:1px solid var(--card-border,#E8E0D0);border-radius:10px;padding:8px 10px;cursor:pointer;font-size:14px;color:var(--gold,#8B7535);margin-left:8px" title="Menu">☰</button>
-  </div>
-  <div id="nav-menu" style="display:none;position:sticky;top:56px;z-index:49;background:rgba(12,18,38,.95);border-bottom:1px solid rgba(201,168,76,.15);padding:10px 18px;box-shadow:0 4px 12px rgba(0,0,0,.3)">
-    <a href="app.html" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(201,168,76,.08);text-decoration:none;color:#F5EFE0">
-      <span style="font-size:18px">🕊️</span><span style="font-size:15px;font-family:'Cinzel',serif">Mestres Espirituais</span></a>
-    <a href="salas.html" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(201,168,76,.08);text-decoration:none;color:#F5EFE0">
-      <span style="font-size:18px">📚</span><span style="font-size:15px;font-family:'Cinzel',serif">Salas de Estudo</span></a>
-    <a href="meus-estudos.html" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(201,168,76,.08);text-decoration:none;color:#F5EFE0">
-      <span style="font-size:18px">📖</span><span style="font-size:15px;font-family:'Cinzel',serif">Meus Estudos</span></a>
-    <a href="evangelho.html" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(201,168,76,.08);text-decoration:none;color:#E8C97A;font-weight:600">
-      <span style="font-size:18px">🕯️</span><span style="font-size:15px;font-family:'Cinzel',serif">Evangelho no Lar</span></a>
-    <a href="passe.html" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(201,168,76,.08);text-decoration:none;color:#F5EFE0">
-      <span style="font-size:18px">🙌</span><span style="font-size:15px;font-family:'Cinzel',serif">Passe Espiritual</span></a>
-    <a href="app.html" style="display:flex;align-items:center;gap:10px;padding:10px 0;text-decoration:none;color:rgba(240,234,214,.4)">
-      <span style="font-size:18px">🏠</span><span style="font-size:15px;font-family:'Cinzel',serif">Início</span></a>
+    <span id="step-badge" style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:1.5px;color:var(--gold);background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:20px;padding:4px 10px;white-space:nowrap">Configuração</span>
   </div>
   <div id="main"></div>
   <div id="controls"></div>
@@ -257,9 +243,18 @@ function stopWindChimes(){
   if(_chimesAudio){_chimesAudio.pause();_chimesAudio.currentTime=0;_chimesAudio=null;}
 }
 
-function toggleNav(){
-  var m=document.getElementById('nav-menu');
-  m.style.display=m.style.display==='none'?'block':'none';
+function voltarEtapa(){
+  var fases=['config','facilitador','prece1','leitura','comentarios','vibracoes','prece2','fim'];
+  var idx=fases.indexOf(fase);
+  if(idx<=0){
+    window.location.href='app.html';
+  } else {
+    if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
+    if(fase==='prece1'||fase==='prece2'){stopPreceMusic();stopPaiNosso();}
+    if(fase==='vibracoes') stopWindChimes();
+    fase=fases[idx-1];
+    renderFase();
+  }
 }
 
 function goBack(){
@@ -286,7 +281,7 @@ function renderFase(){
   else if(fase==='facilitador'){
     badge.textContent='Facilitador';
     m.innerHTML=renderFacilitador();
-    c.innerHTML='<button class="btn-s" onclick="sortearFacilitador()">🎲 Outro</button><button class="btn-g" onclick="avancar()">Confirmar</button>';
+    c.innerHTML='';
   }
   else if(fase==='prece1'){
     badge.textContent='1 de 5 · Prece Inicial';
@@ -352,7 +347,7 @@ function renderFase(){
       '<p style="font-family:Cinzel,serif;font-size:14px;color:#E8C97A;letter-spacing:2px;margin-bottom:12px">Jesus</p>'+
       '<p style="font-size:15px;line-height:1.85;font-style:italic;color:rgba(240,234,214,.7);max-width:400px;margin:0 auto">Pai nosso, que estais nos céus, santificado seja o Vosso nome. Venha a nós o Vosso reino. Seja feita a Vossa vontade, assim na Terra como no Céu. O pão nosso de cada dia nos dai hoje. Perdoai as nossas ofensas, assim como nós perdoamos a quem nos tem ofendido. E não nos deixeis cair em tentação, mas livrai-nos do mal. Assim seja.</p>'+
       '</div>'+renderFim();
-    c.innerHTML='<button class="btn-s" onclick="window.location.href=\'app.html\'">Voltar</button><button class="btn-g" onclick="fase=\'config\';renderFase()">Nova sessão</button>';
+    c.innerHTML='<button class="btn-s" onclick="window.location.href=\'app.html\'">🏠 Menu Principal</button><button class="btn-g" onclick="fase=\'config\';renderFase()">Nova sessão</button>';
     // Música de fundo do teaser + Play vídeo Jesus
     setTimeout(function(){
       window._jesusMusic=new Audio('teaser-music.mp3');
@@ -426,13 +421,18 @@ function sortearFacilitador(){
 function renderFacilitador(){
   if(!facilitador) sortearFacilitador();
   var icon=facilitador.avatar
-    ?'<img src="'+facilitador.avatar+'" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.3);margin-bottom:6px">'
+    ?'<img src="'+facilitador.avatar+'" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.3);margin-bottom:8px;transition:transform .3s;cursor:pointer" onmouseover="this.style.transform=\'scale(1.4)\'" onmouseout="this.style.transform=\'scale(1)\'">'
     :'<span class="fac-emoji">'+facilitador.emoji+'</span>';
   return '<div class="fac-card">'+icon+
     '<div class="fac-name">'+facilitador.nome+'</div>'+
     '<div class="fac-desc">'+facilitador.descricao+'</div>'+
-    '<div class="fac-style">Estilo: '+facilitador.estilo+'</div></div>'+
-    '<p style="text-align:center;font-style:italic;font-size:13px;color:rgba(240,234,214,.3)">Este será o facilitador da sua sessão de hoje</p>';
+    '<div class="fac-style">Estilo: '+facilitador.estilo+'</div>'+
+    '<div style="display:flex;gap:10px;justify-content:center;margin-top:16px">'+
+      '<button class="btn-s" onclick="sortearFacilitador();document.getElementById(\'main\').innerHTML=renderFacilitador()" style="padding:10px 20px">🎲 Outro</button>'+
+      '<button class="btn-g" onclick="avancar()" style="padding:10px 24px">✓ Confirmar</button>'+
+    '</div>'+
+  '</div>'+
+    '<p style="text-align:center;font-style:italic;font-size:12px;color:rgba(240,234,214,.25);margin-top:8px">Seu facilitador para esta sessão</p>';
 }
 
 // ── NAVEGAÇÃO ──
