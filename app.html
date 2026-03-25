@@ -8,6 +8,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png">
 <meta name="theme-color" content="#060a16">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="MASTER SPIRIT">
 <title>MASTER SPIRIT — O Consolador</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -3284,8 +3285,7 @@ async function initUsage() {
     userPlan = data.plan || 'free';
     chatsRemaining = data.chats_used ?? 7;
 
-    // Voice counter — reset mensal
-    var currentMonth = new Date().toISOString().slice(0,7);
+    // Voice counter — reset mensal (usa currentMonth já declarado acima)
     var resetDate = data.voice_reset_date||'';
     if(!resetDate.startsWith(currentMonth)){
       voiceRemaining = VOICE_LIMIT_PREMIUM;
