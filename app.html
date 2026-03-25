@@ -1290,18 +1290,13 @@ function saveMasterMsgs(id){try{localStorage.setItem('spirit_chat_'+id,JSON.stri
 
 // ===================== SPLASH SOUND EFFECTS =====================
 var _splashSfxPlayed=false;
+var _splashSfxAudio=null;
+// Pré-criar Audio e "aquecer" junto com a música
+try{_splashSfxAudio=new Audio('splash-sfx.mp3');_splashSfxAudio.volume=1;_splashSfxAudio.preload='auto';}catch(e){}
 
 function playSplashSFX(){
   _splashSfxPlayed=false;
   _splashStartTime=Date.now();
-  // Tocar direto com setTimeout — se autoplay bloqueado, toca no primeiro click
-  setTimeout(function(){
-    if(_splashSfxPlayed)return;
-    try{
-      var s=new Audio('splash-sfx.mp3');s.volume=1;
-      s.play().then(function(){_splashSfxPlayed=true;}).catch(function(){});
-    }catch(e){}
-  },5000);
 }
 
 // ===================== SPLASH MUSIC =====================
@@ -1314,7 +1309,11 @@ function startSplashMusic(){
     _splashAudio.loop=true;
     var playPromise=_splashAudio.play();
     if(playPromise!==undefined){
-      playPromise.then(function(){fadeSplashIn();}).catch(function(){
+      playPromise.then(function(){
+        // Autoplay funcionou — aquecer SFX também
+        if(_splashSfxAudio){_splashSfxAudio.play().then(function(){_splashSfxAudio.pause();_splashSfxAudio.currentTime=0;}).catch(function(){});}
+        fadeSplashIn();
+      }).catch(function(){
         // Autoplay bloqueado — toca no primeiro toque
         document.addEventListener('touchstart',splashMusicRetry,{once:true});
         document.addEventListener('click',splashMusicRetry,{once:true});
@@ -1323,21 +1322,21 @@ function startSplashMusic(){
   }catch(e){}
 }
 function splashMusicRetry(){
-  if(_splashAudio){_splashAudio.play().then(function(){fadeSplashIn();}).catch(function(){});}
+  if(_splashAudio){_splashAudio.play().then(function(){
+    // Aquecer SFX no mesmo gesto
+    if(_splashSfxAudio){_splashSfxAudio.play().then(function(){_splashSfxAudio.pause();_splashSfxAudio.currentTime=0;}).catch(function(){});}
+    fadeSplashIn();
+  }).catch(function(){});}
 }
 function fadeSplashIn(){
   if(!_splashAudio) return;
-  // Áudio liberado pelo browser — agendar SFX sincronizado (só no splash)
-  if(!_splashSfxPlayed&&document.getElementById('splash')&&document.getElementById('splash').style.display!=='none'){
+  // SFX sincronizado — usa audio pré-aquecido (já desbloqueado)
+  if(!_splashSfxPlayed&&_splashSfxAudio&&document.getElementById('splash')&&document.getElementById('splash').style.display!=='none'){
     _splashSfxPlayed=true;
     var elapsed=Date.now()-_splashStartTime;
     var sfxDelay=Math.max(0,5000-elapsed);
     setTimeout(function(){
-      try{
-        var sfx=new Audio('splash-sfx.mp3');
-        sfx.volume=1;
-        sfx.play().catch(function(){});
-      }catch(e){}
+      if(_splashSfxAudio){_splashSfxAudio.currentTime=0;_splashSfxAudio.volume=1;_splashSfxAudio.play().catch(function(){});}
     },sfxDelay);
   }
   var vol=0;
