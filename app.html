@@ -1294,10 +1294,11 @@ function playSplashSFX(){
     var sfx=new Audio('splash-sfx.mp3');
     sfx.preload='auto';
     sfx.volume=1;
-    // Sincronizar com o momento da implosão/logo reveal (7.3s)
+    // Bass drop sincronizado: começa 2s antes da implosão para o build-up
+    // Implosão em 6.5s, áudio tem ~2.5s, então tocar em ~5s
     setTimeout(function(){
       sfx.play().catch(function(){});
-    },7300);
+    },5000);
   }catch(e){}
 }
 
