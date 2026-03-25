@@ -73,7 +73,9 @@ p,span,input,textarea,.session-text,.qa-msg,.timer-label,.fac-desc{font-family:G
 .qa-prof{background:rgba(255,255,255,.04);border-left:3px solid var(--accent);color:rgba(240,234,214,.75)}
 .qa-user{background:rgba(91,175,124,.06);border-left:3px solid rgba(91,175,124,.5)}
 .qa-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:1.5px;color:var(--gold);display:block;margin-bottom:5px}
-#qa-input-row{display:flex;gap:8px;margin-top:16px}
+#qa-area{display:flex;flex-direction:column;min-height:50vh}
+#qa-list{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;max-height:50vh}
+#qa-input-row{display:flex;gap:8px;margin-top:16px;position:sticky;bottom:0}
 #qa-input-row input{flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.22);border-radius:12px;padding:13px 16px;color:var(--text);font-family:Georgia,serif;font-size:16px;outline:none}
 #qa-input-row input:focus{border-color:var(--accent)}
 #qa-input-row button{background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.4);border-radius:12px;padding:12px 16px;cursor:pointer;color:var(--gold);font-size:16px}
@@ -230,11 +232,16 @@ function updateEvPodcastBtn(){
 // ── WIND CHIMES (áudio MP3) ──
 var _chimesAudio=null;
 
+// Pré-carregar para tocar instantâneo
+var _chimesPreloaded=new Audio('wind-chimes.mp3');
+_chimesPreloaded.preload='auto';
+
 function startWindChimes(){
   try{
-    _chimesAudio=new Audio('wind-chimes.mp3');
+    _chimesAudio=_chimesPreloaded.cloneNode();
     _chimesAudio.loop=true;
     _chimesAudio.volume=1;
+    _chimesAudio.currentTime=0;
     _chimesAudio.play().catch(function(){});
   }catch(e){console.warn('Wind chimes error:',e);}
 }
