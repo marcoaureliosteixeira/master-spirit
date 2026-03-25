@@ -95,7 +95,7 @@ p,span,input,textarea,.session-text,.qa-msg,.timer-label,.fac-desc{font-family:G
     <div style="flex:1">
       <h1>EVANGELHO NO LAR</h1>
     </div>
-    <a href="app.html" style="border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:6px 10px;font-size:14px;color:var(--gold);text-decoration:none" title="Menu Principal">🏠</a>
+    <a href="app.html" onclick="sessionStorage.removeItem('spirit_splash_seen')" style="border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:6px 10px;font-size:14px;color:var(--gold);text-decoration:none" title="Menu Principal">🏠</a>
     <button id="ev-podcast-btn" onclick="toggleEvPodcast()" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:6px;width:28px;height:28px;cursor:pointer;color:rgba(240,234,214,.5);font-size:14px;display:none" title="Ouvir como podcast">🎧</button>
     <span id="step-badge" style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:1.5px;color:var(--gold);background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:20px;padding:4px 10px;white-space:nowrap">Configuração</span>
   </div>
@@ -366,7 +366,7 @@ function renderFase(){
       '<p style="font-family:Cinzel,serif;font-size:11px;color:#E8C97A;letter-spacing:2px;margin-bottom:8px">Jesus</p>'+
       '<p style="font-size:12px;line-height:1.65;font-style:italic;color:rgba(240,234,214,.6);max-width:340px;margin:0 auto;padding:0 10px">Pai nosso, que estais nos céus, santificado seja o Vosso nome. Venha a nós o Vosso reino. Seja feita a Vossa vontade, assim na Terra como no Céu. O pão nosso de cada dia nos dai hoje. Perdoai as nossas ofensas, assim como nós perdoamos a quem nos tem ofendido. E não nos deixeis cair em tentação, mas livrai-nos do mal. Assim seja.</p>'+
       '</div>';
-    c.innerHTML='<button class="btn-s" onclick="stopJesusMusic();window.location.href=\'app.html\'">🏠 Menu Principal</button><button class="btn-g" onclick="stopJesusMusic();fase=\'config\';renderFase()">Nova sessão</button>';
+    c.innerHTML='<button class="btn-s" onclick="stopJesusMusic();sessionStorage.removeItem(\'spirit_splash_seen\');window.location.href=\'app.html\'">🏠 Menu Principal</button><button class="btn-g" onclick="stopJesusMusic();fase=\'config\';renderFase()">Nova sessão</button>';
     // Música de fundo do teaser + Play vídeo Jesus
     setTimeout(function(){
       window._jesusMusic=new Audio('teaser-music.mp3');
