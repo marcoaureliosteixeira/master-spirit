@@ -63,7 +63,7 @@ p,span,input,textarea,.session-text,.qa-msg,.timer-label,.fac-desc{font-family:G
 .ref-text{font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:var(--gold);margin-top:14px;text-align:right}
 /* Timer */
 .timer{text-align:center;padding:40px 20px}
-.timer-num{font-family:'Cinzel Decorative',serif;font-size:52px;color:var(--gold);letter-spacing:4px}
+.timer-num{font-family:'Cinzel',serif;font-size:52px;color:var(--gold);letter-spacing:4px}
 .timer-label{font-style:italic;font-size:15px;color:rgba(240,234,214,.4);margin-top:10px}
 /* Breathing */
 .breath{width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.2),transparent);margin:20px auto;animation:breathe 6s ease-in-out infinite}
@@ -244,10 +244,20 @@ function updateEvPodcastBtn(){
 // ── WIND CHIMES (sino dos ventos) ──
 var _chimesCtx=null;
 var _chimesInterval=null;
+var _chimesInterval2=null;
+
+// Criar AudioContext na primeira interação (iOS requirement)
+document.addEventListener('click',function initAudioCtx(){
+  if(!_chimesCtx){
+    try{_chimesCtx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){}
+  }
+  document.removeEventListener('click',initAudioCtx);
+},{once:true});
 
 function startWindChimes(){
   try{
-    _chimesCtx=new (window.AudioContext||window.webkitAudioContext)();
+    if(!_chimesCtx) _chimesCtx=new (window.AudioContext||window.webkitAudioContext)();
+    if(_chimesCtx.state==='suspended') _chimesCtx.resume();
     // Notas de sino dos ventos (pentatônica em Dó)
     var notes=[523.25,587.33,659.25,783.99,880,1046.50,1174.66,1318.51];
 
@@ -292,7 +302,7 @@ function startWindChimes(){
     },2000+Math.random()*3000);
 
     // Recalcular intervalo periodicamente para parecer natural
-    setInterval(function(){
+    _chimesInterval2=setInterval(function(){
       if(_chimesInterval){
         clearInterval(_chimesInterval);
         _chimesInterval=setInterval(function(){
@@ -306,7 +316,7 @@ function startWindChimes(){
 
 function stopWindChimes(){
   if(_chimesInterval){clearInterval(_chimesInterval);_chimesInterval=null;}
-  if(_chimesCtx){try{_chimesCtx.close();}catch(e){}_chimesCtx=null;}
+  if(_chimesInterval2){clearInterval(_chimesInterval2);_chimesInterval2=null;}
 }
 
 function toggleNav(){
@@ -396,8 +406,22 @@ function renderFase(){
   }
   else if(fase==='fim'){
     badge.textContent='Concluído';
-    m.innerHTML=renderFim();
+    stopPreceMusic();
+    // Jesus orando Pai Nosso
+    m.innerHTML='<div style="text-align:center;padding:20px;animation:fadeup .5s ease">'+
+      '<div style="width:min(55vw,220px);height:min(55vw,220px);border-radius:50%;overflow:hidden;border:2px solid rgba(201,168,76,.5);box-shadow:0 0 40px rgba(201,168,76,.3);margin:0 auto 14px;-webkit-mask-image:-webkit-radial-gradient(white,black)">'+
+      '<video id="jesus-pai-nosso" playsinline style="width:100%;height:100%;object-fit:cover;object-position:center 20%;border-radius:50%" preload="auto"><source src="avatar-jesus-pai-nosso.mp4" type="video/mp4"></video></div>'+
+      '<p style="font-family:Cinzel,serif;font-size:14px;color:#E8C97A;letter-spacing:2px;margin-bottom:12px">Jesus</p>'+
+      '<p style="font-size:15px;line-height:1.85;font-style:italic;color:rgba(240,234,214,.7);max-width:400px;margin:0 auto">Pai nosso, que estais nos céus, santificado seja o Vosso nome. Venha a nós o Vosso reino. Seja feita a Vossa vontade, assim na Terra como no Céu. O pão nosso de cada dia nos dai hoje. Perdoai as nossas ofensas, assim como nós perdoamos a quem nos tem ofendido. E não nos deixeis cair em tentação, mas livrai-nos do mal. Assim seja.</p>'+
+      '</div>'+renderFim();
     c.innerHTML='<button class="btn-s" onclick="window.location.href=\'app.html\'">Voltar</button><button class="btn-g" onclick="fase=\'config\';renderFase()">Nova sessão</button>';
+    // Play vídeo Jesus
+    setTimeout(function(){
+      var vid=document.getElementById('jesus-pai-nosso');
+      if(vid) vid.play().catch(function(){
+        var a=new Audio('oracao-pai-nosso.mp3');a.volume=0.9;a.play().catch(function(){});
+      });
+    },500);
     salvarProgresso();
   }
 }
@@ -582,22 +606,8 @@ async function gerarPrece(tipo){
       body:JSON.stringify({action:tipo,facilitador:facilitador,capitulo:trechoAtual.cap,item:trechoAtual.item,participantes:config.participantes,contexto:config.contexto})});
     var d=await r.json();
     var txt=d.text||'Não foi possível gerar a prece.';
-    document.getElementById('main').innerHTML='<div class="session-text" style="padding:10px">'+txt+'</div>'+
-      (tipo==='prece_final'?'<div style="margin-top:20px;padding:16px;background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.15);border-radius:14px;text-align:center"><p style="font-family:Cinzel,serif;font-size:10px;letter-spacing:2px;color:rgba(201,168,76,.5);margin-bottom:14px">PAI NOSSO</p><div style="width:min(60vw,240px);height:min(60vw,240px);border-radius:50%;overflow:hidden;border:2px solid rgba(201,168,76,.5);box-shadow:0 0 40px rgba(201,168,76,.3);margin:0 auto 14px;-webkit-mask-image:-webkit-radial-gradient(white,black)"><video id="jesus-pai-nosso" playsinline style="width:100%;height:100%;object-fit:cover;object-position:center 20%;border-radius:50%" preload="auto"><source src="avatar-jesus-pai-nosso.mp4" type="video/mp4"></video></div><p style="font-family:Cinzel,serif;font-size:14px;color:#E8C97A;letter-spacing:2px;margin-bottom:12px">Jesus</p><p style="font-size:15px;line-height:1.85;font-style:italic;color:rgba(240,234,214,.7);max-width:400px;margin:0 auto">Pai nosso, que estais nos céus, santificado seja o Vosso nome. Venha a nós o Vosso reino. Seja feita a Vossa vontade, assim na Terra como no Céu. O pão nosso de cada dia nos dai hoje. Perdoai as nossas ofensas, assim como nós perdoamos a quem nos tem ofendido. E não nos deixeis cair em tentação, mas livrai-nos do mal. Assim seja.</p></div>':'');
+    document.getElementById('main').innerHTML='<div class="session-text" style="padding:10px">'+txt+'</div>';
     var btn=document.getElementById('btn-av');if(btn) btn.disabled=false;
-    // Tocar vídeo do Jesus orando na prece final
-    if(tipo==='prece_final'){
-      stopPreceMusic();
-      setTimeout(function(){
-        var vid=document.getElementById('jesus-pai-nosso');
-        if(vid){vid.play().catch(function(){
-          // Fallback: tocar áudio se vídeo falhar
-          window._paiNossoAudio=new Audio('oracao-pai-nosso.mp3');
-          window._paiNossoAudio.volume=0.9;
-          window._paiNossoAudio.play().catch(function(){});
-        });}
-      },1500);
-    }
   }catch(e){
     document.getElementById('main').innerHTML='<div class="session-text" style="color:rgba(232,122,122,.7);text-align:center">Erro de conexão. Tente novamente.</div>';
   }
