@@ -1291,9 +1291,39 @@ function saveMasterMsgs(id){try{localStorage.setItem('spirit_chat_'+id,JSON.stri
 
 // ===================== SPLASH SOUND EFFECTS =====================
 var _splashSfxPlayed=false;
-var _splashSfxAudio=null;
-// Pré-criar Audio e "aquecer" junto com a música
-try{_splashSfxAudio=new Audio('splash-sfx.mp3');_splashSfxAudio.volume=1;_splashSfxAudio.preload='auto';}catch(e){}
+var _sfxBuffer=null;
+var _sfxCtx=null;
+
+// Pré-carregar o SFX como AudioBuffer
+(function(){
+  try{
+    var xhr=new XMLHttpRequest();
+    xhr.open('GET','splash-sfx.mp3',true);
+    xhr.responseType='arraybuffer';
+    xhr.onload=function(){
+      try{
+        _sfxCtx=new (window.AudioContext||window.webkitAudioContext)();
+        _sfxCtx.decodeAudioData(xhr.response,function(buf){_sfxBuffer=buf;});
+      }catch(e){}
+    };
+    xhr.send();
+  }catch(e){}
+})();
+
+function playSfxNow(){
+  if(!_sfxCtx||!_sfxBuffer||_splashSfxPlayed)return;
+  _splashSfxPlayed=true;
+  try{
+    if(_sfxCtx.state==='suspended') _sfxCtx.resume();
+    var source=_sfxCtx.createBufferSource();
+    source.buffer=_sfxBuffer;
+    var gain=_sfxCtx.createGain();
+    gain.gain.value=1;
+    source.connect(gain);
+    gain.connect(_sfxCtx.destination);
+    source.start(0);
+  }catch(e){}
+}
 
 function playSplashSFX(){
   _splashSfxPlayed=false;
@@ -1311,11 +1341,10 @@ function startSplashMusic(){
     var playPromise=_splashAudio.play();
     if(playPromise!==undefined){
       playPromise.then(function(){
-        // Autoplay funcionou — aquecer SFX também
-        if(_splashSfxAudio){_splashSfxAudio.play().then(function(){_splashSfxAudio.pause();_splashSfxAudio.currentTime=0;}).catch(function(){});}
+        // Autoplay funcionou — desbloquear AudioContext do SFX
+        if(_sfxCtx&&_sfxCtx.state==='suspended') _sfxCtx.resume();
         fadeSplashIn();
       }).catch(function(){
-        // Autoplay bloqueado — toca no primeiro toque
         document.addEventListener('touchstart',splashMusicRetry,{once:true});
         document.addEventListener('click',splashMusicRetry,{once:true});
       });
@@ -1324,21 +1353,20 @@ function startSplashMusic(){
 }
 function splashMusicRetry(){
   if(_splashAudio){_splashAudio.play().then(function(){
-    // Aquecer SFX no mesmo gesto
-    if(_splashSfxAudio){_splashSfxAudio.play().then(function(){_splashSfxAudio.pause();_splashSfxAudio.currentTime=0;}).catch(function(){});}
+    if(_sfxCtx&&_sfxCtx.state==='suspended') _sfxCtx.resume();
     fadeSplashIn();
   }).catch(function(){});}
 }
 function fadeSplashIn(){
   if(!_splashAudio) return;
-  // SFX sincronizado — usa audio pré-aquecido (já desbloqueado)
-  if(!_splashSfxPlayed&&_splashSfxAudio&&document.getElementById('splash')&&document.getElementById('splash').style.display!=='none'){
-    _splashSfxPlayed=true;
-    var elapsed=Date.now()-_splashStartTime;
-    var sfxDelay=Math.max(0,5000-elapsed);
-    setTimeout(function(){
-      if(_splashSfxAudio){_splashSfxAudio.currentTime=0;_splashSfxAudio.volume=1;_splashSfxAudio.play().catch(function(){});}
-    },sfxDelay);
+  // SFX sincronizado via AudioContext (já desbloqueado pela música)
+  if(!_splashSfxPlayed&&_sfxBuffer){
+    var splash=document.getElementById('splash');
+    if(splash&&splash.style.display!=='none'){
+      var elapsed=Date.now()-_splashStartTime;
+      var sfxDelay=Math.max(0,5000-elapsed);
+      setTimeout(playSfxNow,sfxDelay);
+    }
   }
   var vol=0;
   var fi=setInterval(function(){
@@ -1521,8 +1549,10 @@ window.addEventListener('load',async ()=>{
   else if(sessionStorage.getItem('spirit_splash_seen')){
     skipSplash();
   } else {
-    // Splash visível — iniciar música + SFX
+    // Splash visível — iniciar música
     setTimeout(startSplashMusic, 1500);
+    // SFX: agendar para o momento da implosão (7s)
+    // Como a música desbloqueia o áudio, o SFX vai funcionar após ela
     playSplashSFX();
   }
   render();
