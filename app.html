@@ -364,6 +364,19 @@ if(localStorage.getItem('spirit_disclaimer')==='accepted'){
   transform:translate(-50%,-50%) scale(.3);border-radius:50%;pointer-events:none;opacity:0;
   background:radial-gradient(circle,rgba(255,255,255,1) 0%,rgba(201,168,76,.7) 30%,rgba(100,60,200,.3) 60%,transparent 80%);
   animation:implosion-flash .6s ease 7.5s both}
+/* Lens flare anamórfico */
+#lens-flare{position:absolute;left:-100%;top:50%;transform:translateY(-50%);width:200%;height:3px;
+  pointer-events:none;opacity:0;z-index:20;
+  background:linear-gradient(90deg,transparent 0%,transparent 30%,rgba(255,240,200,.1) 40%,rgba(201,168,76,.6) 48%,rgba(255,255,255,.9) 50%,rgba(201,168,76,.6) 52%,rgba(255,240,200,.1) 60%,transparent 70%,transparent 100%);
+  box-shadow:0 0 30px 8px rgba(201,168,76,.3),0 0 60px 15px rgba(201,168,76,.15);
+  animation:lensFlare 1.2s ease 7.3s both}
+@keyframes lensFlare{
+  0%{left:-100%;opacity:0}
+  20%{opacity:1}
+  50%{left:0%;opacity:1}
+  80%{opacity:.5}
+  100%{left:100%;opacity:0}
+}
 @keyframes implosion-flash{
   0%{opacity:0;transform:translate(-50%,-50%) scale(.3)}
   40%{opacity:1;transform:translate(-50%,-50%) scale(1.6)}
@@ -398,6 +411,7 @@ if(localStorage.getItem('spirit_disclaimer')==='accepted'){
   <!-- Logo emerge da implosão do espírito -->
   <div id="orb-target">
     <div id="orb-flash"></div>
+    <div id="lens-flare"></div>
     <img id="orb-full" src="logo-master-spirit.png" alt="Master Spirit">
   </div>
   <div id="splash-content">
@@ -1274,80 +1288,16 @@ function saveMasterMsgs(id){try{localStorage.setItem('spirit_chat_'+id,JSON.stri
 })();
 
 // ===================== SPLASH SOUND EFFECTS =====================
+// Toca MP3 se existir (splash-sfx.mp3), sincronizado com a implosão
 function playSplashSFX(){
   try{
-    var ctx=new (window.AudioContext||window.webkitAudioContext)();
-
-    // FASE 1 (2s): Grave crescente lento — tensão tipo "antes do filme"
+    var sfx=new Audio('splash-sfx.mp3');
+    sfx.preload='auto';
+    sfx.volume=1;
+    // Sincronizar com o momento da implosão/logo reveal (7.3s)
     setTimeout(function(){
-      // Sub grave crescendo
-      var osc=ctx.createOscillator();
-      var gain=ctx.createGain();
-      osc.type='sine';
-      osc.frequency.setValueAtTime(30,ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(120,ctx.currentTime+4);
-      gain.gain.setValueAtTime(0,ctx.currentTime);
-      gain.gain.linearRampToValueAtTime(0.2,ctx.currentTime+2);
-      gain.gain.setValueAtTime(0.2,ctx.currentTime+3.5);
-      gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+4.5);
-      osc.connect(gain);gain.connect(ctx.destination);
-      osc.start(ctx.currentTime);osc.stop(ctx.currentTime+4.5);
-
-      // Ruído branco sutil (ar/vento)
-      var bufSize=ctx.sampleRate*4;
-      var buf=ctx.createBuffer(1,bufSize,ctx.sampleRate);
-      var data=buf.getChannelData(0);
-      for(var i=0;i<bufSize;i++) data[i]=(Math.random()*2-1)*0.03;
-      var noise=ctx.createBufferSource();noise.buffer=buf;
-      var nGain=ctx.createGain();
-      nGain.gain.setValueAtTime(0,ctx.currentTime);
-      nGain.gain.linearRampToValueAtTime(0.08,ctx.currentTime+2);
-      nGain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+4.5);
-      noise.connect(nGain);nGain.connect(ctx.destination);
-      noise.start(ctx.currentTime);noise.stop(ctx.currentTime+4.5);
-    },2000);
-
-    // FASE 2 (6.5s): IMPACTO — boom cinematográfico tipo "marca aparece"
-    setTimeout(function(){
-      // Boom grave profundo
-      var osc=ctx.createOscillator();
-      var gain=ctx.createGain();
-      osc.type='sine';
-      osc.frequency.setValueAtTime(80,ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(25,ctx.currentTime+1.5);
-      gain.gain.setValueAtTime(0.4,ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+2);
-      osc.connect(gain);gain.connect(ctx.destination);
-      osc.start(ctx.currentTime);osc.stop(ctx.currentTime+2);
-
-      // Hit metálico agudo
-      var osc2=ctx.createOscillator();
-      var gain2=ctx.createGain();
-      osc2.type='triangle';
-      osc2.frequency.setValueAtTime(2000,ctx.currentTime);
-      osc2.frequency.exponentialRampToValueAtTime(400,ctx.currentTime+0.5);
-      gain2.gain.setValueAtTime(0.12,ctx.currentTime);
-      gain2.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.8);
-      osc2.connect(gain2);gain2.connect(ctx.destination);
-      osc2.start(ctx.currentTime);osc2.stop(ctx.currentTime+0.8);
-    },6500);
-
-    // FASE 3 (7.5s): Logo reveal — acorde majestoso sustentado
-    setTimeout(function(){
-      // Acorde Dó maior com oitavas (cinema logo sound)
-      [130.81,261.63,329.63,392,523.25].forEach(function(freq,i){
-        var osc=ctx.createOscillator();
-        var gain=ctx.createGain();
-        osc.type=i<2?'sine':'triangle';
-        osc.frequency.value=freq;
-        gain.gain.setValueAtTime(0,ctx.currentTime);
-        gain.gain.linearRampToValueAtTime(i<2?0.08:0.04,ctx.currentTime+0.5);
-        gain.gain.setValueAtTime(i<2?0.08:0.04,ctx.currentTime+2.5);
-        gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+4);
-        osc.connect(gain);gain.connect(ctx.destination);
-        osc.start(ctx.currentTime+i*0.08);osc.stop(ctx.currentTime+4);
-      });
-    },7500);
+      sfx.play().catch(function(){});
+    },7300);
   }catch(e){}
 }
 
