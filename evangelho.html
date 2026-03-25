@@ -336,7 +336,7 @@ function renderFase(){
   }
   else if(fase==='vibracoes'){
     badge.textContent='4 de 5 · Vibrações';
-    var mins=config.duracao<=15?1:config.duracao<=20?2:3;
+    var mins=2; // padrão 2 minutos
     m.innerHTML=renderVibracoes(mins);
     c.innerHTML='<button class="btn-s" onclick="stopWindChimes();avancar()">Pular</button>';
     iniciarTimer(mins*60);
@@ -617,18 +617,35 @@ async function enviarReflexao(){
 }
 
 // ── VIBRAÇÕES ──
+var vibMins=2;
 function renderVibracoes(mins){
+  vibMins=mins;
   return '<div class="timer" style="animation:fadeup .5s ease">'+
     '<div class="breath"></div>'+
     '<p style="font-family:Cinzel,serif;font-size:10px;letter-spacing:3px;color:rgba(201,168,76,.4);margin-bottom:16px">MOMENTO DE SILÊNCIO E VIBRAÇÕES</p>'+
     '<div class="timer-num" id="timer-display">'+String(mins).padStart(2,'0')+':00</div>'+
     '<p class="timer-label">Feche os olhos. Respire. Envie boas vibrações.</p>'+
-    '<div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-top:20px">'+
+    '<div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-top:16px">'+
+      '<button onclick="adjustVibTime(-1)" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;width:36px;height:36px;cursor:pointer;color:rgba(240,234,214,.5);font-size:18px;font-weight:700">−</button>'+
+      '<span id="vib-time-display" style="font-family:Cinzel,serif;font-size:12px;color:var(--gold);min-width:50px;text-align:center">'+mins+' min</span>'+
+      '<button onclick="adjustVibTime(1)" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;width:36px;height:36px;cursor:pointer;color:rgba(240,234,214,.5);font-size:18px;font-weight:700">+</button>'+
+    '</div>'+
+    '<div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-top:12px">'+
       '<button onclick="changeChimesVol(-0.1)" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;width:36px;height:36px;cursor:pointer;color:rgba(240,234,214,.5);font-size:16px">🔉</button>'+
       '<span id="vol-display" style="font-family:Cinzel,serif;font-size:11px;color:rgba(201,168,76,.5);min-width:40px;text-align:center">100%</span>'+
       '<button onclick="changeChimesVol(0.1)" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;width:36px;height:36px;cursor:pointer;color:rgba(240,234,214,.5);font-size:16px">🔊</button>'+
     '</div>'+
     '</div>';
+}
+
+function adjustVibTime(delta){
+  vibMins=Math.max(1,Math.min(5,vibMins+delta));
+  var el=document.getElementById('vib-time-display');
+  if(el) el.textContent=vibMins+' min';
+  // Reiniciar timer com novo tempo
+  if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
+  iniciarTimer(vibMins*60);
+  document.getElementById('timer-display').textContent=String(vibMins).padStart(2,'0')+':00';
 }
 
 function changeChimesVol(delta){
@@ -638,12 +655,23 @@ function changeChimesVol(delta){
   if(el) el.textContent=Math.round(_chimesAudio.volume*100)+'%';
 }
 
+var _fadeStarted=false;
 function iniciarTimer(secs){
   var remaining=secs;
+  _fadeStarted=false;
   updateTimerDisplay(remaining);
   timerInterval=setInterval(function(){
     remaining--;
     if(remaining<=0){clearInterval(timerInterval);timerInterval=null;avancar();return;}
+    // Fade out wind chimes 10s antes de acabar
+    if(remaining<=10&&!_fadeStarted&&_chimesAudio){
+      _fadeStarted=true;
+      var fadeInt=setInterval(function(){
+        if(!_chimesAudio){clearInterval(fadeInt);return;}
+        _chimesAudio.volume=Math.max(0,_chimesAudio.volume-0.05);
+        if(_chimesAudio.volume<=0.01){clearInterval(fadeInt);}
+      },500);
+    }
     updateTimerDisplay(remaining);
   },1000);
 }
