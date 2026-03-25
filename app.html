@@ -1488,33 +1488,13 @@ function loadRooms(){
 }
 
 window.addEventListener('load',async ()=>{
-  // Disclaimer: verificar localStorage E banco antes de mostrar
+  // Disclaimer: se localStorage diz aceito, pula. Senão, mostra.
+  // O banco é verificado no initSupa (depois) para sincronizar.
   if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
-    var accepted=false;
-    try{
-      // Criar client Supabase direto (não depende de initSupa)
-      if(window.supabase){
-        var _sbCheck=window.supabase.createClient(
-          'https://jwdvbtujzvqvktzxycwj.supabase.co',
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp3ZHZidHVqenZxdmt0enh5Y3dqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1Mjc2NDksImV4cCI6MjA4OTEwMzY0OX0.ZfkRgdYcTjYF_E4qr1_1CZMtSiCvKLeUsoRSLoO16Mw'
-        );
-        var sess=await _sbCheck.auth.getSession();
-        if(sess.data?.session){
-          var uid=sess.data.session.user.id;
-          var usage=await _sbCheck.from('user_usage').select('disclaimer_accepted').eq('id',uid).maybeSingle();
-          if(usage.data&&usage.data.disclaimer_accepted){
-            accepted=true;
-            localStorage.setItem('spirit_disclaimer','accepted');
-          }
-        }
-      }
-    }catch(e){console.warn('Disclaimer check error:',e);}
-    if(!accepted){
-      document.getElementById('splash').style.display='none';
-      document.getElementById('app').style.display='none';
-      document.getElementById('disclaimer-overlay').style.display='block';
-      return;
-    }
+    document.getElementById('splash').style.display='none';
+    document.getElementById('app').style.display='none';
+    document.getElementById('disclaimer-overlay').style.display='block';
+    return;
   }
   // Cadastro completo agora é exigido apenas na assinatura de plano
   // Init normal
@@ -3535,7 +3515,15 @@ function initSupa() {
             if(usage.data&&usage.data.disclaimer_accepted){
               localStorage.setItem('spirit_disclaimer','accepted');
               var overlay=document.getElementById('disclaimer-overlay');
-              if(overlay) overlay.style.display='none';
+              if(overlay&&overlay.style.display==='block'){
+                overlay.style.display='none';
+                // Inicializar splash que foi pulado pelo load
+                initSplashLogo();initStars();initSettings();loadRooms();
+                document.getElementById('splash').style.display='block';
+                setTimeout(startSplashMusic,500);
+                playSplashSFX();
+                render();
+              }
             }
           }catch(e){}
         }
