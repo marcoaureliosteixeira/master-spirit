@@ -344,13 +344,6 @@ if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
   100%{opacity:1;filter:brightness(1) saturate(1) drop-shadow(0 0 30px rgba(201,168,76,.5)) drop-shadow(0 0 60px rgba(100,60,200,.3))}
 }
 
-/* Anéis de energia pulsando ao redor do espírito */
-.sp-ring{position:absolute;top:50%;left:50%;border-radius:50%;border:1px solid rgba(201,168,76,.35);opacity:0}
-.sp-ring{animation:sp-ring-out 1.5s ease-out 1}
-.sp-ring:nth-child(1){width:260px;height:260px;margin:-130px 0 0 -130px;animation-delay:5s}
-.sp-ring:nth-child(2){width:260px;height:260px;margin:-130px 0 0 -130px;border-color:rgba(201,168,76,.25);animation-delay:5.4s}
-.sp-ring:nth-child(3){width:260px;height:260px;margin:-130px 0 0 -130px;border-color:rgba(150,100,255,.25);animation-delay:5.8s}
-@keyframes sp-ring-out{0%{transform:scale(.7);opacity:.8}100%{transform:scale(2);opacity:0}}
 
 /* ── Logo emerge da implosão ── */
 #orb-target{position:absolute;left:50%;top:36%;transform:translate(-50%,-50%);z-index:5;pointer-events:none;
@@ -409,9 +402,6 @@ if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
 <div id="splash" style="display:var(--splash-init,block)">
   <div id="spark"></div>
   <div id="spirit-wrap">
-    <div class="sp-ring"></div>
-    <div class="sp-ring"></div>
-    <div class="sp-ring"></div>
     <img id="spirit-img" src="master-spirit-avatar.png" alt="Master Spirit">
   </div>
   <!-- Logo emerge da implosão do espírito -->
@@ -1295,57 +1285,74 @@ function playSplashSFX(){
   try{
     var ctx=new (window.AudioContext||window.webkitAudioContext)();
 
-    // Supernova (2s) — whoosh crescente
+    // FASE 1 (2s): Grave crescente lento — tensão tipo "antes do filme"
     setTimeout(function(){
+      // Sub grave crescendo
+      var osc=ctx.createOscillator();
+      var gain=ctx.createGain();
+      osc.type='sine';
+      osc.frequency.setValueAtTime(30,ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(120,ctx.currentTime+4);
+      gain.gain.setValueAtTime(0,ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.2,ctx.currentTime+2);
+      gain.gain.setValueAtTime(0.2,ctx.currentTime+3.5);
+      gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+4.5);
+      osc.connect(gain);gain.connect(ctx.destination);
+      osc.start(ctx.currentTime);osc.stop(ctx.currentTime+4.5);
+
+      // Ruído branco sutil (ar/vento)
+      var bufSize=ctx.sampleRate*4;
+      var buf=ctx.createBuffer(1,bufSize,ctx.sampleRate);
+      var data=buf.getChannelData(0);
+      for(var i=0;i<bufSize;i++) data[i]=(Math.random()*2-1)*0.03;
+      var noise=ctx.createBufferSource();noise.buffer=buf;
+      var nGain=ctx.createGain();
+      nGain.gain.setValueAtTime(0,ctx.currentTime);
+      nGain.gain.linearRampToValueAtTime(0.08,ctx.currentTime+2);
+      nGain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+4.5);
+      noise.connect(nGain);nGain.connect(ctx.destination);
+      noise.start(ctx.currentTime);noise.stop(ctx.currentTime+4.5);
+    },2000);
+
+    // FASE 2 (6.5s): IMPACTO — boom cinematográfico tipo "marca aparece"
+    setTimeout(function(){
+      // Boom grave profundo
       var osc=ctx.createOscillator();
       var gain=ctx.createGain();
       osc.type='sine';
       osc.frequency.setValueAtTime(80,ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(800,ctx.currentTime+1.2);
-      gain.gain.setValueAtTime(0,ctx.currentTime);
-      gain.gain.linearRampToValueAtTime(0.15,ctx.currentTime+0.6);
-      gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+1.5);
+      osc.frequency.exponentialRampToValueAtTime(25,ctx.currentTime+1.5);
+      gain.gain.setValueAtTime(0.4,ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+2);
       osc.connect(gain);gain.connect(ctx.destination);
-      osc.start(ctx.currentTime);osc.stop(ctx.currentTime+1.5);
-    },2000);
+      osc.start(ctx.currentTime);osc.stop(ctx.currentTime+2);
 
-    // Implosão (6.5s) — impacto reverberado
-    setTimeout(function(){
-      // Sub bass hit
-      var osc=ctx.createOscillator();
-      var gain=ctx.createGain();
-      osc.type='sine';
-      osc.frequency.setValueAtTime(60,ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(20,ctx.currentTime+0.8);
-      gain.gain.setValueAtTime(0.3,ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+1);
-      osc.connect(gain);gain.connect(ctx.destination);
-      osc.start(ctx.currentTime);osc.stop(ctx.currentTime+1);
-
-      // Shimmer / sineiro celestial
+      // Hit metálico agudo
       var osc2=ctx.createOscillator();
       var gain2=ctx.createGain();
       osc2.type='triangle';
-      osc2.frequency.setValueAtTime(1200,ctx.currentTime);
-      osc2.frequency.exponentialRampToValueAtTime(600,ctx.currentTime+2);
-      gain2.gain.setValueAtTime(0.08,ctx.currentTime);
-      gain2.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+2.5);
+      osc2.frequency.setValueAtTime(2000,ctx.currentTime);
+      osc2.frequency.exponentialRampToValueAtTime(400,ctx.currentTime+0.5);
+      gain2.gain.setValueAtTime(0.12,ctx.currentTime);
+      gain2.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.8);
       osc2.connect(gain2);gain2.connect(ctx.destination);
-      osc2.start(ctx.currentTime);osc2.stop(ctx.currentTime+2.5);
+      osc2.start(ctx.currentTime);osc2.stop(ctx.currentTime+0.8);
     },6500);
 
-    // Logo surge (7.5s) — tom celestial
+    // FASE 3 (7.5s): Logo reveal — acorde majestoso sustentado
     setTimeout(function(){
-      [523.25,659.25,783.99].forEach(function(freq,i){
+      // Acorde Dó maior com oitavas (cinema logo sound)
+      [130.81,261.63,329.63,392,523.25].forEach(function(freq,i){
         var osc=ctx.createOscillator();
         var gain=ctx.createGain();
-        osc.type='sine';
+        osc.type=i<2?'sine':'triangle';
         osc.frequency.value=freq;
         gain.gain.setValueAtTime(0,ctx.currentTime);
-        gain.gain.linearRampToValueAtTime(0.06,ctx.currentTime+0.3);
-        gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+3);
+        gain.gain.linearRampToValueAtTime(i<2?0.08:0.04,ctx.currentTime+0.5);
+        gain.gain.setValueAtTime(i<2?0.08:0.04,ctx.currentTime+2.5);
+        gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+4);
         osc.connect(gain);gain.connect(ctx.destination);
-        osc.start(ctx.currentTime+i*0.15);osc.stop(ctx.currentTime+3);
+        osc.start(ctx.currentTime+i*0.08);osc.stop(ctx.currentTime+4);
       });
     },7500);
   }catch(e){}

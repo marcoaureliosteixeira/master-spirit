@@ -114,7 +114,7 @@ body{font-family:'Cinzel',Georgia,serif}
 .masters-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:16px 0}
 .master-circle{width:clamp(45px,9vw,65px);height:clamp(45px,9vw,65px);border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.3);box-shadow:0 0 15px rgba(201,168,76,.2);background:#d0d0d0;opacity:0}
 @keyframes masterIn{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
-.pillar-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:420px;margin:14px auto}
+.pillar-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;max-width:360px;margin:14px auto}
 .pillar-card{background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.2);border-radius:12px;padding:12px 8px;text-align:center;opacity:0}
 .pillar-card span{font-size:24px;display:block;margin-bottom:4px}
 .pillar-card p{font-family:'Cinzel',serif;font-size:8px;letter-spacing:1.2px;color:#E8C97A}
@@ -128,7 +128,6 @@ body{font-family:'Cinzel',Georgia,serif}
 #start-overlay{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.95);display:flex;align-items:center;justify-content:center;cursor:pointer}
 #cta-view{background:#060a16;align-items:center;justify-content:center}
 #jesus-full-view video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000;z-index:1}
-@media(max-width:500px){.pillar-grid{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
