@@ -370,16 +370,6 @@ if(localStorage.getItem('spirit_disclaimer')==='accepted'){
   100%{opacity:0;transform:translate(-50%,-50%) scale(.8)}
 }
 /* Ondas de choque da implosão */
-#orb-ring-1,#orb-ring-2{position:absolute;left:50%;top:50%;
-  width:min(25vw,110px);height:min(25vw,110px);
-  transform:translate(-50%,-50%);border:2px solid rgba(201,168,76,.9);border-radius:50%;
-  opacity:0;pointer-events:none}
-#orb-ring-1{animation:ring-expand .8s ease-out 7.5s both}
-#orb-ring-2{animation:ring-expand .8s ease-out 7.6s both}
-@keyframes ring-expand{
-  0%{opacity:.9;transform:translate(-50%,-50%) scale(1)}
-  100%{opacity:0;transform:translate(-50%,-50%) scale(3)}
-}
 
 /* ── CONTEÚDO ── */
 @keyframes content-rise{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
@@ -408,8 +398,6 @@ if(localStorage.getItem('spirit_disclaimer')==='accepted'){
   <!-- Logo emerge da implosão do espírito -->
   <div id="orb-target">
     <div id="orb-flash"></div>
-    <div id="orb-ring-1"></div>
-    <div id="orb-ring-2"></div>
     <img id="orb-full" src="logo-master-spirit.png" alt="Master Spirit">
   </div>
   <div id="splash-content">
