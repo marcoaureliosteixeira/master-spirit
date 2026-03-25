@@ -261,12 +261,13 @@ p,span,.desc,.sub,.modal-inner p,.copy-btn{font-family:Georgia,'Times New Roman'
 </head>
 <body class="fs-lg">
 <script>
-// Previne flash: se disclaimer não aceito, esconde tudo exceto disclaimer
-if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
-  document.documentElement.style.setProperty('--splash-init','none');
-  document.documentElement.style.setProperty('--disclaimer-init','block');
-} else {
+// Previne flash: esconde disclaimer por padrão, verifica depois
+if(localStorage.getItem('spirit_disclaimer')==='accepted'){
   document.documentElement.style.setProperty('--splash-init','block');
+  document.documentElement.style.setProperty('--disclaimer-init','none');
+} else {
+  // Pode ser que o banco tenha a info — esconde tudo até verificar
+  document.documentElement.style.setProperty('--splash-init','none');
   document.documentElement.style.setProperty('--disclaimer-init','none');
 }
 </script>
@@ -435,9 +436,9 @@ if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
       </div>
     </div>
     </div>
-    <div style="margin-top:20px;display:flex;align-items:center;gap:6px;justify-content:center;opacity:0;animation:content-rise .5s ease 10s forwards">
+    <div style="margin-top:14px;display:flex;align-items:center;gap:6px;justify-content:center;opacity:0;animation:content-rise .5s ease 10s forwards;padding-bottom:10px">
       <span style="font-family:'Cinzel',serif;font-size:7px;letter-spacing:2px;color:rgba(240,234,214,.25);text-transform:uppercase">Powered by</span>
-      <img src="logo-spyrit-systems.png" style="height:22px;opacity:.6" alt="Spyrit Systems">
+      <img src="logo-spyrit-systems.png" style="height:20px;opacity:.5" alt="Spyrit Systems">
     </div>
   </div>
 </div>
@@ -1538,13 +1539,30 @@ function loadRooms(){
   try{const cr=JSON.parse(localStorage.getItem('spirit_rooms')||'[]');rooms=[...DEFAULT_ROOMS,...cr];}catch(e){}
 }
 
-window.addEventListener('load',()=>{
-  // Disclaimer antes de tudo (só 1ª vez)
+window.addEventListener('load',async ()=>{
+  // Disclaimer: verificar localStorage E banco antes de mostrar
   if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
-    document.getElementById('splash').style.display='none';
-    document.getElementById('app').style.display='none';
-    document.getElementById('disclaimer-overlay').style.display='block';
-    return;
+    // Esperar verificação do banco (Supabase pode confirmar que já aceitou)
+    var accepted=false;
+    try{
+      if(window._sb){
+        var sess=await window._sb.auth.getSession();
+        if(sess.data?.session){
+          var uid=sess.data.session.user.id;
+          var usage=await window._sb.from('user_usage').select('disclaimer_accepted').eq('id',uid).maybeSingle();
+          if(usage.data&&usage.data.disclaimer_accepted){
+            accepted=true;
+            localStorage.setItem('spirit_disclaimer','accepted');
+          }
+        }
+      }
+    }catch(e){}
+    if(!accepted){
+      document.getElementById('splash').style.display='none';
+      document.getElementById('app').style.display='none';
+      document.getElementById('disclaimer-overlay').style.display='block';
+      return;
+    }
   }
   // Cadastro completo agora é exigido apenas na assinatura de plano
   // Init normal
