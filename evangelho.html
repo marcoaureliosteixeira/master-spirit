@@ -248,7 +248,7 @@ function startWindChimes(){
   try{
     _chimesAudio=new Audio('wind-chimes.mp3');
     _chimesAudio.loop=true;
-    _chimesAudio.volume=0.6;
+    _chimesAudio.volume=1;
     _chimesAudio.play().catch(function(){});
   }catch(e){console.warn('Wind chimes error:',e);}
 }
