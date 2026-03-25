@@ -241,82 +241,20 @@ function updateEvPodcastBtn(){
   btn.style.color=evPodcastPlaying?'var(--gold)':'rgba(240,234,214,.5)';
 }
 
-// ── WIND CHIMES (sino dos ventos) ──
-var _chimesCtx=null;
-var _chimesInterval=null;
-var _chimesInterval2=null;
-
-// Criar AudioContext na primeira interação (iOS requirement)
-document.addEventListener('click',function initAudioCtx(){
-  if(!_chimesCtx){
-    try{_chimesCtx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){}
-  }
-  document.removeEventListener('click',initAudioCtx);
-},{once:true});
+// ── WIND CHIMES (áudio MP3) ──
+var _chimesAudio=null;
 
 function startWindChimes(){
   try{
-    if(!_chimesCtx) _chimesCtx=new (window.AudioContext||window.webkitAudioContext)();
-    if(_chimesCtx.state==='suspended') _chimesCtx.resume();
-    // Notas de sino dos ventos (pentatônica em Dó)
-    var notes=[523.25,587.33,659.25,783.99,880,1046.50,1174.66,1318.51];
-
-    function chime(){
-      if(!_chimesCtx)return;
-      var freq=notes[Math.floor(Math.random()*notes.length)];
-      var osc=_chimesCtx.createOscillator();
-      var gain=_chimesCtx.createGain();
-
-      // Som de sino: ataque rápido, decay longo
-      osc.type='sine';
-      osc.frequency.value=freq;
-
-      // Harmônico sutil (dá brilho ao sino)
-      var osc2=_chimesCtx.createOscillator();
-      var gain2=_chimesCtx.createGain();
-      osc2.type='sine';
-      osc2.frequency.value=freq*2.01; // leve detuning
-      gain2.gain.setValueAtTime(0.015,_chimesCtx.currentTime);
-      gain2.gain.exponentialRampToValueAtTime(0.001,_chimesCtx.currentTime+3);
-
-      // Volume: ataque suave, sustain, decay longo
-      gain.gain.setValueAtTime(0,_chimesCtx.currentTime);
-      gain.gain.linearRampToValueAtTime(0.06,_chimesCtx.currentTime+0.02);
-      gain.gain.exponentialRampToValueAtTime(0.001,_chimesCtx.currentTime+4);
-
-      osc.connect(gain);gain.connect(_chimesCtx.destination);
-      osc2.connect(gain2);gain2.connect(_chimesCtx.destination);
-      osc.start(_chimesCtx.currentTime);
-      osc.stop(_chimesCtx.currentTime+4);
-      osc2.start(_chimesCtx.currentTime);
-      osc2.stop(_chimesCtx.currentTime+4);
-    }
-
-    // Primeiro toque imediato
-    chime();
-    // Toques aleatórios a cada 2-5 segundos
-    _chimesInterval=setInterval(function(){
-      chime();
-      // Às vezes toca 2 notas juntas (acorde)
-      if(Math.random()>0.6) setTimeout(chime,150);
-    },2000+Math.random()*3000);
-
-    // Recalcular intervalo periodicamente para parecer natural
-    _chimesInterval2=setInterval(function(){
-      if(_chimesInterval){
-        clearInterval(_chimesInterval);
-        _chimesInterval=setInterval(function(){
-          chime();
-          if(Math.random()>0.6) setTimeout(chime,150);
-        },2000+Math.random()*3000);
-      }
-    },8000);
+    _chimesAudio=new Audio('wind-chimes.mp3');
+    _chimesAudio.loop=true;
+    _chimesAudio.volume=0.6;
+    _chimesAudio.play().catch(function(){});
   }catch(e){console.warn('Wind chimes error:',e);}
 }
 
 function stopWindChimes(){
-  if(_chimesInterval){clearInterval(_chimesInterval);_chimesInterval=null;}
-  if(_chimesInterval2){clearInterval(_chimesInterval2);_chimesInterval2=null;}
+  if(_chimesAudio){_chimesAudio.pause();_chimesAudio.currentTime=0;_chimesAudio=null;}
 }
 
 function toggleNav(){
