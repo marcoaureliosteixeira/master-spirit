@@ -353,12 +353,28 @@ function renderFase(){
       '<p style="font-size:15px;line-height:1.85;font-style:italic;color:rgba(240,234,214,.7);max-width:400px;margin:0 auto">Pai nosso, que estais nos céus, santificado seja o Vosso nome. Venha a nós o Vosso reino. Seja feita a Vossa vontade, assim na Terra como no Céu. O pão nosso de cada dia nos dai hoje. Perdoai as nossas ofensas, assim como nós perdoamos a quem nos tem ofendido. E não nos deixeis cair em tentação, mas livrai-nos do mal. Assim seja.</p>'+
       '</div>'+renderFim();
     c.innerHTML='<button class="btn-s" onclick="window.location.href=\'app.html\'">Voltar</button><button class="btn-g" onclick="fase=\'config\';renderFase()">Nova sessão</button>';
-    // Play vídeo Jesus
+    // Música de fundo do teaser + Play vídeo Jesus
     setTimeout(function(){
+      window._jesusMusic=new Audio('teaser-music.mp3');
+      window._jesusMusic.volume=0.3;
+      window._jesusMusic.loop=true;
+      window._jesusMusic.play().catch(function(){});
       var vid=document.getElementById('jesus-pai-nosso');
-      if(vid) vid.play().catch(function(){
-        var a=new Audio('oracao-pai-nosso.mp3');a.volume=0.9;a.play().catch(function(){});
-      });
+      if(vid){
+        vid.play().catch(function(){
+          var a=new Audio('oracao-pai-nosso.mp3');a.volume=0.9;a.play().catch(function(){});
+        });
+        vid.onended=function(){
+          // Fade out música quando Jesus termina
+          if(window._jesusMusic){
+            var fo=setInterval(function(){
+              if(!window._jesusMusic){clearInterval(fo);return;}
+              window._jesusMusic.volume=Math.max(0,window._jesusMusic.volume-0.02);
+              if(window._jesusMusic.volume<=0.01){window._jesusMusic.pause();window._jesusMusic=null;clearInterval(fo);}
+            },100);
+          }
+        };
+      }
     },500);
     salvarProgresso();
   }
