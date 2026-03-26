@@ -442,7 +442,7 @@ function renderConfig(){
       '</div>'+
       '<span style="font-size:12px;color:rgba(240,234,214,.5);font-family:Georgia,serif">🔔 Lembrete antes da sessão</span>'+
     '</div>'+
-    (config.dias&&config.dias.length>0?'<p style="font-size:11px;color:rgba(91,175,124,.6);margin-top:8px;font-family:Georgia,serif">✓ Próxima sessão: '+calcProximaSessao()+'</p>':'')+
+    (config.dias&&config.dias.length>0?'<p style="font-size:11px;color:rgba(91,175,124,.6);margin-top:8px;font-family:Georgia,serif">✓ Próxima sessão: '+calcProximaSessao()+'</p>'+(config.lembrete?'<p style="font-size:10px;color:rgba(201,168,76,.4);margin-top:4px;font-family:Georgia,serif">📧 Lembrete por email 30 min antes</p>':''):'')+
     '</div></div>';
 }
 
