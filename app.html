@@ -262,15 +262,9 @@ p,span,.desc,.sub,.modal-inner p,.copy-btn{font-family:Georgia,'Times New Roman'
 </head>
 <body class="fs-lg">
 <script>
-// Previne flash: esconde disclaimer por padrão, verifica depois
-if(localStorage.getItem('spirit_disclaimer')==='accepted'){
-  document.documentElement.style.setProperty('--splash-init','block');
-  document.documentElement.style.setProperty('--disclaimer-init','none');
-} else {
-  // Pode ser que o banco tenha a info — esconde tudo até verificar
-  document.documentElement.style.setProperty('--splash-init','none');
-  document.documentElement.style.setProperty('--disclaimer-init','none');
-}
+// Previne flash: esconde TUDO até JS decidir o que mostrar
+document.documentElement.style.setProperty('--splash-init','none');
+document.documentElement.style.setProperty('--disclaimer-init','none');
 </script>
 <div id="avatar-zoom" onclick="this.style.display='none'"><img id="avatar-zoom-img" src="" alt=""></div>
 <div id="stars"></div>
@@ -1509,14 +1503,13 @@ function loadRooms(){
 }
 
 window.addEventListener('load',async ()=>{
-  // Disclaimer: se localStorage não tem, mostra (mas NÃO faz return)
-  // O initSupa verificará o banco e esconderá se já aceitou
-  if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
-    document.getElementById('splash').style.display='none';
-    document.getElementById('app').style.display='none';
-    document.getElementById('disclaimer-overlay').style.display='block';
-    // NÃO faz return — continua init para que initSupa possa verificar banco
+  // Disclaimer: NÃO decide aqui. Espera initSupa verificar o banco.
+  // Se localStorage tem accepted, mostra splash direto.
+  if(localStorage.getItem('spirit_disclaimer')==='accepted'){
+    // Já aceitou (localStorage) — pula disclaimer
+    document.getElementById('disclaimer-overlay').style.display='none';
   }
+  // Se não tem, initSupa vai verificar o banco e decidir
   // Cadastro completo agora é exigido apenas na assinatura de plano
   // Init normal
   // Logo já definida no HTML
@@ -3534,46 +3527,59 @@ function urlBase64ToUint8Array(base64String){
   return arr;
 }
 
-function initSupa() {
+async function initSupa() {
   try {
     if (window.supabase) {
       window._sb = window.supabase.createClient(
         'https://jwdvbtujzvqvktzxycwj.supabase.co',
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp3ZHZidHVqenZxdmt0enh5Y3dqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1Mjc2NDksImV4cCI6MjA4OTEwMzY0OX0.ZfkRgdYcTjYF_E4qr1_1CZMtSiCvKLeUsoRSLoO16Mw'
       );
-      window._sb.auth.getSession().then(function(r) {
-        if (!r.data || !r.data.session) {
-          window.location.href = 'index.html';
-        } else {
-          initUsage();
-          checkMPReturn();
-          initSessionControl();
-          if (r.data.session.user.email === 'marcoaureliosteixeira@gmail.com') {
-            var ab = document.getElementById('admin-btn');
-            if (ab) { ab.style.display = 'flex'; }
+      var r = await window._sb.auth.getSession();
+      if (!r.data || !r.data.session) {
+        window.location.href = 'index.html';
+        return;
+      }
+
+      initUsage();
+      checkMPReturn();
+      initSessionControl();
+
+      if (r.data.session.user.email === 'marcoaureliosteixeira@gmail.com') {
+        var ab = document.getElementById('admin-btn');
+        if (ab) { ab.style.display = 'flex'; }
+      }
+
+      // DISCLAIMER: verificar banco PRIMEIRO
+      var uid = r.data.session.user.id;
+      var disclaimerOk = localStorage.getItem('spirit_disclaimer') === 'accepted';
+
+      if (!disclaimerOk) {
+        try {
+          var usage = await window._sb.from('user_usage').select('disclaimer_accepted').eq('id', uid).maybeSingle();
+          if (usage.data && usage.data.disclaimer_accepted) {
+            disclaimerOk = true;
+            localStorage.setItem('spirit_disclaimer', 'accepted');
           }
-          // Verificar disclaimer no banco (sincronizar entre devices)
-          try{
-            var uid=r.data.session.user.id;
-            var usage=await window._sb.from('user_usage').select('disclaimer_accepted').eq('id',uid).maybeSingle();
-            if(usage.data&&usage.data.disclaimer_accepted){
-              localStorage.setItem('spirit_disclaimer','accepted');
-              var overlay=document.getElementById('disclaimer-overlay');
-              if(overlay&&overlay.style.display==='block'){
-                overlay.style.display='none';
-                // Inicializar splash que foi pulado pelo load
-                initSplashLogo();initStars();initSettings();loadRooms();
-                document.getElementById('splash').style.display='block';
-                setTimeout(startSplashMusic,500);
-                playSplashSFX();
-                render();
-              }
-            }
-          }catch(e){}
-        }
-      });
+        } catch(e) { console.warn('Disclaimer check error:', e); }
+      }
+
+      var overlay = document.getElementById('disclaimer-overlay');
+      if (disclaimerOk) {
+        // ACEITO — esconder disclaimer, mostrar splash
+        if (overlay) overlay.style.display = 'none';
+        document.getElementById('splash').style.display = 'block';
+        initSplashLogo(); initStars(); initSettings(); loadRooms();
+        setTimeout(startSplashMusic, 500);
+        playSplashSFX();
+        render();
+      } else {
+        // NÃO ACEITO — mostrar disclaimer
+        if (overlay) overlay.style.display = 'block';
+        document.getElementById('splash').style.display = 'none';
+        document.getElementById('app').style.display = 'none';
+      }
     }
-  } catch(e) {}
+  } catch(e) { console.error('initSupa error:', e); }
 }
 
 async function initSessionControl() {
