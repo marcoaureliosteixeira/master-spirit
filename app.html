@@ -1326,8 +1326,8 @@ function playSfxNow(){
 }
 
 function playSplashSFX(){
-  _splashSfxPlayed=false;
-  _splashStartTime=Date.now();
+  // Só toca na primeira exibição do splash, nunca no backToSplash
+  if(!_splashSfxPlayed) _splashStartTime=Date.now();
 }
 
 // ===================== SPLASH MUSIC =====================
