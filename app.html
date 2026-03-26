@@ -261,6 +261,11 @@ p,span,.desc,.sub,.modal-inner p,.copy-btn{font-family:Georgia,'Times New Roman'
 </style>
 </head>
 <body class="fs-lg">
+<!-- Loading screen — cobre tudo até initSupa decidir -->
+<div id="loading-screen" style="position:fixed;inset:0;z-index:99999;background:#030a18;display:flex;align-items:center;justify-content:center">
+  <img src="logo-master-spirit.png" style="max-width:min(40vw,160px);height:auto;opacity:.6;animation:loadPulse 2s ease-in-out infinite">
+  <style>@keyframes loadPulse{0%,100%{opacity:.3;transform:scale(.95)}50%{opacity:.7;transform:scale(1)}}</style>
+</div>
 <script>
 // Previne flash: esconde TUDO até JS decidir o que mostrar
 document.documentElement.style.setProperty('--splash-init','none');
@@ -3564,16 +3569,19 @@ async function initSupa() {
       }
 
       var overlay = document.getElementById('disclaimer-overlay');
+      var loading = document.getElementById('loading-screen');
       if (disclaimerOk) {
-        // ACEITO — esconder disclaimer, mostrar splash
+        // ACEITO — esconder loading + disclaimer, mostrar splash
         if (overlay) overlay.style.display = 'none';
+        if (loading) loading.style.display = 'none';
         document.getElementById('splash').style.display = 'block';
         initSplashLogo(); initStars(); initSettings(); loadRooms();
         setTimeout(startSplashMusic, 500);
         playSplashSFX();
         render();
       } else {
-        // NÃO ACEITO — mostrar disclaimer
+        // NÃO ACEITO — esconder loading, mostrar disclaimer
+        if (loading) loading.style.display = 'none';
         if (overlay) overlay.style.display = 'block';
         document.getElementById('splash').style.display = 'none';
         document.getElementById('app').style.display = 'none';
