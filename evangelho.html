@@ -7,7 +7,7 @@
 <title>MASTER SPIRIT — Evangelho no Lar</title>
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
 <style>
 :root{--gold:#C9A84C;--gold2:#E8C97A;--bg:#060a16;--text:#F5EFE0;--fs:18px;--font:'Cinzel',Georgia,serif;--card-bg:rgba(255,255,255,.06);--card-border:rgba(201,168,76,.2);--accent:#C9A84C;--soft:rgba(255,255,255,.04)}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -425,7 +425,7 @@ function renderConfig(){
     '<button onclick="previewMusic()" style="margin-top:8px;background:none;border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:6px 14px;cursor:pointer;font-size:11px;color:rgba(201,168,76,.5);transition:all .2s" id="preview-btn">▶ Ouvir prévia</button>'+
     '</div>'+
     '<div class="cfg-section"><p class="cfg-label">Contexto Familiar (opcional)</p>'+
-    '<input type="text" value="'+(config.contexto||'')+'" maxlength="200" placeholder="Ex: família com crianças pequenas..." onchange="setConfig(\'contexto\',this.value)" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.22);border-radius:12px;padding:11px 16px;color:var(--text);font-family:Georgia,serif;font-size:15px;font-style:italic;outline:none">'+
+    '<input type="text" value="'+(config.contexto||'')+'" maxlength="200" placeholder="Ex: família com crianças pequenas..." onchange="setConfig(\'contexto\',this.value)" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.22);border-radius:12px;padding:11px 16px;color:var(--text);font-family:Georgia,serif;font-size:16px;font-style:italic;outline:none">'+
     '</div>'+
     '<div class="cfg-section"><p class="cfg-label">📅 Agenda do Evangelho</p>'+
     '<p style="font-size:11px;color:rgba(240,234,214,.35);font-style:italic;font-family:Georgia,serif;margin-bottom:10px">Escolha os dias e horário para suas sessões</p>'+
@@ -434,7 +434,7 @@ function renderConfig(){
     '</div>'+
     '<div style="display:flex;align-items:center;gap:10px;margin-top:10px">'+
       '<span style="font-size:12px;color:rgba(240,234,214,.4);font-family:Georgia,serif">Horário:</span>'+
-      '<input type="time" value="'+(config.horario||'19:30')+'" onchange="setConfig(\'horario\',this.value)" style="background:rgba(255,255,255,.06);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:8px 12px;color:var(--text);font-family:Georgia,serif;font-size:14px;outline:none">'+
+      '<input type="time" value="'+(config.horario||'19:30')+'" onchange="setConfig(\'horario\',this.value)" style="background:rgba(255,255,255,.06);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:8px 12px;color:var(--text);font-family:Georgia,serif;font-size:16px;outline:none">'+
     '</div>'+
     '<div style="margin-top:10px;display:flex;align-items:center;gap:8px">'+
       '<div onclick="toggleLembrete()" style="width:42px;height:24px;border-radius:12px;background:'+(config.lembrete?'rgba(91,175,124,.4)':'rgba(255,255,255,.1)')+';cursor:pointer;position:relative;transition:all .2s;border:1px solid '+(config.lembrete?'rgba(91,175,124,.5)':'rgba(255,255,255,.15)')+'">'+

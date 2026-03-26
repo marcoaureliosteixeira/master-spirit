@@ -8,7 +8,7 @@
 <title>MASTER SPIRIT — Passe Espiritual</title>
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
 <style>
 :root{--gold:#C9A84C;--gold2:#E8C97A;--bg:#060a16;--text:#F5EFE0;--fs:18px;--font:'Cinzel',Georgia,serif;--card-bg:rgba(255,255,255,.06);--card-border:rgba(201,168,76,.2);--accent:#C9A84C;--soft:rgba(255,255,255,.04)}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -29,7 +29,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:va
 /* Hero */
 .hero{text-align:center;margin-bottom:24px}
 .hero-ico{font-size:48px;margin-bottom:8px;display:block}
-.hero-title{font-family:'Cinzel Decorative',serif;font-size:22px;color:var(--gold);letter-spacing:2px;margin-bottom:4px}
+.hero-title{font-family:'Cinzel',serif;font-size:22px;color:var(--gold);letter-spacing:2px;margin-bottom:4px}
 .hero-sub{font-size:16px;font-style:italic;color:rgba(240,234,214,.35)}
 /* Mode cards */
 .mode-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;margin-bottom:12px;overflow:hidden;cursor:pointer;transition:all .3s;box-shadow:0 1px 4px rgba(0,0,0,.04)}
@@ -40,19 +40,19 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:va
 .mode-info{flex:1}
 .mode-title{font-family:'Cinzel',serif;font-size:14px;color:var(--text);font-weight:600}
 .mode-meta{font-size:13px;color:rgba(240,234,214,.35);margin-top:2px}
-.mode-badge{font-family:'Cinzel',serif;font-size:9px;letter-spacing:1.5px;color:var(--gold);background:#FDF6E8;border:1px solid rgba(201,168,76,.3);border-radius:20px;padding:4px 10px;white-space:nowrap}
+.mode-badge{font-family:'Cinzel',serif;font-size:9px;letter-spacing:1.5px;color:var(--gold);background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:20px;padding:4px 10px;white-space:nowrap}
 .mode-body{display:none;padding:0 18px 18px;border-top:1px solid var(--card-border)}
 .mode-card.active .mode-body{display:block}
-.mode-desc{font-size:15px;color:#5A4E3C;line-height:1.6;margin:14px 0}
+.mode-desc{font-size:15px;color:rgba(240,234,214,.7);line-height:1.6;margin:14px 0}
 .mode-steps{margin-bottom:14px}
-.mode-step{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:14px;color:#5A4E3C}
+.mode-step{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:14px;color:rgba(240,234,214,.7)}
 .mode-step span{font-size:16px}
 .btn-start{width:100%;padding:14px;background:var(--accent);border:none;border-radius:14px;color:#fff;font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;cursor:pointer;text-transform:uppercase;box-shadow:0 2px 8px rgba(201,168,76,.25)}
 .btn-start:hover{background:#B8942F}
 /* Prepare box */
-.prepare{background:#FDF6E8;border:1px solid rgba(201,168,76,.2);border-radius:14px;padding:16px;margin-top:20px}
+.prepare{background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);border-radius:14px;padding:16px;margin-top:20px}
 .prepare-title{font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--gold);margin-bottom:10px}
-.prepare-item{display:flex;align-items:flex-start;gap:8px;padding:4px 0;font-size:14px;color:#5A4E3C;line-height:1.5}
+.prepare-item{display:flex;align-items:flex-start;gap:8px;padding:4px 0;font-size:14px;color:rgba(240,234,214,.7);line-height:1.5}
 .prepare-item span{font-size:16px;flex-shrink:0}
 .disclaimer{font-size:13px;font-style:italic;color:#A89880;text-align:center;margin-top:16px;line-height:1.5}
 /* Session view */
@@ -75,7 +75,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:va
 .instr-text{font-size:17px;line-height:1.8;color:var(--text)}
 /* Guidance expandable */
 .guidance-btn{background:var(--soft);border:1px solid var(--card-border);border-radius:12px;padding:12px 16px;cursor:pointer;font-size:14px;color:var(--gold);font-family:'Cinzel',serif;letter-spacing:1px;width:100%;text-align:left;margin-bottom:12px}
-.guidance-content{display:none;background:#FDF6E8;border:1px solid rgba(201,168,76,.2);border-radius:12px;padding:16px;margin-bottom:12px;font-size:16px;line-height:1.8;color:#5A4E3C;font-style:italic}
+.guidance-content{display:none;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);border-radius:12px;padding:16px;margin-bottom:12px;font-size:16px;line-height:1.8;color:rgba(240,234,214,.7);font-style:italic}
 .guidance-content.open{display:block}
 /* Breathing circle */
 .breath-wrap{text-align:center;margin:20px 0}
@@ -84,7 +84,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:va
 .breath-circle.hold{transform:scale(1.3)}
 .breath-circle.exhale{transform:scale(1);transition-duration:6s}
 .breath-label{font-family:'Cinzel',serif;font-size:14px;color:var(--gold);letter-spacing:1px}
-.breath-count{font-family:'Cinzel Decorative',serif;font-size:28px;color:var(--text)}
+.breath-count{font-family:'Cinzel',serif;font-size:28px;color:var(--text)}
 /* Nav buttons */
 .nav-btns{display:flex;gap:10px;margin-top:16px}
 .nav-btn{flex:1;padding:14px;border-radius:14px;font-family:'Cinzel',serif;font-size:12px;letter-spacing:1.5px;cursor:pointer;text-align:center}
@@ -94,9 +94,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:va
 .done-wrap{text-align:center;padding:20px 0}
 .done-ico{font-size:52px;margin-bottom:12px}
 .done-title{font-family:'Cinzel',serif;font-size:18px;color:var(--gold);margin-bottom:6px}
-.done-msg{font-size:16px;color:#5A4E3C;font-style:italic;line-height:1.6;margin-bottom:20px}
+.done-msg{font-size:16px;color:rgba(240,234,214,.7);font-style:italic;line-height:1.6;margin-bottom:20px}
 .post-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;text-align:left}
-.post-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:12px;display:flex;align-items:center;gap:8px;font-size:14px;color:#5A4E3C}
+.post-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:12px;display:flex;align-items:center;gap:8px;font-size:14px;color:rgba(240,234,214,.7)}
 .post-card span{font-size:20px;flex-shrink:0}
 .done-freq{font-size:13px;color:var(--gold);font-style:italic;margin-bottom:16px}
 /* Footer */
