@@ -95,7 +95,7 @@ p,span,input,textarea,.session-text,.qa-msg,.timer-label,.fac-desc{font-family:G
     <div style="flex:1">
       <h1>EVANGELHO NO LAR</h1>
     </div>
-    <a href="app.html" onclick="sessionStorage.removeItem('spirit_splash_seen')" style="border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:6px 10px;font-size:14px;color:var(--gold);text-decoration:none" title="Menu Principal">🏠</a>
+    <a href="app.html" onclick="sessionStorage.removeItem('spirit_splash_seen')" style="border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:6px 10px;font-size:14px;color:var(--gold);text-decoration:none" title="Menu Principal"><img src="home-icone.png" style="height:22px;opacity:.8" alt="Home"></a>
     <button id="ev-podcast-btn" onclick="toggleEvPodcast()" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:6px;width:28px;height:28px;cursor:pointer;color:rgba(240,234,214,.5);font-size:14px;display:none" title="Ouvir como podcast">🎧</button>
     <span id="step-badge" style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:1.5px;color:var(--gold);background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:20px;padding:4px 10px;white-space:nowrap">Configuração</span>
   </div>
@@ -240,7 +240,7 @@ function updateEvPodcastBtn(){
 var _chimesAudio=null;
 
 // Pré-carregar para tocar instantâneo
-var _chimesPreloaded=new Audio('wind-chimes.mp3');
+var _chimesPreloaded=new Audio('meditation-home-gospel.mp3');
 _chimesPreloaded.preload='auto';
 
 function startWindChimes(){
