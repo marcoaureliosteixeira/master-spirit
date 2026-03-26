@@ -1523,13 +1523,13 @@ function loadRooms(){
 }
 
 window.addEventListener('load',async ()=>{
-  // Disclaimer: se localStorage diz aceito, pula. Senão, mostra.
-  // O banco é verificado no initSupa (depois) para sincronizar.
+  // Disclaimer: se localStorage não tem, mostra (mas NÃO faz return)
+  // O initSupa verificará o banco e esconderá se já aceitou
   if(localStorage.getItem('spirit_disclaimer')!=='accepted'){
     document.getElementById('splash').style.display='none';
     document.getElementById('app').style.display='none';
     document.getElementById('disclaimer-overlay').style.display='block';
-    return;
+    // NÃO faz return — continua init para que initSupa possa verificar banco
   }
   // Cadastro completo agora é exigido apenas na assinatura de plano
   // Init normal
