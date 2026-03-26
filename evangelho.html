@@ -91,13 +91,13 @@ p,span,input,textarea,.session-text,.qa-msg,.timer-label,.fac-desc{font-family:G
 <div id="app">
   <div id="hdr">
     <button id="back-btn" onclick="voltarEtapa()" style="background:none;border:none;cursor:pointer;color:var(--gold);font-size:22px;padding:0">‹</button>
-    <img src="evangelho-lar.png?v=2" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,168,76,.3)" alt="" onerror="this.style.display='none'">
-    <div style="flex:1">
-      <h1>EVANGELHO NO LAR</h1>
+    <img src="evangelho-lar.png?v=2" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,168,76,.3);flex-shrink:0" alt="" onerror="this.style.display='none'">
+    <div style="flex:1;min-width:0">
+      <h1 style="font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">EVANGELHO NO LAR</h1>
+      <span id="step-badge" style="font-size:9px;color:rgba(240,234,214,.35);font-family:Georgia,serif"></span>
     </div>
-    <a href="app.html" onclick="sessionStorage.removeItem('spirit_splash_seen')" style="border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:6px 10px;font-size:14px;color:var(--gold);text-decoration:none" title="Menu Principal"><img src="home-icone.png" style="height:22px;opacity:.8" alt="Home"></a>
-    <button id="ev-podcast-btn" onclick="toggleEvPodcast()" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:6px;width:28px;height:28px;cursor:pointer;color:rgba(240,234,214,.5);font-size:14px;display:none" title="Ouvir como podcast">🎧</button>
-    <span id="step-badge" style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:1.5px;color:var(--gold);background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:20px;padding:4px 10px;white-space:nowrap">Configuração</span>
+    <button id="ev-podcast-btn" onclick="toggleEvPodcast()" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:6px;width:28px;height:28px;cursor:pointer;color:rgba(240,234,214,.5);font-size:14px;display:none;flex-shrink:0" title="Ouvir">🎧</button>
+    <a href="app.html" onclick="sessionStorage.removeItem('spirit_splash_seen')" style="border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:6px 8px;text-decoration:none;flex-shrink:0" title="Menu Principal"><img src="home-icone.png" style="height:20px;opacity:.8" alt="Home"></a>
   </div>
   <div id="main"></div>
   <div id="controls"></div>
@@ -199,7 +199,7 @@ window.addEventListener('load',function(){
   var sf=document.getElementById('stars');
   for(var i=0;i<80;i++){var d=document.createElement('div');d.className='star';var sz=(Math.random()*2.5+.5).toFixed(1);d.style.cssText='left:'+(Math.random()*100).toFixed(1)+'%;top:'+(Math.random()*100).toFixed(1)+'%;width:'+sz+'px;height:'+sz+'px;--d:'+(Math.random()*4+2).toFixed(1)+'s;--dl:'+(Math.random()*5).toFixed(1)+'s';sf.appendChild(d);}
   // Load config
-  try{var saved=JSON.parse(localStorage.getItem('spirit_evangelho_config'));if(saved) config=saved;}catch(e){}
+  try{var saved=JSON.parse(localStorage.getItem('spirit_evangelho_config'));if(saved){for(var k in saved) config[k]=saved[k];}}catch(e){}
   // Load progress
   try{var prog=JSON.parse(localStorage.getItem('spirit_evangelho_prog'));if(prog){trechoAtual.cap=prog.cap||1;trechoAtual.item=prog.item||1;}}catch(e){}
   renderFase();
