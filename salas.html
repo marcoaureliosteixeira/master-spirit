@@ -292,7 +292,8 @@ p,span,input,textarea{font-family:Georgia,'Times New Roman',serif}
   </div>
   <div id="emmanuel-chat-area"></div>
   <div class="chat-input-row">
-    <input id="emmanuel-input" type="text" placeholder="Pergunte ao Emmanuel sobre temas de estudo..." onkeydown="if(event.key==='Enter'){event.preventDefault();sendToEmmanuel();}">
+    <button id="mic-btn-em" onclick="toggleMic('emmanuel-input')" style="background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.2);border-radius:50%;width:38px;height:38px;cursor:pointer;font-size:16px;color:rgba(201,168,76,.6);flex-shrink:0;transition:all .2s" title="Falar por voz">🎙</button>
+    <input id="emmanuel-input" type="text" placeholder="Pergunte ao Emmanuel..." onkeydown="if(event.key==='Enter'){event.preventDefault();sendToEmmanuel();}">
     <button class="send-btn" onclick="sendToEmmanuel()">↑</button>
   </div>
 </div>
@@ -1359,7 +1360,56 @@ function clearChat(){
 // ══════════════════════════════════════════
 //  NAV + STARS
 // ══════════════════════════════════════════
-function toggleNav(){var m=document.getElementById('nav-menu');m.style.display=m.style.display==='none'?'block':'none';}
+// ── MICROFONE (Speech-to-Text) ──
+var _micRecognition=null;
+var _micActive=false;
+var _micTargetId=null;
+
+function toggleMic(inputId){
+  if(_micActive){stopMic();return;}
+  if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window)){
+    alert('Seu navegador não suporta reconhecimento de voz. Use Chrome ou Edge.');
+    return;
+  }
+  _micTargetId=inputId;
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  _micRecognition=new SR();
+  _micRecognition.lang='pt-BR';
+  _micRecognition.continuous=true;
+  _micRecognition.interimResults=true;
+  var inp=document.getElementById(inputId);
+  var btn=document.getElementById('mic-btn-em');
+  var finalText=inp.value;
+  _micRecognition.onstart=function(){
+    _micActive=true;
+    if(btn){btn.textContent='⏹';btn.style.background='rgba(220,60,60,.2)';btn.style.borderColor='rgba(220,60,60,.6)';btn.style.color='#e85050';}
+    inp.placeholder='Estou ouvindo...';
+  };
+  _micRecognition.onresult=function(e){
+    var interim='',final='';
+    for(var i=e.resultIndex;i<e.results.length;i++){
+      if(e.results[i].isFinal) final+=e.results[i][0].transcript;
+      else interim+=e.results[i][0].transcript;
+    }
+    if(final) finalText+=(finalText?' ':'')+final;
+    inp.value=finalText+(interim?(' '+interim):'');
+  };
+  _micRecognition.onerror=function(e){
+    if(e.error==='not-allowed') alert('Permissão de microfone negada.');
+    stopMic();
+  };
+  _micRecognition.onend=function(){if(_micActive){try{_micRecognition.start();}catch(ex){stopMic();}}};
+  try{_micRecognition.start();}catch(ex){alert('Erro ao iniciar microfone.');}
+}
+
+function stopMic(){
+  _micActive=false;
+  if(_micRecognition){try{_micRecognition.stop();}catch(e){}_micRecognition=null;}
+  var btn=document.getElementById('mic-btn-em');
+  if(btn){btn.textContent='🎙';btn.style.background='rgba(255,255,255,.05)';btn.style.borderColor='rgba(201,168,76,.2)';btn.style.color='rgba(201,168,76,.6)';}
+  var inp=document.getElementById(_micTargetId);
+  if(inp) inp.placeholder='Pergunte ao Emmanuel...';
+}
 
 // Salvar/carregar objetivo
 function saveObjetivo(){
