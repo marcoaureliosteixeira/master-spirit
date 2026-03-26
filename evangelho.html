@@ -802,13 +802,63 @@ function salvarProgresso(){
     if(nextItem>cap.itens.length){
       var capIdx=PASSAGENS.indexOf(cap);
       if(capIdx<PASSAGENS.length-1){trechoAtual.cap=PASSAGENS[capIdx+1].cap;trechoAtual.item=1;}
-      else{trechoAtual.cap=1;trechoAtual.item=1;} // voltou ao início
+      else{trechoAtual.cap=1;trechoAtual.item=1;}
     } else {trechoAtual.item=nextItem;}
   }
-  localStorage.setItem('spirit_evangelho_prog',JSON.stringify({cap:trechoAtual.cap,item:trechoAtual.item}));
+  // Salvar localStorage
+  var progData={cap:trechoAtual.cap,item:trechoAtual.item,config:config,lastSession:new Date().toISOString()};
+  localStorage.setItem('spirit_evangelho_prog',JSON.stringify(progData));
+  localStorage.setItem('spirit_evangelho_config',JSON.stringify(config));
+  // Salvar no banco Supabase
+  salvarProgressoBanco(progData);
+}
+
+async function salvarProgressoBanco(progData){
+  try{
+    if(!window._evSb) return;
+    var sess=await window._evSb.auth.getSession();
+    if(!sess.data?.session) return;
+    var uid=sess.data.session.user.id;
+    await window._evSb.from('user_usage').update({
+      evangelho_progress:progData
+    }).eq('id',uid);
+  }catch(e){console.warn('Evangelho save error:',e);}
+}
+
+async function carregarProgressoBanco(){
+  try{
+    if(!window._evSb) return;
+    var sess=await window._evSb.auth.getSession();
+    if(!sess.data?.session) return;
+    var uid=sess.data.session.user.id;
+    var r=await window._evSb.from('user_usage').select('evangelho_progress').eq('id',uid).maybeSingle();
+    if(r.data&&r.data.evangelho_progress){
+      var prog=r.data.evangelho_progress;
+      trechoAtual.cap=prog.cap||1;
+      trechoAtual.item=prog.item||1;
+      if(prog.config){for(var k in prog.config) config[k]=prog.config[k];}
+      localStorage.setItem('spirit_evangelho_prog',JSON.stringify(prog));
+      localStorage.setItem('spirit_evangelho_config',JSON.stringify(config));
+      renderFase();
+    }
+  }catch(e){console.warn('Evangelho load error:',e);}
+}
+
+// Init Supabase para evangelho
+function initEvSupa(){
+  try{
+    if(window.supabase){
+      window._evSb=window.supabase.createClient(
+        'https://jwdvbtujzvqvktzxycwj.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp3ZHZidHVqenZxdmt0enh5Y3dqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1Mjc2NDksImV4cCI6MjA4OTEwMzY0OX0.ZfkRgdYcTjYF_E4qr1_1CZMtSiCvKLeUsoRSLoO16Mw'
+      );
+      carregarProgressoBanco();
+    }
+  }catch(e){}
+  checkAuth();
 }
 </script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" onload="checkAuth()"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" onload="initEvSupa()"></script>
 <script>
 function checkAuth(){
   try{
