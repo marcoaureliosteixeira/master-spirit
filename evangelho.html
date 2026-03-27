@@ -79,6 +79,9 @@ p,span,input,textarea,.session-text,.qa-msg,.timer-label,.fac-desc{font-family:G
 #qa-input-row textarea{flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.22);border-radius:12px;padding:13px 16px;color:var(--text);font-family:Georgia,serif;font-size:16px;outline:none;resize:none;min-height:44px;max-height:120px;line-height:1.4}
 #qa-input-row textarea:focus{border-color:var(--accent)}
 #qa-input-row button{background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.4);border-radius:12px;padding:12px 16px;cursor:pointer;color:var(--gold);font-size:16px}
+#qa-mic-btn{border-radius:50%;width:44px;height:44px;padding:0;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s}
+#qa-mic-btn.recording{background:rgba(220,60,60,.2);border-color:rgba(220,60,60,.6);color:#e85050;animation:mic-pulse 1s ease-in-out infinite}
+@keyframes mic-pulse{0%,100%{box-shadow:0 0 0 0 rgba(220,60,60,.3)}50%{box-shadow:0 0 0 8px rgba(220,60,60,0)}}
 /* Stars */
 #stars{position:fixed;inset:0;pointer-events:none;z-index:0;max-width:900px;margin:0 auto}
 .star{position:absolute;background:white;border-radius:50%;animation:tw var(--d,3s) ease-in-out infinite var(--dl,0s)}
@@ -692,7 +695,7 @@ async function gerarComentarios(){
     document.getElementById('main').innerHTML='<div id="qa-area">'+
       '<div class="qa-msg qa-prof"><span class="qa-label">'+facilitador.nome+'</span>'+lessonContext+'</div>'+
       '<div id="qa-list"></div>'+
-      '<div id="qa-input-row"><textarea id="qa-inp" rows="1" placeholder="Compartilhe sua reflexão..." onkeydown="if(event.key===\'Enter\'&&!event.shiftKey){event.preventDefault();enviarReflexao()}" oninput="this.style.height=\'auto\';this.style.height=Math.min(this.scrollHeight,120)+\'px\'"></textarea><button onclick="enviarReflexao()">↑</button></div>'+
+      '<div id="qa-input-row"><button id="qa-mic-btn" onclick="toggleEvVoice()" title="Falar por voz">🎙</button><textarea id="qa-inp" rows="1" placeholder="Compartilhe sua reflexão..." onkeydown="if(event.key===\'Enter\'&&!event.shiftKey){event.preventDefault();enviarReflexao()}" oninput="this.style.height=\'auto\';this.style.height=Math.min(this.scrollHeight,120)+\'px\'"></textarea><button onclick="enviarReflexao()">↑</button></div>'+
       '</div>';
   }catch(e){
     document.getElementById('main').innerHTML='<div class="session-text" style="color:rgba(232,122,122,.7);text-align:center">Erro de conexão.</div>';
@@ -858,6 +861,73 @@ function initEvSupa(){
     }
   }catch(e){}
   checkAuth();
+}
+
+// ── MICROFONE (Speech Recognition) ──
+var _evVoiceRec=null, _evRecording=false;
+
+function toggleEvVoice(){
+  if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window)){
+    alert('Seu navegador não suporta reconhecimento de voz. Use Chrome, Edge ou Safari.');
+    return;
+  }
+  if(_evRecording){ stopEvVoice(); return; }
+  startEvVoice();
+}
+
+function startEvVoice(){
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  _evVoiceRec=new SR();
+  _evVoiceRec.lang='pt-BR';
+  _evVoiceRec.continuous=true;
+  _evVoiceRec.interimResults=true;
+
+  var inp=document.getElementById('qa-inp');
+  var btn=document.getElementById('qa-mic-btn');
+  var finalText=inp.value;
+
+  _evVoiceRec.onstart=function(){
+    _evRecording=true;
+    btn.classList.add('recording');
+    btn.textContent='⏹';
+    inp.placeholder='Estou ouvindo...';
+  };
+
+  _evVoiceRec.onresult=function(e){
+    var interim='',final='';
+    for(var i=e.resultIndex;i<e.results.length;i++){
+      if(e.results[i].isFinal) final+=e.results[i][0].transcript;
+      else interim+=e.results[i][0].transcript;
+    }
+    if(final) finalText+=(finalText?' ':'')+final;
+    inp.value=finalText+(interim?(' '+interim):'');
+    inp.style.height='auto';
+    inp.style.height=Math.min(inp.scrollHeight,120)+'px';
+  };
+
+  _evVoiceRec.onerror=function(e){
+    if(e.error==='not-allowed'||e.error==='permission-denied'){
+      alert('Permissão de microfone negada. Toque no cadeado (🔒) ao lado da URL e habilite o microfone.');
+    } else if(e.error!=='no-speech'){
+      alert('Erro no microfone: '+e.error);
+    }
+    stopEvVoice();
+  };
+
+  _evVoiceRec.onend=function(){
+    if(_evRecording){ try{_evVoiceRec.start();}catch(ex){stopEvVoice();} }
+  };
+
+  try{ _evVoiceRec.start(); }catch(ex){ alert('Erro ao iniciar o microfone.'); }
+}
+
+function stopEvVoice(){
+  _evRecording=false;
+  var btn=document.getElementById('qa-mic-btn');
+  if(btn){ btn.classList.remove('recording'); btn.textContent='🎙'; }
+  var inp=document.getElementById('qa-inp');
+  if(inp) inp.placeholder='Compartilhe sua reflexão...';
+  if(_evVoiceRec){ try{_evVoiceRec.stop();}catch(ex){} _evVoiceRec=null; }
 }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" onload="initEvSupa()"></script>
