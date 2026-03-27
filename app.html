@@ -29,8 +29,8 @@ p,span,.desc,.sub,.modal-inner p,.copy-btn{font-family:Georgia,'Times New Roman'
 #logo{height:36px;width:auto;object-fit:contain;animation:float 5s ease-in-out infinite;flex-shrink:0}
 #header-text h1{font-family:'Cinzel',serif;font-size:20px;color:var(--gold);letter-spacing:5px;text-shadow:0 0 25px rgba(201,168,76,.4)}
 #header-text p{font-style:italic;font-size:10px;color:rgba(240,234,214,.35);letter-spacing:2px;margin-top:2px}
-#cfg-btn{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:50%;width:34px;height:34px;cursor:pointer;font-size:15px;color:rgba(201,168,76,.8);display:flex;align-items:center;justify-content:center;transition:all .2s}
-#cfg-btn:hover{background:rgba(201,168,76,.22)}
+#cfg-fab{width:42px;height:42px;border-radius:50%;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.4);cursor:pointer;font-size:16px;color:var(--gold);display:flex;align-items:center;justify-content:center;transition:all .25s;box-shadow:0 4px 20px rgba(201,168,76,.12)}
+#cfg-fab:hover{background:rgba(201,168,76,.3);box-shadow:0 6px 30px rgba(201,168,76,.25);transform:translateY(-2px)}
 #content{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;background:rgba(255,255,255,.02)}
 #content.with-input{padding-bottom:90px}
 #nav{flex-shrink:0;background:rgba(12,18,38,.92);border-bottom:1px solid rgba(201,168,76,.12);position:relative;z-index:50;display:flex;justify-content:space-around;padding:4px 8px;gap:2px}
@@ -245,7 +245,8 @@ p,span,.desc,.sub,.modal-inner p,.copy-btn{font-family:Georgia,'Times New Roman'
 .mchat-info h3{font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;color:var(--gold)}
 .mchat-info p{font-size:10px;font-style:italic;color:rgba(240,234,214,.35);margin-top:1px;font-family:Georgia,'Times New Roman',serif}
 /* HELP FAB */
-#help-fab{position:fixed;bottom:20px;right:20px;z-index:1000;width:48px;height:48px;border-radius:50%;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.4);cursor:pointer;font-family:'Cinzel',serif;font-size:18px;color:var(--gold);display:flex;align-items:center;justify-content:center;transition:all .25s;box-shadow:0 4px 20px rgba(201,168,76,.12)}
+#fab-group{position:fixed;bottom:20px;right:20px;z-index:1000;display:flex;flex-direction:column;align-items:center;gap:10px}
+#help-fab{width:48px;height:48px;border-radius:50%;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.4);cursor:pointer;font-family:'Cinzel',serif;font-size:18px;color:var(--gold);display:flex;align-items:center;justify-content:center;transition:all .25s;box-shadow:0 4px 20px rgba(201,168,76,.12)}
 #help-fab:hover{background:rgba(201,168,76,.3);box-shadow:0 6px 30px rgba(201,168,76,.25);transform:translateY(-2px)}
 @media(max-width:600px){
   .master-grid{grid-template-columns:repeat(2,1fr);gap:10px;padding:14px 10px}
@@ -274,8 +275,11 @@ document.documentElement.style.setProperty('--disclaimer-init','none');
 <div id="avatar-zoom" onclick="this.style.display='none'"><img id="avatar-zoom-img" src="" alt=""></div>
 <div id="stars"></div>
 
-<!-- HELP FAB — global, visível em todas as telas -->
-<button id="help-fab" onclick="openHelpChat()" title="Master Spirit · Ajuda">?</button>
+<!-- FABs — global, visível em todas as telas -->
+<div id="fab-group">
+  <button id="cfg-fab" onclick="openModal('cfg')" title="Configurações">⚙</button>
+  <button id="help-fab" onclick="openHelpChat()" title="Master Spirit · Ajuda">?</button>
+</div>
 
 <!-- SPLASH SCREEN — supernova → espírito → implosão → logo -->
 <style>
@@ -454,7 +458,6 @@ document.documentElement.style.setProperty('--disclaimer-init','none');
       <h1 style="font-family:'Cinzel',serif;font-size:12px;color:var(--gold);letter-spacing:2px">MESTRES ESPIRITUAIS</h1>
     </div>
     <button id="admin-btn" onclick="window.location.href='admin.html'" style="display:none;background:rgba(91,175,124,.1);border:1px solid rgba(91,175,124,.3);border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:13px;color:rgba(91,175,124,.8);align-items:center;justify-content:center" title="Admin">⚡</button>
-    <button id="cfg-btn" onclick="openModal('cfg')" style="flex-shrink:0">⚙️</button>
     <a href="app.html" onclick="sessionStorage.removeItem('spirit_splash_seen')" style="border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:6px 8px;text-decoration:none;flex-shrink:0" title="Menu Principal"><img src="home-icone.png" style="height:20px;opacity:.8" alt="Home"></a>
   </div>
   <div id="nav"></div>
