@@ -1274,45 +1274,62 @@ function saveMasterMsgs(id){try{localStorage.setItem('spirit_chat_'+id,JSON.stri
   if(el) el.textContent='"'+verses[Math.floor(Math.random()*verses.length)]+'"';
 })();
 
-// ===================== SPLASH SOUND EFFECTS =====================
+// ===================== SPLASH SOUND EFFECTS (4 áudios) =====================
 var _splashSfxPlayed=false;
-var _sfxBuffer=null;
-var _sfxCtx=null;
+var _sfx1=null,_sfx2=null,_sfx3=null,_sfx4=null;
+var _sfxTimers=[];
 
-// Pré-carregar o SFX como AudioBuffer
+// Pré-carregar os 4 áudios do splash
 (function(){
   try{
-    var xhr=new XMLHttpRequest();
-    xhr.open('GET','splash-sfx.mp3',true);
-    xhr.responseType='arraybuffer';
-    xhr.onload=function(){
-      try{
-        _sfxCtx=new (window.AudioContext||window.webkitAudioContext)();
-        _sfxCtx.decodeAudioData(xhr.response,function(buf){_sfxBuffer=buf;});
-      }catch(e){}
-    };
-    xhr.send();
+    _sfx1=new Audio('spirit-materializing-01.mp3');  // 3s - espírito se forma
+    _sfx2=new Audio('vanish&logo-reveal-02.mp3');    // 3s - espírito implode
+    _sfx3=new Audio('logo-surgindo-03.mp3');         // 8s - logo emerge
+    _sfx4=new Audio('master-spirit-04.mp3');          // 1.5s - narrador "Master Spirit"
+    _sfx1.preload='auto'; _sfx2.preload='auto';
+    _sfx3.preload='auto'; _sfx4.preload='auto';
+    _sfx1.volume=1; _sfx2.volume=1; _sfx3.volume=0.9; _sfx4.volume=1;
   }catch(e){}
 })();
 
-function playSfxNow(){
-  if(!_sfxCtx||!_sfxBuffer||_splashSfxPlayed)return;
-  _splashSfxPlayed=true;
-  try{
-    if(_sfxCtx.state==='suspended') _sfxCtx.resume();
-    var source=_sfxCtx.createBufferSource();
-    source.buffer=_sfxBuffer;
-    var gain=_sfxCtx.createGain();
-    gain.gain.value=1;
-    source.connect(gain);
-    gain.connect(_sfxCtx.destination);
-    source.start(0);
-  }catch(e){}
+function playSplashSFX(){
+  // Só toca na primeira exibição do splash
+  if(_splashSfxPlayed) return;
+  _splashStartTime=Date.now();
 }
 
-function playSplashSFX(){
-  // Só toca na primeira exibição do splash, nunca no backToSplash
-  if(!_splashSfxPlayed) _splashStartTime=Date.now();
+function _triggerSplashSFX(){
+  // Chamado quando áudio é desbloqueado (música tocando)
+  if(_splashSfxPlayed) return;
+  var splash=document.getElementById('splash');
+  if(!splash||splash.style.display==='none') return;
+  _splashSfxPlayed=true;
+
+  var elapsed=Date.now()-_splashStartTime;
+
+  // Timeline: supernova@2s, implode@6.5s, logo@7.5s, narrador@8.5s
+  var delays=[
+    {audio:_sfx1, at:2000},
+    {audio:_sfx2, at:6500},
+    {audio:_sfx3, at:7500},
+    {audio:_sfx4, at:8500}
+  ];
+
+  delays.forEach(function(d){
+    var wait=Math.max(0, d.at - elapsed);
+    var t=setTimeout(function(){
+      try{ d.audio.currentTime=0; d.audio.play().catch(function(){}); }catch(e){}
+    }, wait);
+    _sfxTimers.push(t);
+  });
+}
+
+function _stopAllSFX(){
+  _sfxTimers.forEach(function(t){clearTimeout(t);});
+  _sfxTimers=[];
+  [_sfx1,_sfx2,_sfx3,_sfx4].forEach(function(a){
+    try{if(a){a.pause();a.currentTime=0;}}catch(e){}
+  });
 }
 
 // ===================== SPLASH MUSIC =====================
@@ -1326,8 +1343,7 @@ function startSplashMusic(){
     var playPromise=_splashAudio.play();
     if(playPromise!==undefined){
       playPromise.then(function(){
-        // Autoplay funcionou — desbloquear AudioContext do SFX
-        if(_sfxCtx&&_sfxCtx.state==='suspended') _sfxCtx.resume();
+        // Autoplay funcionou — SFX agora pode tocar
         fadeSplashIn();
       }).catch(function(){
         document.addEventListener('touchstart',splashMusicRetry,{once:true});
@@ -1338,21 +1354,13 @@ function startSplashMusic(){
 }
 function splashMusicRetry(){
   if(_splashAudio){_splashAudio.play().then(function(){
-    if(_sfxCtx&&_sfxCtx.state==='suspended') _sfxCtx.resume();
     fadeSplashIn();
   }).catch(function(){});}
 }
 function fadeSplashIn(){
   if(!_splashAudio) return;
-  // SFX sincronizado via AudioContext (já desbloqueado pela música)
-  if(!_splashSfxPlayed&&_sfxBuffer){
-    var splash=document.getElementById('splash');
-    if(splash&&splash.style.display!=='none'){
-      var elapsed=Date.now()-_splashStartTime;
-      var sfxDelay=Math.max(0,5000-elapsed);
-      setTimeout(playSfxNow,sfxDelay);
-    }
-  }
+  // Disparar os 4 SFX sincronizados (áudio já desbloqueado pela música)
+  if(!_splashSfxPlayed) _triggerSplashSFX();
   var vol=0;
   var fi=setInterval(function(){
     vol+=0.015;
@@ -1393,7 +1401,7 @@ function toggleFooterMusic(){
 // ===================== INIT =====================
 function enterApp(){
   sessionStorage.setItem('spirit_splash_seen','1');
-  // Música continua como fundo — não para ao entrar
+  _stopAllSFX(); // Parar SFX que ainda estejam tocando
   document.getElementById('splash').style.animation='fadeout .5s ease forwards';
   setTimeout(()=>{
     document.getElementById('splash').style.display='none';
