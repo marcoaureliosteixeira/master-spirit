@@ -315,7 +315,7 @@ function renderFase(){
     badge.textContent='2 de 5 · Leitura';
     if(config.modo==='sequencial'){
       // Mostrar índice dos 28 capítulos com zoom
-      var lastCap=parseInt(localStorage.getItem('spirit_evang_cap')||'1');
+      var lastCap=trechoAtual.cap||1;
       var html='<p style="font-family:Cinzel,serif;font-size:10px;letter-spacing:2px;color:var(--gold);margin-bottom:12px;text-align:center">ÍNDICE · O EVANGELHO SEGUNDO O ESPIRITISMO</p>';
       html+='<div class="cap-grid">';
       CAPITULOS.forEach(function(cap){
@@ -567,20 +567,20 @@ function avancar(){
 function selectCap(n){
   // Efeito zoom no card selecionado
   var el=document.getElementById('cap-'+n);
-  if(el){
-    el.classList.add('zooming');
-    // Salvar progresso
-    localStorage.setItem('spirit_evang_cap',n);
-  }
+  if(el) el.classList.add('zooming');
   // Após zoom, mostrar leitura com efeito de abertura de página
   setTimeout(function(){
-    // Selecionar trecho do capítulo
     var cap=PASSAGENS.find(function(p){return p.cap===n;});
     if(cap){
-      var item=cap.itens[0];
+      // Se é o capítulo atual, usar o item salvo no progresso
+      var itemIdx=0;
+      if(n===trechoAtual.cap && trechoAtual.item){
+        var savedItem=cap.itens.find(function(i){return i.n===trechoAtual.item;});
+        if(savedItem) itemIdx=cap.itens.indexOf(savedItem);
+      }
+      var item=cap.itens[itemIdx];
       trechoAtual={cap:cap.cap,item:item.n,titulo:cap.titulo,texto:item.texto};
     } else {
-      // Capítulo não cadastrado nas PASSAGENS — usar título do CAPITULOS
       var titulo=CAPITULOS.find(function(c){return c.n===n;});
       trechoAtual={cap:n,item:1,titulo:titulo?titulo.t:'Capítulo '+n,texto:'Conteúdo deste capítulo será gerado pelo facilitador durante os comentários.'};
     }
@@ -805,9 +805,10 @@ function salvarProgresso(){
       else{trechoAtual.cap=1;trechoAtual.item=1;}
     } else {trechoAtual.item=nextItem;}
   }
-  // Salvar localStorage
+  // Salvar localStorage (sincronizar ambas chaves)
   var progData={cap:trechoAtual.cap,item:trechoAtual.item,config:config,lastSession:new Date().toISOString()};
   localStorage.setItem('spirit_evangelho_prog',JSON.stringify(progData));
+  localStorage.setItem('spirit_evang_cap',trechoAtual.cap);
   localStorage.setItem('spirit_evangelho_config',JSON.stringify(config));
   // Salvar no banco Supabase
   salvarProgressoBanco(progData);
