@@ -280,6 +280,66 @@ var PILLAR_DURATIONS=[9,17,5,12,7];
 var music=null,voicePool={},voiceAudio=null,currentPillar=-1,pillarTimer=null;
 
 // ══════════════════════════════════════════
+//  BRAND SFX (4 áudios via AudioContext)
+// ══════════════════════════════════════════
+var _bsfxCtx=null;
+var _bsfxBuffers=[null,null,null,null];
+var _bsfxSources=[];
+var _bsfxTimers=[];
+var _bsfxFiles=['spirit-materializing-01.mp3','vanish%26logo-reveal-02.mp3','logo-surgindo-03.mp3','master-spirit-04.mp3'];
+var _bsfxVolumes=[1.0, 1.0, 0.9, 1.0];
+
+(function(){
+  try{
+    _bsfxCtx=new (window.AudioContext||window.webkitAudioContext)();
+    _bsfxFiles.forEach(function(file,i){
+      var xhr=new XMLHttpRequest();
+      xhr.open('GET',file,true);
+      xhr.responseType='arraybuffer';
+      xhr.onload=function(){
+        try{ _bsfxCtx.decodeAudioData(xhr.response,function(buf){_bsfxBuffers[i]=buf;}); }catch(e){}
+      };
+      xhr.send();
+    });
+  }catch(e){}
+})();
+
+function playBrandSFX(brandStartTime){
+  // Disparar os 4 SFX sincronizados com a timeline do brand
+  if(!_bsfxCtx) return;
+  if(_bsfxCtx.state==='suspended') _bsfxCtx.resume();
+
+  var elapsed=Date.now()-brandStartTime;
+  // Timeline: supernova@2s, implode@6.5s, logo@7.5s, narrador@8.5s
+  var timings=[2000, 6500, 7500, 8500];
+
+  timings.forEach(function(at,i){
+    var wait=Math.max(0, at - elapsed);
+    var t=setTimeout(function(){
+      try{
+        if(!_bsfxBuffers[i]||!_bsfxCtx) return;
+        var source=_bsfxCtx.createBufferSource();
+        source.buffer=_bsfxBuffers[i];
+        var gain=_bsfxCtx.createGain();
+        gain.gain.value=_bsfxVolumes[i];
+        source.connect(gain);
+        gain.connect(_bsfxCtx.destination);
+        source.start(0);
+        _bsfxSources.push(source);
+      }catch(e){}
+    }, wait);
+    _bsfxTimers.push(t);
+  });
+}
+
+function stopBrandSFX(){
+  _bsfxTimers.forEach(function(t){clearTimeout(t);});
+  _bsfxTimers=[];
+  _bsfxSources.forEach(function(s){ try{s.stop();}catch(e){} });
+  _bsfxSources=[];
+}
+
+// ══════════════════════════════════════════
 //  PARTICLES (reusable)
 // ══════════════════════════════════════════
 function createParticles(canvas,count,speed){
@@ -362,6 +422,8 @@ function startBrand(){
   var view=document.getElementById('brand-view');
   view.classList.add('active');
   createParticles(document.getElementById('brand-stars'),120,.15);
+  var brandStart=Date.now();
+  playBrandSFX(brandStart);
 
   // Elementos
   var spark=document.getElementById('brand-spark');
