@@ -1277,11 +1277,12 @@ function saveMasterMsgs(id){try{localStorage.setItem('spirit_chat_'+id,JSON.stri
 // ===================== SPLASH SOUND EFFECTS (4 áudios via AudioContext) =====================
 var _splashSfxPlayed=false;
 var _sfxCtx=null;
-var _sfxBuffers=[null,null,null,null]; // 4 buffers
-var _sfxSources=[];  // sources ativos para poder parar
+var _sfxBuffers=[null,null,null,null];
+var _sfxSources=[];
 var _sfxTimers=[];
 var _sfxFiles=['spirit-materializing-01.mp3','vanish%26logo-reveal-02.mp3','logo-surgindo-03.mp3','master-spirit-04.mp3'];
 var _sfxVolumes=[1.0, 1.0, 0.9, 1.0];
+var _sfxWaiting=false;
 
 // Pré-carregar os 4 áudios como AudioBuffer
 (function(){
@@ -1293,7 +1294,11 @@ var _sfxVolumes=[1.0, 1.0, 0.9, 1.0];
       xhr.responseType='arraybuffer';
       xhr.onload=function(){
         try{
-          _sfxCtx.decodeAudioData(xhr.response,function(buf){_sfxBuffers[i]=buf;});
+          _sfxCtx.decodeAudioData(xhr.response,function(buf){
+            _sfxBuffers[i]=buf;
+            // Se está esperando e todos carregaram, tentar disparar
+            if(_sfxWaiting) _attemptSFX();
+          });
         }catch(e){}
       };
       xhr.send();
@@ -1302,22 +1307,46 @@ var _sfxVolumes=[1.0, 1.0, 0.9, 1.0];
 })();
 
 function playSplashSFX(){
-  // Só toca na primeira exibição do splash
   if(_splashSfxPlayed) return;
   _splashStartTime=Date.now();
+  _sfxWaiting=true;
+
+  // Registrar listeners de desbloqueio no primeiro gesto do usuário
+  function _onGesture(){
+    if(!_sfxCtx) return;
+    if(_sfxCtx.state==='suspended'){
+      _sfxCtx.resume().then(function(){ _attemptSFX(); });
+    } else {
+      _attemptSFX();
+    }
+  }
+  document.addEventListener('touchstart',_onGesture,{once:true});
+  document.addEventListener('click',_onGesture,{once:true});
+
+  // Também tentar imediatamente (caso AudioContext já esteja ativo)
+  _attemptSFX();
+}
+
+function _attemptSFX(){
+  if(_splashSfxPlayed||!_sfxCtx||!_sfxWaiting) return;
+  // Precisa AudioContext ativo
+  if(_sfxCtx.state==='suspended') return;
+  // Precisa pelo menos o primeiro buffer carregado
+  if(!_sfxBuffers[0]){
+    setTimeout(_attemptSFX,100);
+    return;
+  }
+  _triggerSplashSFX();
 }
 
 function _triggerSplashSFX(){
-  // Chamado quando AudioContext é desbloqueado (música tocando)
-  if(_splashSfxPlayed||!_sfxCtx) return;
+  if(_splashSfxPlayed) return;
   var splash=document.getElementById('splash');
   if(!splash||splash.style.display==='none') return;
   _splashSfxPlayed=true;
-
-  if(_sfxCtx.state==='suspended') _sfxCtx.resume();
+  _sfxWaiting=false;
 
   var elapsed=Date.now()-_splashStartTime;
-
   // Timeline: supernova@2s, implode@6.5s, logo@7.5s, narrador@8.5s
   var timings=[2000, 6500, 7500, 8500];
 
@@ -1325,7 +1354,7 @@ function _triggerSplashSFX(){
     var wait=Math.max(0, at - elapsed);
     var t=setTimeout(function(){
       try{
-        if(!_sfxBuffers[i]) return;
+        if(!_sfxBuffers[i]||!_sfxCtx) return;
         var source=_sfxCtx.createBufferSource();
         source.buffer=_sfxBuffers[i];
         var gain=_sfxCtx.createGain();
@@ -1343,6 +1372,7 @@ function _triggerSplashSFX(){
 function _stopAllSFX(){
   _sfxTimers.forEach(function(t){clearTimeout(t);});
   _sfxTimers=[];
+  _sfxWaiting=false;
   _sfxSources.forEach(function(s){
     try{s.stop();}catch(e){}
   });
@@ -1360,8 +1390,9 @@ function startSplashMusic(){
     var playPromise=_splashAudio.play();
     if(playPromise!==undefined){
       playPromise.then(function(){
-        // Autoplay funcionou — desbloquear AudioContext do SFX
-        if(_sfxCtx&&_sfxCtx.state==='suspended') _sfxCtx.resume();
+        // Autoplay funcionou — desbloquear AudioContext do SFX e tentar disparar
+        if(_sfxCtx&&_sfxCtx.state==='suspended') _sfxCtx.resume().then(function(){_attemptSFX();});
+        else _attemptSFX();
         fadeSplashIn();
       }).catch(function(){
         document.addEventListener('touchstart',splashMusicRetry,{once:true});
@@ -1372,14 +1403,15 @@ function startSplashMusic(){
 }
 function splashMusicRetry(){
   if(_splashAudio){_splashAudio.play().then(function(){
-    if(_sfxCtx&&_sfxCtx.state==='suspended') _sfxCtx.resume();
+    if(_sfxCtx&&_sfxCtx.state==='suspended') _sfxCtx.resume().then(function(){_attemptSFX();});
+    else _attemptSFX();
     fadeSplashIn();
   }).catch(function(){});}
 }
 function fadeSplashIn(){
   if(!_splashAudio) return;
-  // Disparar os 4 SFX sincronizados (áudio já desbloqueado pela música)
-  if(!_splashSfxPlayed) _triggerSplashSFX();
+  // SFX é disparado via _attemptSFX (independente da música)
+  _attemptSFX();
   var vol=0;
   var fi=setInterval(function(){
     vol+=0.015;
