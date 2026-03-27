@@ -1384,34 +1384,29 @@ var _splashAudio=null;
 var _splashStartTime=Date.now();
 function startSplashMusic(){
   try{
+    if(_splashAudio) return; // já tocando
     _splashAudio=new Audio('splash-music.mp3');
     _splashAudio.volume=0;
     _splashAudio.loop=true;
     var playPromise=_splashAudio.play();
     if(playPromise!==undefined){
       playPromise.then(function(){
-        // Autoplay funcionou — desbloquear AudioContext do SFX e tentar disparar
-        if(_sfxCtx&&_sfxCtx.state==='suspended') _sfxCtx.resume().then(function(){_attemptSFX();});
-        else _attemptSFX();
-        fadeSplashIn();
+        fadeSplashMusicIn();
       }).catch(function(){
-        document.addEventListener('touchstart',splashMusicRetry,{once:true});
-        document.addEventListener('click',splashMusicRetry,{once:true});
+        // Autoplay bloqueado — tocar no próximo gesto
+        document.addEventListener('touchstart',_musicRetry,{once:true});
+        document.addEventListener('click',_musicRetry,{once:true});
       });
     }
   }catch(e){}
 }
-function splashMusicRetry(){
+function _musicRetry(){
   if(_splashAudio){_splashAudio.play().then(function(){
-    if(_sfxCtx&&_sfxCtx.state==='suspended') _sfxCtx.resume().then(function(){_attemptSFX();});
-    else _attemptSFX();
-    fadeSplashIn();
+    fadeSplashMusicIn();
   }).catch(function(){});}
 }
-function fadeSplashIn(){
+function fadeSplashMusicIn(){
   if(!_splashAudio) return;
-  // SFX é disparado via _attemptSFX (independente da música)
-  _attemptSFX();
   var vol=0;
   var fi=setInterval(function(){
     vol+=0.015;
@@ -1592,11 +1587,9 @@ window.addEventListener('load',async ()=>{
   else if(sessionStorage.getItem('spirit_splash_seen')){
     skipSplash();
   } else {
-    // Splash visível — iniciar música
-    setTimeout(startSplashMusic, 1500);
-    // SFX: agendar para o momento da implosão (7s)
-    // Como a música desbloqueia o áudio, o SFX vai funcionar após ela
+    // Splash visível — SFX primeiro, música só após efeito terminar (~10s)
     playSplashSFX();
+    setTimeout(startSplashMusic, 10000);
   }
   render();
   if(typeof buildSuggestions==='function') buildSuggestions();
@@ -3635,8 +3628,8 @@ async function initSupa() {
         if (loading) loading.style.display = 'none';
         document.getElementById('splash').style.display = 'block';
         initSplashLogo(); initStars(); initSettings(); loadRooms();
-        setTimeout(startSplashMusic, 500);
         playSplashSFX();
+        setTimeout(startSplashMusic, 10000);
         render();
       } else {
         // NÃO ACEITO — esconder loading, mostrar disclaimer
