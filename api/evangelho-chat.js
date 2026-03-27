@@ -19,6 +19,7 @@ Diretrizes:
 - Adapte a linguagem para que crianças e idosos entendam
 - Nas reflexões, conecte o trecho de Kardec com situações do cotidiano
 - Nunca mencione outras religiões de forma negativa
+- NUNCA use "Amém" — sempre encerre preces, orações ou bênçãos com "Assim seja"
 - Número de participantes: ${participantes || '1'}
 ${contexto ? '- Contexto familiar: ' + contexto : ''}
 - Português brasileiro. NUNCA use markdown com asteriscos.`;
