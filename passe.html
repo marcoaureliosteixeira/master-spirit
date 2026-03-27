@@ -14,6 +14,13 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;overflow:auto}
 body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:var(--fs)}
+body.fs-sm{--fs:14px} body.fs-md{--fs:16px} body.fs-lg{--fs:18px} body.fs-xl{--fs:21px}
+body.ff-geo{--font:Georgia,'Times New Roman',serif}
+body.ff-pal{--font:'Palatino Linotype',Palatino,serif}
+body.ff-sys{--font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+body.lh-tight{line-height:1.5} body.lh-normal{line-height:1.75} body.lh-relaxed{line-height:2.0} body.lh-wide{line-height:2.3}
+body.theme-sepia{--bg:#f4ecd8;--text:#5b4636;--gold:#8b6914;--gold2:#a07d1a;--card-bg:rgba(139,105,20,.08);--card-border:rgba(139,105,20,.2)}
+body.theme-light{--bg:#f5f5f0;--text:#2c2c2c;--gold:#7a6210;--gold2:#8b7019;--card-bg:rgba(0,0,0,.04);--card-border:rgba(122,98,16,.2)}
 #page{max-width:900px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
 /* Header */
 #hdr{background:rgba(12,18,38,.88);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-bottom:1px solid var(--card-border);padding:14px 18px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:50}
@@ -190,6 +197,15 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:va
   </div>
 </div>
 <script>
+// Aplicar configurações de leitura do app
+(function(){
+  var fs=localStorage.getItem('spirit_fs')||'fs-lg';
+  var ff=localStorage.getItem('spirit_ff')||'';
+  var lh=localStorage.getItem('spirit_lh')||'lh-normal';
+  var th=localStorage.getItem('spirit_theme')||'';
+  document.body.className=[fs,ff,lh,th].filter(Boolean).join(' ');
+})();
+
 // ── STEPS DATA ──
 var SESSAO_COMPLETA=[
   {id:'abertura',title:'Prece de Abertura',icon:'🕊️',duration:45,instruction:'Feche os olhos suavemente. Vamos iniciar com uma prece ao Pai, pedindo permissão e amparo dos bons espíritos para esta sessão de passe.',guidance:'Pai nosso que estais nos céus... Pedimos a presença dos espíritos de luz que nos assistam nesta sessão de cura espiritual. Que os fluidos benéficos envolvam este ambiente e purifiquem nossos corações. Que possamos ser instrumentos dignos da vossa misericórdia.',breathe:false,energy:false},

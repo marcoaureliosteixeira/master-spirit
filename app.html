@@ -22,6 +22,9 @@ body.fs-sm{--fs:14px;--text:#E8DFC9} body.fs-md{--fs:16px;--text:#EEE5D2} body.f
 body.ff-geo{--font:Georgia,'Times New Roman',serif}
 body.ff-pal{--font:'Palatino Linotype',Palatino,serif}
 body.ff-sys{--font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+body.lh-tight{line-height:1.5} body.lh-normal{line-height:1.75} body.lh-relaxed{line-height:2.0} body.lh-wide{line-height:2.3}
+body.theme-sepia{--bg:#f4ecd8;--text:#5b4636;--gold:#8b6914;--gold2:#a07d1a} body.theme-sepia #stars{display:none}
+body.theme-light{--bg:#f5f5f0;--text:#2c2c2c;--gold:#7a6210;--gold2:#8b7019} body.theme-light #stars{display:none}
 /* Textos descritivos em Georgia (Cinzel só tem maiúsculas) */
 p,span,.desc,.sub,.modal-inner p,.copy-btn{font-family:Georgia,'Times New Roman',serif}
 #app{display:flex;flex-direction:column;height:100%;max-width:900px;margin:0 auto;position:relative}
@@ -595,6 +598,19 @@ document.documentElement.style.setProperty('--disclaimer-init','none');
       <button class="preset-btn" data-ff="ff-geo" onclick="setFf(this)" style="font-family:Georgia,serif">Georgia</button>
       <button class="preset-btn" data-ff="ff-pal" onclick="setFf(this)" style="font-family:Palatino,serif">Palatino</button>
       <button class="preset-btn" data-ff="ff-sys" onclick="setFf(this)" style="font-family:-apple-system,sans-serif">Sistema</button>
+    </div>
+    <p class="sec-label">Espaçamento entre Linhas</p>
+    <div class="preset-grid" style="grid-template-columns:repeat(4,1fr)">
+      <button class="preset-btn" data-lh="lh-tight" onclick="setLh(this)">Compacto</button>
+      <button class="preset-btn active" data-lh="lh-normal" onclick="setLh(this)">Normal</button>
+      <button class="preset-btn" data-lh="lh-relaxed" onclick="setLh(this)">Amplo</button>
+      <button class="preset-btn" data-lh="lh-wide" onclick="setLh(this)">Largo</button>
+    </div>
+    <p class="sec-label">Tema de Leitura</p>
+    <div class="preset-grid" style="grid-template-columns:repeat(3,1fr)">
+      <button class="preset-btn active" data-theme="" onclick="setTheme(this)">Escuro</button>
+      <button class="preset-btn" data-theme="theme-sepia" onclick="setTheme(this)" style="background:rgba(244,236,216,.15);color:#8b6914">Sépia</button>
+      <button class="preset-btn" data-theme="theme-light" onclick="setTheme(this)" style="background:rgba(245,245,240,.15);color:#2c2c2c">Claro</button>
     </div>
 
     <div style="display:flex;gap:10px">
@@ -1558,9 +1574,13 @@ function initStars(){
 function initSettings(){
   const savedFs=localStorage.getItem('spirit_fs')||'fs-lg';
   const savedFf=localStorage.getItem('spirit_ff')||'';
-  document.body.className=savedFs+(savedFf?' '+savedFf:'');
+  const savedLh=localStorage.getItem('spirit_lh')||'lh-normal';
+  const savedTheme=localStorage.getItem('spirit_theme')||'';
+  document.body.className=[savedFs,savedFf,savedLh,savedTheme].filter(Boolean).join(' ');
   document.querySelectorAll('[data-fs]').forEach(b=>b.classList.toggle('active',b.dataset.fs===savedFs));
   document.querySelectorAll('[data-ff]').forEach(b=>b.classList.toggle('active',b.dataset.ff===savedFf));
+  document.querySelectorAll('[data-lh]').forEach(b=>b.classList.toggle('active',b.dataset.lh===savedLh));
+  document.querySelectorAll('[data-theme]').forEach(b=>b.classList.toggle('active',b.dataset.theme===savedTheme));
 }
 function loadRooms(){
   try{const cr=JSON.parse(localStorage.getItem('spirit_rooms')||'[]');rooms=[...DEFAULT_ROOMS,...cr];}catch(e){}
@@ -3006,19 +3026,32 @@ function showDisclaimerIfNeeded(){
   }
 }
 
+function _rebuildBodyClass(){
+  var fs=localStorage.getItem('spirit_fs')||'fs-lg';
+  var ff=localStorage.getItem('spirit_ff')||'';
+  var lh=localStorage.getItem('spirit_lh')||'lh-normal';
+  var th=localStorage.getItem('spirit_theme')||'';
+  document.body.className=[fs,ff,lh,th].filter(Boolean).join(' ');
+}
 function setFs(btn){
-  const fs=btn.dataset.fs;
-  const cur=document.body.className.match(/ff-\w+/);
-  document.body.className=fs+(cur?(' '+cur[0]):'');
-  localStorage.setItem('spirit_fs',fs);
-  document.querySelectorAll('[data-fs]').forEach(b=>b.classList.toggle('active',b.dataset.fs===fs));
+  localStorage.setItem('spirit_fs',btn.dataset.fs);
+  _rebuildBodyClass();
+  document.querySelectorAll('[data-fs]').forEach(b=>b.classList.toggle('active',b.dataset.fs===btn.dataset.fs));
 }
 function setFf(btn){
-  const ff=btn.dataset.ff;
-  const cur=document.body.className.match(/fs-\w+/);
-  document.body.className=(cur?cur[0]:'fs-md')+(ff?' '+ff:'');
-  localStorage.setItem('spirit_ff',ff);
-  document.querySelectorAll('[data-ff]').forEach(b=>b.classList.toggle('active',b.dataset.ff===ff));
+  localStorage.setItem('spirit_ff',btn.dataset.ff);
+  _rebuildBodyClass();
+  document.querySelectorAll('[data-ff]').forEach(b=>b.classList.toggle('active',b.dataset.ff===btn.dataset.ff));
+}
+function setLh(btn){
+  localStorage.setItem('spirit_lh',btn.dataset.lh);
+  _rebuildBodyClass();
+  document.querySelectorAll('[data-lh]').forEach(b=>b.classList.toggle('active',b.dataset.lh===btn.dataset.lh));
+}
+function setTheme(btn){
+  localStorage.setItem('spirit_theme',btn.dataset.theme);
+  _rebuildBodyClass();
+  document.querySelectorAll('[data-theme]').forEach(b=>b.classList.toggle('active',b.dataset.theme===btn.dataset.theme));
 }
 
 
